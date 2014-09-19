@@ -1,0 +1,302 @@
+{
+  "data": {
+    "admin": [
+      {
+        "username": "han",
+        "password": "test",
+        "email": "han@gmail.com",
+        "createdAt": "2014-09-19T05:04:21.703Z",
+        "updatedAt": "2014-09-19T05:04:21.703Z",
+        "id": 2
+      }
+    ],
+    "contract": [],
+    "country": [
+      {
+        "country": "china",
+        "createdAt": "2014-09-19T06:33:03.908Z",
+        "updatedAt": "2014-09-19T06:33:03.908Z",
+        "id": 1
+      },
+      {
+        "country": "中国",
+        "createdAt": "2014-09-19T06:33:12.725Z",
+        "updatedAt": "2014-09-19T06:33:12.725Z",
+        "id": 2
+      }
+    ],
+    "degree": [],
+    "lead": [
+      {
+        "createdAt": "2014-09-19T06:43:48.415Z",
+        "updatedAt": "2014-09-19T06:43:48.415Z",
+        "id": 1
+      },
+      {
+        "createdAt": "2014-09-19T06:45:36.321Z",
+        "updatedAt": "2014-09-19T06:45:36.321Z",
+        "id": 2
+      },
+      {
+        "lead": "Campus校代介绍",
+        "createdAt": "2014-09-19T06:45:43.044Z",
+        "updatedAt": "2014-09-19T06:45:43.044Z",
+        "id": 3
+      },
+      {
+        "lead": "Web电话/网络",
+        "createdAt": "2014-09-19T06:45:50.687Z",
+        "updatedAt": "2014-09-19T06:45:50.687Z",
+        "id": 4
+      },
+      {
+        "createdAt": "2014-09-19T06:45:56.461Z",
+        "updatedAt": "2014-09-19T06:45:56.461Z",
+        "id": 5
+      },
+      {
+        "createdAt": "2014-09-19T06:46:01.421Z",
+        "updatedAt": "2014-09-19T06:46:01.421Z",
+        "id": 6
+      },
+      {
+        "lead": "Customer老客户介绍",
+        "createdAt": "2014-09-19T06:46:27.706Z",
+        "updatedAt": "2014-09-19T06:46:27.706Z",
+        "id": 7
+      },
+      {
+        "lead": "Friend熟人介绍",
+        "createdAt": "2014-09-19T06:46:48.161Z",
+        "updatedAt": "2014-09-19T06:46:48.161Z",
+        "id": 8
+      },
+      {
+        "lead": "Staff内部员工介绍",
+        "createdAt": "2014-09-19T06:46:54.386Z",
+        "updatedAt": "2014-09-19T06:46:54.386Z",
+        "id": 9
+      },
+      {
+        "lead": "Sec二次签约",
+        "createdAt": "2014-09-19T06:47:02.321Z",
+        "updatedAt": "2014-09-19T06:47:02.321Z",
+        "id": 10
+      },
+      {
+        "lead": "Free Session",
+        "createdAt": "2014-09-19T06:47:06.600Z",
+        "updatedAt": "2014-09-19T06:47:06.600Z",
+        "id": 11
+      }
+    ],
+    "leadlevel": [],
+    "paymentoption": [],
+    "status": [],
+    "role": [],
+    "service": [],
+    "user": []
+  },
+  "schema": {
+    "admin": {
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "contract": {
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "country": {
+      "idCountry": {
+        "type": "string"
+      },
+      "country": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "degree": {
+      "idDegree": {
+        "type": "string"
+      },
+      "degree": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "lead": {
+      "idLead": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "leadlevel": {
+      "idLeadLevel": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "paymentoption": {
+      "idPaymentOption": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "status": {
+      "idStatus": {
+        "type": "string"
+      },
+      "status": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "role": {
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "service": {
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "user": {
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    }
+  },
+  "counters": {
+    "admin": {
+      "id": 2
+    },
+    "contract": {},
+    "country": {
+      "id": 2
+    },
+    "degree": {},
+    "lead": {
+      "id": 11
+    },
+    "leadlevel": {},
+    "paymentoption": {},
+    "status": {},
+    "role": {},
+    "service": {},
+    "user": {}
+  }
+}
