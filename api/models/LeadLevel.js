@@ -8,9 +8,11 @@
 module.exports = {
 
   attributes: {
-
-    idLeadLevel : { type: 'int' },
-    leadLevel:{type:'string'}
+    leadLevel:{type:'string',required:true },
+    contracts:{
+    	collection:'Contract',
+    	via:'leadLevel'
+    }
   }
 };
 

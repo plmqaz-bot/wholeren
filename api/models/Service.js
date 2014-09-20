@@ -8,7 +8,8 @@
 module.exports = {
 
   attributes: {
-
+  	service:{type:"string",required:true },
+  	contract:{collection:'Contract',via:'service'}
   }
 };
 

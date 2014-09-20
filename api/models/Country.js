@@ -9,9 +9,11 @@ module.exports = {
 
   attributes: {
 
-    idCountry : { type: 'int,' },
-
-    country : { type: 'string' }
+    country : { type: 'string',required:true },
+    contracts:{
+    	collection:'Contract',
+    	via:'country'
+    }
   }
 };
 

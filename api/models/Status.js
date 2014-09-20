@@ -8,10 +8,11 @@
 module.exports = {
 
   attributes: {
-
-    idStatus : { type: 'int,' },
-
-    status : { type: 'string' }
+    status : { type: 'string',required:true  },
+    contracts:{
+    	collection:'Contract',
+    	via:'status'
+    }
   }
 };
 

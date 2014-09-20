@@ -10,7 +10,17 @@
         "id": 2
       }
     ],
-    "contract": [],
+    "contract": [
+      {
+        "serviceType": "123",
+        "degree": 1,
+        "country": 1,
+        "validI20": true,
+        "createdAt": "2014-09-20T03:23:38.904Z",
+        "updatedAt": "2014-09-20T03:23:38.904Z",
+        "id": 1
+      }
+    ],
     "country": [
       {
         "country": "china",
@@ -25,18 +35,15 @@
         "id": 2
       }
     ],
-    "degree": [],
-    "lead": [
+    "degree": [
       {
-        "createdAt": "2014-09-19T06:43:48.415Z",
-        "updatedAt": "2014-09-19T06:43:48.415Z",
+        "degree": "大学",
+        "createdAt": "2014-09-20T03:01:42.800Z",
+        "updatedAt": "2014-09-20T03:01:42.800Z",
         "id": 1
-      },
-      {
-        "createdAt": "2014-09-19T06:45:36.321Z",
-        "updatedAt": "2014-09-19T06:45:36.321Z",
-        "id": 2
-      },
+      }
+    ],
+    "lead": [
       {
         "lead": "Campus校代介绍",
         "createdAt": "2014-09-19T06:45:43.044Z",
@@ -48,16 +55,6 @@
         "createdAt": "2014-09-19T06:45:50.687Z",
         "updatedAt": "2014-09-19T06:45:50.687Z",
         "id": 4
-      },
-      {
-        "createdAt": "2014-09-19T06:45:56.461Z",
-        "updatedAt": "2014-09-19T06:45:56.461Z",
-        "id": 5
-      },
-      {
-        "createdAt": "2014-09-19T06:46:01.421Z",
-        "updatedAt": "2014-09-19T06:46:01.421Z",
-        "id": 6
       },
       {
         "lead": "Customer老客户介绍",
@@ -92,7 +89,50 @@
     ],
     "leadlevel": [],
     "paymentoption": [],
-    "status": [],
+    "status": [
+      {
+        "0": {
+          "status": "A. 未签约"
+        },
+        "1": {
+          "status": "B. 放弃治疗,"
+        },
+        "2": {
+          "status": "C. WIP"
+        },
+        "3": {
+          "status": "C1. 退款"
+        },
+        "4": {
+          "status": "C2. 签约未付款"
+        },
+        "5": {
+          "status": "D. Done"
+        },
+        "6": {
+          "status": "F. 放弃并转至其他服务"
+        },
+        "7": {
+          "status": "G. 公益完结"
+        },
+        "8": {
+          "status": "H. 未咨询"
+        },
+        "createdAt": "2014-09-19T23:33:48.927Z",
+        "updatedAt": "2014-09-19T23:33:48.927Z",
+        "id": 1
+      },
+      {
+        "createdAt": "2014-09-19T23:34:19.941Z",
+        "updatedAt": "2014-09-19T23:34:19.941Z",
+        "id": 2
+      },
+      {
+        "createdAt": "2014-09-20T01:47:18.330Z",
+        "updatedAt": "2014-09-20T01:47:18.330Z",
+        "id": 3
+      }
+    ],
     "role": [],
     "service": [],
     "user": []
@@ -113,6 +153,86 @@
       }
     },
     "contract": {
+      "serviceType": {
+        "type": "string"
+      },
+      "lead": {
+        "type": "integer",
+        "model": "lead",
+        "foreignKey": true,
+        "alias": "lead"
+      },
+      "leadName": {
+        "type": "string"
+      },
+      "leadLevel": {
+        "type": "integer",
+        "model": "leadlevel",
+        "foreignKey": true,
+        "alias": "leadLevel"
+      },
+      "status": {
+        "type": "integer",
+        "model": "status",
+        "foreignKey": true,
+        "alias": "status"
+      },
+      "salesFollowup": {
+        "type": "string"
+      },
+      "salesRecord": {
+        "type": "string"
+      },
+      "expertFollowup": {
+        "type": "string"
+      },
+      "originalText": {
+        "type": "string"
+      },
+      "country": {
+        "type": "integer",
+        "model": "country",
+        "foreignKey": true,
+        "alias": "country",
+        "defaultsTo": 1
+      },
+      "validI20": {
+        "type": "boolean",
+        "defaultsTo": "true"
+      },
+      "gpa": {
+        "type": "float"
+      },
+      "toefl": {
+        "type": "float"
+      },
+      "age": {
+        "type": "string"
+      },
+      "degree": {
+        "type": "integer",
+        "model": "degree",
+        "foreignKey": true,
+        "alias": "degree"
+      },
+      "diagnose": {
+        "type": "string"
+      },
+      "contractSigned": {
+        "type": "datetime"
+      },
+      "contractPaid": {
+        "type": "datetime"
+      },
+      "contractPrice": {
+        "type": "float"
+      },
+      "contractDetail": {
+        "type": "string"
+      },
+      "previousSchool": {
+        "type": "string"
+      },
       "id": {
         "type": "integer",
         "autoIncrement": true,
@@ -127,9 +247,6 @@
       }
     },
     "country": {
-      "idCountry": {
-        "type": "string"
-      },
       "country": {
         "type": "string"
       },
@@ -147,9 +264,6 @@
       }
     },
     "degree": {
-      "idDegree": {
-        "type": "string"
-      },
       "degree": {
         "type": "string"
       },
@@ -167,7 +281,7 @@
       }
     },
     "lead": {
-      "idLead": {
+      "Lead": {
         "type": "string"
       },
       "id": {
@@ -184,7 +298,7 @@
       }
     },
     "leadlevel": {
-      "idLeadLevel": {
+      "leadLevel": {
         "type": "string"
       },
       "id": {
@@ -201,7 +315,7 @@
       }
     },
     "paymentoption": {
-      "idPaymentOption": {
+      "paymentOption": {
         "type": "string"
       },
       "id": {
@@ -218,9 +332,6 @@
       }
     },
     "status": {
-      "idStatus": {
-        "type": "string"
-      },
       "status": {
         "type": "string"
       },
@@ -238,6 +349,9 @@
       }
     },
     "role": {
+      "role": {
+        "type": "string"
+      },
       "id": {
         "type": "integer",
         "autoIncrement": true,
@@ -252,6 +366,9 @@
       }
     },
     "service": {
+      "service": {
+        "type": "string"
+      },
       "id": {
         "type": "integer",
         "autoIncrement": true,
@@ -284,17 +401,23 @@
     "admin": {
       "id": 2
     },
-    "contract": {},
+    "contract": {
+      "id": 1
+    },
     "country": {
       "id": 2
     },
-    "degree": {},
+    "degree": {
+      "id": 1
+    },
     "lead": {
       "id": 11
     },
     "leadlevel": {},
     "paymentoption": {},
-    "status": {},
+    "status": {
+      "id": 3
+    },
     "role": {},
     "service": {},
     "user": {}

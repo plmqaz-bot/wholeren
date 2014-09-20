@@ -8,7 +8,8 @@
 module.exports = {
 
   attributes: {
-
+  	role:{type:"string",required:true },
+  	
   }
 };
 

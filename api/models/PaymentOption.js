@@ -8,9 +8,11 @@
 module.exports = {
 
   attributes: {
-
-    idPaymentOption : { type: 'int' },
-    paymentOption:{type:'string'}
+    paymentOption:{type:'string',required:true },
+    contracts:{
+    	collection:'Contract',
+    	via:'paymentOption'
+    }
   }
 };
 

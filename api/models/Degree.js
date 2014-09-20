@@ -8,10 +8,11 @@
 module.exports = {
 
   attributes: {
-
-    idDegree : { type: 'int,' },
-
-    degree : { type: 'string' }
+    degree : { type: 'string',required:true  },
+    contracts:{
+    	collection:'Contract',
+    	via:'degree'
+    }
   }
 };
 
