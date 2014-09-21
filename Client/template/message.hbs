@@ -1,0 +1,13 @@
+﻿<header>
+    <button class="button-back">Back</button>
+    <h2 class="title">Messages</h2>
+</header>
+<section class="content">
+<table class="messages">
+    <tr><th>User</th><th>ToUser</th><th>Content</th><th>Replied</th></tr>
+    {{#each message}}
+    <tr ><td>{{FromUserName}}</td><td>{{ToUserName}}</td><td>{{Content}}</td><td><a href="#{{idMessage}}">{{ReplyFor}}</a><button id="#{{idMessage}}">R</button></td></tr>
+    {{/each}}
+</table>
+    <div class="app"></div>
+</section>

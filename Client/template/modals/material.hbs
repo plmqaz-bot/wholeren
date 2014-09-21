@@ -1,0 +1,15 @@
+﻿<div class="bbm-modal__topbar">
+    <h3 class="bbm-modal__title">Select Reply Material</h3>
+</div>
+<div class="bbm-modal__section">
+    <table class="messages">
+        <tr><th>Type</th><th>Title</th><th>Create Time</th><th>Content</th><th>Expand</th></tr>
+        {{#each items}}
+        <tr id="#{{idReplyMaterial}}"><td>{{MsgType}}</td><td>{{Title}}</td><td>{{CreateTime}}</td>{{#ifCond MsgType "text"}}<td>{{Content}}</td><td></td>{{else}}{{#if Data.[0].Title}}<td>{{Data.[0].Title}}</td>{{else}}<td></td>{{/if}}<td><button  class="choose-reply-material">Select</button></td>{{/ifCond}}</tr>
+        {{/each}}
+    </table>
+</div>
+<div class="bbm-modal__bottombar">
+    <a href="#" class="bbm-button cancel">Close</a>
+    <a href="#" class="bbm-button ok">OK</a>
+</div>
