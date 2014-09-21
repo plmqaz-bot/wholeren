@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-  	serviceType:{type:"string"},
+    contractCategory:{model:'ContractCategory',required:true},
 
   	client:{model:'Client',required:true},
 
@@ -57,6 +57,8 @@ module.exports = {
   	applicationFeePaid:{type:"boolean",required:true,defaultsTo:'false'},
 
   	paymentOption:{model:"PaymentOption"},
+
+    contractUserRole:{collection:'ContractUserRole',via:'contract'}
   },
   getSalesListByUser:function(id){
 

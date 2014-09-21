@@ -1,5 +1,5 @@
 /**
-* Role.js
+* ServiceType.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
@@ -8,12 +8,12 @@
 module.exports = {
 
   attributes: {
-  	role:{type:"string",required:true },
+  	serviceType:{type:'string',required:true},
+  	service:{
+  		collection:'Service',
+  		via:'serviceType'
+  	},
 
-  	roleOnUser:{collection:'User',via:'role'},
-
-  	roleOnContract:{collection:'ContractUserRole',via:'activeRole'}
-  	
   }
 };
 

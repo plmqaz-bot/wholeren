@@ -135,7 +135,149 @@
     ],
     "role": [],
     "service": [],
-    "user": []
+    "user": [],
+    "application": [],
+    "client": [],
+    "contractcategory": [],
+    "contractuserrole": [],
+    "people": [
+      {
+        "firstName": "Han",
+        "lastName": "Lai",
+        "createdAt": "2014-09-21T01:47:45.023Z",
+        "updatedAt": "2014-09-21T02:14:44.701Z",
+        "id": 1,
+        "pets": [
+          4
+        ]
+      },
+      {
+        "firstName": "Han",
+        "lastName": "Lai",
+        "pets": [
+          2,
+          3
+        ],
+        "createdAt": "2014-09-21T02:02:07.070Z",
+        "updatedAt": "2014-09-21T02:02:07.098Z",
+        "id": 2
+      },
+      {
+        "firstName": "Han",
+        "lastName": "Lai",
+        "pets": [
+          1,
+          2
+        ],
+        "createdAt": "2014-09-21T02:02:34.449Z",
+        "updatedAt": "2014-09-21T02:02:34.475Z",
+        "id": 3
+      },
+      {
+        "firstName": "Han",
+        "lastName": "Lai",
+        "pets": [
+          {
+            "breed": "newbreed"
+          }
+        ],
+        "createdAt": "2014-09-21T02:23:40.642Z",
+        "updatedAt": "2014-09-21T02:23:40.656Z",
+        "id": 4
+      },
+      {
+        "createdAt": "2014-09-21T02:24:19.851Z",
+        "updatedAt": "2014-09-21T02:24:19.851Z",
+        "id": 5
+      },
+      {
+        "firstName": "aa",
+        "lastName": "bb",
+        "createdAt": "2014-09-21T02:28:59.854Z",
+        "updatedAt": "2014-09-21T02:28:59.854Z",
+        "id": 6
+      },
+      {
+        "firstName": "aa",
+        "lastName": "bb",
+        "createdAt": "2014-09-21T02:31:42.068Z",
+        "updatedAt": "2014-09-21T02:31:42.068Z",
+        "id": 7
+      },
+      {
+        "firstName": "aa",
+        "lastName": "bb",
+        "createdAt": "2014-09-21T03:11:38.083Z",
+        "updatedAt": "2014-09-21T03:11:38.083Z",
+        "id": 8
+      }
+    ],
+    "pet": [
+      {
+        "createdAt": "2014-09-21T01:45:45.057Z",
+        "updatedAt": "2014-09-21T02:02:34.490Z",
+        "id": 1,
+        "owner": 3
+      },
+      {
+        "createdAt": "2014-09-21T01:46:05.244Z",
+        "updatedAt": "2014-09-21T02:02:34.503Z",
+        "id": 2,
+        "owner": 3
+      },
+      {
+        "createdAt": "2014-09-21T01:46:20.655Z",
+        "updatedAt": "2014-09-21T02:14:44.669Z",
+        "id": 3,
+        "owner": null
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "name": "n1",
+        "createdAt": "2014-09-21T01:47:00.375Z",
+        "updatedAt": "2014-09-21T02:14:44.715Z",
+        "id": 4,
+        "owner": 1
+      },
+      {
+        "breed": "newbreed",
+        "owner": 4,
+        "createdAt": "2014-09-21T02:23:40.673Z",
+        "updatedAt": "2014-09-21T02:23:40.673Z",
+        "id": 5
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "name": "n1",
+        "owner": 6,
+        "createdAt": "2014-09-21T02:28:59.866Z",
+        "updatedAt": "2014-09-21T02:28:59.866Z",
+        "id": 6
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "name": "n1",
+        "owner": 7,
+        "createdAt": "2014-09-21T02:31:42.107Z",
+        "updatedAt": "2014-09-21T02:31:42.107Z",
+        "id": 7
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "name": "n1",
+        "owner": 8,
+        "createdAt": "2014-09-21T03:11:38.095Z",
+        "updatedAt": "2014-09-21T03:11:38.095Z",
+        "id": 8
+      }
+    ],
+    "servicetype": [],
+    "service_serviceteacher__user_service": [],
+    "servicetype_serviceteacher__user_service": []
   },
   "schema": {
     "admin": {
@@ -153,8 +295,17 @@
       }
     },
     "contract": {
-      "serviceType": {
-        "type": "string"
+      "contractCategory": {
+        "type": "integer",
+        "model": "contractcategory",
+        "foreignKey": true,
+        "alias": "contractCategory"
+      },
+      "client": {
+        "type": "integer",
+        "model": "client",
+        "foreignKey": true,
+        "alias": "client"
       },
       "lead": {
         "type": "integer",
@@ -233,6 +384,16 @@
       "previousSchool": {
         "type": "string"
       },
+      "applicationFeePaid": {
+        "type": "boolean",
+        "defaultsTo": "false"
+      },
+      "paymentOption": {
+        "type": "integer",
+        "model": "paymentoption",
+        "foreignKey": true,
+        "alias": "paymentOption"
+      },
       "id": {
         "type": "integer",
         "autoIncrement": true,
@@ -281,7 +442,7 @@
       }
     },
     "lead": {
-      "Lead": {
+      "lead": {
         "type": "string"
       },
       "id": {
@@ -366,8 +527,18 @@
       }
     },
     "service": {
-      "service": {
-        "type": "string"
+      "serviceType": {
+        "type": "integer",
+        "model": "servicetype",
+        "foreignKey": true,
+        "alias": "serviceType"
+      },
+      "contract": {
+        "type": "integer",
+        "model": "contract",
+        "foreignKey": true,
+        "alias": "contract",
+        "via": "service"
       },
       "id": {
         "type": "integer",
@@ -383,6 +554,31 @@
       }
     },
     "user": {
+      "username": {
+        "type": "string",
+        "unique": true
+      },
+      "password": {
+        "type": "string"
+      },
+      "email": {
+        "type": "string"
+      },
+      "nickname": {
+        "type": "string"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "role": {
+        "type": "integer",
+        "model": "role",
+        "foreignKey": true,
+        "alias": "role"
+      },
       "id": {
         "type": "integer",
         "autoIncrement": true,
@@ -394,6 +590,214 @@
       },
       "updatedAt": {
         "type": "datetime"
+      }
+    },
+    "application": {
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "client": {
+      "firstContact": {
+        "type": "datetime"
+      },
+      "firstName": {
+        "type": "string"
+      },
+      "lastNmae": {
+        "type": "string"
+      },
+      "primaryPhone": {
+        "type": "string"
+      },
+      "secondaryPhone": {
+        "type": "string"
+      },
+      "primaryEmail": {
+        "type": "string"
+      },
+      "secondaryEmail": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "contractcategory": {
+      "category": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "contractuserrole": {
+      "user": {
+        "type": "integer",
+        "model": "user",
+        "foreignKey": true,
+        "alias": "user"
+      },
+      "contract": {
+        "type": "integer",
+        "model": "contract",
+        "foreignKey": true,
+        "alias": "contract"
+      },
+      "activeRole": {
+        "type": "integer",
+        "model": "role",
+        "foreignKey": true,
+        "alias": "activeRole"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "people": {
+      "firstName": {
+        "type": "string"
+      },
+      "lastName": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "pet": {
+      "breed": {
+        "type": "string"
+      },
+      "type": {
+        "type": "string"
+      },
+      "name": {
+        "type": "string"
+      },
+      "owner": {
+        "type": "integer",
+        "model": "people",
+        "foreignKey": true,
+        "alias": "owner"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "servicetype": {
+      "serviceType": {
+        "type": "string"
+      },
+      "id": {
+        "type": "integer",
+        "autoIncrement": true,
+        "primaryKey": true,
+        "unique": true
+      },
+      "createdAt": {
+        "type": "datetime"
+      },
+      "updatedAt": {
+        "type": "datetime"
+      }
+    },
+    "service_serviceteacher__user_service": {
+      "id": {
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true,
+        "type": "integer"
+      },
+      "service_serviceTeacher": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "service",
+        "on": "id",
+        "via": "user_service"
+      },
+      "user_service": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "user",
+        "on": "id",
+        "via": "service_serviceTeacher"
+      }
+    },
+    "servicetype_serviceteacher__user_service": {
+      "id": {
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true,
+        "type": "integer"
+      },
+      "servicetype_serviceTeacher": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "servicetype",
+        "on": "id",
+        "via": "user_service"
+      },
+      "user_service": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "user",
+        "on": "id",
+        "via": "servicetype_serviceTeacher"
       }
     }
   },
@@ -420,6 +824,19 @@
     },
     "role": {},
     "service": {},
-    "user": {}
+    "user": {},
+    "application": {},
+    "client": {},
+    "contractcategory": {},
+    "contractuserrole": {},
+    "people": {
+      "id": 8
+    },
+    "pet": {
+      "id": 8
+    },
+    "servicetype": {},
+    "service_serviceteacher__user_service": {},
+    "servicetype_serviceteacher__user_service": {}
   }
 }

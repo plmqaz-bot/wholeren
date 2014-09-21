@@ -8,8 +8,11 @@
 module.exports = {
 
   attributes: {
-  	service:{type:"string",required:true },
-  	contract:{collection:'Contract',via:'service'}
+  	serviceType:{model:"ServiceType",required:true },
+  	
+  	contract:{model:'Contract',via:'service'},
+
+    serviceTeacher:{collection:'User',via:'service'}
   }
 };
 

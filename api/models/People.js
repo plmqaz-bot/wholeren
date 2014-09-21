@@ -1,5 +1,5 @@
 /**
-* Role.js
+* People.js
 *
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
@@ -8,12 +8,14 @@
 module.exports = {
 
   attributes: {
-  	role:{type:"string",required:true },
+	firstName: 'string',
+    lastName: 'string',
 
-  	roleOnUser:{collection:'User',via:'role'},
-
-  	roleOnContract:{collection:'ContractUserRole',via:'activeRole'}
-  	
+    // Add a reference to Pets
+    pets: {
+      collection: 'pet',
+      via: 'owner'
+    }
   }
 };
 
