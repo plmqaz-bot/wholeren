@@ -28,15 +28,16 @@ var init=function(){
 };
 init();
 var switched = false;
+var switchthreshold=1600;
   var updateTables = function() {
-    if (($(window).width() < 767) && !switched ){
+    if (($(window).width() < switchthreshold) && !switched ){
       switched = true;
       $("table.responsive").each(function(i, element) {
         splitTable($(element));
       });
       return true;
     }
-    else if (switched && ($(window).width() > 767)) {
+    else if (switched && ($(window).width() > switchthreshold)) {
       switched = false;
       $("table.responsive").each(function(i, element) {
         unsplitTable($(element));

@@ -56,7 +56,7 @@ module.exports={
         }
 
         res.render('contract', {
-            bodyClass: 'manage',
+            bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'contract')
         });
     }
