@@ -1,0 +1,16 @@
+<tr id="{{idReplyMaterial}}">
+<td>{{MsgType}}</td>
+<td>{{Title}}</td>
+<td>{{CreateTime}}</td>
+{{#ifCond MsgType "text"}}
+<td>{{Content}}</td>
+<td></td>
+{{else}}{{#if Data.[0].Title}}
+<td>{{Data.[0].Title}}</td>
+{{else}}
+<td></td>
+{{/if}}
+<td><button class="expand">Expand</button></td>
+{{/ifCond}}
+<td><a href="#{{idReplyMaterial}}"><img src="/public/assets/img/red-delete-button.jpg" class="remove" width="50" /></a></td>
+</tr>  
