@@ -1,6 +1,12 @@
 
 
 adminNavbar = {
+    contract: {
+        name: 'Contract',
+        navClass: 'contract',
+        key: 'admin.navbar.contract',
+        path: '/contract/'
+    },
     content: {
         name: 'Content',
         navClass: 'content',
@@ -30,7 +36,7 @@ function setSelected(list, name) {
 
 module.exports={
 
-'index': function (req, res) {
+    'index': function (req, res) {
         /*jslint unparam:true*/
         function renderIndex() {
             res.render('content', {
@@ -41,6 +47,20 @@ module.exports={
 
         renderIndex();
     },
+    'contract':function(req,res){
+        var allowedSections = ['', 'general', 'user', 'apps'],
+            section = req.url.replace(/(^\/admin\/contract[\/]*|\/$)/ig, '');
+
+        if (allowedSections.indexOf(section) < 0) {
+            return next();
+        }
+
+        res.render('contract', {
+            bodyClass: 'manage',
+            adminNav: setSelected(adminNavbar, 'contract')
+        });
+    }
+
 
 
 }

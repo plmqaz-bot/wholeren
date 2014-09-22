@@ -10,6 +10,7 @@ var View=require('./View');
 var Router=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
+        'contract(/:option)/':'contract',
         
     },
     settings: function (pane) {
@@ -30,6 +31,16 @@ var Router=Backbone.Router.extend({
 //        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
 //            Ghost.currentView = new Ghost.Views.Settings({ el: '#main', pane: pane });
 //        }
+    },
+    contract:function(option){
+        if(!option){
+
+            this.navigate('/contract/general/',{trigger:true,replace:true});
+            return;
+        }
+        if(!myApp.currentContractView){
+            myApp.currentContractView=new View.Contract({el:'#main',option:option});
+        }
     }
 	
 });

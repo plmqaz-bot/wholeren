@@ -16,12 +16,13 @@ var handlebars=require('sails/node_modules/express-handlebars/node_modules/handl
         return toreturn;
     });
 
-     handlebars.registerHelper('asset', function (options) {
+     handlebars.registerHelper('admin_url', function (options) {
     var absolute = options && options.hash && options.hash.absolute,
         // Ghost isn't a named route as currently it violates the must start-and-end with slash rule
         context = !options || !options.hash || !options.hash.frontend ? {relativeUrl: '/ghost'} : 'home';
 
-    return config.urlFor(context, absolute);
-};);
+    //return config.urlFor(context, absolute);
+    return "/admin";
+    });
 	
 

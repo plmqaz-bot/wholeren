@@ -1,7 +1,7 @@
 ﻿"use strict";
 var $ = require('jquery');
 //var Backbone = require('backbone');
-var Backbone= require('../public/assets/js/backbone.modal.js');
+var Backbone= require('../assets/js/backbone.modal.js');
 var _=require('lodash');
 var Handlebars = require('hbsfy/runtime');
 var Obiwang = require('./models');
@@ -17,17 +17,18 @@ Handlebars.registerHelper('ifCond', function (v1, v2, options) {
 Backbone.$ = $;
 //#endregion
 /*************************************************All the templates *****************************/
-var tpMsgPane = require('./template/message.hbs');
-var tpSidebar = require('./template/sidebar.hbs');
-var tpGeneral = require('./template/general.hbs');
+var tpMsgPane = require('./template/Settings/message.hbs');
+var tpSidebar = require('./template/Settings/sidebar.hbs');
+var tpGeneral = require('./template/Settings/general.hbs');
 var tpReply = require('./template/modals/reply.hbs');
 var tpChooseMaterial = require('./template/modals/material.hbs');
 var tpNotification = require('./template/notification.hbs');
-var tpKeyword = require('./template/keyword.hbs');
-var tpMaterial = require('./template/replymaterial.hbs');
-var tpKeywordSingle=require('./template/keyword_single.hbs');
-var tpMaterialSingle = require('./template/replymaterial_single.hbs');
-var tpMaterialAdd = require('./template/replymaterial_add.hbs');
+var tpKeyword = require('./template/Settings/keyword.hbs');
+var tpMaterial = require('./template/Settings/replymaterial.hbs');
+var tpKeywordSingle=require('./template/Settings/keyword_single.hbs');
+var tpMaterialSingle = require('./template/Settings/replymaterial_single.hbs');
+var tpMaterialAdd = require('./template/Settings/replymaterial_add.hbs');
+var tpContract=require('./template/contract.hbs');
 
 /*************************************************Views for Notifications *****************************/
 /**
@@ -660,9 +661,38 @@ Settings.replymaterial_add = Settings.Pane.extend({
             
     }   
 });
+var ContractView=Backbone.View.extend({
+
+    id: "contracts",
+        initialize: function (options) {
+            // if (options.collection) {
+            //     this.collection = options.collection;
+            // } else if (!this.collection || this.collection.length < 1) {
+            //     this.collection = new Obiwang.Collections.Message();
+            //     this.collection.fetch({ reset: true });
+            // }
+            
+            // this.collection.on("reset", this.render, this);
+            this.render();
+        },
+        render: function () {
+             var self = this;
+            // var data = self.collection?self.collection.toJSON():{};
+            // var ml = tpMsgPane({ message: data });
+            // if (ml[0] != '<') {
+            //     ml = ml.substring(1);
+            // }
+            self.$el.html(tpContract());
+            self.$el.attr('id', this.id);
+            self.$el.addClass('active');
+            console.log(this.collection);
+        },
+
+});
 module.exports={
 		Setting:SettingView,
 		Sidebar:Sidebar,
-    Panes: Settings,
-            Notification:Notification
+        Panes: Settings,
+        Notification:Notification,
+        Contract:ContractView
 };

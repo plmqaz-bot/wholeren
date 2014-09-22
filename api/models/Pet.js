@@ -14,7 +14,8 @@ module.exports = {
 
     // Add a reference to User
     owner: {
-      model: 'People'
+      collection: 'People',
+      via:'pets'
     }
   }
 };
