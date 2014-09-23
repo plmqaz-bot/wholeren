@@ -1,16 +1,39 @@
-<tr id="{{idReplyMaterial}}">
-<td>{{MsgType}}</td>
-<td>{{Title}}</td>
-<td>{{CreateTime}}</td>
-{{#ifCond MsgType "text"}}
-<td>{{Content}}</td>
-<td></td>
-{{else}}{{#if Data.[0].Title}}
-<td>{{Data.[0].Title}}</td>
-{{else}}
-<td></td>
-{{/if}}
-<td><button class="expand">Expand</button></td>
-{{/ifCond}}
-<td><a href="#{{idReplyMaterial}}"><img src="/public/assets/img/red-delete-button.jpg" class="remove" width="50" /></a></td>
-</tr>  
+<tr id="{{id}}">
+        <td>{{client.chineseName}}</td>
+        <td>{{client.firstName}}</td>
+        <td>{{client.lastName}}</td>
+        <td>{{age}}</td>
+        <td>{{client.primaryEmail}}</td>
+        <td>{{client.primaryPhone}}</td>
+        <td>{{contractCategory.category}}</td>
+        <td>{{client.firstContact}}</td>
+        <td>{{lead.lead}}</td>
+        <td>{{leadName}}</td>
+        <td>{{leadLevel.leadLevel}}</td>
+        <td>{{status.status}}</td>
+        <td>前期助理</td>
+        <td>销售顾问</td>
+        <td>专家</td>
+        <td>{{originalText}}</td>        
+        <td>{{salesFollowup}}</td>
+        <td>{{salesRecord}}</td>
+        <td>专家咨询日期</td>
+        <td>{{expertFollowup}}</td>
+        <td>{{country.country}}</td>
+        <td>{{validI20}}</td>
+        <td>{{previousSchool}}</td>
+        <td>{{targetSchool}}</td>
+        <td>{{gpa}}</td>
+        <td>{{toefl}}</td>
+        <td>{{degree.degree}}</td>
+        <td>{{diagnose}}</td>
+        <td>{{contractSigned}}</td>
+        <td>{{contractPaid}}</td>
+        <td>所购服务</td>
+        <td>{{contractPrice}}</td>
+        <td>{{contractDetail}}</td> 
+        <td>{{applicationFeePaid}}</td>
+        <td>{{paymentOption.paymentOption}}</td>
+        <td>{{endFee}}</td>
+        <td>服务老师</td>
+        </tr> 

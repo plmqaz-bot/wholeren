@@ -12,7 +12,9 @@ module.exports = {
 
   	firstName:{type:'string',required:true},
 
-  	lastNmae:{type:'string',required:true},
+  	lastName:{type:'string',required:true},
+
+    chineseName:{type:'string',required:true},
 
   	primaryPhone:{type:'string',required:true},
 

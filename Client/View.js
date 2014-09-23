@@ -333,361 +333,42 @@ Settings.Pane = Backbone.View.extend({
 //        });
     }
 });
-    // ### General settings
- Settings.general = Settings.Pane.extend({
-    id: "general",
-//    events: {
-//        'click .button-save': 'saveSettings',
-//        'click .js-modal-logo': 'showLogo',
-//        'click .js-modal-cover': 'showCover'
-//    },
-    render: function () {
-        var ml = tpGeneral();
-        
-        this.$el.html(ml);
-        this.$el.attr('id', this.id);
-        this.$el.addClass('active');
-    }
-});
-
-Settings.messages = Settings.Pane.extend({
-    id: "messages",
-    initialize: function (options) {
-        if (options.collection) {
-            this.collection = options.collection;
-        } else if (!this.collection || this.collection.length < 1) {
-            this.collection = new Obiwang.Collections.Message();
-            this.collection.fetch({ reset: true });
-        }
-        
-        this.collection.on("reset", this.render, this);
-    },
-    events: {
-        'click .messages a': 'renderReply',
-        'click button': 'addReply'
-    },
-    render: function () {
-        var self = this;
-        var data = self.collection?self.collection.toJSON():{};
-        var ml = tpMsgPane({ message: data });
-        if (ml[0] != '<') {
-            ml = ml.substring(1);
-        }
-        self.$el.html(ml);
-        self.$el.attr('id', this.id);
-        self.$el.addClass('active');
-        console.log(this.collection);
-    },
-    renderReply: function (e) {
-        e.preventDefault();
-        var self = this;
-        var item = $(e.currentTarget);
-        var msgID = item.attr('href').substring(1);
-        var thisRow = item.parent().parent();
-        
-        if (!thisRow.hasClass('active')) {
-            thisRow.addClass('active');
-            
-            //Now render the replies
-            this.renderReplyAfterElement({id:msgID,element:thisRow});
-        } else {
-            //Remove all previous replies
-            this.$('table').find('.reply').remove();
-            thisRow.removeClass('active');
-        }
-    },
-    renderReplyAfterElement: function (options){
-        //Remove all previous replies
-        this.$('table').find('.reply').remove();
-        self = this;
-        this.replyCollection = new Obiwang.Collections.ReplyMessage({ id: options.id });
-        this.replyCollection.fetch().done(function (data) {
-            self.replyCollection.each(function (item) {
-                var jitem = item.toJSON();
-                var ele = '<tr class="reply"><td></td><td>' + jitem.ToUserName + '</td><td>' + jitem.Content + '</td><td></td></tr>';
-                var toInsert = $('<div/>').html(ele).contents();
-                toInsert.insertAfter(options.element);
-            });
-        });
-        myApp.notifications.clearEverything();
-        myApp.notifications.addItem({
-            type: 'error',
-            message: "test message",
-            status: 'passive'
-        });
-    },
-    addReply: function (e) {
-        e.preventDefault();
-        var item = $(e.currentTarget);
-        var msgID = item.attr('id').substring(1);
-        var thisRow = item.parent().parent();
-        var popUpView;
-        if (thisRow.hasClass('active')) {
-            popUpView = new Settings.ReplyView({view:this,id:msgID,element:thisRow});
-        } else { 
-            popUpView = new Settings.ReplyView({});
-        }
-        $('.app').html(popUpView.render().el);
-    }
-});
-Settings.ReplyView = Backbone.Modal.extend({
-    initialize: function (options){
-        this.parentView = options.view;
-        this.replyTo = options.id;
-        this.insertTo = options.element;
-    }, 
-    template: tpReply,
-    cancelEl: '.cancel',
-    submitEl: '.ok',
-    submit: function () {
-        // get text and submit, and also refresh the collection. 
-        var content = $('.reply-content').val();
-        var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
-        msg.url='/api/replyMessage/';
-        msg.save();
-        if (this.parentView) { 
-            this.parentView.renderReplyAfterElement({id:this.replyTo,element:this.insertTo});
-        }
-    }
-});
-Settings.keywordreply = Settings.Pane.extend({
-    id: "keywordreply",
-    singleTemplate:tpKeywordSingle,
-    initialize: function (options) {
-        if (options.collection) {
-            this.collection = options.collection;
-        } else if (!this.collection || this.collection.length < 1) {
-            this.collection = new Obiwang.Collections.Keyword();
-            this.collection.fetch({ reset: true });
-        }
-        this.render();
-        this.collection.on("reset", this.renderCollection, this);
-    },
-    events: {
-        'click  button.regular': 'chooseReply',
-        'click  button.member': 'chooseReply',
-        'click img.remove' :'removeKeyword'
-    },
-    removeKeyword: function (e){
-        var item = $(e.currentTarget);
-        var msgID = item.parent().attr('href').substring(1);
-        this.collection.get(msgID).destroy();
-        },
-    render: function () {
-        var self = this;
-        var ml = tpKeyword();
-        if (ml[0] != '<') {
-            ml = ml.substring(1);
-        }
-        self.$el.html(ml);
-        self.$el.attr('id', this.id);
-        self.$el.addClass('active');
-    },
-    renderCollection: function (){
-        // Remove all keywords
-        var toRemove = $('.keywords > tr').not('#header');
-        toRemove.remove();
-    	var headrow=$('#header');
-    	var self=this;
-    	this.collection.forEach(function(item){
-    		var ele = self.singleTemplate(item.toJSON());
-            var toInsert = $('<div/>').html(ele).contents();
-            toInsert.insertAfter(headrow);
-    	});    	
-    },
-    renderSingle: function (id) {
-        var thisrow = $('#' + id);
-        if (this.length<1){
-        	return;
-        }
-        var self = this;
-        var thiskeyword = new Obiwang.Models.Keyword({ idKeywordReply: id });
-        thiskeyword.fetch().done(function () {
-            thisrow.empty();
-            thisrow.replaceWith(self.singleTemplate(thiskeyword.toJSON()));
-        });
-    },
-    chooseReply: function (e){
-        e.preventDefault();
-        var item = $(e.currentTarget);
-        var type = item.attr('class');
-        
-        var msgID = item.attr('name').substring(1);
-        var thismodel = this.collection.get(msgID);
-        //var thisRow = item.parent().parent();
-        var popUpView = new Settings.ChooseReply({view:this,id:msgID,type:type,model:thismodel});
-        //if (thisRow.hasClass('active')) {
-        //    popUpView = new Settings.ChooseReply({ view: this, id: msgID, element: thisRow });
-       // } else {
-           
-        //}
-        popUpView.getMaterial().done(function () { 
-            $('.app').html(popUpView.render().el);
-        });
-        
-    }
-});
-Settings.ChooseReply = Backbone.Modal.extend({
-    viewContainer:'.app',
-    initialize: function (options) {
-        this.parentView = options.view;
-        this.keywordId = options.id;
-        this.Type = options.type;
-        this.model=options.model;
-    },
-    getMaterial: function (){
-        this.collection = new Obiwang.Collections.ReplyMaterial();
-        return this.collection.fetch();
-        
-    },
-    events: {
-        'click  button.choose-reply-material': 'setReply'
-    },
-    template: tpChooseMaterial,
-    cancelEl: '.cancel',
-    submitEl: '.ok',
-    setReply: function (e){
-        e.preventDefault();
-        var item = $(e.currentTarget);
-        var thisrow = item.parent().parent();
-        if (thisrow.hasClass('selected')) {
-            thisrow.removeClass('selected');
-        } else {
-            thisrow.addClass('selected');
-        }
-    },
-    submit: function () {
-    	var self=this;
-        // get text and submit, and also refresh the collection. 
-        var thisrow = $('.selected');
-        var materialId;
-        if (thisrow.length<1) { 
-            materialId=-1;
-        }else{
-        	materialId= thisrow.attr('id').substring(1);
-        }
-        if (this.Type == 'regular') {
-            this.model.RegularReply = { idReplyMaterial: materialId };
-        } else {
-            this.model.MemberReply = { idReplyMaterial: materialId };
-        }
-        this.model.save().done(function () { 
-        	self.parentView.renderSingle(self.keywordId);
-        });
-    }
-});
-
-Settings.replymaterial = Settings.Pane.extend({
-    id: "replymaterial",
-    singleTemplate: tpMaterialSingle,
-    initialize: function (options) {
-        if (options.collection) {
-            this.collection = options.collection;
-        } else if (!this.collection || this.collection.length < 1) {
-            this.collection = new Obiwang.Collections.ReplyMaterial();
-            this.collection.fetch({ reset: true });
-        }
-        this.render();
-        this.collection.on("reset", this.renderCollection, this);
-    },
-    events:{
-        'click button.expand': 'expand',
-        'click img.remove' : 'removeMaterial'
-    },
-    removeMaterial: function (e) {
-        var item = $(e.currentTarget);
-        var msgID = item.parent().attr('href').substring(1);
-        this.collection.get(msgID).destroy();
-    },
-    expand:function(){
-    	//this.renderSingle(1);
-    },
-    render: function () {
-        var self = this;
-        var ml = tpMaterial();
-        if (ml[0] != '<') {
-            ml = ml.substring(1);
-        }
-        self.$el.html(ml);
-        self.$el.attr('id', this.id);
-        self.$el.addClass('active');
-        console.log(this.collection);
-    },
-    renderCollection: function () {
-        // Remove all keywords
-        var toRemove = $('.materials > tr').not('#header');
-        toRemove.remove();
-        var headrow = $('#header');
-        var self = this;
-        this.collection.forEach(function (item) {
-            var ele = self.singleTemplate(item.toJSON());
-            var toInsert = $('<div/>').html(ele).contents();
-            toInsert.insertAfter(headrow);
-        });
-    },
-    renderSingle: function (id) {
-        var thisrow = $('#' + id);
-        var self=this;
-        if (thisrow.length<1){
-        	// add a row
-        }else{
-	        var thismat= new Obiwang.Models.ReplyMaterial({ idReplyMaterial: id });
-	        thismat.fetch().done(function () {
-	            thisrow.empty();
-	            thisrow.replaceWith(self.singleTemplate(thismat.toJSON()));
-	        });
-    	}
-    }
-});
-Settings.replymaterial_add = Settings.Pane.extend({
-    id: "replymaterial_add",
-    template: tpMaterialAdd,
-    events: {
-        'change select#MsgType ': 'switchtype',
-    },
-    switchtype: function (){
-        $('.details').removeClass('active');
-        var sel = $('select#MsgType').val();
-        var activeField = $('#for-' + sel);
-        activeField.addClass('active');
-    },
-    render: function () {
-        var ml = this.template();
-        if (ml[0] != '<') {
-            ml = ml.substring(1);
-        }        
-        this.$el.html(ml);
-        this.$el.attr('id', this.id);
-        this.$el.addClass('active');
-            
-    }   
-});
+ 
 var ContractView=Backbone.View.extend({
 
     id: "contracts",
+    singleTemplate:tpContractSingle,
         initialize: function (options) {
-            // if (options.collection) {
-            //     this.collection = options.collection;
-            // } else if (!this.collection || this.collection.length < 1) {
-            //     this.collection = new Obiwang.Collections.Message();
-            //     this.collection.fetch({ reset: true });
-            // }
-            
-            // this.collection.on("reset", this.render, this);
+            if (options.collection) {
+                this.collection = options.collection;
+            } else if (!this.collection || this.collection.length < 1) {
+                this.collection = new Obiwang.Collections.Contract();
+                this.collection.fetch({ reset: true });
+            }
             this.render();
+            this.collection.on("reset", this.renderCollection, this);
         },
         render: function () {
              var self = this;
-            // var data = self.collection?self.collection.toJSON():{};
-            // var ml = tpMsgPane({ message: data });
-            // if (ml[0] != '<') {
-            //     ml = ml.substring(1);
-            // }
-            self.$el.html(tpContract());
-            self.$el.attr('id', this.id);
-            self.$el.addClass('active');
-            console.log(this.collection);
+             var data = self.collection?self.collection.toJSON():{};
+             var ml = tpContract();
+             if (ml[0] != '<') {
+                 ml = ml.substring(1);
+             }
+            self.$el.html(ml);
         },
+        renderCollection: function (){
+        // Remove all keywords
+        var toRemove = $('.Contracts > tr').not('#header');
+        toRemove.remove();
+        var headrow=$('#header');
+        var self=this;
+        this.collection.forEach(function(item){
+            var ele = self.singleTemplate(item.toJSON());
+            var toInsert = $('<div/>').html(ele).contents();
+            toInsert.insertAfter(headrow);
+        });     
+    },
 
 });
 module.exports={

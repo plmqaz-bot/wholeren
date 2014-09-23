@@ -273,11 +273,138 @@
         "createdAt": "2014-09-21T03:11:38.095Z",
         "updatedAt": "2014-09-21T03:11:38.095Z",
         "id": 8
+      },
+      {
+        "createdAt": "2014-09-23T03:39:27.225Z",
+        "updatedAt": "2014-09-23T03:39:27.225Z",
+        "id": 9
+      },
+      {
+        "createdAt": "2014-09-23T03:40:20.716Z",
+        "updatedAt": "2014-09-23T03:40:20.716Z",
+        "id": 10
+      },
+      {
+        "createdAt": "2014-09-23T03:40:44.380Z",
+        "updatedAt": "2014-09-23T03:40:44.380Z",
+        "id": 11
+      },
+      {
+        "createdAt": "2014-09-23T03:41:56.045Z",
+        "updatedAt": "2014-09-23T03:41:56.045Z",
+        "id": 12
+      },
+      {
+        "createdAt": "2014-09-23T03:42:01.899Z",
+        "updatedAt": "2014-09-23T03:42:01.899Z",
+        "id": 13
+      },
+      {
+        "createdAt": "2014-09-23T03:42:13.361Z",
+        "updatedAt": "2014-09-23T03:42:13.361Z",
+        "id": 14
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "name": "n1",
+        "createdAt": "2014-09-23T03:42:18.418Z",
+        "updatedAt": "2014-09-23T03:42:18.418Z",
+        "id": 15
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "createdAt": "2014-09-23T03:42:23.347Z",
+        "updatedAt": "2014-09-23T03:42:23.347Z",
+        "id": 16
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "owner": [
+          "1"
+        ],
+        "createdAt": "2014-09-23T03:42:38.496Z",
+        "updatedAt": "2014-09-23T03:42:38.526Z",
+        "id": 17
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "owner": [
+          1
+        ],
+        "createdAt": "2014-09-23T03:42:43.628Z",
+        "updatedAt": "2014-09-23T03:42:43.656Z",
+        "id": 18
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "owner": "[1]",
+        "createdAt": "2014-09-23T03:42:48.742Z",
+        "updatedAt": "2014-09-23T03:42:48.756Z",
+        "id": 19
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "owner": [
+          "1",
+          "2"
+        ],
+        "createdAt": "2014-09-23T03:43:13.035Z",
+        "updatedAt": "2014-09-23T03:44:05.916Z",
+        "id": 20
+      },
+      {
+        "bread": "s1",
+        "type": "t1",
+        "owner": [
+          {
+            "firstName": "Han",
+            "lastName": "Lai",
+            "createdAt": "2014-09-21T01:47:45.023Z",
+            "updatedAt": "2014-09-21T02:14:44.701Z",
+            "id": 1
+          }
+        ],
+        "createdAt": "2014-09-23T03:45:19.504Z",
+        "updatedAt": "2014-09-23T03:46:27.861Z",
+        "id": 21
       }
     ],
     "servicetype": [],
     "service_serviceteacher__user_service": [],
-    "servicetype_serviceteacher__user_service": []
+    "servicetype_serviceteacher__user_service": [],
+    "people_pets__pet_owner": [
+      {
+        "people_pets": 1,
+        "pet_owner": 17,
+        "id": 1
+      },
+      {
+        "people_pets": 1,
+        "pet_owner": 18,
+        "id": 2
+      },
+      {
+        "people_pets": 1,
+        "pet_owner": 20,
+        "id": 5
+      },
+      {
+        "people_pets": 2,
+        "pet_owner": 20,
+        "id": 6
+      },
+      {
+        "people_pets": 1,
+        "pet_owner": 21,
+        "id": 12
+      }
+    ]
   },
   "schema": {
     "admin": {
@@ -720,12 +847,6 @@
       "name": {
         "type": "string"
       },
-      "owner": {
-        "type": "integer",
-        "model": "people",
-        "foreignKey": true,
-        "alias": "owner"
-      },
       "id": {
         "type": "integer",
         "autoIncrement": true,
@@ -799,6 +920,28 @@
         "on": "id",
         "via": "servicetype_serviceTeacher"
       }
+    },
+    "people_pets__pet_owner": {
+      "id": {
+        "primaryKey": true,
+        "unique": true,
+        "autoIncrement": true,
+        "type": "integer"
+      },
+      "people_pets": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "people",
+        "on": "id",
+        "via": "pet_owner"
+      },
+      "pet_owner": {
+        "type": "integer",
+        "foreignKey": true,
+        "references": "pet",
+        "on": "id",
+        "via": "people_pets"
+      }
     }
   },
   "counters": {
@@ -833,10 +976,13 @@
       "id": 8
     },
     "pet": {
-      "id": 8
+      "id": 21
     },
     "servicetype": {},
     "service_serviceteacher__user_service": {},
-    "servicetype_serviceteacher__user_service": {}
+    "servicetype_serviceteacher__user_service": {},
+    "people_pets__pet_owner": {
+      "id": 12
+    }
   }
 }

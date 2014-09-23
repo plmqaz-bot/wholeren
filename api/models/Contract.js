@@ -44,9 +44,9 @@ module.exports = {
 
   	diagnose:{type:"string"},
 
-  	contractSigned:{type:"datetime"},
+  	contractSigned:{type:"date"},
 
-  	contractPaid:{type:"datetime"},
+  	contractPaid:{type:"date"},
 
   	contractPrice:{type:"float"},
 
@@ -54,11 +54,15 @@ module.exports = {
 
   	previousSchool:{type:"string"},
 
+    targetSchool:{type:"string"},
+
   	applicationFeePaid:{type:"boolean",required:true,defaultsTo:'false'},
 
   	paymentOption:{model:"PaymentOption"},
 
-    contractUserRole:{collection:'ContractUserRole',via:'contract'}
+    contractUserRole:{collection:'ContractUserRole',via:'contract'},
+
+    endFee:{type:"boolean",defaultsTo:"false"}
   },
   getSalesListByUser:function(id){
 
