@@ -11,7 +11,26 @@ var Router=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
         'contract(/:option)/':'contract',
-        
+        'register/'        : 'register',
+        'signup/'          : 'signup',
+        'signin/'          : 'login',
+        'forgotten/'       : 'forgotten',
+        'reset/:token/'    : 'reset'
+    },
+    signup: function () {
+        Wholeren.currentView = new Wholeren.Views.Signup({ el: '.js-signup-box' });
+    },
+
+    login: function () {
+        Wholeren.currentView = new Wholeren.Views.Login({ el: '.js-login-box' });
+    },
+
+    forgotten: function () {
+        Wholeren.currentView = new Wholeren.Views.Forgotten({ el: '.js-forgotten-box' });
+    },
+
+    reset: function (token) {
+        Wholeren.currentView = new Wholeren.Views.ResetPassword({ el: '.js-reset-box', token: token });
     },
     settings: function (pane) {
         if (!pane) {
@@ -24,8 +43,8 @@ var Router=Backbone.Router.extend({
             return;
         }
         
-        if (!myApp.currentView){
-            myApp.currentView = new View.Setting({ el: '#main', pane: pane });            
+        if (!Wholeren.currentView){
+            Wholeren.currentView = new View.Setting({ el: '#main', pane: pane });            
         }
 // only update the currentView if we don't already have a Settings view
 //        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
@@ -38,8 +57,8 @@ var Router=Backbone.Router.extend({
             this.navigate('/contract/general/',{trigger:true,replace:true});
             return;
         }
-        if(!myApp.currentContractView){
-            myApp.currentContractView=new View.Contract({el:'#main',option:option});
+        if(!Wholeren.currentContractView){
+            Wholeren.currentContractView=new View.Contract({el:'#main',option:option});
         }
     }
 	

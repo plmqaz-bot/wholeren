@@ -7,7 +7,6 @@ var Handlebars = require('hbsfy/runtime');
 var Obiwang = require('./models');
 var Settings = {};
 var Notification = {};
-var baseViews=require('./baseViews.js');
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 === v2) {

@@ -59,8 +59,47 @@ module.exports={
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'contract')
         });
-    }
+    },
+    'settings': function (req, res, next) {
+        // TODO: Centralise list/enumeration of settings panes, so we don't run into trouble in future.
+        var allowedSections = ['', 'general', 'user', 'apps'],
+            section = req.url.replace(/(^\/ghost\/settings[\/]*|\/$)/ig, '');
 
+        if (allowedSections.indexOf(section) < 0) {
+            return next();
+        }
 
+        res.render('settings', {
+            bodyClass: 'settings',
+            adminNav: setSelected(adminNavbar, 'settings')
+        });
+    },
+    'signout': function (req, res) {
+        req.session.destroy();
 
+        var notification = {
+            type: 'success',
+            message: 'You were successfully signed out',
+            status: 'passive',
+            id: 'successlogout'
+        };
+
+        return res.redirect('/admin/signin/');
+    },
+    'signin': function (req, res) {
+        /*jslint unparam:true*/
+        res.render('login', {
+            bodyClass: 'ghost-login',
+            hideNavbar: true,
+            adminNav: setSelected(adminNavbar, 'login')
+        });
+    },
+    'signup': function (req, res) {
+        /*jslint unparam:true*/
+        res.render('signup', {
+            bodyClass: 'ghost-signup',
+            hideNavbar: true,
+            adminNav: setSelected(adminNavbar, 'login')
+        });
+    },
 }
