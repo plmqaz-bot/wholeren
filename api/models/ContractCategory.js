@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-  	category:{type:'string',required:true}
+  	category:{type:'string',required:true,unique:true}
   }
 };
 

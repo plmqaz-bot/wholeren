@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
 
-    country : { type: 'string',required:true },
+    country : { type: 'string',required:true ,unique:true},
     contracts:{
     	collection:'Contract',
     	via:'country'

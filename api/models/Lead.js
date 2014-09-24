@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-    lead:{type:'string',required:true },
+    lead:{type:'string',required:true,unique:true },
      contracts:{
     	collection:'Contract',
     	via:'lead'
