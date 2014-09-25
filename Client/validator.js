@@ -1,5 +1,5 @@
 'use strict';
-
+    var _=require('lodash');
     var validator = { version: '3.4.0' };
 
     var email = /^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/;
@@ -331,6 +331,21 @@
 
     validator.blacklist = function (str, chars) {
         return str.replace(new RegExp('[' + chars + ']+', 'g'), '');
+    };
+        validator.handleErrors = function (errors) {
+        Wholeren.notifications.clearEverything();
+        _.each(errors, function (errorObj) {
+
+            Wholeren.notifications.addItem({
+                type: 'error',
+                message: errorObj.message || errorObj,
+                status: 'passive'
+            });
+
+            if (errorObj.hasOwnProperty('el')) {
+                errorObj.el.addClass('input-error');
+            }
+        });
     };
 
     module.exports=validator;

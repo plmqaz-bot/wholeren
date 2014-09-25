@@ -26,7 +26,7 @@ adminNavbar = {
         path: '/settings/'
     }
 };
-
+loginSecurity=[];
 function setSelected(list, name) {
     _.each(list, function (item, key) {
         item.selected = key === name;
@@ -115,27 +115,73 @@ module.exports={
 
         if (!denied) {
             loginSecurity.push({ip: remoteAddress, time: currentTime});
-            api.users.check({email: req.body.email, pw: req.body.password}).then(function (user) {
-                req.session.regenerate(function (err) {
-                    if (!err) {
-                        req.session.user = user.id;
-                        var redirect = config().paths.subdir + '/ghost/';
-                        if (req.body.redirect) {
-                            redirect += decodeURIComponent(req.body.redirect);
-                        }
-                        // If this IP address successfully logs in we
-                        // can remove it from the array of failed login attempts.
-                        loginSecurity = _.reject(loginSecurity, function (ipTime) {
-                            return ipTime.ip === remoteAddress;
-                        });
-                        res.json(200, {redirect: redirect});
-                    }
-                });
-            }, function (error) {
-                res.json(401, {error: error.message});
-            });
+            // api.users.check({email: req.body.email, pw: req.body.password}).then(function (user) {
+            //     req.session.regenerate(function (err) {
+            //         if (!err) {
+            //             req.session.user = user.id;
+            //             var redirect = config().paths.subdir + '/ghost/';
+            //             if (req.body.redirect) {
+            //                 redirect += decodeURIComponent(req.body.redirect);
+            //             }
+            //             // If this IP address successfully logs in we
+            //             // can remove it from the array of failed login attempts.
+            //             loginSecurity = _.reject(loginSecurity, function (ipTime) {
+            //                 return ipTime.ip === remoteAddress;
+            //             });
+            //             res.json(200, {redirect: redirect});
+            //         }
+            //     });
+            // }, function (error) {
+            //     res.json(401, {error: error.message});
+            // });
+            res.json(200, {redirect: '/admin/contract/'});
         } else {
             res.json(401, {error: 'Slow down, there are way too many login attempts!'});
         }
     },
+    'doSignup': function (req, res) {
+        var name = req.body.name,
+            email = req.body.email,
+            password = req.body.password;
+
+        api.users.add({
+            name: name,
+            email: email,
+            password: password
+        }).then(function (user) {
+            api.settings.edit('email', email).then(function () {
+                var message = {
+                    to: email,
+                    subject: 'Your New Ghost Blog',
+                    html: '<p><strong>Hello!</strong></p>' +
+                          '<p>Good news! You\'ve successfully created a brand new Ghost blog over on ' + config().url + '</p>' +
+                          '<p>You can log in to your admin account with the following details:</p>' +
+                          '<p> Email Address: ' + email + '<br>' +
+                          'Password: The password you chose when you signed up</p>' +
+                          '<p>Keep this email somewhere safe for future reference, and have fun!</p>' +
+                          '<p>xoxo</p>' +
+                          '<p>Team Ghost<br>' +
+                          '<a href="https://ghost.org">https://ghost.org</a></p>'
+                };
+                mailer.send(message).otherwise(function (error) {
+                    errors.logError(
+                        error.message,
+                        "Unable to send welcome email, your blog will continue to function.",
+                        "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
+                    );
+                });
+
+                req.session.regenerate(function (err) {
+                    if (!err) {
+                        if (req.session.user === undefined) {
+                            req.session.user = user.id;
+                        }
+                        res.json(200, {redirect: config().paths.subdir + '/ghost/'});
+                    }
+                });
+            });
+        }).otherwise(function (error) {
+            res.json(401, {error: error.message});
+        });
+    }
 }

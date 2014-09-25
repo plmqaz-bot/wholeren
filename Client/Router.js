@@ -13,7 +13,7 @@ var Router=Backbone.Router.extend({
         'contract(/:option)/':'contract',
         'register/'        : 'register',
         'signup/'          : 'signup',
-        'signin/'          : 'login',
+        'signin/'          : 'signin',
         'forgotten/'       : 'forgotten',
         'reset/:token/'    : 'reset'
     },
@@ -21,7 +21,7 @@ var Router=Backbone.Router.extend({
         Wholeren.currentView = new Wholeren.Views.Signup({ el: '.js-signup-box' });
     },
 
-    login: function () {
+    signin: function () {
         Wholeren.currentView = new Wholeren.Views.Login({ el: '.js-login-box' });
     },
 
@@ -57,8 +57,8 @@ var Router=Backbone.Router.extend({
             this.navigate('/contract/general/',{trigger:true,replace:true});
             return;
         }
-        if(!Wholeren.currentContractView){
-            Wholeren.currentContractView=new View.Contract({el:'#main',option:option});
+        if(!Wholeren.currentView){
+            Wholeren.currentView=new View.Contract({el:'#main',option:option});
         }
     }
 	

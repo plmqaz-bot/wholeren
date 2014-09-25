@@ -1,6 +1,10 @@
-var _=requires('lodash');
-
-var tpLogin=require('./template/login.hbs')
+var _=require('lodash');
+var Backbone= require('../assets/js/backbone.modal.js');
+var tpSignup=require('./template/signup.hbs');
+var tpLogin=require('./template/login.hbs');
+var validator=require('./validator');
+var util=require('./util');
+Views={};
 var View = Backbone.View.extend({
         templateName: "widget",
 
@@ -68,7 +72,7 @@ var View = Backbone.View.extend({
         }
     });
 
-View.Login=View.extend{
+Views.Login=View.extend({
 
     initialize: function () {
         this.render();
@@ -93,10 +97,10 @@ View.Login=View.extend{
         event.preventDefault();
         var email = this.$el.find('.email').val(),
             password = this.$el.find('.password').val(),
-            redirect = Ghost.Views.Utils.getUrlVariables().r,
+            redirect = '/admin/contract/',
             validationErrors = [];
             $.ajax({
-                url: Ghost.paths.subdir + '/admin/doSignin/',
+                url: '/admin/doSignin/',
                 type: 'POST',
                 headers: {
                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -110,10 +114,10 @@ View.Login=View.extend{
                     window.location.href = msg.redirect;
                 },
                 error: function (xhr) {
-                    Ghost.notifications.clearEverything();
-                    Ghost.notifications.addItem({
+                    Wholeren.notifications.clearEverything();
+                    Wholeren.notifications.addItem({
                         type: 'error',
-                        message: Ghost.Views.Utils.getRequestErrorMessage(xhr),
+                        message: util.getRequestErrorMessage(xhr),
                         status: 'passive'
                     });
                 }
@@ -121,9 +125,88 @@ View.Login=View.extend{
 
     }
 
-};
+});
+ Views.Signup = View.extend({
 
-module.export={
+        initialize: function () {
+            this.submitted = "no";
+            this.render();
+        },
 
+        templateName: "signup",
+        template: tpSignup,
 
+        events: {
+            'submit #signup': 'submitHandler'
+        },
+
+        afterRender: function () {
+            var self = this;
+
+            this.$el
+                .css({"opacity": 0})
+                .animate({"opacity": 1}, 500, function () {
+                    self.$("[name='name']").focus();
+                });
+        },
+
+        submitHandler: function (event) {
+            event.preventDefault();
+            var name = this.$('.name').val(),
+                email = this.$('.email').val(),
+                password = this.$('.password').val(),
+                validationErrors = [],
+                self = this;
+
+            if (!validator.isLength(name, 1)) {
+                validationErrors.push("Please enter a name.");
+            }
+
+            if (!validator.isEmail(email)) {
+                validationErrors.push("Please enter a correct email address.");
+            }
+
+            if (!validator.isLength(password, 0)) {
+                validationErrors.push("Please enter a password");
+            }
+
+            if (!validator.equals(this.submitted, "no")) {
+                validationErrors.push("Ghost is signing you up. Please wait...");
+            }
+
+            if (validationErrors.length) {
+                validator.handleErrors(validationErrors);
+            } else {
+                this.submitted = "yes";
+                $.ajax({
+                    url: '/admin/doSignup/',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                    },
+                    data: {
+                        name: name,
+                        email: email,
+                        password: password
+                    },
+                    success: function (msg) {
+                        window.location.href = msg.redirect;
+                    },
+                    error: function (xhr) {
+                        self.submitted = "no";
+                        Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'error',
+                            message: util.getRequestErrorMessage(xhr),
+                            status: 'passive'
+                        });
+                    }
+                });
+            }
+        }
+    });
+
+module.exports={
+    baseView:View,
+    authViews:Views
 }
