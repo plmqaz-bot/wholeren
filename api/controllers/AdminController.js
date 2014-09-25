@@ -183,5 +183,8 @@ module.exports={
         }).otherwise(function (error) {
             res.json(401, {error: error.message});
         });
+    },
+    'giveback':function(req,res){
+        res.json(req);
     }
 }

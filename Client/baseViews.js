@@ -209,4 +209,4 @@ Views.Login=View.extend({
 module.exports={
     baseView:View,
     authViews:Views
-}
+};
