@@ -1,5 +1,5 @@
-
-
+var _=require('lodash');
+loginSecurity = [];
 adminNavbar = {
     contract: {
         name: 'Contract',
@@ -101,5 +101,41 @@ module.exports={
             hideNavbar: true,
             adminNav: setSelected(adminNavbar, 'login')
         });
+    },
+    'doSignin': function (req, res) {
+        var currentTime = process.hrtime()[0],
+            remoteAddress = req.connection.remoteAddress,
+            denied = '';
+        loginSecurity = _.filter(loginSecurity, function (ipTime) {
+            return (ipTime.time + 2 > currentTime);
+        });
+        denied = _.find(loginSecurity, function (ipTime) {
+            return (ipTime.ip === remoteAddress);
+        });
+
+        if (!denied) {
+            loginSecurity.push({ip: remoteAddress, time: currentTime});
+            api.users.check({email: req.body.email, pw: req.body.password}).then(function (user) {
+                req.session.regenerate(function (err) {
+                    if (!err) {
+                        req.session.user = user.id;
+                        var redirect = config().paths.subdir + '/ghost/';
+                        if (req.body.redirect) {
+                            redirect += decodeURIComponent(req.body.redirect);
+                        }
+                        // If this IP address successfully logs in we
+                        // can remove it from the array of failed login attempts.
+                        loginSecurity = _.reject(loginSecurity, function (ipTime) {
+                            return ipTime.ip === remoteAddress;
+                        });
+                        res.json(200, {redirect: redirect});
+                    }
+                });
+            }, function (error) {
+                res.json(401, {error: error.message});
+            });
+        } else {
+            res.json(401, {error: 'Slow down, there are way too many login attempts!'});
+        }
     },
 }

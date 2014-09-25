@@ -54,7 +54,7 @@ module.exports = {
 
   	previousSchool:{type:"string"},
 
-    targetSchool:{type:"string"},
+    targetSchool:{type:"string"}, 
 
   	applicationFeePaid:{type:"boolean",required:true,defaultsTo:'false'},
 

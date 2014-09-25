@@ -14,7 +14,7 @@ module.exports = {
 
   	email:{type:'email',required:true},
 
-  	nickname:{type:'string',required:true},
+  	nickname:{type:'string',required:true,unique:true},
 
   	firstName:{type:'string',required:true},
 

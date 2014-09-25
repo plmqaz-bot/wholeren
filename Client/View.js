@@ -55,7 +55,7 @@ Notification.Collection = Backbone.View.extend({
     initialize: function () {
         var self = this;
         this.render();
-        myApp.on('urlchange', function () {
+        Wholeren.on('urlchange', function () {
             self.clearEverything();
         });
         //shortcut.add("ESC", function () {
@@ -178,7 +178,7 @@ var SettingView = Backbone.View.extend({
             pane: options.pane,
             model: this.model
         });
-        this.listenTo(myApp.router, 'route:settings', this.changePane);
+        this.listenTo(Wholeren.router, 'route:settings', this.changePane);
         
     },
     changePane: function (pane) {
@@ -236,7 +236,7 @@ var Sidebar = Backbone.View.extend({
         
         var self = this,
             model;
-        myApp.router.navigate('/settings/' + id + '/');
+        Wholeren.router.navigate('/settings/' + id + '/');
         //myApp.trigger('urlchange');
         if (this.pane && id === this.pane.id) {
             return;

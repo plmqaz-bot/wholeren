@@ -6,7 +6,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 Backbone.$=$;
 var View=require('./View');
-
+ Wholeren.Views=require('./baseViews').authViews;
 var Router=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
@@ -25,13 +25,13 @@ var Router=Backbone.Router.extend({
         Wholeren.currentView = new Wholeren.Views.Login({ el: '.js-login-box' });
     },
 
-    forgotten: function () {
-        Wholeren.currentView = new Wholeren.Views.Forgotten({ el: '.js-forgotten-box' });
-    },
+    // forgotten: function () {
+    //     Wholeren.currentView = new Wholeren.Views.Forgotten({ el: '.js-forgotten-box' });
+    // },
 
-    reset: function (token) {
-        Wholeren.currentView = new Wholeren.Views.ResetPassword({ el: '.js-reset-box', token: token });
-    },
+    // reset: function (token) {
+    //     Wholeren.currentView = new Wholeren.Views.ResetPassword({ el: '.js-reset-box', token: token });
+    // },
     settings: function (pane) {
         if (!pane) {
         	

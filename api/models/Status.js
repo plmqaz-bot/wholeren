@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-    status : { type: 'string',required:true  },
+    status : { type: 'string',required:true,unique:true  },
     contracts:{
     	collection:'Contract',
     	via:'status'

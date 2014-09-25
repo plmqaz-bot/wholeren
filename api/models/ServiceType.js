@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-  	serviceType:{type:'string',required:true},
+  	serviceType:{type:'string',required:true,unique:true},
   	service:{
   		collection:'Service',
   		via:'serviceType'
