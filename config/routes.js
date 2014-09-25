@@ -37,6 +37,14 @@ module.exports.routes = {
     locals:{
       pathFromApp:'/sailsjs/newapp'
       }
+  },
+  'POST /admin/doSignin':{
+    controller: 'Admin',
+    action:'doSignin'
+  },
+  'POST /admin/doSignup':{
+    controller: 'Admin',
+    action:'doSignup'
   }
 
   /***************************************************************************

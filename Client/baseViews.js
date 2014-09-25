@@ -96,7 +96,7 @@ View.Login=View.extend{
             redirect = Ghost.Views.Utils.getUrlVariables().r,
             validationErrors = [];
             $.ajax({
-                url: Ghost.paths.subdir + '/admin/signin/',
+                url: Ghost.paths.subdir + '/admin/doSignin/',
                 type: 'POST',
                 headers: {
                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
