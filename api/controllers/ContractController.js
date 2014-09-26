@@ -6,6 +6,10 @@
  */
 
 module.exports = {
-	
+	'getContract':function(req, res){
+		Contract.find({'id':2}).exec(function(err,data){
+			res.json(data);
+		});
+	}
 };
 

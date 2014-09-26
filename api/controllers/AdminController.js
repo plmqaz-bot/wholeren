@@ -134,6 +134,7 @@ module.exports={
             // }, function (error) {
             //     res.json(401, {error: error.message});
             // });
+            req.session.user=1;
             res.json(200, {redirect: '/admin/contract/'});
         } else {
             res.json(401, {error: 'Slow down, there are way too many login attempts!'});
