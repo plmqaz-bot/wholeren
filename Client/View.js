@@ -1,7 +1,7 @@
 ﻿"use strict";
 var $ = require('jquery');
 //var Backbone = require('backbone');
-var Backbone= require('../assets/js/backbone.modal.js');
+var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
 var Handlebars = require('hbsfy/runtime');
 var Obiwang = require('./models');
@@ -30,7 +30,8 @@ var tpKeywordSingle=require('./template/settings/keyword_single.hbs');
 var tpMaterialSingle = require('./template/settings/replymaterial_single.hbs');
 var tpMaterialAdd = require('./template/settings/replymaterial_add.hbs');
 var tpContract=require('./template/contract.hbs');
-var tpContractSingle=require('./template/contract_single.hbs')
+var tpContractSingle=require('./template/contract_single.hbs');
+var tpContractEdit=require('./template/modals/contract_edit.hbs');
 
 /*************************************************Views for Notifications *****************************/
 /**
@@ -349,6 +350,9 @@ var ContractView=Backbone.View.extend({
             this.render();
             this.collection.on("reset", this.renderCollection, this);
         },
+        events: {
+        'click  button.button-add': 'editView',
+        },
         render: function () {
              var self = this;
              var data = self.collection?self.collection.toJSON():{};
@@ -369,8 +373,34 @@ var ContractView=Backbone.View.extend({
             var toInsert = $('<div/>').html(ele).contents();
             toInsert.insertAfter(headrow);
         });     
-    },
+        },
+        editView: function(){
+            var popUpView = new ContractEdit({view:this});
+            $('.app').html(popUpView.render().el);
+        }
 
+        
+       
+
+});
+var ContractEdit = Backbone.Modal.extend({
+    viewContainer:'.app',
+    initialize: function (options){
+        this.parentView = options.view;
+    }, 
+    template: tpContractEdit,
+    cancelEl: '.cancel',
+    submitEl: '.ok',
+    submit: function () {
+        // get text and submit, and also refresh the collection. 
+        var content = $('.reply-content').val();
+        //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
+       // msg.url='/api/replyMessage/';
+       // msg.save();
+       // if (this.parentView) { 
+            //this.parentView.renderReplyAfterElement({id:this.replyTo,element:this.insertTo});
+       // }
+    }
 });
 module.exports={
 		Setting:SettingView,
@@ -378,4 +408,5 @@ module.exports={
         Panes: Settings,
         Notification:Notification,
         Contract:ContractView
+
 };

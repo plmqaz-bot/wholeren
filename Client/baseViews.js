@@ -1,5 +1,5 @@
 var _=require('lodash');
-var Backbone= require('../assets/js/backbone.modal.js');
+var Backbone= require('./backbone.modal.js');
 var tpSignup=require('./template/signup.hbs');
 var tpLogin=require('./template/login.hbs');
 var validator=require('./validator');
