@@ -31,6 +31,90 @@
         "createdAt": "2014-09-29T05:18:33.579Z",
         "updatedAt": "2014-09-29T05:18:33.579Z",
         "id": 2
+      },
+      {
+        "contractCategory": 4,
+        "client": 1,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T18:34:00.010Z",
+        "updatedAt": "2014-09-29T18:34:00.010Z",
+        "id": 3
+      },
+      {
+        "contractCategory": 4,
+        "client": 1,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T20:32:28.171Z",
+        "updatedAt": "2014-09-29T20:32:28.171Z",
+        "id": 4
+      },
+      {
+        "client": 1,
+        "contractCategory": 3,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T22:45:16.906Z",
+        "updatedAt": "2014-09-29T22:45:16.906Z",
+        "id": 6
+      },
+      {
+        "client": 2,
+        "contractCategory": 4,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T22:47:05.115Z",
+        "updatedAt": "2014-09-29T22:47:05.115Z",
+        "id": 7
+      },
+      {
+        "client": 3,
+        "contractCategory": 4,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T22:48:41.433Z",
+        "updatedAt": "2014-09-29T22:48:41.433Z",
+        "id": 8
+      },
+      {
+        "client": 4,
+        "contractCategory": 4,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T22:48:48.971Z",
+        "updatedAt": "2014-09-29T22:48:48.971Z",
+        "id": 9
+      },
+      {
+        "client": 5,
+        "contractCategory": 4,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T22:49:51.955Z",
+        "updatedAt": "2014-09-29T22:49:51.955Z",
+        "id": 10
       }
     ],
     "country": [
@@ -149,7 +233,68 @@
     "service": [],
     "user": [],
     "application": [],
-    "client": [],
+    "client": [
+      {
+        "firstName": "asdfsd",
+        "lastName": "asdf",
+        "chineseName": "asdf",
+        "primaryEmail": "asdf@asdf.com",
+        "primaryPhone": "asdf",
+        "secondaryPhone": "asdf",
+        "otherInfo": "asdf",
+        "createdAt": "2014-09-29T22:45:16.900Z",
+        "updatedAt": "2014-09-29T22:45:16.900Z",
+        "id": 1
+      },
+      {
+        "firstName": "asdfasdf",
+        "lastName": "asdf",
+        "chineseName": "asdf",
+        "primaryEmail": "asdf@asdf.com",
+        "primaryPhone": "asdf",
+        "otherInfo": "asdf",
+        "secondaryPhone": "asdf",
+        "createdAt": "2014-09-29T22:47:05.110Z",
+        "updatedAt": "2014-09-29T22:47:05.110Z",
+        "id": 2
+      },
+      {
+        "firstName": "asdfasdf",
+        "lastName": "asdf",
+        "chineseName": "asdf",
+        "primaryEmail": "asdf@asdf.com",
+        "primaryPhone": "asdf",
+        "otherInfo": "asdf",
+        "secondaryPhone": "asdf",
+        "createdAt": "2014-09-29T22:48:41.427Z",
+        "updatedAt": "2014-09-29T22:48:41.427Z",
+        "id": 3
+      },
+      {
+        "firstName": "asdfasdf",
+        "lastName": "asdf",
+        "chineseName": "asdf",
+        "primaryEmail": "asdf@asdf.com",
+        "primaryPhone": "asdf",
+        "otherInfo": "asdf",
+        "secondaryPhone": "asdf",
+        "createdAt": "2014-09-29T22:48:48.965Z",
+        "updatedAt": "2014-09-29T22:48:48.965Z",
+        "id": 4
+      },
+      {
+        "firstName": "test2",
+        "lastName": "test",
+        "chineseName": "test",
+        "primaryEmail": "asdf@sdf.com",
+        "primaryPhone": "asdf",
+        "secondaryPhone": "asdf",
+        "otherInfo": "asdf",
+        "createdAt": "2014-09-29T22:49:51.951Z",
+        "updatedAt": "2014-09-29T22:49:51.951Z",
+        "id": 5
+      }
+    ],
     "contractcategory": [
       {
         "contractCategory": "category3",
@@ -999,7 +1144,7 @@
       "id": 2
     },
     "contract": {
-      "id": 2
+      "id": 10
     },
     "country": {
       "id": 2
@@ -1019,7 +1164,9 @@
     "service": {},
     "user": {},
     "application": {},
-    "client": {},
+    "client": {
+      "id": 5
+    },
     "contractcategory": {
       "id": 4
     },

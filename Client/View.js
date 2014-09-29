@@ -427,6 +427,7 @@ var ContractEdit = Backbone.Modal.extend({
     events:{
         "change select":"selectionChanged",
         "change input":"inputChanged",
+        "change input[id^='client']":"refreshClientID";
     },
     selectionChanged:function(e){
         var field=$(e.currentTarget);
@@ -452,13 +453,39 @@ var ContractEdit = Backbone.Modal.extend({
             $('#'+tableName).append($('<option>', { value : ele.id }).text(ele[tableName])); 
         });  
     },
+    refreshClientID:function(){
+        var firstname=$("#client.firstName").val();
+        var lastname=$("#client.lastName").val();
+        var chinesename=$('#client.chineseName').val();
+        var where={'firstName':firstname,'lastName':lastname,'chineseName':chinesename};
+    },
     inputChanged:function(e){
         var field=$(e.currentTarget);
         var id=field.attr('id');
         var value=field.val();
-        var data={};
-        data[id] = value;
-        this.model.set(data);
+            
+        var sub=id.indexOf('.');
+        if(sub>0){
+            //It is not attribute, it is nested attribute.
+            var nested=id.substring(0,sub);
+            var obj=this.model.get(nested);
+            if(!data){
+                data={};
+            }
+            var attr=id.substring(sub+1);
+            data[attr]=value;
+            if(obj){
+                obj.set(data);
+            }else{
+                this.model.set(nested,new Obiwang.Models['Client']());
+                this.model.get(nested).set(data);
+            }
+
+        }else{
+            var data={};
+            data[id] = value;
+            this.model.set(data);
+        }
     },
     submit: function () {
         // get text and submit, and also refresh the collection. 
