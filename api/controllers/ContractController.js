@@ -7,14 +7,12 @@
 
 module.exports = {
 	'getContract':function(req, res){
-		if(req.session.user){
-		Contract.find({'id':2}).exec(function(err,data){
-			console.log('user is '+req.session.user);
+		Contract.find({degree:1}).exec(function(err,data){
+			console.log('user is 1'+req.session.user);
+			console.log(err);
+			console.log(data);
 			res.json(data);
 		});	
-	}else{
-		res.json({});
-	}
 		
 	}
 };

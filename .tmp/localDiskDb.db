@@ -19,6 +19,18 @@
         "createdAt": "2014-09-20T03:23:38.904Z",
         "updatedAt": "2014-09-20T03:23:38.904Z",
         "id": 1
+      },
+      {
+        "contractCategory": 4,
+        "client": 1,
+        "country": 1,
+        "validI20": true,
+        "degree": 1,
+        "applicationFeePaid": false,
+        "endFee": false,
+        "createdAt": "2014-09-29T05:18:33.579Z",
+        "updatedAt": "2014-09-29T05:18:33.579Z",
+        "id": 2
       }
     ],
     "country": [
@@ -138,7 +150,20 @@
     "user": [],
     "application": [],
     "client": [],
-    "contractcategory": [],
+    "contractcategory": [
+      {
+        "contractCategory": "category3",
+        "createdAt": "2014-09-29T04:41:01.731Z",
+        "updatedAt": "2014-09-29T04:41:01.731Z",
+        "id": 3
+      },
+      {
+        "contractCategory": "category4",
+        "createdAt": "2014-09-29T04:42:18.952Z",
+        "updatedAt": "2014-09-29T04:42:18.952Z",
+        "id": 4
+      }
+    ],
     "contractuserrole": [],
     "people": [
       {
@@ -432,7 +457,8 @@
         "type": "integer",
         "model": "client",
         "foreignKey": true,
-        "alias": "client"
+        "alias": "client",
+        "defaultsTo": 1
       },
       "lead": {
         "type": "integer",
@@ -487,20 +513,24 @@
       "age": {
         "type": "string"
       },
+      "otherScore": {
+        "type": "string"
+      },
       "degree": {
         "type": "integer",
         "model": "degree",
         "foreignKey": true,
-        "alias": "degree"
+        "alias": "degree",
+        "defaultsTo": 1
       },
       "diagnose": {
         "type": "string"
       },
       "contractSigned": {
-        "type": "datetime"
+        "type": "date"
       },
       "contractPaid": {
-        "type": "datetime"
+        "type": "date"
       },
       "contractPrice": {
         "type": "float"
@@ -509,6 +539,9 @@
         "type": "string"
       },
       "previousSchool": {
+        "type": "string"
+      },
+      "targetSchool": {
         "type": "string"
       },
       "applicationFeePaid": {
@@ -520,6 +553,10 @@
         "model": "paymentoption",
         "foreignKey": true,
         "alias": "paymentOption"
+      },
+      "endFee": {
+        "type": "boolean",
+        "defaultsTo": "false"
       },
       "id": {
         "type": "integer",
@@ -536,7 +573,8 @@
     },
     "country": {
       "country": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -553,7 +591,8 @@
     },
     "degree": {
       "degree": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -570,7 +609,8 @@
     },
     "lead": {
       "lead": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -587,7 +627,8 @@
     },
     "leadlevel": {
       "leadLevel": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -604,7 +645,8 @@
     },
     "paymentoption": {
       "paymentOption": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -621,7 +663,8 @@
     },
     "status": {
       "status": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -638,7 +681,8 @@
     },
     "role": {
       "role": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -692,7 +736,8 @@
         "type": "string"
       },
       "nickname": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "firstName": {
         "type": "string"
@@ -734,13 +779,13 @@
       }
     },
     "client": {
-      "firstContact": {
-        "type": "datetime"
-      },
       "firstName": {
         "type": "string"
       },
-      "lastNmae": {
+      "lastName": {
+        "type": "string"
+      },
+      "chineseName": {
         "type": "string"
       },
       "primaryPhone": {
@@ -753,6 +798,9 @@
         "type": "string"
       },
       "secondaryEmail": {
+        "type": "string"
+      },
+      "otherInfo": {
         "type": "string"
       },
       "id": {
@@ -769,8 +817,9 @@
       }
     },
     "contractcategory": {
-      "category": {
-        "type": "string"
+      "contractCategory": {
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -862,7 +911,8 @@
     },
     "servicetype": {
       "serviceType": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "id": {
         "type": "integer",
@@ -949,7 +999,7 @@
       "id": 2
     },
     "contract": {
-      "id": 1
+      "id": 2
     },
     "country": {
       "id": 2
@@ -970,7 +1020,9 @@
     "user": {},
     "application": {},
     "client": {},
-    "contractcategory": {},
+    "contractcategory": {
+      "id": 4
+    },
     "contractuserrole": {},
     "people": {
       "id": 8

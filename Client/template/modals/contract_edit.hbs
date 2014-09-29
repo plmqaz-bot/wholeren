@@ -3,94 +3,181 @@
 </div>
 <div class="bbm-modal__section">
 <form>
-
+<!-- Should contain ContractCategory, Country, Degree, Lead, LeadLevel, PaymentOption, Status as select input. Service, and User as multiple selection. contract is main. -->
  <fieldset>
 
         <div class="form-group">
-            <label for="blog-title">First Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
+            <label >First Name</label>
+            <input id="client.firstName" name="general[client.firstName]" type="text" value="{{contract.client.firstName}}" />
             
         </div>
         <div class="form-group">
-            <label for="blog-title">Last Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
+            <label >Last Name</label>
+            <input id="client.lastName" name="general[client.lastName]" type="text" value="{{contract.client.lastName}}" />
             
         </div>
         <div class="form-group">
-            <label for="blog-title">Email</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
+            <label >Chinese Name</label>
+            <input id="client.chineseName" name="general[client.chineseName]" type="text" value="{{contract.client.chineseName}}" />
             
         </div>
         <div class="form-group">
-            <label for="blog-title">Phone Number</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            <p>The name of your platform</p>
+            <label >Client ID</label>
+            <input  value="{{contract.client.id}}" disabled/>
+            
         </div>
+        <div class="form-group">
+            <label >Email</label>
+            <input id="client.primaryEmail" name="general[client.primaryEmail]" type="text" value="{{contract.client.primaryEmail}}" />
+            
+        </div>
+        <div class="form-group">
+            <label >Phone Number</label>
+            <input id="client.primaryPhone" name="general[client.primaryPhone]" type="text" value="{{contract.client.primaryPhone}}" />
+        </div>
+        <div class="form-group">
+            <label >Phone Number</label>
+            <input id="client.primaryPhone" name="general[client.primaryPhone]" type="text" value="{{contract.client.primaryPhone}}" />
+        </div>
+        <div class="form-group">
+            <label >其它联系方式</label>
+            <input id="client.primaryPhone" name="general[client.primaryPhone]" type="text" value="{{contract.client.primaryPhone}}" />
+        </div>
+</fieldset>
+ <fieldset>
+        <div class="form-group">
+            <label >咨询服务类别</label>
+            <select id="contractCategory" name="general[contractCategory]"  />
+            {{#each ContractCategory}}
+            <option value="{{id}}" {{#ifCond id contract.contractCategory.id }} selected {{/ifCond}}>{{category}}</option>
+            {{/each}}
+        </select>
+        </div>
+         <div class="form-group">
+            <label >首次咨询日期</label>
+            <input id="createTime" name="general[createTime]" type="text" value="{{contract.createTime}}" />
+        </div>
+        
+</fieldset>
 
+ <fieldset>
         <div class="form-group">
-            <label for="blog-title">First Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
+            <label >Lead种类</label>
+            <select id="lead" name="general[lead]"  />
+            {{#each Lead}}
+            <option value="{{id}}" {{#ifCond id contract.lead.id }} selected {{/ifCond}}>{{lead}}</option>
+            {{/each}}
+        </select>
         </div>
         <div class="form-group">
-            <label for="blog-title">Last Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
+            <label >Lead Level</label>
+            <select id="leadLevel" name="general[leadLevel]"  />
+            {{#each LeadLevel}}
+            <option value="{{id}}" {{#ifCond id contract.leadLevel.id }} selected {{/ifCond}}>{{leadLevel}}</option>
+            {{/each}}
+        </select>
+        </div>
+         <div class="form-group">
+            <label >Lead介绍人</label>
+            <input id="leadName" name="general[leadName]" type="text" value="{{contract.leadName}}" />
         </div>
         <div class="form-group">
-            <label for="blog-title">Email</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
-        </div>
-        <div class="form-group">
-            <label for="blog-title">Phone Number</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            <p>The name of your platform</p>
-        </div>
-
-        <div class="form-group">
-            <label for="blog-title">First Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
-        </div>
-        <div class="form-group">
-            <label for="blog-title">Last Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
-        </div>
-        <div class="form-group">
-            <label for="blog-title">Email</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
-        </div>
-        <div class="form-group">
-            <label for="blog-title">Phone Number</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            <p>The name of your platform</p>
-        </div>
-
-        <div class="form-group">
-            <label for="blog-title">First Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
-        </div>
-        <div class="form-group">
-            <label for="blog-title">Last Name</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
-        </div>
-        <div class="form-group">
-            <label for="blog-title">Email</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            
-        </div>
-        <div class="form-group">
-            <label for="blog-title">Phone Number</label>
-            <input id="blog-title" name="general[title]" type="text" value="{{title}}" />
-            <p>The name of your platform</p>
+            <label >签约状态</label>
+            <select id="status" name="general[status]"  />
+            {{#each Status}}
+            <option value="{{id}}" {{#ifCond id contract.status.id }} selected {{/ifCond}}>{{status}}</option>
+            {{/each}}
+        </select>
         </div>
 </fieldset>
 
+<fieldset>
+        <div class="form-group">
+            <label >当前所在地</label>
+            <select id="country" name="general[country]"  />
+            {{#each Country}}
+            <option value="{{id}}" {{#ifCond id contract.country.id }} selected {{/ifCond}}>{{country}}</option>
+            {{/each}}
+        </select>
+        </div>
+        <div class="form-group">
+            <label >I-20是否有效</label>
+            <select id="validI20" name="general[validI20]"  >
+            <option value="true" {{#ifCond contract.validI20 'true' }} selected {{/ifCond}}>有效</option>
+            <option value="false" {{#ifCond contract.validI20 'false' }} selected {{/ifCond}}>无效</option>
+        </select>
+        </div>
+         <div class="form-group">
+            <label >原学校</label>
+            <input id="previousSchool" name="general[previousSchool]" type="text" value="{{contract.previousSchool}}" />
+        </div>
+        <div class="form-group">
+            <label >目标学校</label>
+            <input id="targetSchool" name="general[targetSchool]" type="text" value="{{contract.targetSchool}}" />
+        </div>
+        <div class="form-group">
+            <label >GPA</label>
+            <input id="gpa" name="general[gpa]" type="text" value="{{contract.gpa}}" />
+        </div>
+        <div class="form-group">
+            <label >TOEFL</label>
+            <input id="toefl" name="general[toefl]" type="text" value="{{contract.toefl}}" />
+        </div>
+        <div class="form-group">
+            <label >咨询时年龄</label>
+            <input id="age" name="general[age]" type="text" value="{{contract.age}}" />
+        </div>
+        <div class="form-group">
+            <label >就读学位</label>
+            <select id="degree" name="general[degree]"  />
+            {{#each Degree}}
+            <option value="{{id}}" {{#ifCond id contract.degree.id }} selected {{/ifCond}}>{{degree}}</option>
+            {{/each}}
+        </select>
+        </div>
+ </fieldset>  
+  <fieldset> 
+        <div class="form-group">
+            <label >何弃疗</label>
+            <input id="diagnose" name="general[diagnose]" type="text" value="{{contract.diagnose}}" />
+        </div>
+        <div class="form-group">
+            <label >签约日</label>
+            <input id="contractSigned" name="general[contractSigned]" type="text" value="{{contract.contractSigned}}" />
+        </div>
+        <div class="form-group">
+            <label >签约价</label>
+            <input id="contractPrice" name="general[contractPrice]" type="text" value="{{contract.contractPrice}}" />
+        </div>
+         <div class="form-group">
+            <label >$150 学校申请费</label>
+            <select id="applicationFeePaid" name="general[applicationFeePaid]"  >
+            <option value="true" {{#ifCond contract.applicationFeePaid 'true' }} selected {{/ifCond}}>已交</option>
+            <option value="false" {{#ifCond contract.applicationFeePaid 'false' }} selected {{/ifCond}}>未交</option>
+        </select>
+        </div>
+
+
+     </fieldset> 
+
+      <fieldset> 
+
+        <div class="form-group">
+            <label >付款方式</label>
+            <select id="paymentOption" name="general[paymentOption]"  />
+            {{#each PaymentOption}}
+            <option value="{{id}}" {{#ifCond id contract.paymentOption.id }} selected {{/ifCond}}>{{paymentOption}}</option>
+            {{/each}}
+        </select>
+        </div>
+        <div class="form-group">
+            <label >是否收尾款</label>
+            <select id="endFee" name="general[endFee]"  >
+            <option value="true" {{#ifCond contract.endFee 'true' }} selected {{/ifCond}}>是</option>
+            <option value="false" {{#ifCond contract.endFee 'false' }} selected {{/ifCond}}>否</option>
+        </select>
+        </div>
+        </fieldset> 
 </form>
 </div>
 <div class="bbm-modal__bottombar">

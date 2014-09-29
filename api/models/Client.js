@@ -8,7 +8,6 @@
 module.exports = {
 
   attributes: {
-  	firstContact:{type:'datetime',required:true},
 
   	firstName:{type:'string',required:true},
 
@@ -23,6 +22,8 @@ module.exports = {
   	primaryEmail:{type:'email',required:true},
 
   	secondaryEmail:{type:'email'},
+
+    otherInfo:{type:'string'},
 
   	contract:{collection:'Contract',via:'client'}
   }

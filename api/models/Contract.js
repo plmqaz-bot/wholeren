@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
     contractCategory:{model:'ContractCategory',required:true},
 
-  	client:{model:'Client',required:true},
+  	client:{model:'Client',required:true,defaultsTo:1},
 
   	service:{collection:'Service',via:'contract',dominate:true},
   	
@@ -40,7 +40,9 @@ module.exports = {
 
   	age:{type:"int"},
 
-  	degree:{model:"Degree",required:true},
+    otherScore:{type:"string"},
+
+  	degree:{model:"Degree",required:true,defaultsTo:1},
 
   	diagnose:{type:"string"},
 

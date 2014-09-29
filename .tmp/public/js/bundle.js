@@ -457,13 +457,83 @@ var ContractEdit = Backbone.Modal.extend({
     viewContainer:'.app',
     initialize: function (options){
         this.parentView = options.view;
+        this.model={};
+        if(options.model){
+            this.model=options.model;
+        }else{
+            this.model=new Obiwang.Models.Contract();
+        }
+        var col=new Obiwang.Collections.ContractCategory();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Country();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Degree();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Lead();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.LeadLevel();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.PaymentOption();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Status();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
     }, 
     template: tpContractEdit,
     cancelEl: '.cancel',
     submitEl: '.ok',
+    events:{
+        "change select":"selectionChanged",
+        "change input":"inputChanged",
+    },
+    selectionChanged:function(e){
+        var field=$(e.currentTarget);
+        var selected=$("option:selected",field).val();
+        var value=$("option:selected",field).text();
+        var id=field.attr('id');
+        var data={};
+        if(selected=='true'||selected=='false'){
+            data[id]=selected;
+        }else{
+            data[id]={};
+            data[id]['id']=selected;
+            data[id][id]=value;
+        }
+        this.model.set(data);
+    },
+    renderSelect:function(collection){
+        var col=collection;
+        var tableName=collection.name;        
+        col.forEach(function(item){
+            var ele=item.toJSON();
+            console.log(ele);
+            $('#'+tableName).append($('<option>', { value : ele.id }).text(ele[tableName])); 
+        });  
+    },
+    inputChanged:function(e){
+        var field=$(e.currentTarget);
+        var id=field.attr('id');
+        var value=field.val();
+        var data={};
+        data[id] = value;
+        this.model.set(data);
+    },
     submit: function () {
         // get text and submit, and also refresh the collection. 
         var content = $('.reply-content').val();
+        this.model.save({},{success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
         //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
        // msg.url='/api/replyMessage/';
        // msg.save();
@@ -1178,22 +1248,98 @@ $ = require('jquery');
 Backbone.$ = $;
 Models = {};
 Collections = {};
-Models.Contract = Backbone.Model.extend({
+Models={
+    Contract : Backbone.Model.extend({
     idAttribute: "id",
     
     urlRoot:'/Contract/'
-});
+    }),
+    Client:Backbone.Model.extend({
+    urlRoot:'/Client/'
+    }),
+    ContractCategory:Backbone.Model.extend({
+        urlRoot:'/ContractCategory/'
 
-Collections.Contract = Backbone.Collection.extend({
-    model: Models.Contract,
-    initialize: function (options) {
-        if (options&&options.id)
-            this.skipnumber = options.id;
-        else
-            this.skipnumber = 0;
-    },
-    url: '/Contract/'
-});
+    }),
+    Country:Backbone.Model.extend({
+        urlRoot:'/Country/'
+
+    }),
+    Degree:Backbone.Model.extend({
+        urlRoot:'/Degree/'
+
+    }),
+    Lead:Backbone.Model.extend({
+        urlRoot:'/Lead/'
+
+    }),
+    LeadLevel:Backbone.Model.extend({
+        urlRoot:'/LeadLevel/'
+
+    }),
+    PaymentOption:Backbone.Model.extend({
+        urlRoot:'/PaymentOption/'
+
+    }),
+    Status:Backbone.Model.extend({
+        urlRoot:'/Status/'
+
+    })
+
+}
+Collections={
+    Contract : Backbone.Collection.extend({
+        model: Models.Contract,
+        url: '/Contract/'
+    }),
+    Client : Backbone.Collection.extend({
+        model: Models.Client,
+        name:'client',
+        url: '/Client/'
+    }),
+    ContractCategory:Backbone.Collection.extend({
+        name:'contractCategory',
+        model:Models.ContractCategory,
+        url:'/ContractCategory/'
+
+    }),
+    Country:Backbone.Collection.extend({
+        name:'country',
+        model:Models.Country,
+        url:'/Country/'
+
+    }),
+    Degree:Backbone.Collection.extend({
+        name:'degree',
+        model:Models.Degree,
+        url:'/Degree/'
+
+    }),
+    Lead:Backbone.Collection.extend({
+        name:'lead',
+        model:Models.Lead,
+        url:'/Lead/'
+
+    }),
+    LeadLevel:Backbone.Collection.extend({
+        name:'leadLevel',
+        model:Models.LeadLevel,
+        url:'/LeadLevel/'
+
+    }),
+    PaymentOption:Backbone.Collection.extend({
+        name:'paymentOption',
+        model:Models.PaymentOption,
+        url:'/PaymentOption/'
+
+    }),
+    Status:Backbone.Collection.extend({
+        name:'status',
+        model:Models.Status,
+        url:'/Status/'
+    }),
+}
+
 
 
 module.exports = { Models: Models,Collections:Collections };
@@ -1201,7 +1347,7 @@ module.exports = { Models: Models,Collections:Collections };
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
 module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  return "<section class=\"contract-list\" style=\"position:inherit;width:100%\">\r\n\r\n<header>\r\n    <h1 class=\"title\">Contracts</h1>\r\n    <section class=\"page-actions\" style=\"float:right\">\r\n        <button class=\"button-add\">Add New</button>\r\n    </section>\r\n</header>\r\n<section class=\"content\">\r\n\r\n    <table class=\"Contracts responsive\">\r\n        <tbody><tr id=\"header\">\r\n        <th>学生中文名</th>\r\n        <th>First Name</th>\r\n        <th>Last Name</th>\r\n        <th>年龄</th>\r\n        <th>Email</th>\r\n        <th>电话</th>\r\n        <th>咨询服务类别</th>\r\n        <th>首次咨询日期</th>\r\n        <th>Lead种类</th>\r\n        <th>Lead介绍人</th>\r\n        <th>LeadLevel</th>\r\n        <th>签约状态</th>\r\n        <th>前期助理</th>\r\n        <th>销售顾问</th>\r\n        <th>专家</th>\r\n        <th>求助原文</th>        \r\n        <th>销售跟进记录</th>\r\n        <th>销售跟进摘要</th>\r\n        <th>专家咨询日期</th>\r\n        <th>专家建议</th>\r\n        <th>当前所在地</th>\r\n        <th>I-20有效</th>\r\n        <th>原学校</th>\r\n        <th>目标学校</th>\r\n        <th>GPA</th>\r\n        <th>TOEFL</th>\r\n        <th>就读学位</th>\r\n        <th>何弃疗</th>\r\n        <th>签约日</th>\r\n        <th>付款日</th>\r\n        <th>所购服务</th>\r\n        <th>签约价格</th>\r\n        <th>签约价明细</th> \r\n        <th>$150申请费</th>\r\n        <th>付款方式</th>\r\n        <th>是否收尾款</th>\r\n        <th>服务老师</th>\r\n        </th>      \r\n    </tbody></table>\r\n    <div class=\"app\"></div>\r\n</section>\r\n\r\n</section>";
+  return "<section class=\"contract-list\" style=\"position:inherit;width:100%\">\r\n\r\n<header>\r\n    <h1 class=\"title\">Contracts</h1>\r\n    <section class=\"page-actions\" style=\"float:right\">\r\n        <button class=\"button-add\">Add New</button>\r\n    </section>\r\n</header>\r\n<section class=\"content\">\r\n\r\n    <table class=\"Contracts responsive\">\r\n        <tbody><tr id=\"header\">\r\n        <th>学生中文名</th>\r\n        <th>First Name</th>\r\n        <th>Last Name</th>\r\n        <th>年龄</th>\r\n        <th>Email</th>\r\n        <th>电话</th>\r\n        <th>其他联系</th>\r\n        <th>咨询服务类别</th>\r\n        <th>首次咨询日期</th>\r\n        <th>Lead种类</th>\r\n        <th>Lead介绍人</th>\r\n        <th>LeadLevel</th>\r\n        <th>签约状态</th>\r\n        <th>前期助理</th>\r\n        <th>销售顾问</th>\r\n        <th>专家</th>\r\n        <th>求助原文</th>        \r\n        <th>销售跟进记录</th>\r\n        <th>销售跟进摘要</th>\r\n        <th>专家咨询日期</th>\r\n        <th>专家建议</th>\r\n        <th>当前所在地</th>\r\n        <th>I-20有效</th>\r\n        <th>原学校</th>\r\n        <th>目标学校</th>\r\n        <th>GPA</th>\r\n        <th>TOEFL</th>\r\n        <th>其他成绩</th>\r\n        <th>就读学位</th>\r\n        <th>何弃疗</th>\r\n        <th>签约日</th>\r\n        <th>付款日</th>\r\n        <th>所购服务</th>\r\n        <th>签约价格</th>\r\n        <th>签约价明细</th> \r\n        <th>$150申请费</th>\r\n        <th>付款方式</th>\r\n        <th>是否收尾款</th>\r\n        <th>服务老师</th>\r\n        </th>      \r\n    </tbody></table>\r\n    <div class=\"app\"></div>\r\n</section>\r\n\r\n</section>";
   },"useData":true});
 
 },{"hbsfy/runtime":45}],9:[function(require,module,exports){
@@ -1223,6 +1369,8 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.primaryEmail : stack1), depth0))
     + "</td>\r\n        <td>"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.primaryPhone : stack1), depth0))
+    + "</td>\r\n        <td>"
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.otherInfo : stack1), depth0))
     + "</td>\r\n        <td>"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contractCategory : depth0)) != null ? stack1.category : stack1), depth0))
     + "</td>\r\n        <td>"
@@ -1256,6 +1404,8 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
     + "</td>\r\n        <td>"
     + escapeExpression(((helper = (helper = helpers.toefl || (depth0 != null ? depth0.toefl : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"toefl","hash":{},"data":data}) : helper)))
     + "</td>\r\n        <td>"
+    + escapeExpression(((helper = (helper = helpers.otherScore || (depth0 != null ? depth0.otherScore : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"otherScore","hash":{},"data":data}) : helper)))
+    + "</td>\r\n        <td>"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.degree : depth0)) != null ? stack1.degree : stack1), depth0))
     + "</td>\r\n        <td>"
     + escapeExpression(((helper = (helper = helpers.diagnose || (depth0 != null ? depth0.diagnose : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"diagnose","hash":{},"data":data}) : helper)))
@@ -1286,41 +1436,148 @@ module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"
 },{"hbsfy/runtime":45}],11:[function(require,module,exports){
 // hbsfy compiled Handlebars template
 var HandlebarsCompiler = require('hbsfy/runtime');
-module.exports = HandlebarsCompiler.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-  var helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression;
-  return "<div class=\"bbm-modal__topbar\">\r\n    <h3 class=\"bbm-modal__title\">New Contract</h3>\r\n</div>\r\n<div class=\"bbm-modal__section\">\r\n<form>\r\n\r\n <fieldset>\r\n\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">First Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Last Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Email</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Phone Number</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            <p>The name of your platform</p>\r\n        </div>\r\n\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">First Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Last Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Email</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Phone Number</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            <p>The name of your platform</p>\r\n        </div>\r\n\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">First Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Last Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Email</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Phone Number</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            <p>The name of your platform</p>\r\n        </div>\r\n\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">First Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Last Name</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Email</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label for=\"blog-title\">Phone Number</label>\r\n            <input id=\"blog-title\" name=\"general[title]\" type=\"text\" value=\""
-    + escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"title","hash":{},"data":data}) : helper)))
-    + "\" />\r\n            <p>The name of your platform</p>\r\n        </div>\r\n</fieldset>\r\n\r\n</form>\r\n</div>\r\n<div class=\"bbm-modal__bottombar\">\r\n    <a href=\"#\" class=\"bbm-button cancel\">Close</a>\r\n    <a href=\"#\" class=\"bbm-button ok\">OK</a>\r\n</div>";
+module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "            <option value=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.id : depth0), ((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.contractCategory : stack1)) != null ? stack1.id : stack1), {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">"
+    + escapeExpression(((helper = (helper = helpers.category || (depth0 != null ? depth0.category : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"category","hash":{},"data":data}) : helper)))
+    + "</option>\r\n";
+},"2":function(depth0,helpers,partials,data) {
+  return " selected ";
+  },"4":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "            <option value=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.id : depth0), ((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.lead : stack1)) != null ? stack1.id : stack1), {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">"
+    + escapeExpression(((helper = (helper = helpers.lead || (depth0 != null ? depth0.lead : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"lead","hash":{},"data":data}) : helper)))
+    + "</option>\r\n";
+},"6":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "            <option value=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.id : depth0), ((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.leadLevel : stack1)) != null ? stack1.id : stack1), {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">"
+    + escapeExpression(((helper = (helper = helpers.leadLevel || (depth0 != null ? depth0.leadLevel : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"leadLevel","hash":{},"data":data}) : helper)))
+    + "</option>\r\n";
+},"8":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "            <option value=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.id : depth0), ((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.status : stack1)) != null ? stack1.id : stack1), {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">"
+    + escapeExpression(((helper = (helper = helpers.status || (depth0 != null ? depth0.status : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"status","hash":{},"data":data}) : helper)))
+    + "</option>\r\n";
+},"10":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "            <option value=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.id : depth0), ((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.country : stack1)) != null ? stack1.id : stack1), {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">"
+    + escapeExpression(((helper = (helper = helpers.country || (depth0 != null ? depth0.country : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"country","hash":{},"data":data}) : helper)))
+    + "</option>\r\n";
+},"12":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "            <option value=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.id : depth0), ((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.degree : stack1)) != null ? stack1.id : stack1), {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">"
+    + escapeExpression(((helper = (helper = helpers.degree || (depth0 != null ? depth0.degree : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"degree","hash":{},"data":data}) : helper)))
+    + "</option>\r\n";
+},"14":function(depth0,helpers,partials,data) {
+  var stack1, helper, functionType="function", helperMissing=helpers.helperMissing, escapeExpression=this.escapeExpression, buffer = "            <option value=\""
+    + escapeExpression(((helper = (helper = helpers.id || (depth0 != null ? depth0.id : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"id","hash":{},"data":data}) : helper)))
+    + "\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.id : depth0), ((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.paymentOption : stack1)) != null ? stack1.id : stack1), {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">"
+    + escapeExpression(((helper = (helper = helpers.paymentOption || (depth0 != null ? depth0.paymentOption : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"paymentOption","hash":{},"data":data}) : helper)))
+    + "</option>\r\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+  var stack1, lambda=this.lambda, escapeExpression=this.escapeExpression, helperMissing=helpers.helperMissing, buffer = "<div class=\"bbm-modal__topbar\">\r\n    <h3 class=\"bbm-modal__title\">New Contract</h3>\r\n</div>\r\n<div class=\"bbm-modal__section\">\r\n<form>\r\n<!-- Should contain ContractCategory, Country, Degree, Lead, LeadLevel, PaymentOption, Status as select input. Service, and User as multiple selection. contract is main. -->\r\n <fieldset>\r\n\r\n        <div class=\"form-group\">\r\n            <label >First Name</label>\r\n            <input id=\"client.firstName\" name=\"general[client.firstName]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.firstName : stack1), depth0))
+    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Last Name</label>\r\n            <input id=\"client.lastName\" name=\"general[client.lastName]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.lastName : stack1), depth0))
+    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Chinese Name</label>\r\n            <input id=\"client.chineseName\" name=\"general[client.chineseName]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.chineseName : stack1), depth0))
+    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Client ID</label>\r\n            <input  value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.id : stack1), depth0))
+    + "\" disabled/>\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Email</label>\r\n            <input id=\"client.primaryEmail\" name=\"general[client.primaryEmail]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.primaryEmail : stack1), depth0))
+    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Phone Number</label>\r\n            <input id=\"client.primaryPhone\" name=\"general[client.primaryPhone]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.primaryPhone : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Phone Number</label>\r\n            <input id=\"client.primaryPhone\" name=\"general[client.primaryPhone]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.primaryPhone : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >其它联系方式</label>\r\n            <input id=\"client.primaryPhone\" name=\"general[client.primaryPhone]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.client : stack1)) != null ? stack1.primaryPhone : stack1), depth0))
+    + "\" />\r\n        </div>\r\n</fieldset>\r\n <fieldset>\r\n        <div class=\"form-group\">\r\n            <label >咨询服务类别</label>\r\n            <select id=\"contractCategory\" name=\"general[contractCategory]\"  />\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.ContractCategory : depth0), {"name":"each","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "        </select>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >首次咨询日期</label>\r\n            <input id=\"createTime\" name=\"general[createTime]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.createTime : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        \r\n</fieldset>\r\n\r\n <fieldset>\r\n        <div class=\"form-group\">\r\n            <label >Lead种类</label>\r\n            <select id=\"lead\" name=\"general[lead]\"  />\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.Lead : depth0), {"name":"each","hash":{},"fn":this.program(4, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "        </select>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Lead Level</label>\r\n            <select id=\"leadLevel\" name=\"general[leadLevel]\"  />\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.LeadLevel : depth0), {"name":"each","hash":{},"fn":this.program(6, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "        </select>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >Lead介绍人</label>\r\n            <input id=\"leadName\" name=\"general[leadName]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.leadName : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约状态</label>\r\n            <select id=\"status\" name=\"general[status]\"  />\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.Status : depth0), {"name":"each","hash":{},"fn":this.program(8, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "        </select>\r\n        </div>\r\n</fieldset>\r\n\r\n<fieldset>\r\n        <div class=\"form-group\">\r\n            <label >当前所在地</label>\r\n            <select id=\"country\" name=\"general[country]\"  />\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.Country : depth0), {"name":"each","hash":{},"fn":this.program(10, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "        </select>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >I-20是否有效</label>\r\n            <select id=\"validI20\" name=\"general[validI20]\"  >\r\n            <option value=\"true\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.validI20 : stack1), "true", {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">有效</option>\r\n            <option value=\"false\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.validI20 : stack1), "false", {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">无效</option>\r\n        </select>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >原学校</label>\r\n            <input id=\"previousSchool\" name=\"general[previousSchool]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.previousSchool : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >目标学校</label>\r\n            <input id=\"targetSchool\" name=\"general[targetSchool]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.targetSchool : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >GPA</label>\r\n            <input id=\"gpa\" name=\"general[gpa]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.gpa : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >TOEFL</label>\r\n            <input id=\"toefl\" name=\"general[toefl]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.toefl : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >咨询时年龄</label>\r\n            <input id=\"age\" name=\"general[age]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.age : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >就读学位</label>\r\n            <select id=\"degree\" name=\"general[degree]\"  />\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.Degree : depth0), {"name":"each","hash":{},"fn":this.program(12, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "        </select>\r\n        </div>\r\n </fieldset>  \r\n  <fieldset> \r\n        <div class=\"form-group\">\r\n            <label >何弃疗</label>\r\n            <input id=\"diagnose\" name=\"general[diagnose]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.diagnose : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约日</label>\r\n            <input id=\"contractSigned\" name=\"general[contractSigned]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.contractSigned : stack1), depth0))
+    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约价</label>\r\n            <input id=\"contractPrice\" name=\"general[contractPrice]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.contractPrice : stack1), depth0))
+    + "\" />\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >$150 学校申请费</label>\r\n            <select id=\"applicationFeePaid\" name=\"general[applicationFeePaid]\"  >\r\n            <option value=\"true\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.applicationFeePaid : stack1), "true", {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">已交</option>\r\n            <option value=\"false\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.applicationFeePaid : stack1), "false", {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">未交</option>\r\n        </select>\r\n        </div>\r\n\r\n\r\n     </fieldset> \r\n\r\n      <fieldset> \r\n\r\n        <div class=\"form-group\">\r\n            <label >付款方式</label>\r\n            <select id=\"paymentOption\" name=\"general[paymentOption]\"  />\r\n";
+  stack1 = helpers.each.call(depth0, (depth0 != null ? depth0.PaymentOption : depth0), {"name":"each","hash":{},"fn":this.program(14, data),"inverse":this.noop,"data":data});
+  if (stack1 != null) { buffer += stack1; }
+  buffer += "        </select>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >是否收尾款</label>\r\n            <select id=\"endFee\" name=\"general[endFee]\"  >\r\n            <option value=\"true\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.endFee : stack1), "true", {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  buffer += ">是</option>\r\n            <option value=\"false\" ";
+  stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, ((stack1 = (depth0 != null ? depth0.contract : depth0)) != null ? stack1.endFee : stack1), "false", {"name":"ifCond","hash":{},"fn":this.program(2, data),"inverse":this.noop,"data":data}));
+  if (stack1 != null) { buffer += stack1; }
+  return buffer + ">否</option>\r\n        </select>\r\n        </div>\r\n        </fieldset> \r\n</form>\r\n</div>\r\n<div class=\"bbm-modal__bottombar\">\r\n    <a href=\"#\" class=\"bbm-button cancel\">Close</a>\r\n    <a href=\"#\" class=\"bbm-button ok\">OK</a>\r\n</div>";
 },"useData":true});
 
 },{"hbsfy/runtime":45}],12:[function(require,module,exports){

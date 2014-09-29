@@ -387,13 +387,83 @@ var ContractEdit = Backbone.Modal.extend({
     viewContainer:'.app',
     initialize: function (options){
         this.parentView = options.view;
+        this.model={};
+        if(options.model){
+            this.model=options.model;
+        }else{
+            this.model=new Obiwang.Models.Contract();
+        }
+        var col=new Obiwang.Collections.ContractCategory();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Country();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Degree();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Lead();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.LeadLevel();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.PaymentOption();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
+
+        col=new Obiwang.Collections.Status();
+        col.fetch({reset:true});
+        col.on('reset',this.renderSelect,this);
     }, 
     template: tpContractEdit,
     cancelEl: '.cancel',
     submitEl: '.ok',
+    events:{
+        "change select":"selectionChanged",
+        "change input":"inputChanged",
+    },
+    selectionChanged:function(e){
+        var field=$(e.currentTarget);
+        var selected=$("option:selected",field).val();
+        var value=$("option:selected",field).text();
+        var id=field.attr('id');
+        var data={};
+        if(selected=='true'||selected=='false'){
+            data[id]=selected;
+        }else{
+            data[id]={};
+            data[id]['id']=selected;
+            data[id][id]=value;
+        }
+        this.model.set(data);
+    },
+    renderSelect:function(collection){
+        var col=collection;
+        var tableName=collection.name;        
+        col.forEach(function(item){
+            var ele=item.toJSON();
+            console.log(ele);
+            $('#'+tableName).append($('<option>', { value : ele.id }).text(ele[tableName])); 
+        });  
+    },
+    inputChanged:function(e){
+        var field=$(e.currentTarget);
+        var id=field.attr('id');
+        var value=field.val();
+        var data={};
+        data[id] = value;
+        this.model.set(data);
+    },
     submit: function () {
         // get text and submit, and also refresh the collection. 
         var content = $('.reply-content').val();
+        this.model.save({},{success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
         //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
        // msg.url='/api/replyMessage/';
        // msg.save();
