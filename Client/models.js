@@ -10,6 +10,7 @@ Models={
     urlRoot:'/Contract/'
     }),
     Client:Backbone.Model.extend({
+        idAttribute:"id",
     urlRoot:'/Client/'
     }),
     ContractCategory:Backbone.Model.extend({
@@ -41,7 +42,7 @@ Models={
 
     })
 
-}
+};
 Collections={
     Contract : Backbone.Collection.extend({
         model: Models.Contract,

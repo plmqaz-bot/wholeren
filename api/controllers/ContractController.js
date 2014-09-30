@@ -8,12 +8,24 @@
 module.exports = {
 	'getContract':function(req, res){
 		Contract.find().exec(function(err,data){
-			console.log('user is 1'+req.session.user);
-			console.log(err);
-			console.log(data);
 			res.json(data);
 		});	
 		
+	},
+	'createContract':function(req,res){
+		console.log(req.body);
+		req.body.client=1;
+		Contract.create(req.body).exec(function(err,data){
+			console.log(err);
+			res.json(data);
+		});
+
+	},
+	'updateContract':function(req,res){
+		console.log(req.body);
+		console.log(req.params);
+		console.log(req.query);
+
 	}
 };
 

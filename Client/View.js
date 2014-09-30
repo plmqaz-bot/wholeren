@@ -425,9 +425,10 @@ var ContractEdit = Backbone.Modal.extend({
     cancelEl: '.cancel',
     submitEl: '.ok',
     events:{
-        "change select":"selectionChanged",
-        "change input":"inputChanged",
-        "change input[id^='client.']":"refreshClientID"
+        "change select:not([id^='client.'])":"selectionChanged",
+        "change input:not([id^='client.'])":"inputChanged",
+        "change #client\\.firstName,#client\\.lastName,#client\\.chinesename":"refreshClientID",
+        "change select[id^='client.']":"refreshClientInfo"
     },
     selectionChanged:function(e){
         var field=$(e.currentTarget);
@@ -439,23 +440,10 @@ var ContractEdit = Backbone.Modal.extend({
             data[id]=selected;
             this.model.set(data);
         }else{
-            var sub=id.indexOf('.');
-            if(sub>0){
-                var nested=id.substring(0,sub);
-                
-                var attr=id.substring(sub+1);
-                data[attr]=selected;
-                var obj=this.model.get(nested);
-                if(obj){
-                    obj.set(data);
-                }else{
-                    this.model.set(nested,new Obiwang.Models['Client']());
-                    this.model.get(nested).set(data);
-                }
-            }else{
-                data[id]=selected;
-                this.model.set(data);
-            }
+
+            data[id]=selected;
+            this.model.set(data);
+            
             //data[id]={};
             //data[id]['id']=selected;
             //data[id][id]=value;
@@ -478,13 +466,13 @@ var ContractEdit = Backbone.Modal.extend({
         var chinesename=$('#client\\.chineseName').val();
         var where='';
         if(firstname){
-            where+=where+'&firstName='+firstname;
+            where+='&firstName='+firstname;
         }
         if(lastname){
-            where+=where+'&lastName='+lastname;
+            where+='&lastName='+lastname;
         }
         if(chinesename){
-            where+=where+'&chineseName='+chinesename;
+            where+='&chineseName='+chinesename;
         }
         $.ajax({
             url: '/client/find?'+where,
@@ -495,6 +483,7 @@ var ContractEdit = Backbone.Modal.extend({
             success: function (clients) {
                 var theSel=$('#client\\.id').find('option').remove().end();
                 theSel.append('<option></option>');
+                console.log(clients);
                 clients.forEach(function(entry){
                     theSel.append('<option value="'+entry.id+'">'+entry.primaryEmail+'</option>');
                 });
@@ -505,6 +494,33 @@ var ContractEdit = Backbone.Modal.extend({
                 console.log('error');
             }
         });
+    },
+    refreshClientInfo:function(e){
+        var field=$(e.currentTarget);
+        var selected=$("option:selected",field).val();
+       // var value=$("option:selected",field).text();
+        var client=new Obiwang.Models['Client']({id:selected});
+        var self=this;
+        client.fetch({
+            reset: true,
+            success: function (mod, response, options) {
+                self.model.set('client',mod);
+                //$('#client\\.firstName').val(mod.get('firstName'));
+                //$('#client\\.lastName').val(mod.get('lastName'));
+                //$('#client\\.chineseName').val(mod.get('chineseName'));
+                $('#client\\.primaryEmail').val(mod.get('primaryEmail'));
+                $('#client\\.secondaryEmail').val(mod.get('secondaryEmail'));
+                $('#client\\.primaryPhone').val(mod.get('primaryPhone'));
+                $('#client\\.secondaryPhone').val(mod.get('secondaryPhone'));
+                $('#client\\.otherInfo').val(mod.get('otherInfo'));
+            },
+            error: function (collection, response, options) {
+                console.log('error fetch');
+            }
+        });
+        
+                
+        
     },
     inputChanged:function(e){
         var field=$(e.currentTarget);
@@ -523,7 +539,8 @@ var ContractEdit = Backbone.Modal.extend({
             if(obj){
                 obj.set(data);
             }else{
-                this.model.set(nested,new Obiwang.Models['Client']());
+                var modelName=nested.charAt(0).toUpperCase() + nested.slice(1);
+                this.model.set(nested,new Obiwang.Models[modelName]());
                 this.model.get(nested).set(data);
             }
 

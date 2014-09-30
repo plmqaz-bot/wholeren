@@ -49,6 +49,14 @@ module.exports.routes = {
   'GET /contract/':{
     controller:'contract',
     action:'getContract'
+  },
+  'POST /contract/':{
+    controller:'contract',
+    action:'createContract'
+  },
+  'PUT /contract/':{
+    controller:'contract',
+    action:'updateContract'
   }
 
   /***************************************************************************

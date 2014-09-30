@@ -23,7 +23,9 @@
         </div>
         <div class="form-group">
             <label >Client ID</label>
-            <select id="client.id" name="general[client.id]" >
+            <select id="client.id" name="general[client]" >
+                <option value="{{client.id}}">{{client.primaryEmail}}</option>
+
             </select>
             
         </div>
@@ -33,12 +35,17 @@
             
         </div>
         <div class="form-group">
+            <label >Email2</label>
+            <input id="client.secondaryEmail" name="general[client.secondaryEmail]" type="text" value="{{client.secondaryEmail}}" />
+            
+        </div>
+        <div class="form-group">
             <label >Phone Number</label>
             <input id="client.primaryPhone" name="general[client.primaryPhone]" type="text" value="{{client.primaryPhone}}" />
         </div>
         <div class="form-group">
-            <label >Phone Number</label>
-            <input id="client.secondaryPhone" name="general[client.primaryPhone]" type="text" value="{{client.primaryPhone}}" />
+            <label >Phone Number2</label>
+            <input id="client.secondaryphone" name="general[client.secondaryphone]" type="text" value="{{client.secondaryphone}}" />
         </div>
         <div class="form-group">
             <label >其它联系方式</label>
