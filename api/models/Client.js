@@ -8,6 +8,10 @@
 module.exports = {
 
   attributes: {
+    id:{type: 'integer',
+    autoIncrement: true,
+    primaryKey: true,
+    unique: true},
 
   	firstName:{type:'string',required:true},
 
@@ -19,7 +23,7 @@ module.exports = {
 
   	secondaryPhone:{type:'string'},
 
-  	primaryEmail:{type:'email',required:true},
+  	primaryEmail:{type:'email',required:true,unique:true},
 
   	secondaryEmail:{type:'email'},
 

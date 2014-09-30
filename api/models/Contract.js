@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-    contractCategory:{model:'ContractCategory',required:true},
+    contractCategory:{model:'ContractCategory',required:true,defaultsTo:1},
 
   	client:{model:'Client',required:true,defaultsTo:1},
 

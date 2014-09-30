@@ -427,22 +427,41 @@ var ContractEdit = Backbone.Modal.extend({
     events:{
         "change select":"selectionChanged",
         "change input":"inputChanged",
-        "change input[id^='client']":"refreshClientID";
+        "change input[id^='client.']":"refreshClientID"
     },
     selectionChanged:function(e){
         var field=$(e.currentTarget);
         var selected=$("option:selected",field).val();
-        var value=$("option:selected",field).text();
+       // var value=$("option:selected",field).text();
         var id=field.attr('id');
         var data={};
         if(selected=='true'||selected=='false'){
             data[id]=selected;
+            this.model.set(data);
         }else{
-            data[id]={};
-            data[id]['id']=selected;
-            data[id][id]=value;
+            var sub=id.indexOf('.');
+            if(sub>0){
+                var nested=id.substring(0,sub);
+                
+                var attr=id.substring(sub+1);
+                data[attr]=selected;
+                var obj=this.model.get(nested);
+                if(obj){
+                    obj.set(data);
+                }else{
+                    this.model.set(nested,new Obiwang.Models['Client']());
+                    this.model.get(nested).set(data);
+                }
+            }else{
+                data[id]=selected;
+                this.model.set(data);
+            }
+            //data[id]={};
+            //data[id]['id']=selected;
+            //data[id][id]=value;
+            
         }
-        this.model.set(data);
+        
     },
     renderSelect:function(collection){
         var col=collection;
@@ -454,10 +473,38 @@ var ContractEdit = Backbone.Modal.extend({
         });  
     },
     refreshClientID:function(){
-        var firstname=$("#client.firstName").val();
-        var lastname=$("#client.lastName").val();
-        var chinesename=$('#client.chineseName').val();
-        var where={'firstName':firstname,'lastName':lastname,'chineseName':chinesename};
+        var firstname=$("#client\\.firstName").val();
+        var lastname=$("#client\\.lastName").val();
+        var chinesename=$('#client\\.chineseName').val();
+        var where='';
+        if(firstname){
+            where+=where+'&firstName='+firstname;
+        }
+        if(lastname){
+            where+=where+'&lastName='+lastname;
+        }
+        if(chinesename){
+            where+=where+'&chineseName='+chinesename;
+        }
+        $.ajax({
+            url: '/client/find?'+where,
+            type: 'GET',
+            headers: {
+                'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+            },
+            success: function (clients) {
+                var theSel=$('#client\\.id').find('option').remove().end();
+                theSel.append('<option></option>');
+                clients.forEach(function(entry){
+                    theSel.append('<option value="'+entry.id+'">'+entry.primaryEmail+'</option>');
+                });
+
+                
+            },
+            error: function (xhr) {
+                console.log('error');
+            }
+        });
     },
     inputChanged:function(e){
         var field=$(e.currentTarget);
@@ -469,9 +516,8 @@ var ContractEdit = Backbone.Modal.extend({
             //It is not attribute, it is nested attribute.
             var nested=id.substring(0,sub);
             var obj=this.model.get(nested);
-            if(!data){
-                data={};
-            }
+            data={};
+
             var attr=id.substring(sub+1);
             data[attr]=value;
             if(obj){
@@ -490,6 +536,15 @@ var ContractEdit = Backbone.Modal.extend({
     submit: function () {
         // get text and submit, and also refresh the collection. 
         var content = $('.reply-content').val();
+        var cli=this.model.get('client');
+        if(cli){
+            cli.save({},{
+            success:function(d,xhr,options){console.log(xhr)},
+            error:function(model,response,options){
+                console.log(response.responseText);
+            }
+            });
+        }
         this.model.save({},{success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
         //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
        // msg.url='/api/replyMessage/';

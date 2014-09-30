@@ -7,7 +7,7 @@
 
 module.exports = {
 	'getContract':function(req, res){
-		Contract.find({degree:1}).exec(function(err,data){
+		Contract.find().exec(function(err,data){
 			console.log('user is 1'+req.session.user);
 			console.log(err);
 			console.log(data);
