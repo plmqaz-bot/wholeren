@@ -505,9 +505,9 @@ var ContractEdit = Backbone.Modal.extend({
             reset: true,
             success: function (mod, response, options) {
                 self.model.set('client',mod);
-                //$('#client\\.firstName').val(mod.get('firstName'));
-                //$('#client\\.lastName').val(mod.get('lastName'));
-                //$('#client\\.chineseName').val(mod.get('chineseName'));
+                $('#client\\.firstName').val(mod.get('firstName'));
+                $('#client\\.lastName').val(mod.get('lastName'));
+                $('#client\\.chineseName').val(mod.get('chineseName'));
                 $('#client\\.primaryEmail').val(mod.get('primaryEmail'));
                 $('#client\\.secondaryEmail').val(mod.get('secondaryEmail'));
                 $('#client\\.primaryPhone').val(mod.get('primaryPhone'));
