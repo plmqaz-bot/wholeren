@@ -66,8 +66,5 @@ module.exports = {
 
     endFee:{type:"boolean",defaultsTo:"false"}
   },
-  getSalesListByUser:function(id){
-
-  }
 };
 

@@ -7,8 +7,8 @@
 
 module.exports = {
 	'getContract':function(req, res){
-		Contract.find().exec(function(err,data){
-			res.json(data);
+		Contract.find().populate('client').exec(function(err,data){
+			return res.json(data);
 		});	
 		
 	},
@@ -20,37 +20,36 @@ module.exports = {
 				// Update the client
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
-				console.log(attribs.client);
 				Client.update({"id":attribs.client.id},attribs.client,function(err,cc,dd){
 					if(err){
-						res.json(400,err);
+						return res.json(400,err);
 					}
 					attribs.client=attribs.client.id;
 					Contract.create(attribs).exec(function(err,data){
 						if(err){
-							res.json(400,err);
+							return res.json(400,err);
 						}
-						res.json(data);
+						return res.json(data);
 					});			
 				});
 			}else{
 				Client.create(attribs.client).exec(function(err,client){
 					if(err){
-						res.json(400,err);
+						return res.json(400,err);
 					}
 					console.log("client created: ",client);
 					attribs.client=client.id;
 					Contract.create(attribs).exec(function(err,data){
 						if(err){
-							res.json(400,err);
+							return es.json(400,err);
 						}
-						res.json(data);
+						return res.json(data);
 					});		
 					
 				});
 			}
 		}else{
-			res.json(400,{"error":"client is necessary to create a contract"});
+			return res.json(400,{"error":"client is necessary to create a contract"});
 		}
 		
 

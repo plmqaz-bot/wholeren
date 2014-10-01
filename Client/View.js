@@ -352,36 +352,42 @@ var ContractView=Backbone.View.extend({
         },
         events: {
         'click  button.button-add': 'editView',
+        'click .clickablecell':'editContract'
         },
         render: function () {
-             var self = this;
-             var data = self.collection?self.collection.toJSON():{};
              var ml = tpContract();
              if (ml[0] != '<') {
                  ml = ml.substring(1);
              }
-            self.$el.html(ml);
+            this.$el.html(ml);
         },
         renderCollection: function (){
         // Remove all keywords
         var toRemove = $('.Contracts > tr').not('#header');
         toRemove.remove();
-        var headrow=$('#header');
+        var headrow=$('#scrollableheader');
+        var stableheadrow=$('#pinnedheader');
         var self=this;
         this.collection.forEach(function(item){
-            var ele = self.singleTemplate(item.toJSON());
+            var obj=item.toJSON();
+            var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
             toInsert.insertAfter(headrow);
+            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell">'+obj.client.chineseName+'</td></tr>').contents();
+            headInsert.insertAfter(stableheadrow);
         });     
         },
         editView: function(){
             var popUpView = new ContractEdit({view:this});
             $('.app').html(popUpView.render().el);
+        },
+        editContract: function(e){
+            var id = $(e.currentTarget).data("id");
+            var item = this.collection.get(id);
+            console.log("clicked item ",item);
+            var popUpView = new ContractEdit({view:this,model:item});
+            $('.app').html(popUpView.render().el);
         }
-
-        
-       
-
 });
 var ContractEdit = Backbone.Modal.extend({
     viewContainer:'.app',
@@ -393,6 +399,7 @@ var ContractEdit = Backbone.Modal.extend({
         }else{
             this.model=new Obiwang.Models.Contract();
         }
+        console.log("editing item ",this.model);
         var col=new Obiwang.Collections.ContractCategory();
         col.fetch({reset:true});
         col.on('reset',this.renderSelect,this);
@@ -426,7 +433,7 @@ var ContractEdit = Backbone.Modal.extend({
     submitEl: '.ok',
     events:{
         "change select:not([id^='client.'])":"selectionChanged",
-        "change input:not([id^='client.'])":"inputChanged",
+        "change input":"inputChanged",
         "change #client\\.firstName,#client\\.lastName,#client\\.chinesename":"refreshClientID",
         "change select[id^='client.']":"refreshClientInfo"
     },
@@ -553,15 +560,15 @@ var ContractEdit = Backbone.Modal.extend({
     submit: function () {
         // get text and submit, and also refresh the collection. 
         var content = $('.reply-content').val();
-        var cli=this.model.get('client');
-        if(cli){
-            cli.save({},{
-            success:function(d,xhr,options){console.log(xhr)},
-            error:function(model,response,options){
-                console.log(response.responseText);
-            }
-            });
-        }
+        // var cli=this.model.get('client');
+        // if(cli){
+        //     cli.save({},{
+        //     success:function(d,xhr,options){console.log(xhr)},
+        //     error:function(model,response,options){
+        //         console.log(response.responseText);
+        //     }
+        //     });
+        // }
         this.model.save({},{success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
         //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
        // msg.url='/api/replyMessage/';
