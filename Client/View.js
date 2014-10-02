@@ -381,6 +381,9 @@ var ContractView=Backbone.View.extend({
             headInsert.insertAfter(stableheadrow);
         });     
         },
+        rerenderSingle:function(options){
+            
+        },
         editView: function(){
             var popUpView = new ContractEdit({view:this});
             $('.app').html(popUpView.render().el);
@@ -438,8 +441,9 @@ var ContractEdit = Backbone.Modal.extend({
     }, 
     template: tpContractEdit,
     cancelEl: '.cancel',
-    submitEl: '.ok',
+    //submitEl: '.ok',
     events:{
+        "click .ok":"beforeSubmit",
         "change select:not([id^='client.'])":"selectionChanged",
         "change input":"inputChanged",
         "change #client\\.firstName,#client\\.lastName,#client\\.chinesename":"refreshClientID",
@@ -479,18 +483,19 @@ var ContractEdit = Backbone.Modal.extend({
         var firstname=$("#client\\.firstName").val();
         var lastname=$("#client\\.lastName").val();
         var chinesename=$('#client\\.chineseName').val();
-        var where='';
+        var where={};
         if(firstname){
-            where+='&firstName='+firstname;
+            where.firstName=firstname;
         }
         if(lastname){
-            where+='&lastName='+lastname;
+            where.lastName=lastname;
         }
         if(chinesename){
-            where+='&chineseName='+chinesename;
+            where.chineseName=chinesename;
         }
+
         $.ajax({
-            url: '/client/find?'+where,
+            url: '/client/find?where='+JSON.stringify(where),
             type: 'GET',
             headers: {
                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -559,7 +564,6 @@ var ContractEdit = Backbone.Modal.extend({
                // this.model.set(nested,new Obiwang.Models[modelName]());
 
                this.modelChanges[nested]={};
-               this.modelChanges[nested].id=
                this.modelChanges[nested][attr]=value;
             }
 
@@ -569,25 +573,22 @@ var ContractEdit = Backbone.Modal.extend({
            this.modelChanges[id]=value;
         }
     },
-    submit: function () {
-        // get text and submit, and also refresh the collection. 
-        var content = $('.reply-content').val();
-        // var cli=this.model.get('client');
-        // if(cli){
-        //     cli.save({},{
-        //     success:function(d,xhr,options){console.log(xhr)},
-        //     error:function(model,response,options){
-        //         console.log(response.responseText);
-        //     }
-        //     });
-        // }
-        this.model.save(this.modelChanges,{patch:true,success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
-        //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
-       // msg.url='/api/replyMessage/';
-       // msg.save();
-       // if (this.parentView) { 
-            //this.parentView.renderReplyAfterElement({id:this.replyTo,element:this.insertTo});
-       // }
+    beforeSubmit:function(){
+        var self=this;
+        this.model.save(this.modelChanges,{
+            patch:true,
+            success:function(d){
+                // refresh parent view
+                    return self.close();
+                  
+            },
+            error:function(model,response){
+                console.log(response.responseText.invalidAttributes);
+            }
+        });
+    },
+    clickOutside:function(){
+        return;
     }
 });
 module.exports={
