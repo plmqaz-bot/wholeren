@@ -373,7 +373,11 @@ var ContractView=Backbone.View.extend({
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
             toInsert.insertAfter(headrow);
-            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell">'+obj.client.chineseName+'</td></tr>').contents();
+            var headline='';
+            if(obj.client){
+                headline=obj.client.chineseName;
+            }
+            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell">'+headline+'</td></tr>').contents();
             headInsert.insertAfter(stableheadrow);
         });     
         },
@@ -391,14 +395,18 @@ var ContractView=Backbone.View.extend({
 });
 var ContractEdit = Backbone.Modal.extend({
     viewContainer:'.app',
+    modelChanges:{},
     initialize: function (options){
         this.parentView = options.view;
         this.model={};
         if(options.model){
             this.model=options.model;
+            this.modelChanges.client=this.model.get('client');
+            this.modelChanges.id=this.model.get('id');
         }else{
             this.model=new Obiwang.Models.Contract();
         }
+
         console.log("editing item ",this.model);
         var col=new Obiwang.Collections.ContractCategory();
         col.fetch({reset:true});
@@ -444,12 +452,12 @@ var ContractEdit = Backbone.Modal.extend({
         var id=field.attr('id');
         var data={};
         if(selected=='true'||selected=='false'){
-            data[id]=selected;
-            this.model.set(data);
+            //data[id]=selected;
+            this.modelChanges[id]=selected;
         }else{
 
-            data[id]=selected;
-            this.model.set(data);
+           // data[id]=selected;
+           this.modelChanges[id]=selected;
             
             //data[id]={};
             //data[id]['id']=selected;
@@ -511,15 +519,16 @@ var ContractEdit = Backbone.Modal.extend({
         client.fetch({
             reset: true,
             success: function (mod, response, options) {
-                self.model.set('client',mod);
-                $('#client\\.firstName').val(mod.get('firstName'));
-                $('#client\\.lastName').val(mod.get('lastName'));
-                $('#client\\.chineseName').val(mod.get('chineseName'));
-                $('#client\\.primaryEmail').val(mod.get('primaryEmail'));
-                $('#client\\.secondaryEmail').val(mod.get('secondaryEmail'));
-                $('#client\\.primaryPhone').val(mod.get('primaryPhone'));
-                $('#client\\.secondaryPhone').val(mod.get('secondaryPhone'));
-                $('#client\\.otherInfo').val(mod.get('otherInfo'));
+                var clientmod=mod.toJSON();
+                self.modelChanges.client=clientmod;
+                $('#client\\.firstName').val(clientmod.firstName);
+                $('#client\\.lastName').val(clientmod.lastName);
+                $('#client\\.chineseName').val(clientmod.chineseName);
+                $('#client\\.primaryEmail').val(clientmod.primaryEmail);
+                $('#client\\.secondaryEmail').val(clientmod.secondaryEmail);
+                $('#client\\.primaryPhone').val(clientmod.primaryPhone);
+                $('#client\\.secondaryPhone').val(clientmod.secondaryPhone);
+                $('#client\\.otherInfo').val(clientmod.otherInfo);
             },
             error: function (collection, response, options) {
                 console.log('error fetch');
@@ -538,23 +547,26 @@ var ContractEdit = Backbone.Modal.extend({
         if(sub>0){
             //It is not attribute, it is nested attribute.
             var nested=id.substring(0,sub);
-            var obj=this.model.get(nested);
+            var obj=this.modelChanges[nested];
             data={};
 
             var attr=id.substring(sub+1);
             data[attr]=value;
             if(obj){
-                obj.set(data);
+                obj[attr]=value;
             }else{
-                var modelName=nested.charAt(0).toUpperCase() + nested.slice(1);
-                this.model.set(nested,new Obiwang.Models[modelName]());
-                this.model.get(nested).set(data);
+                //var modelName=nested.charAt(0).toUpperCase() + nested.slice(1);
+               // this.model.set(nested,new Obiwang.Models[modelName]());
+
+               this.modelChanges[nested]={};
+               this.modelChanges[nested].id=
+               this.modelChanges[nested][attr]=value;
             }
 
         }else{
             var data={};
             data[id] = value;
-            this.model.set(data);
+           this.modelChanges[id]=value;
         }
     },
     submit: function () {
@@ -569,7 +581,7 @@ var ContractEdit = Backbone.Modal.extend({
         //     }
         //     });
         // }
-        this.model.save({},{success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
+        this.model.save(this.modelChanges,{patch:true,success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
         //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
        // msg.url='/api/replyMessage/';
        // msg.save();

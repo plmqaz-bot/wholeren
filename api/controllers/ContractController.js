@@ -20,7 +20,7 @@ module.exports = {
 				// Update the client
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
-				Client.update({"id":attribs.client.id},attribs.client,function(err,cc,dd){
+				Client.update({"id":attribs.client.id},attribs.client,function(err,cc){
 					if(err){
 						return res.json(400,err);
 					}
@@ -41,7 +41,7 @@ module.exports = {
 					attribs.client=client.id;
 					Contract.create(attribs).exec(function(err,data){
 						if(err){
-							return es.json(400,err);
+							return res.json(400,err);
 						}
 						return res.json(data);
 					});		
@@ -56,53 +56,54 @@ module.exports = {
 	},
 	'updateContract':function(req,res){
 		var attribs=req.body;
-		if(attribs.id){
-			res.json(200);
-		}
+
 		if(attribs.client){
 			if(attribs.client.id){
 				// Update the client
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
-				Client.update({id:attribs.client.id},attribs.client,function(err,users){
+				Client.update({id:attribs.client.id},attribs.client,function(err,obj){
 					if(err){
-						res.json(400,err);
+						return res.json(400,err);
 					}
-					console.log("client updated:",client);
-					attribs.client=client.id;
-					Contract.update({id:attribs.id},attribs,function(err,data){
+					//console.log("client updated:",obj);
+					attribs.client=attribs.client.id;
+					//console.log(attribs);
+					Contract.update({id:req.params.id},attribs,function(err,data){
 						if(err){
-							res.json(400,err);
+							return res.json(400,err);
 						}
-						res.json(data);
+						console.log("contract updated: ",data);
+						return res.json(data);
 					});
 							
 				});
 			}else{
-				Client.create(attribs.client).done(function(err,client){
+				Client.create(attribs.client).exec(function(err,client){
 					if(err){
-						res.json(400,err);
+						return res.json(400,err);
 					}
-					console.log("client created: ",client);
+					//console.log("client created: ",client);
 					attribs.client=client.id;
 					delete attribs["createAt"];
 					delete attribs["updateAt"];
-					Contract.update({id:attribs.id},attribs,function(err,data){
+					Contract.update({id:req.params.id},attribs,function(err,data){
 						if(err){
-							res.json(400,err);
+							return res.json(400,err);
 						}
-						res.json(data);
+						console.log("contract updated: ",data);
+						return res.json(data);
 					});					
 				});
 			}
 		}else{
 			delete attribs["createAt"];
 			delete attribs["updateAt"];
-			Contract.update({id:attribs.id},attribs,function(err,data){
+			Contract.update({id:req.params.id},attribs,function(err,data){
 				if(err){
-					res.json(400,err);
+					return res.json(400,err);
 				}
-				res.json(data);
+				return res.json(data);
 			});	
 		}
 

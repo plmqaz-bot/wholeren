@@ -54,7 +54,11 @@ module.exports.routes = {
     controller:'contract',
     action:'createContract'
   },
-  'PUT /contract/':{
+  'PUT /contract/:id':{
+    controller:'contract',
+    action:'updateContract'
+  },
+  'PATCH /contract/:id':{
     controller:'contract',
     action:'updateContract'
   }
