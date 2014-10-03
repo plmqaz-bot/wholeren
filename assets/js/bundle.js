@@ -61,7 +61,7 @@ var Router=Backbone.Router.extend({
             return;
         }
         if(!Wholeren.currentView){
-            Wholeren.currentView=new View.Contract({el:'#main',option:option});
+            Wholeren.currentView=new View.Contract({el:'.content-view-container',option:option});
         }
     }
 	
@@ -78,6 +78,8 @@ var Obiwang = require('./models');
 var Settings = {};
 var Notification = {};
 var baseViews=require('./baseViews.js');
+var validator=require('./validator.js');
+var util=require('./util');
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 === v2) {
@@ -419,6 +421,8 @@ var ContractView=Backbone.View.extend({
             }
             this.render();
             this.collection.on("reset", this.renderCollection, this);
+            _.bindAll(this,'rerenderSingle');
+            _.bindAll(this,'renderCollection');
         },
         events: {
         'click  button.button-add': 'editView',
@@ -433,7 +437,7 @@ var ContractView=Backbone.View.extend({
         },
         renderCollection: function (){
         // Remove all keywords
-        var toRemove = $('.Contracts > tr').not('#header');
+        var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
         toRemove.remove();
         var headrow=$('#scrollableheader');
         var stableheadrow=$('#pinnedheader');
@@ -447,9 +451,30 @@ var ContractView=Backbone.View.extend({
             if(obj.client){
                 headline=obj.client.chineseName;
             }
-            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell">'+headline+'</td></tr>').contents();
+            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
             headInsert.insertAfter(stableheadrow);
         });     
+        },
+        rerenderSingle:function(options){
+            var self=this;
+            var toRender=new Obiwang.Models.Contract({id:options.id});
+            toRender.fetch({
+                reset:true,
+                success:function(model,response,options){
+                    self.collection.remove(self.collection.get(model.get('id')));
+                    self.collection.push(model);
+                    self.renderCollection();
+                },
+                error: function(model,response,options){
+                        Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'error',
+                            message: util.getRequestErrorMessage(response),
+                            status: 'passive'
+                        });
+                }
+            });
+            
         },
         editView: function(){
             var popUpView = new ContractEdit({view:this});
@@ -463,9 +488,29 @@ var ContractView=Backbone.View.extend({
             $('.app').html(popUpView.render().el);
         }
 });
+
+/**
+
+TODO: refresh view after submit--done
+    validator on every input. 
+    reduce the ajax call to get selection options. 
+*/
 var ContractEdit = Backbone.Modal.extend({
     viewContainer:'.app',
     modelChanges:{},
+    optionalValidation:{
+        'client.primaryEmail':'isEmail',
+        'client.secondaryEmail':'isEmail',
+        'client.primaryPhone':'isInt',
+        'client.secondaryPhone':'isInt',
+
+
+    },
+    requiredValidation:{
+        'client.firstName':'isNotNull',
+        'client.lastName':'isNotNull',
+        'client.chinesename':'isNotNull',
+    },
     initialize: function (options){
         this.parentView = options.view;
         this.model={};
@@ -508,8 +553,9 @@ var ContractEdit = Backbone.Modal.extend({
     }, 
     template: tpContractEdit,
     cancelEl: '.cancel',
-    submitEl: '.ok',
+    //submitEl: '.ok',
     events:{
+        "click .ok":"Submit",
         "change select:not([id^='client.'])":"selectionChanged",
         "change input":"inputChanged",
         "change #client\\.firstName,#client\\.lastName,#client\\.chinesename":"refreshClientID",
@@ -549,18 +595,19 @@ var ContractEdit = Backbone.Modal.extend({
         var firstname=$("#client\\.firstName").val();
         var lastname=$("#client\\.lastName").val();
         var chinesename=$('#client\\.chineseName').val();
-        var where='';
+        var where={};
         if(firstname){
-            where+='&firstName='+firstname;
+            where.firstName=firstname;
         }
         if(lastname){
-            where+='&lastName='+lastname;
+            where.lastName=lastname;
         }
         if(chinesename){
-            where+='&chineseName='+chinesename;
+            where.chineseName=chinesename;
         }
+
         $.ajax({
-            url: '/client/find?'+where,
+            url: '/client/find?where='+JSON.stringify(where),
             type: 'GET',
             headers: {
                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -584,6 +631,9 @@ var ContractEdit = Backbone.Modal.extend({
         var field=$(e.currentTarget);
         var selected=$("option:selected",field).val();
        // var value=$("option:selected",field).text();
+       if(!selected){
+            return;
+       }
         var client=new Obiwang.Models['Client']({id:selected});
         var self=this;
         client.fetch({
@@ -604,10 +654,7 @@ var ContractEdit = Backbone.Modal.extend({
                 console.log('error fetch');
             }
         });
-        
-                
-        
-    },
+   },
     inputChanged:function(e){
         var field=$(e.currentTarget);
         var id=field.attr('id');
@@ -629,7 +676,6 @@ var ContractEdit = Backbone.Modal.extend({
                // this.model.set(nested,new Obiwang.Models[modelName]());
 
                this.modelChanges[nested]={};
-               this.modelChanges[nested].id=
                this.modelChanges[nested][attr]=value;
             }
 
@@ -638,26 +684,43 @@ var ContractEdit = Backbone.Modal.extend({
             data[id] = value;
            this.modelChanges[id]=value;
         }
+        if(value.length===0){
+            if(this.requiredValidation[id]){
+                if(!validator[this.requiredValidation[id]](value)){
+                    field.next().html("wrong");
+                }
+            }
+        }else{
+            if(this.optionalValidation[id]){
+                if(!validator[this.optionalValidation[id]](value)){
+                   field.next().html("wrong");
+                }
+            }
+        }
+
     },
-    submit: function () {
-        // get text and submit, and also refresh the collection. 
-        var content = $('.reply-content').val();
-        // var cli=this.model.get('client');
-        // if(cli){
-        //     cli.save({},{
-        //     success:function(d,xhr,options){console.log(xhr)},
-        //     error:function(model,response,options){
-        //         console.log(response.responseText);
-        //     }
-        //     });
-        // }
-        this.model.save(this.modelChanges,{patch:true,success:function(d){console.log(d)},error:function(model,response){console.log(response.responseText);}});
-        //var msg = new Obiwang.Models.Message({ Content: content, replyTo: this.replyTo });
-       // msg.url='/api/replyMessage/';
-       // msg.save();
-       // if (this.parentView) { 
-            //this.parentView.renderReplyAfterElement({id:this.replyTo,element:this.insertTo});
-       // }
+    Submit:function(){
+        var self=this;
+        this.model.save(this.modelChanges,{
+            patch:true,
+            success:function(d){
+                // refresh parent view
+                    self.parentView.rerenderSingle({id:d.get('id')});
+                    return self.close();
+                  
+            },
+            error:function(model,response){
+                Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'error',
+                            message: util.getRequestErrorMessage(response),
+                            status: 'passive'
+                        });
+            }
+        });
+    },
+    clickOutside:function(){
+        return;
     }
 });
 module.exports={
@@ -668,7 +731,7 @@ module.exports={
         Contract:ContractView
 
 };
-},{"./backbone.modal.js":5,"./baseViews.js":6,"./models":7,"./template/contract.hbs":8,"./template/contract_single.hbs":9,"./template/modals/contract_edit.hbs":11,"./template/modals/material.hbs":12,"./template/modals/reply.hbs":13,"./template/notification.hbs":14,"./template/settings/general.hbs":15,"./template/settings/keyword.hbs":16,"./template/settings/keyword_single.hbs":17,"./template/settings/message.hbs":18,"./template/settings/replymaterial.hbs":19,"./template/settings/replymaterial_add.hbs":20,"./template/settings/replymaterial_single.hbs":21,"./template/settings/sidebar.hbs":22,"hbsfy/runtime":45,"jquery":46,"lodash":47}],4:[function(require,module,exports){
+},{"./backbone.modal.js":5,"./baseViews.js":6,"./models":7,"./template/contract.hbs":8,"./template/contract_single.hbs":9,"./template/modals/contract_edit.hbs":11,"./template/modals/material.hbs":12,"./template/modals/reply.hbs":13,"./template/notification.hbs":14,"./template/settings/general.hbs":15,"./template/settings/keyword.hbs":16,"./template/settings/keyword_single.hbs":17,"./template/settings/message.hbs":18,"./template/settings/replymaterial.hbs":19,"./template/settings/replymaterial_add.hbs":20,"./template/settings/replymaterial_single.hbs":21,"./template/settings/sidebar.hbs":22,"./util":24,"./validator.js":25,"hbsfy/runtime":45,"jquery":46,"lodash":47}],4:[function(require,module,exports){
 (function (global){
 ﻿(function(){
 	var $ = require('jquery');
@@ -1495,63 +1558,63 @@ module.exports = HandlebarsCompiler.template({"1":function(depth0,helpers,partia
   },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
   var stack1, helper, lambda=this.lambda, escapeExpression=this.escapeExpression, functionType="function", helperMissing=helpers.helperMissing, buffer = "<div class=\"bbm-modal__topbar\">\r\n    <h3 class=\"bbm-modal__title\">New Contract</h3>\r\n</div>\r\n<div class=\"bbm-modal__section\">\r\n<form>\r\n<!-- Should contain ContractCategory, Country, Degree, Lead, LeadLevel, PaymentOption, Status as select input. Service, and User as multiple selection. contract is main. -->\r\n <fieldset>\r\n\r\n        <div class=\"form-group\">\r\n            <label >First Name</label>\r\n            <input id=\"client.firstName\" name=\"general[client.firstName]\" type=\"text\" value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.firstName : stack1), depth0))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Last Name</label>\r\n            <input id=\"client.lastName\" name=\"general[client.lastName]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Last Name</label>\r\n            <input id=\"client.lastName\" name=\"general[client.lastName]\" type=\"text\" value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.lastName : stack1), depth0))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Chinese Name</label>\r\n            <input id=\"client.chineseName\" name=\"general[client.chineseName]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Chinese Name</label>\r\n            <input id=\"client.chineseName\" name=\"general[client.chineseName]\" type=\"text\" value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.chineseName : stack1), depth0))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Client ID</label>\r\n            <select id=\"client.id\" name=\"general[client]\" >\r\n                <option value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Client ID</label>\r\n            <select id=\"client.id\" name=\"general[client]\" >\r\n                <option value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.id : stack1), depth0))
     + "\">"
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.primaryEmail : stack1), depth0))
-    + "</option>\r\n\r\n            </select>\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Email</label>\r\n            <input id=\"client.primaryEmail\" name=\"general[client.primaryEmail]\" type=\"text\" value=\""
+    + "</option>\r\n\r\n            </select>\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Email</label>\r\n            <input id=\"client.primaryEmail\" name=\"general[client.primaryEmail]\" type=\"text\" value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.primaryEmail : stack1), depth0))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Email2</label>\r\n            <input id=\"client.secondaryEmail\" name=\"general[client.secondaryEmail]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Email2</label>\r\n            <input id=\"client.secondaryEmail\" name=\"general[client.secondaryEmail]\" type=\"text\" value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.secondaryEmail : stack1), depth0))
-    + "\" />\r\n            \r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Phone Number</label>\r\n            <input id=\"client.primaryPhone\" name=\"general[client.primaryPhone]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Phone Number</label>\r\n            <input id=\"client.primaryPhone\" name=\"general[client.primaryPhone]\" type=\"text\" value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.primaryPhone : stack1), depth0))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Phone Number2</label>\r\n            <input id=\"client.secondaryPhone\" name=\"general[client.secondaryPhone]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Phone Number2</label>\r\n            <input id=\"client.secondaryPhone\" name=\"general[client.secondaryPhone]\" type=\"text\" value=\""
     + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.secondaryPhone : stack1), depth0))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >其它联系方式</label>\r\n            <input id=\"client.otherInfo\" name=\"general[client.primaryPhone]\" type=\"text\" value=\""
-    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.primaryPhone : stack1), depth0))
-    + "\" />\r\n        </div>\r\n</fieldset>\r\n <fieldset>\r\n        <div class=\"form-group\">\r\n            <label >咨询服务类别</label>\r\n            <select id=\"contractCategory\" name=\"general[contractCategory]\"  >\r\n            <option></option>\r\n            </select>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >首次咨询日期</label>\r\n            <input id=\"createTime\" name=\"general[createTime]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >其它联系方式</label>\r\n            <input id=\"client.otherInfo\" name=\"general[client.otherInfo]\" type=\"text\" value=\""
+    + escapeExpression(lambda(((stack1 = (depth0 != null ? depth0.client : depth0)) != null ? stack1.otherInfo : stack1), depth0))
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n</fieldset>\r\n <fieldset>\r\n        <div class=\"form-group\">\r\n            <label >咨询服务类别</label>\r\n            <select id=\"contractCategory\" name=\"general[contractCategory]\"  >\r\n            <option></option>\r\n            </select>\r\n            <p></p>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >首次咨询日期</label>\r\n            <input id=\"createTime\" name=\"general[createTime]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.createTime || (depth0 != null ? depth0.createTime : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"createTime","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        \r\n</fieldset>\r\n\r\n <fieldset>\r\n        <div class=\"form-group\">\r\n            <label >Lead种类</label>\r\n            <select id=\"lead\" name=\"general[lead]\"  >\r\n            <option></option>\r\n        </select>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Lead Level</label>\r\n            <select id=\"leadLevel\" name=\"general[leadLevel]\"  >\r\n            <option></option>\r\n        </select>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >Lead介绍人</label>\r\n            <input id=\"leadName\" name=\"general[leadName]\" type=\"text\" value=\""
+    + "\" disabled/>\r\n            <p></p>\r\n        </div>\r\n        \r\n</fieldset>\r\n\r\n <fieldset>\r\n        <div class=\"form-group\">\r\n            <label >Lead种类</label>\r\n            <select id=\"lead\" name=\"general[lead]\"  >\r\n            <option></option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >Lead Level</label>\r\n            <select id=\"leadLevel\" name=\"general[leadLevel]\"  >\r\n            <option></option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >Lead介绍人</label>\r\n            <input id=\"leadName\" name=\"general[leadName]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.leadName || (depth0 != null ? depth0.leadName : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"leadName","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约状态</label>\r\n            <select id=\"status\" name=\"general[status]\"  >\r\n            <option></option>\r\n        </select>\r\n        </div>\r\n</fieldset>\r\n\r\n<fieldset>\r\n        <div class=\"form-group\">\r\n            <label >当前所在地</label>\r\n            <select id=\"country\" name=\"general[country]\"  >\r\n            <option></option>\r\n        </select>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >I-20是否有效</label>\r\n            <select id=\"validI20\" name=\"general[validI20]\"  >\r\n            <option value=\"true\" ";
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约状态</label>\r\n            <select id=\"status\" name=\"general[status]\"  >\r\n            <option></option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n</fieldset>\r\n\r\n<fieldset>\r\n        <div class=\"form-group\">\r\n            <label >当前所在地</label>\r\n            <select id=\"country\" name=\"general[country]\"  >\r\n            <option></option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >I-20是否有效</label>\r\n            <select id=\"validI20\" name=\"general[validI20]\"  >\r\n            <option value=\"true\" ";
   stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.validI20 : depth0), "true", {"name":"ifCond","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}));
   if (stack1 != null) { buffer += stack1; }
   buffer += ">有效</option>\r\n            <option value=\"false\" ";
   stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.validI20 : depth0), "false", {"name":"ifCond","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">无效</option>\r\n        </select>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >原学校</label>\r\n            <input id=\"previousSchool\" name=\"general[previousSchool]\" type=\"text\" value=\""
+  buffer += ">无效</option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >原学校</label>\r\n            <input id=\"previousSchool\" name=\"general[previousSchool]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.previousSchool || (depth0 != null ? depth0.previousSchool : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"previousSchool","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >目标学校</label>\r\n            <input id=\"targetSchool\" name=\"general[targetSchool]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >目标学校</label>\r\n            <input id=\"targetSchool\" name=\"general[targetSchool]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.targetSchool || (depth0 != null ? depth0.targetSchool : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"targetSchool","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >GPA</label>\r\n            <input id=\"gpa\" name=\"general[gpa]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >GPA</label>\r\n            <input id=\"gpa\" name=\"general[gpa]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.gpa || (depth0 != null ? depth0.gpa : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"gpa","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >TOEFL</label>\r\n            <input id=\"toefl\" name=\"general[toefl]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >TOEFL</label>\r\n            <input id=\"toefl\" name=\"general[toefl]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.toefl || (depth0 != null ? depth0.toefl : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"toefl","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >咨询时年龄</label>\r\n            <input id=\"age\" name=\"general[age]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >咨询时年龄</label>\r\n            <input id=\"age\" name=\"general[age]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.age || (depth0 != null ? depth0.age : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"age","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >就读学位</label>\r\n            <select id=\"degree\" name=\"general[degree]\"  >\r\n            <option></option>\r\n        </select>\r\n        </div>\r\n </fieldset>  \r\n  <fieldset> \r\n        <div class=\"form-group\">\r\n            <label >何弃疗</label>\r\n            <input id=\"diagnose\" name=\"general[diagnose]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >就读学位</label>\r\n            <select id=\"degree\" name=\"general[degree]\"  >\r\n            <option></option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n </fieldset>  \r\n  <fieldset> \r\n        <div class=\"form-group\">\r\n            <label >何弃疗</label>\r\n            <input id=\"diagnose\" name=\"general[diagnose]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.diagnose || (depth0 != null ? depth0.diagnose : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"diagnose","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约日</label>\r\n            <input id=\"contractSigned\" name=\"general[contractSigned]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约日</label>\r\n            <input id=\"contractSigned\" name=\"general[contractSigned]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.contractSigned || (depth0 != null ? depth0.contractSigned : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"contractSigned","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约价</label>\r\n            <input id=\"contractPrice\" name=\"general[contractPrice]\" type=\"text\" value=\""
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >签约价</label>\r\n            <input id=\"contractPrice\" name=\"general[contractPrice]\" type=\"text\" value=\""
     + escapeExpression(((helper = (helper = helpers.contractPrice || (depth0 != null ? depth0.contractPrice : depth0)) != null ? helper : helperMissing),(typeof helper === functionType ? helper.call(depth0, {"name":"contractPrice","hash":{},"data":data}) : helper)))
-    + "\" />\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >$150 学校申请费</label>\r\n            <select id=\"applicationFeePaid\" name=\"general[applicationFeePaid]\"  >\r\n            <option value=\"true\" ";
+    + "\" />\r\n            <p></p>\r\n        </div>\r\n         <div class=\"form-group\">\r\n            <label >$150 学校申请费</label>\r\n            <select id=\"applicationFeePaid\" name=\"general[applicationFeePaid]\"  >\r\n            <option value=\"true\" ";
   stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.applicationFeePaid : depth0), "true", {"name":"ifCond","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}));
   if (stack1 != null) { buffer += stack1; }
   buffer += ">已交</option>\r\n            <option value=\"false\" ";
   stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.applicationFeePaid : depth0), "false", {"name":"ifCond","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  buffer += ">未交</option>\r\n        </select>\r\n        </div>\r\n\r\n\r\n     </fieldset> \r\n\r\n      <fieldset> \r\n\r\n        <div class=\"form-group\">\r\n            <label >付款方式</label>\r\n            <select id=\"paymentOption\" name=\"general[paymentOption]\"  >\r\n            <option></option>\r\n        </select>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >是否收尾款</label>\r\n            <select id=\"endFee\" name=\"general[endFee]\"  >\r\n            <option value=\"true\" ";
+  buffer += ">未交</option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n\r\n\r\n     </fieldset> \r\n\r\n      <fieldset> \r\n\r\n        <div class=\"form-group\">\r\n            <label >付款方式</label>\r\n            <select id=\"paymentOption\" name=\"general[paymentOption]\"  >\r\n            <option></option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n        <div class=\"form-group\">\r\n            <label >是否收尾款</label>\r\n            <select id=\"endFee\" name=\"general[endFee]\"  >\r\n            <option value=\"true\" ";
   stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.endFee : depth0), "true", {"name":"ifCond","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}));
   if (stack1 != null) { buffer += stack1; }
   buffer += ">是</option>\r\n            <option value=\"false\" ";
   stack1 = ((helpers.ifCond || (depth0 && depth0.ifCond) || helperMissing).call(depth0, (depth0 != null ? depth0.endFee : depth0), "false", {"name":"ifCond","hash":{},"fn":this.program(1, data),"inverse":this.noop,"data":data}));
   if (stack1 != null) { buffer += stack1; }
-  return buffer + ">否</option>\r\n        </select>\r\n        </div>\r\n        </fieldset> \r\n</form>\r\n</div>\r\n<div class=\"bbm-modal__bottombar\">\r\n    <a href=\"#\" class=\"bbm-button cancel\">Close</a>\r\n    <a href=\"#\" class=\"bbm-button ok\">OK</a>\r\n</div>";
+  return buffer + ">否</option>\r\n        </select>\r\n        <p></p>\r\n        </div>\r\n        </fieldset> \r\n</form>\r\n</div>\r\n<div class=\"bbm-modal__bottombar\">\r\n    <a href=\"#\" class=\"bbm-button cancel\">Close</a>\r\n    <a href=\"#\" class=\"bbm-button ok\">OK</a>\r\n</div>";
 },"useData":true});
 
 },{"hbsfy/runtime":45}],12:[function(require,module,exports){
@@ -1890,7 +1953,7 @@ module.exports={
             if (request.status !== 200) {
                 try {
                     // Try to parse out the error, or default to "Unknown"
-                    message =  request.responseJSON.error || "Unknown Error";
+                    message =  request.responseJSON.error || request.responseText||"Unknown Error";
                 } catch (e) {
                     msgDetail = request.status ? request.status + " - " + request.statusText : "Server was not available";
                     message = "The server returned an error (" + msgDetail + ").";
@@ -2093,6 +2156,9 @@ module.exports={
 
     validator.isNull = function (str) {
         return str.length === 0;
+    };
+    validator.isNotNull = function (str) {
+        return str.length !== 0;
     };
 
     validator.isLength = function (str, min, max) {

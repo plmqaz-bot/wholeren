@@ -191,6 +191,9 @@
     validator.isNull = function (str) {
         return str.length === 0;
     };
+    validator.isNotNull = function (str) {
+        return str.length !== 0;
+    };
 
     validator.isLength = function (str, min, max) {
         return str.length >= min && (typeof max === 'undefined' || str.length <= max);

@@ -8,6 +8,8 @@ var Obiwang = require('./models');
 var Settings = {};
 var Notification = {};
 var baseViews=require('./baseViews.js');
+var validator=require('./validator.js');
+var util=require('./util');
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 === v2) {
@@ -349,6 +351,8 @@ var ContractView=Backbone.View.extend({
             }
             this.render();
             this.collection.on("reset", this.renderCollection, this);
+            _.bindAll(this,'rerenderSingle');
+            _.bindAll(this,'renderCollection');
         },
         events: {
         'click  button.button-add': 'editView',
@@ -363,7 +367,7 @@ var ContractView=Backbone.View.extend({
         },
         renderCollection: function (){
         // Remove all keywords
-        var toRemove = $('.Contracts > tr').not('#header');
+        var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
         toRemove.remove();
         var headrow=$('#scrollableheader');
         var stableheadrow=$('#pinnedheader');
@@ -377,11 +381,29 @@ var ContractView=Backbone.View.extend({
             if(obj.client){
                 headline=obj.client.chineseName;
             }
-            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell">'+headline+'</td></tr>').contents();
+            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
             headInsert.insertAfter(stableheadrow);
         });     
         },
         rerenderSingle:function(options){
+            var self=this;
+            var toRender=new Obiwang.Models.Contract({id:options.id});
+            toRender.fetch({
+                reset:true,
+                success:function(model,response,options){
+                    self.collection.remove(self.collection.get(model.get('id')));
+                    self.collection.push(model);
+                    self.renderCollection();
+                },
+                error: function(model,response,options){
+                        Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'error',
+                            message: util.getRequestErrorMessage(response),
+                            status: 'passive'
+                        });
+                }
+            });
             
         },
         editView: function(){
@@ -396,9 +418,29 @@ var ContractView=Backbone.View.extend({
             $('.app').html(popUpView.render().el);
         }
 });
+
+/**
+
+TODO: refresh view after submit--done
+    validator on every input. 
+    reduce the ajax call to get selection options. 
+*/
 var ContractEdit = Backbone.Modal.extend({
     viewContainer:'.app',
     modelChanges:{},
+    optionalValidation:{
+        'client.primaryEmail':'isEmail',
+        'client.secondaryEmail':'isEmail',
+        'client.primaryPhone':'isInt',
+        'client.secondaryPhone':'isInt',
+
+
+    },
+    requiredValidation:{
+        'client.firstName':'isNotNull',
+        'client.lastName':'isNotNull',
+        'client.chinesename':'isNotNull',
+    },
     initialize: function (options){
         this.parentView = options.view;
         this.model={};
@@ -443,9 +485,10 @@ var ContractEdit = Backbone.Modal.extend({
     cancelEl: '.cancel',
     //submitEl: '.ok',
     events:{
-        "click .ok":"beforeSubmit",
+        "click .ok":"Submit",
         "change select:not([id^='client.'])":"selectionChanged",
         "change input":"inputChanged",
+        "mouseover input":"showError",
         "change #client\\.firstName,#client\\.lastName,#client\\.chinesename":"refreshClientID",
         "change select[id^='client.']":"refreshClientInfo"
     },
@@ -519,6 +562,9 @@ var ContractEdit = Backbone.Modal.extend({
         var field=$(e.currentTarget);
         var selected=$("option:selected",field).val();
        // var value=$("option:selected",field).text();
+       if(!selected){
+            return;
+       }
         var client=new Obiwang.Models['Client']({id:selected});
         var self=this;
         client.fetch({
@@ -539,10 +585,7 @@ var ContractEdit = Backbone.Modal.extend({
                 console.log('error fetch');
             }
         });
-        
-                
-        
-    },
+   },
     inputChanged:function(e){
         var field=$(e.currentTarget);
         var id=field.attr('id');
@@ -572,18 +615,50 @@ var ContractEdit = Backbone.Modal.extend({
             data[id] = value;
            this.modelChanges[id]=value;
         }
+        var error=false;
+        if(value.length===0){
+            if(this.requiredValidation[id]){
+                if(!validator[this.requiredValidation[id]](value)){
+                    field.attr('title','error');
+                    field.addClass('error');
+                    error=true;
+                }
+            }
+        }else{
+            if(this.optionalValidation[id]){
+                if(!validator[this.optionalValidation[id]](value)){
+                   field.attr('title','error');
+                    field.addClass('error');
+                    error=true;
+                }
+            }
+        }
+        if(!error){
+            field.removeClass('error');
+            field.attr('title','');
+        }
+
     },
-    beforeSubmit:function(){
+    showError:function(e){
+
+    },
+    Submit:function(){
         var self=this;
         this.model.save(this.modelChanges,{
             patch:true,
             success:function(d){
                 // refresh parent view
+                    self.parentView.rerenderSingle({id:d.get('id')});
                     return self.close();
                   
             },
             error:function(model,response){
-                console.log(response.responseText.invalidAttributes);
+                Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'error',
+                            message: util.getRequestErrorMessage(response),
+                            status: 'passive'
+                        });
             }
         });
     },

@@ -17,7 +17,7 @@ module.exports={
             if (request.status !== 200) {
                 try {
                     // Try to parse out the error, or default to "Unknown"
-                    message =  request.responseJSON.error || "Unknown Error";
+                    message =  request.responseJSON.error || request.responseText||"Unknown Error";
                 } catch (e) {
                     msgDetail = request.status ? request.status + " - " + request.statusText : "Server was not available";
                     message = "The server returned an error (" + msgDetail + ").";

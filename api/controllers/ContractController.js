@@ -33,6 +33,7 @@ module.exports = {
 					});			
 				});
 			}else{
+				console.log('creating client');
 				Client.create(attribs.client).exec(function(err,client){
 					if(err){
 						return res.json(400,err);

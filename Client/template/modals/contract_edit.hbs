@@ -9,17 +9,17 @@
         <div class="form-group">
             <label >First Name</label>
             <input id="client.firstName" name="general[client.firstName]" type="text" value="{{client.firstName}}" />
-            
+            <p></p>
         </div>
         <div class="form-group">
             <label >Last Name</label>
             <input id="client.lastName" name="general[client.lastName]" type="text" value="{{client.lastName}}" />
-            
+            <p></p>
         </div>
         <div class="form-group">
             <label >Chinese Name</label>
             <input id="client.chineseName" name="general[client.chineseName]" type="text" value="{{client.chineseName}}" />
-            
+            <p></p>
         </div>
         <div class="form-group">
             <label >Client ID</label>
@@ -27,29 +27,32 @@
                 <option value="{{client.id}}">{{client.primaryEmail}}</option>
 
             </select>
-            
+            <p></p>
         </div>
         <div class="form-group">
             <label >Email</label>
             <input id="client.primaryEmail" name="general[client.primaryEmail]" type="text" value="{{client.primaryEmail}}" />
-            
+            <p></p>
         </div>
         <div class="form-group">
             <label >Email2</label>
             <input id="client.secondaryEmail" name="general[client.secondaryEmail]" type="text" value="{{client.secondaryEmail}}" />
-            
+            <p></p>
         </div>
         <div class="form-group">
             <label >Phone Number</label>
             <input id="client.primaryPhone" name="general[client.primaryPhone]" type="text" value="{{client.primaryPhone}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >Phone Number2</label>
             <input id="client.secondaryPhone" name="general[client.secondaryPhone]" type="text" value="{{client.secondaryPhone}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >其它联系方式</label>
-            <input id="client.otherInfo" name="general[client.primaryPhone]" type="text" value="{{client.primaryPhone}}" />
+            <input id="client.otherInfo" name="general[client.otherInfo]" type="text" value="{{client.otherInfo}}" />
+            <p></p>
         </div>
 </fieldset>
  <fieldset>
@@ -58,10 +61,12 @@
             <select id="contractCategory" name="general[contractCategory]"  >
             <option></option>
             </select>
+            <p></p>
         </div>
          <div class="form-group">
             <label >首次咨询日期</label>
-            <input id="createTime" name="general[createTime]" type="text" value="{{createTime}}" />
+            <input id="createTime" name="general[createTime]" type="text" value="{{createTime}}" disabled/>
+            <p></p>
         </div>
         
 </fieldset>
@@ -72,22 +77,26 @@
             <select id="lead" name="general[lead]"  >
             <option></option>
         </select>
+        <p></p>
         </div>
         <div class="form-group">
             <label >Lead Level</label>
             <select id="leadLevel" name="general[leadLevel]"  >
             <option></option>
         </select>
+        <p></p>
         </div>
          <div class="form-group">
             <label >Lead介绍人</label>
             <input id="leadName" name="general[leadName]" type="text" value="{{leadName}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >签约状态</label>
             <select id="status" name="general[status]"  >
             <option></option>
         </select>
+        <p></p>
         </div>
 </fieldset>
 
@@ -97,6 +106,7 @@
             <select id="country" name="general[country]"  >
             <option></option>
         </select>
+        <p></p>
         </div>
         <div class="form-group">
             <label >I-20是否有效</label>
@@ -104,46 +114,56 @@
             <option value="true" {{#ifCond validI20 'true' }} selected {{/ifCond}}>有效</option>
             <option value="false" {{#ifCond validI20 'false' }} selected {{/ifCond}}>无效</option>
         </select>
+        <p></p>
         </div>
          <div class="form-group">
             <label >原学校</label>
             <input id="previousSchool" name="general[previousSchool]" type="text" value="{{previousSchool}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >目标学校</label>
             <input id="targetSchool" name="general[targetSchool]" type="text" value="{{targetSchool}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >GPA</label>
             <input id="gpa" name="general[gpa]" type="text" value="{{gpa}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >TOEFL</label>
             <input id="toefl" name="general[toefl]" type="text" value="{{toefl}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >咨询时年龄</label>
             <input id="age" name="general[age]" type="text" value="{{age}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >就读学位</label>
             <select id="degree" name="general[degree]"  >
             <option></option>
         </select>
+        <p></p>
         </div>
  </fieldset>  
   <fieldset> 
         <div class="form-group">
             <label >何弃疗</label>
             <input id="diagnose" name="general[diagnose]" type="text" value="{{diagnose}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >签约日</label>
             <input id="contractSigned" name="general[contractSigned]" type="text" value="{{contractSigned}}" />
+            <p></p>
         </div>
         <div class="form-group">
             <label >签约价</label>
             <input id="contractPrice" name="general[contractPrice]" type="text" value="{{contractPrice}}" />
+            <p></p>
         </div>
          <div class="form-group">
             <label >$150 学校申请费</label>
@@ -151,6 +171,7 @@
             <option value="true" {{#ifCond applicationFeePaid 'true' }} selected {{/ifCond}}>已交</option>
             <option value="false" {{#ifCond applicationFeePaid 'false' }} selected {{/ifCond}}>未交</option>
         </select>
+        <p></p>
         </div>
 
 
@@ -163,6 +184,7 @@
             <select id="paymentOption" name="general[paymentOption]"  >
             <option></option>
         </select>
+        <p></p>
         </div>
         <div class="form-group">
             <label >是否收尾款</label>
@@ -170,6 +192,7 @@
             <option value="true" {{#ifCond endFee 'true' }} selected {{/ifCond}}>是</option>
             <option value="false" {{#ifCond endFee 'false' }} selected {{/ifCond}}>否</option>
         </select>
+        <p></p>
         </div>
         </fieldset> 
 </form>

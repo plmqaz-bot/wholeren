@@ -58,7 +58,7 @@ var Router=Backbone.Router.extend({
             return;
         }
         if(!Wholeren.currentView){
-            Wholeren.currentView=new View.Contract({el:'#main',option:option});
+            Wholeren.currentView=new View.Contract({el:'.content-view-container',option:option});
         }
     }
 	
