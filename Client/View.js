@@ -422,7 +422,7 @@ var ContractView=Backbone.View.extend({
 /**
 
 TODO: refresh view after submit--done
-    validator on every input. 
+    validator on every input.  -done
     reduce the ajax call to get selection options. 
 */
 var ContractEdit = Backbone.Modal.extend({
