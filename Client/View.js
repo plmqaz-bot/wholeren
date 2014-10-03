@@ -519,7 +519,11 @@ var ContractEdit = Backbone.Modal.extend({
         col.forEach(function(item){
             var ele=item.toJSON();
             console.log(ele);
-            $('#'+tableName).append($('<option>', { value : ele.id }).text(ele[tableName])); 
+            var toAdd=$('<option>', { value : ele.id }).text(ele[tableName]);
+            if(this.model[tableName].id&&this.model[tableName].id==ele.id){
+                toAdd.attr('selected','selected');
+            }
+            $('#'+tableName).append(toAdd); 
         });  
     },
     refreshClientID:function(){
