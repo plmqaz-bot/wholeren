@@ -57,19 +57,22 @@ module.exports = {
 	},
 	'updateContract':function(req,res){
 		var attribs=req.body;
-
+		if(!req.params.id){
+			return res.json(404,{error:"no contract id to update"});
+		}
 		if(attribs.client){
 			if(attribs.client.id){
 				// Update the client
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
+				delete attribs.client["contract"];
 				Client.update({id:attribs.client.id},attribs.client,function(err,obj){
 					if(err){
 						return res.json(400,err);
 					}
 					//console.log("client updated:",obj);
 					attribs.client=attribs.client.id;
-					//console.log(attribs);
+					console.log(attribs);
 					Contract.update({id:req.params.id},attribs,function(err,data){
 						if(err){
 							return res.json(400,err);

@@ -380,6 +380,10 @@ var ContractView=Backbone.View.extend({
             var headline='';
             if(obj.client){
                 headline=obj.client.chineseName;
+                
+            }
+            if(!headline){
+                    headline="NO NAME";
             }
             var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
             headInsert.insertAfter(stableheadrow);
@@ -451,16 +455,26 @@ var ContractEdit = Backbone.Modal.extend({
         }else{
             this.model=new Obiwang.Models.Contract();
         }
-
+        _.bindAll(this,'renderSelect');
+       _.bindAll(this,'render', 'afterRender'); 
+        var _this = this;
+        this.render = _.wrap(this.render, function(render) {
+          render();
+          _this.afterRender();
+          return _this;
+        }); 
+        }, 
+    afterRender:function(){
+         var self=this;
         $.ajax({
-            url: '/options/'
+            url: '/options/',
             type: 'GET',
             headers: {
                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
             },
             success: function (data) {
                 for(var key in data){
-                    this.renderSelect({name:key,content:data[key]});
+                    self.renderSelect({name:key,content:data[key]});
                 }
 
                 
@@ -469,7 +483,7 @@ var ContractEdit = Backbone.Modal.extend({
                 console.log('error');
             }
         });
-    }, 
+    },
     template: tpContractEdit,
     cancelEl: '.cancel',
     //submitEl: '.ok',
@@ -504,15 +518,18 @@ var ContractEdit = Backbone.Modal.extend({
     },
     renderSelect:function(collection){
         var col=collection.content;
-        var tableName=collection.name;        
+        var tableName=collection.name;   
+        tableName=tableName.charAt(0).toLowerCase() + tableName.slice(1)
+        var self=this; 
+        var theSel=$('#'+tableName).find('option').remove().end();
+        theSel.append('<option></option>');
         col.forEach(function(item){
-            var ele=item.toJSON();
-            console.log(ele);
+            var ele=item;
             var toAdd=$('<option>', { value : ele.id }).text(ele[tableName]);
-            if(this.model[tableName].id&&this.model[tableName].id==ele.id){
+            if(self.model.get(tableName)&&((self.model.get(tableName).id&&self.get(tableName).id==ele.id)||self.model.get(tableName)==ele.id)){
                 toAdd.attr('selected','selected');
             }
-            $('#'+tableName).append(toAdd); 
+            theSel.append(toAdd); 
         });  
     },
     refreshClientID:function(){
@@ -649,11 +666,18 @@ var ContractEdit = Backbone.Modal.extend({
                 Wholeren.notifications.clearEverything();
                 var errors=response.responseJSON;
                 if(errors.invalidAttributes){
-                     Wholeren.notifications.addItem({
-                        type: 'error',
-                        message: util.getRequestErrorMessage(response),
-                        status: 'passive'
-                    });
+                    for(var key in errors.invalidAttributes){
+                        if(errors.invalidAttributes.hasOwnProperty(key)){
+                            var a=errors.invalidAttributes[key];
+                            a.forEach(function(item){
+                                Wholeren.notifications.addItem({
+                                type: 'error',
+                                message: JSON.stringify(item),
+                                status: 'passive'
+                                });
+                            });
+                        }
+                    }                     
                 }                       
             }
         });
