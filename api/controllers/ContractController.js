@@ -108,6 +108,36 @@ module.exports = {
 			});	
 		}
 
+	},
+	getAllOptions:function(req,res){
+		var toReturn={};
+		async.auto({
+			ContractCategory:function(dt){
+				ContractCategory.find().exec(dt);
+			},
+			Country:function(dt){
+				Country.find().exec(dt);
+			},
+			Degree:function(dt){
+				Degree.find().exec(dt);
+			},
+			Lead:function(dt){
+				Lead.find().exec(dt);
+			},
+			LeadLevel:function(dt){
+				LeadLevel.find().exec(dt);
+			},
+			PaymentOption:function(dt){
+				PaymentOption.find().exec(dt);
+			},
+			Status:function(dt){
+				Status.find().exec(dt);
+			}
+		},function(err,results){
+			if(err){return res.json(404,err);}
+			return res.json(200,results);
+		});
+
 	}
 };
 

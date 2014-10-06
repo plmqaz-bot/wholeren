@@ -132,12 +132,12 @@
         "client": 1,
         "contractCategory": 3,
         "country": 1,
-        "validI20": true,
+        "validI20": false,
         "degree": 1,
         "applicationFeePaid": false,
         "endFee": false,
         "createdAt": "2014-09-30T02:59:26.458Z",
-        "updatedAt": "2014-09-30T02:59:26.458Z",
+        "updatedAt": "2014-10-06T05:33:36.068Z",
         "id": 12
       },
       {
@@ -274,34 +274,13 @@
         "firstName": "asdfsd",
         "lastName": "asdf",
         "chineseName": "asdf",
-        "primaryEmail": "asdf@asdf.com",
+        "primaryEmail": "asdhahahaf@asdf.com",
         "primaryPhone": "asdf",
         "secondaryPhone": "asdf",
         "otherInfo": "asdf",
         "createdAt": "2014-09-29T22:45:16.900Z",
-        "updatedAt": "2014-09-29T22:45:16.900Z",
+        "updatedAt": "2014-10-06T05:33:36.053Z",
         "id": 1
-      },
-      {
-        "firstName": "asdfasdf",
-        "lastName": "asdf",
-        "chineseName": "asdf",
-        "primaryEmail": "asdf@asdf.com",
-        "primaryPhone": "asdf",
-        "otherInfo": "asdf",
-        "secondaryPhone": "asdf",
-        "createdAt": "2014-09-29T22:47:05.110Z",
-        "updatedAt": "2014-09-30T03:11:36.029Z",
-        "id": 2,
-        "client": {
-          "chineseName": "asdf",
-          "primaryEmail": "test@sd.com",
-          "primaryPhone": "test",
-          "otherInfo": "testghfgh",
-          "secondaryPhone": "testgdfg",
-          "id": "2"
-        },
-        "contractCategory": "4"
       },
       {
         "firstName": "asdfasdf",
@@ -338,30 +317,6 @@
         "createdAt": "2014-09-29T22:49:51.951Z",
         "updatedAt": "2014-09-29T22:49:51.951Z",
         "id": 5
-      },
-      {
-        "firstName": "fn",
-        "lastName": "ln",
-        "chineseName": "asdf",
-        "primaryEmail": "test@sd.com",
-        "primaryPhone": "test",
-        "otherInfo": "testghfgh",
-        "secondaryPhone": "testgdfg",
-        "id": 2,
-        "createdAt": "2014-09-30T03:21:55.217Z",
-        "updatedAt": "2014-09-30T03:21:55.217Z"
-      },
-      {
-        "firstName": "fn",
-        "lastName": "ln",
-        "chineseName": "asdf",
-        "primaryEmail": "test@sd.com",
-        "primaryPhone": "test",
-        "otherInfo": "testghfgh",
-        "secondaryPhone": "testgdfg",
-        "id": 2,
-        "createdAt": "2014-09-30T03:32:12.690Z",
-        "updatedAt": "2014-09-30T03:32:12.690Z"
       },
       {
         "firstName": "fn",
@@ -677,7 +632,8 @@
         "type": "integer",
         "model": "contractcategory",
         "foreignKey": true,
-        "alias": "contractCategory"
+        "alias": "contractCategory",
+        "defaultsTo": 1
       },
       "client": {
         "type": "integer",
@@ -1027,7 +983,8 @@
         "type": "string"
       },
       "primaryEmail": {
-        "type": "string"
+        "type": "string",
+        "unique": true
       },
       "secondaryEmail": {
         "type": "string"

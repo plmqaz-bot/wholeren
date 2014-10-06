@@ -452,34 +452,23 @@ var ContractEdit = Backbone.Modal.extend({
             this.model=new Obiwang.Models.Contract();
         }
 
-        console.log("editing item ",this.model);
-        var col=new Obiwang.Collections.ContractCategory();
-        col.fetch({reset:true});
-        col.on('reset',this.renderSelect,this);
+        $.ajax({
+            url: '/options/'
+            type: 'GET',
+            headers: {
+                'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+            },
+            success: function (data) {
+                for(var key in data){
+                    this.renderSelect({name:key,content:data[key]});
+                }
 
-        col=new Obiwang.Collections.Country();
-        col.fetch({reset:true});
-        col.on('reset',this.renderSelect,this);
-
-        col=new Obiwang.Collections.Degree();
-        col.fetch({reset:true});
-        col.on('reset',this.renderSelect,this);
-
-        col=new Obiwang.Collections.Lead();
-        col.fetch({reset:true});
-        col.on('reset',this.renderSelect,this);
-
-        col=new Obiwang.Collections.LeadLevel();
-        col.fetch({reset:true});
-        col.on('reset',this.renderSelect,this);
-
-        col=new Obiwang.Collections.PaymentOption();
-        col.fetch({reset:true});
-        col.on('reset',this.renderSelect,this);
-
-        col=new Obiwang.Collections.Status();
-        col.fetch({reset:true});
-        col.on('reset',this.renderSelect,this);
+                
+            },
+            error: function (xhr) {
+                console.log('error');
+            }
+        });
     }, 
     template: tpContractEdit,
     cancelEl: '.cancel',
@@ -514,7 +503,7 @@ var ContractEdit = Backbone.Modal.extend({
         
     },
     renderSelect:function(collection){
-        var col=collection;
+        var col=collection.content;
         var tableName=collection.name;        
         col.forEach(function(item){
             var ele=item.toJSON();
@@ -658,11 +647,14 @@ var ContractEdit = Backbone.Modal.extend({
             },
             error:function(model,response){
                 Wholeren.notifications.clearEverything();
-                        Wholeren.notifications.addItem({
-                            type: 'error',
-                            message: util.getRequestErrorMessage(response),
-                            status: 'passive'
-                        });
+                var errors=response.responseJSON;
+                if(errors.invalidAttributes){
+                     Wholeren.notifications.addItem({
+                        type: 'error',
+                        message: util.getRequestErrorMessage(response),
+                        status: 'passive'
+                    });
+                }                       
             }
         });
     },

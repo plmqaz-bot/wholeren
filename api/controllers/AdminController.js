@@ -136,8 +136,8 @@ module.exports={
             // });
             req.session.user=1;
             
-            res.json(401, {error:"Can not log you in!!!"});
-            //res.json(200, {redirect: '/admin/contract/'});
+            //res.json(401, {error:"Can not log you in!!!"});
+            res.json(200, {redirect: '/admin/contract/'});
         } else {
             res.json(401, {error: 'Slow down, there are way too many login attempts!'});
         }
