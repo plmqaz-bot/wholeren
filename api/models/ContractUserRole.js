@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
   	user:{model:'User',required:true},
 
-  	contract:{model:'Contract',required:true},
+  	//contract:{model:'Contract',required:true},
 
   	activeRole:{model:'Role'}
   }

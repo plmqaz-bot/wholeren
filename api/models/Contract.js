@@ -60,17 +60,17 @@ module.exports = {
 
   	paymentOption:{model:"PaymentOption"},
 
-    contractUserRole:{collection:'ContractUserRole',via:'contract'},
+    //contractUserRole:{collection:'ContractUserRole',via:'contract'},
 
-    endFee:{type:"boolean",defaultsTo:"false"}，
+    endFee:{type:"boolean",defaultsTo:"false"},
 
-    transferService:{collection:'Service',via:'contract',dominate:true},
+    //transferService:{collection:'Service',via:'contract',dominate:true},
 
-    emergencyService:{collection:'Service',via:'contract',dominate:true},
+    //emergencyService:{collection:'Service',via:'contract',dominate:true},
 
-    acedemiarService:{collection:'Service',via:'contract',dominate:true},
+    //acedemiarService:{collection:'Service',via:'contract',dominate:true},
 
-    visaService:{collection:'Service',via:'contract',dominate:true},
+    //visaService:{collection:'Service',via:'contract',dominate:true},
   },
 };
 

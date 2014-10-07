@@ -46,7 +46,55 @@ Models={
 Collections={
     Contract : Backbone.Collection.extend({
         model: Models.Contract,
-        url: '/Contract/'
+        url: '/Contract/',
+        sortAttr:{
+            attribute:'client',
+            nested:'firstName',
+            acec:true
+        },
+        comparator:function(A,B){
+            var aAttr='';
+            var bAttr='';
+            aAttr=A.get(this.sortAttr['attribute'])||'';
+            aAttr=aAttr[this.sortAttr['nested']]||aAttr;
+            bAttr=B.get(this.sortAttr['attribute'])||'';
+            bAttr=bAttr[this.sortAttr['nested']]||bAttr;
+            //if(B.get(this.sortAttr['attribute'])){
+            //    bAttr=B.get(this.sortAttr['attribute'])[this.sortAttr];
+            //}
+            if(aAttr>bAttr){
+                return -1;
+            }else if(aAttr<bAttr){
+                return 1;
+            }else{
+                return 0;
+            }
+        },
+        strategies:{
+            firstName:function(contr){
+                if(contr.get('client')) {
+                    return contr.get('client')['firstName'];
+                }else{
+                    return '';
+                }
+            },
+            lastName:function(contr){return contr.get('lastName');}
+        },
+        selectedStrat:function(sortAttr){
+            //this.sortAttr=sortAttr;
+            var sub=sortAttr.indexOf('.');
+            if(sub>0){
+                this.sortAttr['attribute']=sortAttr.substring(0,sub);
+                this.sortAttr['nested']=sortAttr.substring(sub+1);
+            }else{
+                this.sortAttr['attribute']=sortAttr;
+                this.sortAttr['nested']='';
+            }
+        },
+
+        initialize:function(){
+            this.selectedStrat('client.firstName');
+        }
     }),
     Client : Backbone.Collection.extend({
         model: Models.Client,

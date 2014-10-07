@@ -351,13 +351,15 @@ var ContractView=Backbone.View.extend({
             }
             this.render();
             this.collection.on("reset", this.renderCollection, this);
+            this.collection.on("sort", this.renderCollection, this);
             _.bindAll(this,'rerenderSingle');
             _.bindAll(this,'renderCollection');
         },
         events: {
         'click  button.button-add': 'editView',
         'click .clickablecell':'editContract',
-        'click .textbox':'editAttr'
+        'click .textbox':'editAttr',
+        'click .sortable':'sortCollection'
         },
         render: function () {
              var ml = tpContract();
@@ -365,6 +367,12 @@ var ContractView=Backbone.View.extend({
                  ml = ml.substring(1);
              }
             this.$el.html(ml);
+        },
+        sortCollection:function(e){
+            if(!this.collection) return;
+            var attr=$(e.currentTarget).data("attr");
+            this.collection.selectedStrat(attr);
+            this.collection.sort();
         },
         renderCollection: function (){
         // Remove all keywords
@@ -527,7 +535,7 @@ var ContractEdit = Backbone.Modal.extend({
     renderSelect:function(collection){
         var col=collection.content;
         var tableName=collection.name;   
-        tableName=tableName.charAt(0).toLowerCase() + tableName.slice(1)
+        tableName=tableName.charAt(0).toLowerCase() + tableName.slice(1);
         var self=this; 
         var theSel=$('#'+tableName).find('option').remove().end();
         theSel.append('<option></option>');

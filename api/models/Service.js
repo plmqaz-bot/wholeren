@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {  	
-  	contract:{model:'Contract',via:'service'},
+  	//contract:{model:'Contract',via:'service'},
 
     serviceTeacher:{collection:'User',via:'service'}
   }
