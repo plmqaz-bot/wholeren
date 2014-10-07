@@ -11,8 +11,6 @@ module.exports = {
     contractCategory:{model:'ContractCategory',required:true,defaultsTo:1},
 
   	client:{model:'Client',required:true,defaultsTo:1},
-
-  	service:{collection:'Service',via:'contract',dominate:true},
   	
   	lead:{model:'Lead'},
   	
@@ -64,7 +62,15 @@ module.exports = {
 
     contractUserRole:{collection:'ContractUserRole',via:'contract'},
 
-    endFee:{type:"boolean",defaultsTo:"false"}
+    endFee:{type:"boolean",defaultsTo:"false"}，
+
+    transferService:{collection:'Service',via:'contract',dominate:true},
+
+    emergencyService:{collection:'Service',via:'contract',dominate:true},
+
+    acedemiarService:{collection:'Service',via:'contract',dominate:true},
+
+    visaService:{collection:'Service',via:'contract',dominate:true},
   },
 };
 

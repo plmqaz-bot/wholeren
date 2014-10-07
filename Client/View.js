@@ -356,7 +356,8 @@ var ContractView=Backbone.View.extend({
         },
         events: {
         'click  button.button-add': 'editView',
-        'click .clickablecell':'editContract'
+        'click .clickablecell':'editContract',
+        'click .textbox':'editAttr'
         },
         render: function () {
              var ml = tpContract();
@@ -420,6 +421,13 @@ var ContractView=Backbone.View.extend({
             console.log("clicked item ",item);
             var popUpView = new ContractEdit({view:this,model:item});
             $('.app').html(popUpView.render().el);
+        },
+        editAttr:function(e){
+            var attr=$(e.currentTarget).data("attr");
+            var type=$(e.currentTarget).data("type");
+            var id=$(e.currentTarget).parent().attr("id");
+             var popUpView=new AttributeEdit({view:this,id:id,attr:attr});
+             $('.app').html(popUpView.render().el);
         }
 });
 
@@ -559,9 +567,7 @@ var ContractEdit = Backbone.Modal.extend({
                 console.log(clients);
                 clients.forEach(function(entry){
                     theSel.append('<option value="'+entry.id+'">'+entry.primaryEmail+'</option>');
-                });
-
-                
+                });                
             },
             error: function (xhr) {
                 console.log('error');
@@ -686,6 +692,55 @@ var ContractEdit = Backbone.Modal.extend({
         return;
     }
 });
+
+var AttributeEdit=Backbone.Modal.extend({
+    initialize: function (options){
+        this.parentView = options.view;
+        this.contractID = options.id;
+        this.attr=options.attr;
+        //this.model={attr:options.attr};
+    }, 
+    template: tpReply,
+    cancelEl: '.cancel',
+    submitEl: '.ok',
+    submit: function () {
+        // get text and submit, and also refresh the collection. 
+        var content = $('.reply-content').val();
+        var options={};
+        options["id"]=this.contractID;
+        options[this.attr]=content;
+        var contract = new Obiwang.Models.Contract(options);
+        var self=this;
+        contract.save(options,{
+            patch:true,
+            success:function(d){
+                // refresh parent view
+                    //self.parentView.rerenderSingle({id:d.get('id')});
+                    return self.close();
+                  
+            },
+            error:function(model,response){
+                Wholeren.notifications.clearEverything();
+                var errors=response.responseJSON;
+                if(errors.invalidAttributes){
+                    for(var key in errors.invalidAttributes){
+                        if(errors.invalidAttributes.hasOwnProperty(key)){
+                            var a=errors.invalidAttributes[key];
+                            a.forEach(function(item){
+                                Wholeren.notifications.addItem({
+                                type: 'error',
+                                message: JSON.stringify(item),
+                                status: 'passive'
+                                });
+                            });
+                        }
+                    }                     
+                }                       
+            }
+        });
+    }
+});
+
 module.exports={
 		Setting:SettingView,
 		Sidebar:Sidebar,

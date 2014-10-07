@@ -7,9 +7,7 @@
 
 module.exports = {
 
-  attributes: {
-  	serviceType:{model:"ServiceType",required:true },
-  	
+  attributes: {  	
   	contract:{model:'Contract',via:'service'},
 
     serviceTeacher:{collection:'User',via:'service'}

@@ -11,8 +11,6 @@ module.exports = {
   	role:{type:"string",required:true,unique:true },
 
   	roleOnUser:{collection:'User',via:'role'},
-
-  	roleOnContract:{collection:'ContractUserRole',via:'activeRole'}
   	
   }
 };
