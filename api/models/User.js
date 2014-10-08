@@ -20,11 +20,11 @@ module.exports = {
 
   	lastName:{type:'string',required:true},
 
-  	role:{model:'Role',required:true},
+  	role:{model:'Role',required:true}
 
-  	contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
+  	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
 
-  	service:{collection:'Service',via:'serviceTeacher',dominant:true}
+  	//service:{collection:'Service',via:'serviceTeacher',dominant:true}
 
   },
   beforeCreate: function (attrs, next) {

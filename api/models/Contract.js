@@ -60,7 +60,7 @@ module.exports = {
 
   	paymentOption:{model:"PaymentOption"},
 
-    //contractUserRole:{collection:'ContractUserRole',via:'contract'},
+    contractUser:{model:"User"},
 
     endFee:{type:"boolean",defaultsTo:"false"},
 
@@ -68,9 +68,9 @@ module.exports = {
 
     //emergencyService:{collection:'Service',via:'contract',dominate:true},
 
-    //acedemiarService:{collection:'Service',via:'contract',dominate:true},
+    acedemiarService:{model:'Service'},
 
-    //visaService:{collection:'Service',via:'contract',dominate:true},
+    visaService:{model:'Service'},
   },
 };
 

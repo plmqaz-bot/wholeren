@@ -339,7 +339,7 @@ Settings.Pane = Backbone.View.extend({
 });
  
 var ContractView=Backbone.View.extend({
-
+    filter:[],
     id: "contracts",
     singleTemplate:tpContractSingle,
         initialize: function (options) {
@@ -371,7 +371,16 @@ var ContractView=Backbone.View.extend({
         sortCollection:function(e){
             if(!this.collection) return;
             var attr=$(e.currentTarget).data("attr");
-            this.collection.selectedStrat(attr);
+            var direction;
+            switch($(e.currentTarget).data("direction")){
+                case "asec":
+                direction="desc";$(e.currentTarget).data("direction","desc");break;
+                case "desc":
+                direction="asec";$(e.currentTarget).data("direction","asec");break;
+                default:
+                direction="asec";$(e.currentTarget).data("direction","asec");
+            }
+            this.collection.selectedStrat({sortAttr:attr,direction:direction});
             this.collection.sort();
         },
         renderCollection: function (){
@@ -383,6 +392,24 @@ var ContractView=Backbone.View.extend({
         var self=this;
         this.collection.forEach(function(item){
             var obj=item.toJSON();
+            var filteredOut=false;
+            self.filter.forEach(function(f){
+                var attr=f.attr;
+                var value=f.value;
+                var sub=attr.indexOf('.');
+                if(sub>0){
+                    var tocomp=obj[attr.substring(0,sub)]||{};
+                    tocomp=tocomp[attr.substring(sub+1)];
+                    if(tocomp!=value){
+                        filteredOut=true;
+                    }
+                }else if(obj[attr]!=value){
+                    filteredOut=true;
+                }
+            });
+            if(filteredOut){
+                return;
+            }
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
             toInsert.insertAfter(headrow);
@@ -643,16 +670,12 @@ var ContractEdit = Backbone.Modal.extend({
         if(value.length===0){
             if(this.requiredValidation[id]){
                 if(!validator[this.requiredValidation[id]](value)){
-                    field.attr('title','error');
-                    field.addClass('error');
                     error=true;
                 }
             }
         }else{
             if(this.optionalValidation[id]){
                 if(!validator[this.optionalValidation[id]](value)){
-                   field.attr('title','error');
-                    field.addClass('error');
                     error=true;
                 }
             }
@@ -660,6 +683,11 @@ var ContractEdit = Backbone.Modal.extend({
         if(!error){
             field.removeClass('error');
             field.attr('title','');
+            this.formError=false;
+        }else{
+            field.attr('title','error');
+            field.addClass('error');
+            this.formError=true;
         }
 
     },
@@ -667,6 +695,7 @@ var ContractEdit = Backbone.Modal.extend({
 
     },
     Submit:function(){
+        if(this.formError) return;
         var self=this;
         this.model.save(this.modelChanges,{
             patch:true,

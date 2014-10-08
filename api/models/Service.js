@@ -9,8 +9,11 @@ module.exports = {
 
   attributes: {  	
   	//contract:{model:'Contract',via:'service'},
+  	serviceType{model:'ServiceType'},
 
-    serviceTeacher:{collection:'User',via:'service'}
+  	progress:{type:'int'},
+
+    serviceTeacher:{model:'User'}
   }
 };
 
