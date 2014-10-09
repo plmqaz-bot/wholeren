@@ -8,7 +8,11 @@
 module.exports = {
 
   attributes: {
-  	
+	collageName:{type:'string'},
+
+	writer:{model:'User'},
+
+	service{model:'Service'}  	
   }
 };
 

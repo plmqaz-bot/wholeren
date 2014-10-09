@@ -19,7 +19,7 @@ var View=require('./View');
 var init=function(){
         Wholeren.router = new Router();
         Wholeren.notifications = new View.Notification.Collection({ model: [] });
-        
+                
 	Backbone.history.start({
 		pushState:true,
 		hashChange:false,

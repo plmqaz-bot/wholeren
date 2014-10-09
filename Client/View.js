@@ -20,21 +20,25 @@ Handlebars.registerHelper('ifCond', function (v1, v2, options) {
 Backbone.$ = $;
 //#endregion
 /*************************************************All the templates *****************************/
-var tpMsgPane = require('./template/settings/message.hbs');
-var tpSidebar = require('./template/settings/sidebar.hbs');
+//var tpMsgPane = require('./template/settings/message.hbs');
+//var tpSidebar = require('./template/settings/sidebar.hbs');
 var tpGeneral = require('./template/settings/general.hbs');
 var tpReply = require('./template/modals/reply.hbs');
-var tpChooseMaterial = require('./template/modals/material.hbs');
+//var tpChooseMaterial = require('./template/modals/material.hbs');
 var tpNotification = require('./template/notification.hbs');
-var tpKeyword = require('./template/settings/keyword.hbs');
-var tpMaterial = require('./template/settings/replymaterial.hbs');
-var tpKeywordSingle=require('./template/settings/keyword_single.hbs');
-var tpMaterialSingle = require('./template/settings/replymaterial_single.hbs');
-var tpMaterialAdd = require('./template/settings/replymaterial_add.hbs');
+//var tpKeyword = require('./template/settings/keyword.hbs');
+//var tpMaterial = require('./template/settings/replymaterial.hbs');
+//var tpKeywordSingle=require('./template/settings/keyword_single.hbs');
+//var tpMaterialSingle = require('./template/settings/replymaterial_single.hbs');
+//var tpMaterialAdd = require('./template/settings/replymaterial_add.hbs');
 var tpContract=require('./template/contract.hbs');
 var tpContractSingle=require('./template/contract_single.hbs');
 var tpContractEdit=require('./template/modals/contract_edit.hbs');
-
+var tpl={
+    'Contract':tpContract,
+    'ContractSingle':tpContractSingle,
+    'ContractEdit':tpContractEdit
+};
 /*************************************************Views for Notifications *****************************/
 /**
      * This handles Notification groups
@@ -342,6 +346,7 @@ var ContractView=Backbone.View.extend({
     filter:[],
     id: "contracts",
     singleTemplate:tpContractSingle,
+    template:tpContract(),
         initialize: function (options) {
             if (options.collection) {
                 this.collection = options.collection;
@@ -362,7 +367,7 @@ var ContractView=Backbone.View.extend({
         'click .sortable':'sortCollection'
         },
         render: function () {
-             var ml = tpContract();
+             var ml = template();
              if (ml[0] != '<') {
                  ml = ml.substring(1);
              }
@@ -461,8 +466,10 @@ var ContractView=Backbone.View.extend({
             var attr=$(e.currentTarget).data("attr");
             var type=$(e.currentTarget).data("type");
             var id=$(e.currentTarget).parent().attr("id");
-             var popUpView=new AttributeEdit({view:this,id:id,attr:attr});
-             $('.app').html(popUpView.render().el);
+            var curValue=this.collection.get(id)[attr];
+             var popUpView=new AttributeEdit({view:this,id:id,attr:attr,type:type,curValue:curValue});
+             popUpView.render();
+             $('.app').html(popUpView.el);
         }
 });
 
@@ -604,7 +611,8 @@ var ContractEdit = Backbone.Modal.extend({
                     theSel.append('<option value="'+entry.id+'">'+entry.primaryEmail+'</option>');
                 });                
             },
-            error: function (xhr) {
+            error: function (response) {
+                util.handleRequestError(response);
                 console.log('error');
             }
         });
@@ -633,6 +641,7 @@ var ContractEdit = Backbone.Modal.extend({
                 $('#client\\.otherInfo').val(clientmod.otherInfo);
             },
             error: function (collection, response, options) {
+                util.handleRequestError(response);
                 console.log('error fetch');
             }
         });
@@ -706,22 +715,7 @@ var ContractEdit = Backbone.Modal.extend({
                   
             },
             error:function(model,response){
-                Wholeren.notifications.clearEverything();
-                var errors=response.responseJSON;
-                if(errors.invalidAttributes){
-                    for(var key in errors.invalidAttributes){
-                        if(errors.invalidAttributes.hasOwnProperty(key)){
-                            var a=errors.invalidAttributes[key];
-                            a.forEach(function(item){
-                                Wholeren.notifications.addItem({
-                                type: 'error',
-                                message: JSON.stringify(item),
-                                status: 'passive'
-                                });
-                            });
-                        }
-                    }                     
-                }                       
+                util.handleRequestError(response);                       
             }
         });
     },
@@ -732,14 +726,34 @@ var ContractEdit = Backbone.Modal.extend({
 
 var AttributeEdit=Backbone.Modal.extend({
     initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
         this.parentView = options.view;
         this.contractID = options.id;
         this.attr=options.attr;
+        this.type=options.type;
+        this.curValue=options.curValue;
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        })
         //this.model={attr:options.attr};
     }, 
     template: tpReply,
     cancelEl: '.cancel',
     submitEl: '.ok',
+    afterRender:function(model){
+        switch(this.type){
+            case 'text':
+            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><textarea class="reply-content">'+this.curValue+'</textarea>').contents();        
+            this.$el.find('.bbm-modal__section').append(ele);
+            break;
+            case 'selection':
+           break;
+            
+        }
+        return this;
+    },
     submit: function () {
         // get text and submit, and also refresh the collection. 
         var content = $('.reply-content').val();
@@ -757,22 +771,7 @@ var AttributeEdit=Backbone.Modal.extend({
                   
             },
             error:function(model,response){
-                Wholeren.notifications.clearEverything();
-                var errors=response.responseJSON;
-                if(errors.invalidAttributes){
-                    for(var key in errors.invalidAttributes){
-                        if(errors.invalidAttributes.hasOwnProperty(key)){
-                            var a=errors.invalidAttributes[key];
-                            a.forEach(function(item){
-                                Wholeren.notifications.addItem({
-                                type: 'error',
-                                message: JSON.stringify(item),
-                                status: 'passive'
-                                });
-                            });
-                        }
-                    }                     
-                }                       
+                util.handleRequestError(response);                       
             }
         });
     }

@@ -66,7 +66,10 @@ module.exports = {
 
     comment:{collection:"Comment"},
 
-    //transferService:{collection:'Service',via:'contract',dominate:true},
+    expert:{model:'User'},
+
+    sales:{model:'User'},
+        //transferService:{collection:'Service',via:'contract',dominate:true},
 
     //emergencyService:{collection:'Service',via:'contract',dominate:true},
 

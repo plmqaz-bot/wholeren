@@ -1,3 +1,5 @@
+
+
 module.exports={
 
 
@@ -25,5 +27,25 @@ module.exports={
             }
 
             return message;
+        },
+        handleRequestError:function(response){
+            Wholeren.notifications.clearEverything();
+                var errors=response.responseJSON;
+                if(errors.invalidAttributes){
+                    for(var key in errors.invalidAttributes){
+                        if(errors.invalidAttributes.hasOwnProperty(key)){
+                            var a=errors.invalidAttributes[key];
+                            a.forEach(function(item){
+                                Wholeren.notifications.addItem({
+                                type: 'error',
+                                message: JSON.stringify(item),
+                                status: 'passive'
+                                });
+                            });
+                        }
+                    }                     
+                }
         }
+
+
 }

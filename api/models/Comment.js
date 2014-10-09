@@ -9,7 +9,8 @@ module.exports = {
 
   attributes: {
   	comment:{type:"string"},
-  	contract:{model:"Contract"}
+  	contract:{model:"Contract"},
+  	service::{model:'Service'}
   }
 };
 
