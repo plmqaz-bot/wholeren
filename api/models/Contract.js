@@ -64,13 +64,16 @@ module.exports = {
 
     endFee:{type:"boolean",defaultsTo:"false"},
 
+    comment:{collection:"Comment"},
+
     //transferService:{collection:'Service',via:'contract',dominate:true},
 
     //emergencyService:{collection:'Service',via:'contract',dominate:true},
 
-    acedemiarService:{model:'Service'},
+    //acedemiarService:{model:'Service'},
 
-    visaService:{model:'Service'},
+    //visaService:{model:'Service'},
+    service:{collection:'Service',via:'contract',dominate:true}
   },
 };
 
