@@ -7,9 +7,9 @@ var Handlebars = require('hbsfy/runtime');
 var Obiwang = require('./models');
 var Settings = {};
 var Notification = {};
-var baseViews=require('./baseViews.js');
 var validator=require('./validator.js');
 var util=require('./util');
+var JST=require('./JST');
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 === v2) {
@@ -17,47 +17,229 @@ Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     }
     return options.inverse(this);
 });
+Handlebars.registerHelper('shortText', function (text) {
+    text=text||'';
+    return text.substring(0,20);
+});
 Backbone.$ = $;
 //#endregion
-/*************************************************All the templates *****************************/
-//var tpMsgPane = require('./template/settings/message.hbs');
-//var tpSidebar = require('./template/settings/sidebar.hbs');
-var tpGeneral = require('./template/settings/general.hbs');
-var tpReply = require('./template/modals/reply.hbs');
-//var tpChooseMaterial = require('./template/modals/material.hbs');
-var tpNotification = require('./template/notification.hbs');
-//var tpKeyword = require('./template/settings/keyword.hbs');
-//var tpMaterial = require('./template/settings/replymaterial.hbs');
-//var tpKeywordSingle=require('./template/settings/keyword_single.hbs');
-//var tpMaterialSingle = require('./template/settings/replymaterial_single.hbs');
-//var tpMaterialAdd = require('./template/settings/replymaterial_add.hbs');
-var tpContract=require('./template/contract.hbs');
-var tpContractSingle=require('./template/contract_single.hbs');
-var tpContractEdit=require('./template/modals/contract_edit.hbs');
-var tpl={
-    'Contract':tpContract,
-    'ContractSingle':tpContractSingle,
-    'ContractEdit':tpContractEdit
-};
+Wholeren.baseView= Backbone.View.extend({
+        templateName: "widget",
+
+        template: function (data) {
+            return JST[this.templateName](data);
+        },
+
+        templateData: function () {
+            if (this.model) {
+                return this.model.toJSON();
+            }
+
+            if (this.collection) {
+                return this.collection.toJSON();
+            }
+
+            return {};
+        },
+
+        render: function () {
+            if (_.isFunction(this.beforeRender)) {
+                this.beforeRender();
+            }
+
+            this.$el.html(this.template(this.templateData()));
+
+            if (_.isFunction(this.afterRender)) {
+                this.afterRender();
+            }
+
+            return this;
+        },
+        addSubview: function (view) {
+            if (!(view instanceof Backbone.View)) {
+                throw new Error("Subview must be a Backbone.View");
+            }
+            this.subviews = this.subviews || [];
+            this.subviews.push(view);
+            return view;
+        },
+
+        // Removes any subviews associated with this view
+        // by `addSubview`, which will in-turn remove any
+        // children of those views, and so on.
+        removeSubviews: function () {
+            var children = this.subviews;
+
+            if (!children) {
+                return this;
+            }
+
+            _(children).invoke("remove");
+
+            this.subviews = [];
+            return this;
+        },
+
+        // Extends the view's remove, by calling `removeSubviews`
+        // if any subviews exist.
+        remove: function () {
+            if (this.subviews) {
+                this.removeSubviews();
+            }
+            return Backbone.View.prototype.remove.apply(this, arguments);
+        }
+    });
+var Views={}
+Views.Login=Wholeren.baseView.extend({
+
+    initialize: function () {
+        this.render();
+    },
+
+    templateName: "signin",
+
+
+    events: {
+        'submit #login': 'submitHandler'
+    },
+
+    afterRender: function () {
+        var self = this;
+        this.$el.css({"opacity": 0}).animate({"opacity": 1}, 500, function () {
+            self.$("[name='email']").focus();
+        });
+    },
+
+    submitHandler: function (event) {
+        event.preventDefault();
+        var email = this.$el.find('.email').val(),
+            password = this.$el.find('.password').val(),
+            redirect = '/admin/contract/',
+            validationErrors = [];
+            $.ajax({
+                url: '/admin/doSignin/',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                },
+                data: {
+                    email: email,
+                    password: password,
+                    redirect: redirect
+                },
+                success: function (msg) {
+                    window.location.href = msg.redirect;
+                },
+                error: function (xhr) {
+                    Wholeren.notifications.clearEverything();
+                    Wholeren.notifications.addItem({
+                        type: 'error',
+                        message: util.getRequestErrorMessage(xhr),
+                        status: 'passive'
+                    });
+                }
+            });
+
+    }
+
+});
+ Views.Signup =Wholeren.baseView.extend({
+
+        initialize: function () {
+            this.submitted = "no";
+            this.render();
+        },
+
+        templateName: "signup",
+
+        events: {
+            'submit #signup': 'submitHandler'
+        },
+
+        afterRender: function () {
+            var self = this;
+
+            this.$el
+                .css({"opacity": 0})
+                .animate({"opacity": 1}, 500, function () {
+                    self.$("[name='name']").focus();
+                });
+        },
+
+        submitHandler: function (event) {
+            event.preventDefault();
+            var name = this.$('.name').val(),
+                email = this.$('.email').val(),
+                password = this.$('.password').val(),
+                validationErrors = [],
+                self = this;
+
+            if (!validator.isLength(name, 1)) {
+                validationErrors.push("Please enter a name.");
+            }
+
+            if (!validator.isEmail(email)) {
+                validationErrors.push("Please enter a correct email address.");
+            }
+
+            if (!validator.isLength(password, 0)) {
+                validationErrors.push("Please enter a password");
+            }
+
+            if (!validator.equals(this.submitted, "no")) {
+                validationErrors.push("Ghost is signing you up. Please wait...");
+            }
+
+            if (validationErrors.length) {
+                validator.handleErrors(validationErrors);
+            } else {
+                this.submitted = "yes";
+                $.ajax({
+                    url: '/admin/doSignup/',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                    },
+                    data: {
+                        name: name,
+                        email: email,
+                        password: password
+                    },
+                    success: function (msg) {
+                        window.location.href = msg.redirect;
+                    },
+                    error: function (xhr) {
+                        self.submitted = "no";
+                        Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'error',
+                            message: util.getRequestErrorMessage(xhr),
+                            status: 'passive'
+                        });
+                    }
+                });
+            }
+        }
+    });
+
 /*************************************************Views for Notifications *****************************/
 /**
      * This handles Notification groups
      */
 
-Notification.Single = Backbone.View.extend({
+Notification.Single = Wholeren.baseView.extend({
     templateName: 'notification',
     initialize: function (options) {
         this.model = options.model;
     },
     className: 'js-bb-notification',
-    template: tpNotification,
     render: function () {
         var html = this.template(this.model);
         this.$el.html(html);
         return this;
     }
 });
-Notification.Collection = Backbone.View.extend({
+Notification.Collection = Wholeren.baseView.extend({
     el: '#notifications',
     initialize: function () {
         var self = this;
@@ -176,7 +358,8 @@ Notification.Collection = Backbone.View.extend({
         });
     }
 });
-/*************************************************Views for Settings *****************************/
+
+/******************************************Views for Settings*************************************/
 var SettingView = Backbone.View.extend({
     initialize: function (options) {
         $(".settings-content").removeClass('active');
@@ -185,7 +368,7 @@ var SettingView = Backbone.View.extend({
             pane: options.pane,
             model: this.model
         });
-        this.listenTo(Wholeren.router, 'route:settings', this.changePane);
+        this.listenTo(myApp.router, 'route:settings', this.changePane);
         
     },
     changePane: function (pane) {
@@ -197,16 +380,16 @@ var SettingView = Backbone.View.extend({
     render: function () {
         this.sidebar.render();
 //        if(!this.sidebar.pane)
-//        	this.showContent('general');
+//          this.showContent('general');
 //        else
-//        	this.sidebar.renderPane({});
+//          this.sidebar.renderPane({});
     }
 });
 
 var Sidebar = Backbone.View.extend({
     initialize: function (options) {
-    	
-    	this.el=options.el;
+        
+        this.el=options.el;
         this.render();
 
         this.menu = this.$('.settings-menu');
@@ -216,10 +399,10 @@ var Sidebar = Backbone.View.extend({
         'click .settings-menu li': 'switchPane'
     },
     render: function () {
-//    	for (item in this.$el){
-//    		alert(item+" "+this.$el[item]);
-//    	}
-    	//this.el.html(tpSidebar());
+//      for (item in this.$el){
+//          alert(item+" "+this.$el[item]);
+//      }
+        //this.el.html(tpSidebar());
     
         //$(this.el).html("bb");
         var ml = tpSidebar({});
@@ -228,7 +411,7 @@ var Sidebar = Backbone.View.extend({
         }
         this.$el.html('');
        this.$el.html(ml);
-    	return this;
+        return this;
     },
     switchPane: function (e) {
         e.preventDefault();
@@ -243,7 +426,7 @@ var Sidebar = Backbone.View.extend({
         
         var self = this,
             model;
-        Wholeren.router.navigate('/settings/' + id + '/');
+        myApp.router.navigate('/settings/' + id + '/');
         //myApp.trigger('urlchange');
         if (this.pane && id === this.pane.id) {
             return;
@@ -253,9 +436,9 @@ var Sidebar = Backbone.View.extend({
         this.setActive(id);
         var toDisplay=Settings[id];
         if(toDisplay){
-        	this.pane =new toDisplay({ el: '.settings-content' }); 
+            this.pane =new toDisplay({ el: '.settings-content' }); 
         }else{
-        	this.pane=new Settings.Pane({ el: '.settings-content' });
+            this.pane=new Settings.Pane({ el: '.settings-content' });
         }
         this.pane.render();
         
@@ -277,7 +460,7 @@ var Sidebar = Backbone.View.extend({
     },
 
     setActive: function (id) {
-    	this.menu = this.$('.settings-menu');
+        this.menu = this.$('.settings-menu');
         this.menu.find('li').removeClass('active');
         var submenu= this.menu.find('.submenu');
         for (var i = 0; i < submenu.length; i++) {
@@ -310,7 +493,7 @@ Settings.Pane = Backbone.View.extend({
         this.$el.fadeIn(300);
     },
     afterRender: function () {
-    	
+        
         this.$el.attr('id', this.id);
         this.$el.addClass('active');
     },
@@ -341,12 +524,49 @@ Settings.Pane = Backbone.View.extend({
 //        });
     }
 });
- 
-var ContractView=Backbone.View.extend({
+    // ### General settings
+ Settings.general = Settings.Pane.extend({
+    id: "general",
+//    events: {
+//        'click .button-save': 'saveSettings',
+//        'click .js-modal-logo': 'showLogo',
+//        'click .js-modal-cover': 'showCover'
+//    },
+    render: function () {
+        var ml = tpGeneral();
+        
+        this.$el.html(ml);
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*************************************************Views for Contract *****************************/
+
+var ContractView=Wholeren.baseView.extend({
     filter:[],
     id: "contracts",
-    singleTemplate:tpContractSingle,
-    template:tpContract(),
+    singleTemplate:JST['contractSingle'],
+    templateName:'contract',
         initialize: function (options) {
             if (options.collection) {
                 this.collection = options.collection;
@@ -367,7 +587,7 @@ var ContractView=Backbone.View.extend({
         'click .sortable':'sortCollection'
         },
         render: function () {
-             var ml = template();
+             var ml = this.template();
              if (ml[0] != '<') {
                  ml = ml.substring(1);
              }
@@ -466,7 +686,7 @@ var ContractView=Backbone.View.extend({
             var attr=$(e.currentTarget).data("attr");
             var type=$(e.currentTarget).data("type");
             var id=$(e.currentTarget).parent().attr("id");
-            var curValue=this.collection.get(id)[attr];
+            var curValue=this.collection.get(id).get(attr);
              var popUpView=new AttributeEdit({view:this,id:id,attr:attr,type:type,curValue:curValue});
              popUpView.render();
              $('.app').html(popUpView.el);
@@ -477,7 +697,7 @@ var ContractView=Backbone.View.extend({
 
 TODO: refresh view after submit--done
     validator on every input.  -done
-    reduce the ajax call to get selection options. 
+    reduce the ajax call to get selection options. -done
 */
 var ContractEdit = Backbone.Modal.extend({
     viewContainer:'.app',
@@ -534,7 +754,7 @@ var ContractEdit = Backbone.Modal.extend({
             }
         });
     },
-    template: tpContractEdit,
+    template: JST['contractEdit'],
     cancelEl: '.cancel',
     //submitEl: '.ok',
     events:{
@@ -731,7 +951,7 @@ var AttributeEdit=Backbone.Modal.extend({
         this.contractID = options.id;
         this.attr=options.attr;
         this.type=options.type;
-        this.curValue=options.curValue;
+        this.curValue=options.curValue||'';
         var self=this;
         this.render=_.wrap(this.render,function(render){
             render();
@@ -739,7 +959,7 @@ var AttributeEdit=Backbone.Modal.extend({
         })
         //this.model={attr:options.attr};
     }, 
-    template: tpReply,
+    template: JST['editbox'],
     cancelEl: '.cancel',
     submitEl: '.ok',
     afterRender:function(model){
@@ -766,7 +986,7 @@ var AttributeEdit=Backbone.Modal.extend({
             patch:true,
             success:function(d){
                 // refresh parent view
-                    //self.parentView.rerenderSingle({id:d.get('id')});
+                    self.parentView.rerenderSingle({id:d.get('id')});
                     return self.close();
                   
             },
@@ -782,6 +1002,7 @@ module.exports={
 		Sidebar:Sidebar,
         Panes: Settings,
         Notification:Notification,
-        Contract:ContractView
+        Contract:ContractView,
+        Auth:Views
 
 };

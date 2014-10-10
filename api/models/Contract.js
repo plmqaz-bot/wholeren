@@ -69,6 +69,8 @@ module.exports = {
     expert:{model:'User'},
 
     sales:{model:'User'},
+
+    teacher:{model:'User'},
         //transferService:{collection:'Service',via:'contract',dominate:true},
 
     //emergencyService:{collection:'Service',via:'contract',dominate:true},
@@ -76,7 +78,7 @@ module.exports = {
     //acedemiarService:{model:'Service'},
 
     //visaService:{model:'Service'},
-    service:{collection:'Service',via:'contract',dominate:true}
+    service:{collection:'Service',via:'contract'}
   },
 };
 

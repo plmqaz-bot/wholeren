@@ -6,7 +6,7 @@ var $ = require('jquery');
 var Backbone = require('backbone');
 Backbone.$=$;
 var View=require('./View');
- Wholeren.Views=require('./baseViews').authViews;
+ Wholeren.Views=View;
 var Router=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
@@ -18,11 +18,11 @@ var Router=Backbone.Router.extend({
         'reset/:token/'    : 'reset'
     },
     signup: function () {
-        Wholeren.currentView = new Wholeren.Views.Signup({ el: '.js-signup-box' });
+        Wholeren.currentView = new Wholeren.Views.Auth.Signup({ el: '.js-signup-box' });
     },
 
     signin: function () {
-        Wholeren.currentView = new Wholeren.Views.Login({ el: '.js-login-box' });
+        Wholeren.currentView = new Wholeren.Views.Auth.Login({ el: '.js-login-box' });
     },
 
     // forgotten: function () {
@@ -44,7 +44,7 @@ var Router=Backbone.Router.extend({
         }
         
         if (!Wholeren.currentView){
-            Wholeren.currentView = new View.Setting({ el: '#main', pane: pane });            
+            Wholeren.currentView = new  Wholeren.Views.Setting({ el: '#main', pane: pane });            
         }
 // only update the currentView if we don't already have a Settings view
 //        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
@@ -58,7 +58,7 @@ var Router=Backbone.Router.extend({
             return;
         }
         if(!Wholeren.currentView){
-            Wholeren.currentView=new View.Contract({el:'.content-view-container',option:option});
+            Wholeren.currentView=new  Wholeren.Views.Contract({el:'.content-view-container',option:option});
         }
     }
 	

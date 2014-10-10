@@ -13,13 +13,13 @@
         <td>{{leadLevel.leadLevel}}</td>
         <td>{{status.status}}</td>
         <td>前期助理</td>
-        <td>销售顾问</td>
-        <td data-attr="expert" data-type="selection" class="selectbox">{{expert/name}}</td>
-        <td data-attr="originalText" data-type="text" class="textbox">{{originalText}}</td>        
-        <td data-attr="salesFollowup" data-type="text" class="textbox">{{salesFollowup}}</td>
-        <td data-attr="salesRecord" data-type="text" class="textbox">{{salesRecord}}</td>
+        <td>{{sales/nickname}}</td>
+        <td data-attr="expert" data-type="selection" class="selectbox">{{expert/nickname}}</td>
+        <td data-attr="originalText" data-type="text" class="textbox">{{shortText originalText}}</td>        
+        <td data-attr="salesFollowup" data-type="text" class="textbox">{{shortText salesFollowup}}</td>
+        <td data-attr="salesRecord" data-type="text" class="textbox">{{shortText salesRecord}}</td>
         <td>专家咨询日期</td>
-        <td data-attr="expertFollowup" data-type="text" class="textbox">{{expertFollowup}}</td>
+        <td data-attr="expertFollowup" data-type="text" class="textbox">{{shortText expertFollowup}}</td>
         <td>{{country.country}}</td>
         <td>{{validI20}}</td>
         <td>{{previousSchool}}</td>
@@ -31,7 +31,7 @@
         <td>{{diagnose}}</td>
         <td>{{contractSigned}}</td>
         <td>{{contractPaid}}</td>
-        <th>转学服务</th>
+        <th>{{#each service}}{{/each}}</th>
         <th>紧急服务</th>
         <th>学术服务</th>
         <th>签证服务</th>
@@ -40,5 +40,5 @@
         <td>{{applicationFeePaid}}</td>
         <td>{{paymentOption/paymentOption}}</td>
         <td>{{endFee}}</td>
-        <td>服务老师</td>
+        <td>{{teacher/nickname}}</td>
         </tr> 
