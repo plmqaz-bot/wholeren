@@ -33,6 +33,15 @@ module.exports = {
 					});			
 				});
 			}else{
+				// If client is just number
+				if(typeof attribs.client ==="number"){
+					Contract.create(attribs).exec(function(err,data){
+						if(err){
+							return res.json(400,err);
+						}
+						return res.json(data);
+					});	
+				}else{
 				console.log('creating client');
 				Client.create(attribs.client).exec(function(err,client){
 					if(err){
@@ -49,6 +58,7 @@ module.exports = {
 					
 				});
 			}
+			}
 		}else{
 			return res.json(400,{"error":"client is necessary to create a contract"});
 		}
@@ -60,6 +70,7 @@ module.exports = {
 		if(!req.params.id){
 			return res.json(404,{error:"no contract id to update"});
 		}
+		console.log('update contract');
 		if(attribs.client){
 			if(attribs.client.id){
 				// Update the client

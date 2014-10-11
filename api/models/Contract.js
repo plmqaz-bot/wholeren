@@ -8,7 +8,14 @@
 module.exports = {
 
   attributes: {
+    id:{type: 'integer',
+    autoIncrement: true,
+    primaryKey: true,
+    unique: true},
+
     contractCategory:{model:'ContractCategory',required:true,defaultsTo:1},
+
+    fuwu:{collection:'Fuwu',via:'contract',required:true},
 
   	client:{model:'Client',required:true,defaultsTo:1},
   	
@@ -78,7 +85,9 @@ module.exports = {
     //acedemiarService:{model:'Service'},
 
     //visaService:{model:'Service'},
-    service:{collection:'Service',via:'contract'}
+    services:{collection:'Services',via:'contract'},
+
+    fuwu:{collection:'Fuwu',via:'contract',required:true}
   },
 };
 

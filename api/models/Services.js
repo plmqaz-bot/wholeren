@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {  	
-  	contract:{model:'Contract',via:'service'},
+  	contract:{model:'Contract'},
 
   	serviceType:{model:'ServiceType'},
 
@@ -16,9 +16,9 @@ module.exports = {
 
     serviceTeacher:{model:'User'},
 
-    application:{collection:'Application', via:'service'},
+    application:{collection:'Application', via:'services'},
 
-    comment:{collection:'Comment',via:'service'}
+    comment:{collection:'Comment',via:'services'}
   }
 };
 

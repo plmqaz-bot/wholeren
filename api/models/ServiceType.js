@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
   	serviceType:{type:'string',required:true,unique:true},
   	
-  	service:{ collection:'Service', via:'serviceType'},
+  	services:{ collection:'Services', via:'serviceType'},
 
   	category:{type:'string'}
 
