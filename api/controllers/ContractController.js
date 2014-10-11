@@ -7,7 +7,14 @@
 
 module.exports = {
 	'getContract':function(req, res){
-		Contract.find().populate('client').exec(function(err,data){
+		Contract.find().populateAll().exec(function(err,data){
+			data.forEach(function(item){
+				if(item.services){
+					item.services.forEach(ele){
+
+					}
+				}
+			});
 			return res.json(data);
 		});	
 		

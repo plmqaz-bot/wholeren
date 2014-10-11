@@ -15,8 +15,6 @@ module.exports = {
 
     contractCategory:{model:'ContractCategory',required:true,defaultsTo:1},
 
-    fuwu:{collection:'Fuwu',via:'contract',required:true},
-
   	client:{model:'Client',required:true,defaultsTo:1},
   	
   	lead:{model:'Lead'},
@@ -85,9 +83,7 @@ module.exports = {
     //acedemiarService:{model:'Service'},
 
     //visaService:{model:'Service'},
-    services:{collection:'Services',via:'contract'},
-
-    fuwu:{collection:'Fuwu',via:'contract',required:true}
+    services:{collection:'Services',via:'contract'}
   },
 };
 
