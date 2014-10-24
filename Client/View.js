@@ -565,6 +565,8 @@ Settings.Pane = Backbone.View.extend({
 var ContractView=Wholeren.baseView.extend({
     filter:[],
     id: "contracts",
+    serviceTypes:{},
+    ready:false,
     singleTemplate:JST['contractSingle'],
     templateName:'contract',
         initialize: function (options) {
@@ -577,8 +579,11 @@ var ContractView=Wholeren.baseView.extend({
             this.render();
             this.collection.on("reset", this.renderCollection, this);
             this.collection.on("sort", this.renderCollection, this);
+            this.serviceTypes=new Obiwang.Collections.ServiceType();
+            this.serviceTypes.fetch({ reset: true }).done(function(data){this.ready=true});
             _.bindAll(this,'rerenderSingle');
             _.bindAll(this,'renderCollection');
+            _.bindAll(this,'renderCollectionCore');
         },
         events: {
         'click  button.button-add': 'editView',
@@ -609,6 +614,15 @@ var ContractView=Wholeren.baseView.extend({
             this.collection.sort();
         },
         renderCollection: function (){
+            var self=this;
+            if(!this.ready){
+                this.serviceTypes=new Obiwang.Collections.ServiceType();
+                this.serviceTypes.fetch({ reset: true }).done(function(data){self.ready=true;self.renderCollectionCore();}); 
+            }else{
+                this.renderCollectionCore();
+            }
+        },
+        renderCollectionCore:function(){
         // Remove all keywords
         var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
         toRemove.remove();
@@ -635,6 +649,16 @@ var ContractView=Wholeren.baseView.extend({
             if(filteredOut){
                 return;
             }
+            obj.services.forEach(function(ele){
+                var id=ele.serviceType;
+                if(id){
+                    console.log(id);
+                    ele.serviceType=self.serviceTypes.get(id).toJSON();
+                }
+            });
+
+            console.log(obj);
+
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
             toInsert.insertAfter(headrow);

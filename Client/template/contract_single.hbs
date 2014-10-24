@@ -31,10 +31,10 @@
         <td>{{diagnose}}</td>
         <td>{{contractSigned}}</td>
         <td>{{contractPaid}}</td>
-        <th>{{#each service}}{{/each}}</th>
-        <th>紧急服务</th>
-        <th>学术服务</th>
-        <th>签证服务</th>
+        <th>{{#each services}}{{#ifCond serviceType/category "Transfer"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</th>
+        <th>{{#each services}}{{#ifCond serviceType/category "Emerg"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</th>
+        <th>{{#each services}}{{#ifCond serviceType/category "Study"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</th>
+        <th>{{#each services}}{{#ifCond serviceType/category "Visa"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</th>
         <td>{{contractPrice}}</td>
         <td>{{contractDetail}}</td> 
         <td>{{applicationFeePaid}}</td>

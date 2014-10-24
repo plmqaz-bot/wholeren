@@ -40,6 +40,9 @@ Models={
     Status:Backbone.Model.extend({
         urlRoot:'/Status/'
 
+    }),
+    ServiceType:Backbone.Model.extend({
+        urlRoot:'/ServiceType/'
     })
 
 };
@@ -147,6 +150,11 @@ Collections={
         model:Models.Status,
         url:'/Status/'
     }),
+    ServiceType:Backbone.Collection.extend({
+        name:'serviceType',
+        model:Models.ServiceType,
+        url:'/ServiceType/'
+    })
 }
 
 

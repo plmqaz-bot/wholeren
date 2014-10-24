@@ -8,13 +8,16 @@
 module.exports = {
 	'getContract':function(req, res){
 		Contract.find().populateAll().exec(function(err,data){
-			data.forEach(function(item){
-				if(item.services){
-					item.services.forEach(ele){
-
-					}
-				}
-			});
+			// data.forEach(function(item){
+			// 	if(item.services){
+			// 		item.services.forEach(ele){
+			// 			var id=ele.id;
+			// 			Services.findOne({id:id}).populateAll().exec(function{
+							
+			// 			});
+			// 		}
+			// 	}
+			// });
 			return res.json(data);
 		});	
 		

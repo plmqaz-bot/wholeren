@@ -12,7 +12,7 @@ module.exports = {
   	
   	services:{ collection:'Services', via:'serviceType'},
 
-  	category:{type:'string'}
+  	category:{type:'string',required:true,defaultsTo:'Transfer'} // Only be Transfer, Emerg, Study, Visa
 
   }
 };
