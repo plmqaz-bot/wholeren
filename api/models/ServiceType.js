@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
   	serviceType:{type:'string',required:true,unique:true},
   	
-  	services:{ collection:'Services', via:'serviceType'},
+  	service:{ collection:'Service', via:'serviceType'},
 
   	category:{type:'string',required:true,defaultsTo:'Transfer'} // Only be Transfer, Emerg, Study, Visa
 

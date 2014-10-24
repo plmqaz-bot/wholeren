@@ -12,7 +12,7 @@ module.exports = {
 
 	writer:{model:'User'},
 
-	services:{model:'Services'}  	
+	service:{model:'Service'}  	
   }
 };
 

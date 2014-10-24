@@ -83,7 +83,7 @@ module.exports = {
     //acedemiarService:{model:'Service'},
 
     //visaService:{model:'Service'},
-    services:{collection:'Services',via:'contract'}
+    service:{collection:'Service',via:'contract'}
   },
 };
 
