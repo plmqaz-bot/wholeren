@@ -46,11 +46,8 @@ Models={
     })
 
 };
-Collections={
-    Contract : Backbone.Collection.extend({
-        model: Models.Contract,
-        url: '/Contract/',
-        sortAttr:{
+var sortableCollection=Backbone.Collection.extend({
+    sortAttr:{
             attribute:'client',
             nested:'firstName',
             asec:true
@@ -75,16 +72,6 @@ Collections={
                 return 0;
             }
         },
-        strategies:{
-            firstName:function(contr){
-                if(contr.get('client')) {
-                    return contr.get('client')['firstName'];
-                }else{
-                    return '';
-                }
-            },
-            lastName:function(contr){return contr.get('lastName');}
-        },
         selectedStrat:function(options){
             var sortAttr=options.sortAttr;
             var dir=options.direction;
@@ -99,7 +86,11 @@ Collections={
             }
             this.sortAttr['asec']=dir=="asec";
         },
-
+});
+Collections={
+    Contract :sortableCollection.extend({
+        model: Models.Contract,
+        url: '/Contract/',
         initialize:function(){
             this.selectedStrat({sortAttr:'client.firstName'});
         }
