@@ -1,7 +1,7 @@
 
 {{#if application}}
 {{#each application}}
-<tr name="{{id}}">
+<tr name="{{../id}}">
         <td>{{../contract/client/chineseName}}</td>
         <td>{{../contract/client/firstName}}</td>
         <td>{{../contract/client/lastName}}</td>
@@ -11,7 +11,7 @@
         <td>{{../contract/createdAt}}</td>
         <td>{{newDev}}</td>
         <td>{{succeed}}</td>
-        <td>{{../studentDestination}}</td>
+        <td data-attr="studentDestination" data-type="text" class="textbox" data-model="Service" data-id="{{id}}">{{../studentDestination}}</td>
         <td>{{appliedSemester}}</td>
         <td>{{writer}}</td>
         <td>{{studentCondition}}</td>
@@ -31,7 +31,7 @@
         <td>{{contract/createdAt}}</td>
         <td>{{newDev}}</td>
         <td>{{succeed}}</td>
-        <td>{{studentDestination}}</td>
+        <td data-attr="studentDestination" data-type="text" class="textbox" data-model="Service" >{{studentDestination}}</td>
         <td>{{appliedSemester}}</td>
         <td>{{writer}}</td>
         <td>{{studentCondition}}</td>

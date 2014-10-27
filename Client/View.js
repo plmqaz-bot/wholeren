@@ -543,6 +543,7 @@ Settings.Pane = Backbone.View.extend({
 
 /************************************************Views for Forms**************************************/
  Wholeren.FormView=Wholeren.baseView.extend({
+        filter:[],
         templateName:'contract',
         events: {
         'click .textbox':'editAttr',
@@ -573,9 +574,11 @@ Settings.Pane = Backbone.View.extend({
         editAttr:function(e){
             var attr=$(e.currentTarget).data("attr");
             var type=$(e.currentTarget).data("type");
-            var id=$(e.currentTarget).parent().attr("id");
+            var id=$(e.currentTarget).parent().attr("name");
             var curValue=this.collection.get(id).get(attr);
-             var popUpView=new AttributeEdit({view:this,id:id,attr:attr,type:type,curValue:curValue});
+            var modelName=$(e.currentTarget).data("model");
+            var modelId=$(e.currentTarget).data("id");
+             var popUpView=new AttributeEdit({view:this,id:id,attr:attr,type:type,curValue:curValue,modelName:modelName,modelId:modelId});
              popUpView.render();
              $('.app').html(popUpView.el);
         },
@@ -601,15 +604,75 @@ Settings.Pane = Backbone.View.extend({
             });
             
         },
+        applyFilter:function(obj){
+            var filteredout=false;
+            this.filter.forEach(function(f){
+                var attr=f.attr;
+                var value=f.value;
+                var sub=attr.indexOf('.');
+                if(sub>0){
+                    var tocomp=obj[attr.substring(0,sub)]||{};
+                    tocomp=tocomp[attr.substring(sub+1)];
+                    if(tocomp!=value){
+                        filteredout= true;
+                    }
+                }else if(obj[attr]!=value){
+                    filteredout= true;
+                }
+            });
+            return filteredout;
+        },
+        modifyRow:function(obj){
+            var self=this;
+            obj.service.forEach(function(ele){
+                var id=ele.serviceType;
+                if(id){
+                    ele.serviceType=self.serviceTypes.get(id).toJSON();
+                }
+            });
+            return obj;
+        },
+        renderCollectionCore:function(){
+        // Remove all keywords
+        var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
+        toRemove.remove();
+        var headrow=$('#scrollableheader');
+        var stableheadrow=$('#pinnedheader');
+        var self=this;
+        this.collection.forEach(function(item){
+            var obj=item.toJSON();
+            if(self.applyFilter(obj)){
+                return;
+            }
+            obj=self.modifyRow(obj);
+            
+            var ele = self.singleTemplate(obj);
+            var toInsert = $('<div/>').html(ele).contents();
+            toInsert.insertAfter(headrow);
+            var headline='';
+            if(obj.client){
+                headline=obj.client.chineseName;
+                
+            }
+            if(!headline){
+                    headline="NO NAME";
+            }
+            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
+            headInsert.insertAfter(stableheadrow);
+        });     
+        },
 
 
 });
 
 var AttributeEdit=Backbone.Modal.extend({
+    modelName:'',
     initialize: function (options){
+        this.modelName=options.modelName;
         _.bindAll(this,  'render', 'afterRender');
         this.parentView = options.view;
-        this.contractID = options.id;
+        this.rerenderId = options.id;
+        this.updateId=options.modelId||options.id;
         this.attr=options.attr;
         this.type=options.type;
         this.curValue=options.curValue||'';
@@ -639,15 +702,15 @@ var AttributeEdit=Backbone.Modal.extend({
         // get text and submit, and also refresh the collection. 
         var content = $('.reply-content').val();
         var options={};
-        options["id"]=this.contractID;
+        options["id"]=this.updateId;
         options[this.attr]=content;
-        var contract = new Obiwang.Models.Contract(options);
+        var toupdate = new Obiwang.Models[this.modelName](options);
         var self=this;
-        contract.save(options,{
+        toupdate.save(options,{
             patch:true,
             success:function(d){
                 // refresh parent view
-                    self.parentView.rerenderSingle({id:d.get('id')});
+                    self.parentView.rerenderSingle({id:self.rerenderId});
                     return self.close();
                   
             },
@@ -661,7 +724,6 @@ var AttributeEdit=Backbone.Modal.extend({
 /*************************************************Views for Contract *****************************/
 
 var ContractView=Wholeren.FormView.extend({
-    filter:[],
     serviceTypes:{},
     ready:false,
     singleTemplate:JST['contractSingle'],
@@ -684,10 +746,15 @@ var ContractView=Wholeren.FormView.extend({
         },
         events: {
         'click  button.button-add': 'editView',
+        'click  button.button-filter': 'modifyFilter',
         'click .clickablecell':'editContract',
         'click .textbox':'editAttr',
         'click .sortable':'sortCollection'
         },        
+        modifyFilter:function(e){
+            this.filter.push({attr:"originalText",value:null});
+            this.renderCollection();
+        },
         renderCollection: function (){
             var self=this;
             if(!this.ready){
@@ -697,54 +764,63 @@ var ContractView=Wholeren.FormView.extend({
                 this.renderCollectionCore();
             }
         },
-        renderCollectionCore:function(){
-        // Remove all keywords
-        var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
-        toRemove.remove();
-        var headrow=$('#scrollableheader');
-        var stableheadrow=$('#pinnedheader');
-        var self=this;
-        this.collection.forEach(function(item){
-            var obj=item.toJSON();
-            var filteredOut=false;
-            self.filter.forEach(function(f){
-                var attr=f.attr;
-                var value=f.value;
-                var sub=attr.indexOf('.');
-                if(sub>0){
-                    var tocomp=obj[attr.substring(0,sub)]||{};
-                    tocomp=tocomp[attr.substring(sub+1)];
-                    if(tocomp!=value){
-                        filteredOut=true;
-                    }
-                }else if(obj[attr]!=value){
-                    filteredOut=true;
-                }
-            });
-            if(filteredOut){
-                return;
-            }
+        // appliFilter:function(){
+        //     // var filteredOut=false;
+        //     // self.filter.forEach(function(f){
+        //     //     var attr=f.attr;
+        //     //     var value=f.value;
+        //     //     var sub=attr.indexOf('.');
+        //     //     if(sub>0){
+        //     //         var tocomp=obj[attr.substring(0,sub)]||{};
+        //     //         tocomp=tocomp[attr.substring(sub+1)];
+        //     //         if(tocomp!=value){
+        //     //             filteredOut=true;
+        //     //         }
+        //     //     }else if(obj[attr]!=value){
+        //     //         filteredOut=true;
+        //     //     }
+        //     // });
+        //     // if(filteredOut){
+        //     //     return;
+        //     // }
+        //     return this.collection;
+        // },
+        modifyRow:function(obj){
+            var self=this;
             obj.service.forEach(function(ele){
                 var id=ele.serviceType;
                 if(id){
                     ele.serviceType=self.serviceTypes.get(id).toJSON();
                 }
             });
-            var ele = self.singleTemplate(obj);
-            var toInsert = $('<div/>').html(ele).contents();
-            toInsert.insertAfter(headrow);
-            var headline='';
-            if(obj.client){
-                headline=obj.client.chineseName;
-                
-            }
-            if(!headline){
-                    headline="NO NAME";
-            }
-            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
-            headInsert.insertAfter(stableheadrow);
-        });     
+            return obj;
         },
+        // renderCollectionCore:function(){
+        // // Remove all keywords
+        // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
+        // toRemove.remove();
+        // var headrow=$('#scrollableheader');
+        // var stableheadrow=$('#pinnedheader');
+        // var self=this;
+        // this.appliFilter().forEach(function(item){
+        //     var obj=item.toJSON();
+        //     obj=modifyRow(obj);
+            
+        //     var ele = self.singleTemplate(obj);
+        //     var toInsert = $('<div/>').html(ele).contents();
+        //     toInsert.insertAfter(headrow);
+        //     var headline='';
+        //     if(obj.client){
+        //         headline=obj.client.chineseName;
+                
+        //     }
+        //     if(!headline){
+        //             headline="NO NAME";
+        //     }
+        //     var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
+        //     headInsert.insertAfter(stableheadrow);
+        // });     
+        // },
         
         editView: function(){
             var popUpView = new ContractEdit({view:this});
@@ -1046,7 +1122,7 @@ var ServiceView=Wholeren.FormView.extend({
         },
         events: {
         'click .textbox':'editAttr',
-        'click .sortable':'sortCollection'
+        'click .sortable':'sortCollection',
         },        
         renderCollection: function (){
             if(this.ready){
@@ -1057,33 +1133,8 @@ var ServiceView=Wholeren.FormView.extend({
                 $.when(this.user.fetch(),this.client.fetch()).done(function(data){self.ready=true;self.renderCollectionCore();}); 
             }            
         },
-        renderCollectionCore:function(){
-        // Remove all keywords
-        var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
-        toRemove.remove();
-        var headrow=$('#scrollableheader');
-        var stableheadrow=$('#pinnedheader');
-        var self=this;
-        this.collection.forEach(function(item){
-            var obj=item.toJSON();
-            var filteredOut=false;
-            self.filter.forEach(function(f){
-                var attr=f.attr;
-                var value=f.value;
-                var sub=attr.indexOf('.');
-                if(sub>0){
-                    var tocomp=obj[attr.substring(0,sub)]||{};
-                    tocomp=tocomp[attr.substring(sub+1)];
-                    if(tocomp!=value){
-                        filteredOut=true;
-                    }
-                }else if(obj[attr]!=value){
-                    filteredOut=true;
-                }
-            });
-            if(filteredOut){
-                return;
-            }
+        modifyRow:function(obj){
+            var self=this;
             obj.application.forEach(function(ele){
                 var id=ele.writer;
                 if(id){
@@ -1094,21 +1145,42 @@ var ServiceView=Wholeren.FormView.extend({
             if(id){
                 obj.contract.client=self.client.get(id).toJSON();
             }
-            var ele = self.singleTemplate(obj);
-            var toInsert = $('<div/>').html(ele).contents();
-            toInsert.insertAfter(headrow);
-            var headline='';
-            if(obj.contract.client){
-                headline=obj.contract.client.chineseName;
-                
-            }
-            if(!headline){
-                    headline="NO NAME";
-            }
-            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
-            headInsert.insertAfter(stableheadrow);
-        });     
+            return obj;
         },
+        // renderCollectionCore:function(){
+        // // Remove all keywords
+        // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
+        // toRemove.remove();
+        // var headrow=$('#scrollableheader');
+        // var stableheadrow=$('#pinnedheader');
+        // var self=this;
+        // this.collection.forEach(function(item){
+        //     var obj=item.toJSON();
+        //     obj.application.forEach(function(ele){
+        //         var id=ele.writer;
+        //         if(id){
+        //             ele.writer=self.user.get(id).toJSON();
+        //         }
+        //     });
+        //     var id=obj.contract.client;
+        //     if(id){
+        //         obj.contract.client=self.client.get(id).toJSON();
+        //     }
+        //     var ele = self.singleTemplate(obj);
+        //     var toInsert = $('<div/>').html(ele).contents();
+        //     toInsert.insertAfter(headrow);
+        //     var headline='';
+        //     if(obj.contract.client){
+        //         headline=obj.contract.client.chineseName;
+                
+        //     }
+        //     if(!headline){
+        //             headline="NO NAME";
+        //     }
+        //     var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
+        //     headInsert.insertAfter(stableheadrow);
+        // });     
+        // },
 });
 
 
