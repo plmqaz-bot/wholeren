@@ -1012,18 +1012,33 @@ var ContractEdit = Backbone.Modal.extend({
 /*************************************************Views for Services *****************************/
 var ServiceView=Wholeren.FormView.extend({
     filter:[],
-    //singleTemplate:JST['contractSingle'],
+    singleTemplate:JST['serviceSingle'],
+    user:{},
+    client:{},
+    ready:false,
     templateName:'service',
         initialize: function (options) {
+            this.el=options.el;
             var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
-            if (options.collection) {
-                this.collection = options.collection;
-            } else if (!this.collection || this.collection.length < 1) {
-                this.collection = new Obiwang.Collections[modelName]();
-                this.collection.fetch({ reset: true });
+            this.user=new Obiwang.Collections.User();
+            this.client=new Obiwang.Collections.Client();
+            var self=this;
+            this.collection = new Obiwang.Collections[modelName]();
+            if(options.id){
+                var model=new Obiwang.Models[modelName]({id:options.id});
+                $.when(model.fetch(),this.user.fetch(),this.client.fetch()).done(function(){
+                    if(model)
+                        self.collection.add(model);
+                    self.ready=true;
+                    self.renderCollectionCore();
+                });
+            }else {
+                $.when(this.collection.fetch(),this.user.fetch(),this.client.fetch()).done(function(){
+                    self.ready=true;
+                    self.renderCollectionCore();
+                });
             }
             this.render();
-            this.collection.on("reset", this.renderCollection, this);
             this.collection.on("sort", this.renderCollection, this);
             _.bindAll(this,'rerenderSingle');
             _.bindAll(this,'renderCollection');
@@ -1034,7 +1049,13 @@ var ServiceView=Wholeren.FormView.extend({
         'click .sortable':'sortCollection'
         },        
         renderCollection: function (){
-            this.renderCollectionCore();       
+            if(this.ready){
+                this.renderCollectionCore();       
+            }else{
+                 var self=this;
+                this.user=new Obiwang.Collections.User();
+                $.when(this.user.fetch(),this.client.fetch()).done(function(data){self.ready=true;self.renderCollectionCore();}); 
+            }            
         },
         renderCollectionCore:function(){
         // Remove all keywords
@@ -1063,12 +1084,22 @@ var ServiceView=Wholeren.FormView.extend({
             if(filteredOut){
                 return;
             }
+            obj.application.forEach(function(ele){
+                var id=ele.writer;
+                if(id){
+                    ele.writer=self.user.get(id).toJSON();
+                }
+            });
+            var id=obj.contract.client;
+            if(id){
+                obj.contract.client=self.client.get(id).toJSON();
+            }
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
             toInsert.insertAfter(headrow);
             var headline='';
-            if(obj.client){
-                headline=obj.client.chineseName;
+            if(obj.contract.client){
+                headline=obj.contract.client.chineseName;
                 
             }
             if(!headline){
@@ -1093,6 +1124,7 @@ module.exports={
         Panes: Settings,
         Notification:Notification,
         Contract:ContractView,
+        Service:ServiceView,
         Auth:Views
 
 };

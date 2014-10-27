@@ -11,6 +11,7 @@ var Router=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
         'contract(/:option)/':'contract',
+        'service/(:option)':'service',
         'register/'        : 'register',
         'signup/'          : 'signup',
         'signin/'          : 'signin',
@@ -52,13 +53,18 @@ var Router=Backbone.Router.extend({
 //        }
     },
     contract:function(option){
-        if(!option){
+        if(option){
 
-            this.navigate('/contract/general/',{trigger:true,replace:true});
+            this.navigate('/contract/',{trigger:true,replace:true});
             return;
         }
         if(!Wholeren.currentView){
             Wholeren.currentView=new  Wholeren.Views.Contract({el:'.content-view-container',option:option});
+        }
+    },
+    service:function(option){
+        if(!Wholeren.currentView){
+            Wholeren.currentView=new  Wholeren.Views.Service({el:'.content-view-container',id:option});
         }
     }
 	

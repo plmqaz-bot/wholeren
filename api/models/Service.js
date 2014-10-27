@@ -18,7 +18,11 @@ module.exports = {
 
     application:{collection:'Application', via:'service'},
 
-    comment:{collection:'Comment',via:'service'}
+    comment:{collection:'Comment',via:'service'},
+
+    studentDestination:{type:'string'}
+
+
   }
 };
 

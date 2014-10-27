@@ -12,7 +12,19 @@ module.exports = {
 
 	writer:{model:'User'},
 
-	service:{model:'Service'}  	
+	service:{model:'Service'},
+
+	newDev:{type:'boolean',defaultsTo:false},
+
+	succeed:{type:'boolean',defaultsTo:null},
+
+	appliedSemester:{type:'date'},
+
+	studentCondition:{type:'string'},
+
+	step1:{type:'string'},
+
+	step2:{type:'string'},
   }
 };
 

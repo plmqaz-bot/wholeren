@@ -43,7 +43,14 @@ Models={
     }),
     ServiceType:Backbone.Model.extend({
         urlRoot:'/ServiceType/'
-    })
+    }),
+    Service : Backbone.Model.extend({
+    idAttribute: "id",
+    urlRoot:'/Service/'
+    }),
+    User:Backbone.Model.extend({
+        urlRoot:'/User/'
+    }),
 
 };
 var sortableCollection=Backbone.Collection.extend({
@@ -145,7 +152,18 @@ Collections={
         name:'serviceType',
         model:Models.ServiceType,
         url:'/ServiceType/'
-    })
+    }),
+    Service:sortableCollection.extend({
+        model: Models.Service,
+        url: '/Service/',
+        initialize:function(){
+            this.selectedStrat({sortAttr:'contract.createdAt'});
+        }
+    }),
+    User:Backbone.Collection.extend({
+        model: Models.User,
+        url: '/User/',
+    }),
 }
 
 

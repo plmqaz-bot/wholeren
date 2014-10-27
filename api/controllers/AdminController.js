@@ -7,11 +7,11 @@ adminNavbar = {
         key: 'admin.navbar.contract',
         path: '/contract/'
     },
-    content: {
-        name: 'Content',
-        navClass: 'content',
-        key: 'admin.navbar.content',
-        path: '/'
+    service: {
+        name: 'Service',
+        navClass: 'contract',
+        key: 'admin.navbar.contract',
+        path: '/service/'
     },
     add: {
         name: 'New Post',
@@ -58,6 +58,19 @@ module.exports={
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'contract')
+        });
+    },
+    'service':function(req,res){
+        var allowedSections = ['', 'general', 'user', 'apps'],
+            section = req.url.replace(/(^\/admin\/service[\/]*|\/$)/ig, '');
+
+        // if (allowedSections.indexOf(section) < 0) {
+        //     return next();
+        // }
+
+        res.render('contract', {
+            bodyClass: 'contract',
+            adminNav: setSelected(adminNavbar, 'service')
         });
     },
     'settings': function (req, res, next) {

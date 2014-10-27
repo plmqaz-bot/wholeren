@@ -1,0 +1,42 @@
+
+{{#if application}}
+{{#each application}}
+<tr name="{{id}}">
+        <td>{{../contract/client/chineseName}}</td>
+        <td>{{../contract/client/firstName}}</td>
+        <td>{{../contract/client/lastName}}</td>
+        <td>{{../progress}}</td>
+        <td>{{../serviceType/serviceType}}</td>
+        <td>{{collageName}}</td>
+        <td>{{../contract/createdAt}}</td>
+        <td>{{newDev}}</td>
+        <td>{{succeed}}</td>
+        <td>{{../studentDestination}}</td>
+        <td>{{appliedSemester}}</td>
+        <td>{{writer}}</td>
+        <td>{{studentCondition}}</td>
+        <td>{{step1}}</td>
+        <td>{{step2}}</td>
+        <td>{{../serviceTeacher/nickname}}</td>
+        </tr> 
+{{/each}}
+{{else}}
+        <tr name="{{id}}">
+        <td>{{contract/client/chineseName}}</td>
+        <td>{{contract/client/firstName}}</td>
+        <td>{{contract/client/lastName}}</td>
+        <td>{{progress}}</td>
+        <td>{{serviceType/serviceType}}</td>
+        <td>{{collageName}}</td>
+        <td>{{contract/createdAt}}</td>
+        <td>{{newDev}}</td>
+        <td>{{succeed}}</td>
+        <td>{{studentDestination}}</td>
+        <td>{{appliedSemester}}</td>
+        <td>{{writer}}</td>
+        <td>{{studentCondition}}</td>
+        <td>{{step1}}</td>
+        <td>{{step2}}</td>
+        <td>{{serviceTeacher/nickname}}</td>
+        </tr> 
+        {{/if}}
