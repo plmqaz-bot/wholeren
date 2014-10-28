@@ -45,6 +45,14 @@ module.exports={
                         }
                     }                     
                 }
+        },
+        showError:function(text){
+            Wholeren.notifications.clearEverything();
+            Wholeren.notifications.addItem({
+                type: 'error',
+                message: text,
+                status: 'passive'
+            });
         }
 
 

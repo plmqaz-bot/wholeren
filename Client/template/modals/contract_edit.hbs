@@ -8,17 +8,17 @@
 
         <div class="form-group">
             <label >First Name</label>
-            <input id="client.firstName" name="general[client.firstName]" type="text" value="{{client.firstName}}" />
+            <input id="client.firstName" name="general[client.firstName]" type="text" value="{{client.firstName}}" data-rValid="isNotNull"/>
             <p></p>
         </div>
         <div class="form-group">
             <label >Last Name</label>
-            <input id="client.lastName" name="general[client.lastName]" type="text" value="{{client.lastName}}" />
+            <input id="client.lastName" name="general[client.lastName]" type="text" value="{{client.lastName}}" data-rValid="isNotNull"/>
             <p></p>
         </div>
         <div class="form-group">
             <label >Chinese Name</label>
-            <input id="client.chineseName" name="general[client.chineseName]" type="text" value="{{client.chineseName}}" />
+            <input id="client.chineseName" name="general[client.chineseName]" type="text" value="{{client.chineseName}}" data-rValid="isNotNull"/>
             <p></p>
         </div>
         <div class="form-group">
@@ -31,22 +31,22 @@
         </div>
         <div class="form-group">
             <label >Email</label>
-            <input id="client.primaryEmail" name="general[client.primaryEmail]" type="text" value="{{client.primaryEmail}}" />
+            <input id="client.primaryEmail" name="general[client.primaryEmail]" type="text" value="{{client.primaryEmail}}" data-oValid="isEmail"/>
             <p></p>
         </div>
         <div class="form-group">
             <label >Email2</label>
-            <input id="client.secondaryEmail" name="general[client.secondaryEmail]" type="text" value="{{client.secondaryEmail}}" />
+            <input id="client.secondaryEmail" name="general[client.secondaryEmail]" type="text" value="{{client.secondaryEmail}}" data-oValid="isEmail"/>
             <p></p>
         </div>
         <div class="form-group">
             <label >Phone Number</label>
-            <input id="client.primaryPhone" name="general[client.primaryPhone]" type="text" value="{{client.primaryPhone}}" />
+            <input id="client.primaryPhone" name="general[client.primaryPhone]" type="text" value="{{client.primaryPhone}}" data-oValid="isInt"/>
             <p></p>
         </div>
         <div class="form-group">
             <label >Phone Number2</label>
-            <input id="client.secondaryPhone" name="general[client.secondaryPhone]" type="text" value="{{client.secondaryPhone}}" />
+            <input id="client.secondaryPhone" name="general[client.secondaryPhone]" type="text" value="{{client.secondaryPhone}}" data-oValid="isInt"/>
             <p></p>
         </div>
         <div class="form-group">

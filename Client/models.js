@@ -51,6 +51,9 @@ Models={
     User:Backbone.Model.extend({
         urlRoot:'/User/'
     }),
+    Application:Backbone.Model.extend({
+        urlRoot:'/Application/'
+    }),
 
 };
 var sortableCollection=Backbone.Collection.extend({
@@ -163,6 +166,10 @@ Collections={
     User:Backbone.Collection.extend({
         model: Models.User,
         url: '/User/',
+    }),
+    Application:Backbone.Collection.extend({
+        model:Models.Application,
+        url:'/Application/'
     }),
 }
 
