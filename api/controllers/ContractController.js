@@ -23,22 +23,24 @@ module.exports = {
 		
 	},
 	'createContract':function(req,res){
-		console.log(req.body);
 		var attribs=req.body;
 		if(attribs.client){
 			if(attribs.client.id){
 				// Update the client
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
+				delete attribs.client["contract"];
 				Client.update({"id":attribs.client.id},attribs.client,function(err,cc){
 					if(err){
 						return res.json(400,err);
 					}
 					attribs.client=attribs.client.id;
+					console.log("client updated");
 					Contract.create(attribs).exec(function(err,data){
 						if(err){
 							return res.json(400,err);
 						}
+						console.log("contract created");
 						return res.json(data);
 					});			
 				});
@@ -49,20 +51,22 @@ module.exports = {
 						if(err){
 							return res.json(400,err);
 						}
+						console.log("contract created");
 						return res.json(data);
 					});	
 				}else{
-				console.log('creating client');
-				Client.create(attribs.client).exec(function(err,client){
+					console.log('creating client');
+					Client.create(attribs.client).exec(function(err,client){
 					if(err){
 						return res.json(400,err);
 					}
-					console.log("client created: ",client);
+					console.log("client created: ");
 					attribs.client=client.id;
 					Contract.create(attribs).exec(function(err,data){
 						if(err){
 							return res.json(400,err);
 						}
+						console.log("contract created");
 						return res.json(data);
 					});		
 					

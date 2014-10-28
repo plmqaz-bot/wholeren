@@ -17,6 +17,7 @@ var tpSignup=require('./template/signup.hbs');
 var tpSignin=require('./template/login.hbs');
 var tpService=require('./template/service.hbs');
 var tpServiceSingle=require('./template/service_single.hbs');
+var tpServiceEdit=require('./template/modals/service_edit.hbs');
 var tpl={
     'contract':tpContract,
     'contractSingle':tpContractSingle,
@@ -26,7 +27,8 @@ var tpl={
     'signup':tpSignup,
     'signin':tpSignin,
     'service':tpService,
-    'serviceSingle':tpServiceSingle
+    'serviceSingle':tpServiceSingle,
+    'serviceEdit':tpServiceEdit
 };
 
 module.exports=tpl;
