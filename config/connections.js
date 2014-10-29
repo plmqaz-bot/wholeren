@@ -49,7 +49,8 @@ module.exports.connections = {
     host: 'han.bio.cmu.edu',
     user: 'han',
     password: 'hanlai',
-    database: 'test'
+    database: 'test',
+    charset   : 'utf8',
   },
 
   /***************************************************************************

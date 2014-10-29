@@ -543,11 +543,14 @@ Settings.Pane = Backbone.View.extend({
 
 /************************************************Views for Forms**************************************/
  Wholeren.FormView=Wholeren.baseView.extend({
-        filter:[],
         templateName:'contract',
         events: {
         'click .textbox':'editAttr',
         'click .sortable':'sortCollection'
+        },
+        constructor:function(){
+            this.filter=[];
+            Wholeren.baseView.apply(this,arguments);
         },
         render: function () {
              var ml = this.template();
@@ -586,11 +589,18 @@ Settings.Pane = Backbone.View.extend({
             var self=this;
             var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
             var toRender=new Obiwang.Models[modelName]({id:options.id});
+            if(options.del){
+                self.collection.remove(self.collection.get(options.id));
+                self.renderCollection();
+                return;
+            }
             toRender.fetch({
                 reset:true,
                 success:function(model,response,options){
                     self.collection.remove(self.collection.get(model.get('id')));
-                    self.collection.push(model);
+                    if(model){
+                        self.collection.push(model);
+                    }
                     self.renderCollection();
                 },
                 error: function(model,response,options){
@@ -720,16 +730,12 @@ var AttributeEdit=Backbone.Modal.extend({
 
 var EditForm=Backbone.Modal.extend({
     viewContainer:'.app',
-    modelChanges:{},
     cancelEl: '.cancel',
-    formError:true,
-    events:{
-        "click .ok":"Submit",
-        "change select:not([id^='client.'])":"selectionChanged",
-        "change input":"inputChanged",
-        "mouseover input":"showError",
-        "change #client\\.firstName,#client\\.lastName,#client\\.chinesename":"refreshClientID",
-        "change select[id^='client.']":"refreshClientInfo"
+    
+    constructor:function(){
+        this.modelChanges={},
+        this.formError=false,
+        Backbone.Modal.apply(this,arguments);
     },
     initialize: function (options){
         this.parentView = options.view;
@@ -769,7 +775,7 @@ var EditForm=Backbone.Modal.extend({
         col.forEach(function(item){
             var ele=item;
             var toAdd=$('<option>', { value : ele.id }).text(ele[tableName]);
-            if(self.model.get(tableName)&&((self.model.get(tableName).id&&self.get(tableName).id==ele.id)||self.model.get(tableName)==ele.id)){
+            if(self.model.get(tableName)&&((self.model.get(tableName).id&&self.model.get(tableName).id==ele.id)||self.model.get(tableName)==ele.id)){
                 toAdd.attr('selected','selected');
             }
             theSel.append(toAdd); 
@@ -867,24 +873,29 @@ var ContractView=Wholeren.FormView.extend({
             this.render();
             if (options.collection) {
                 this.collection = options.collection;
-                this.serviceTypes.fetch().done(function(data){self.ready=true;self.renderCollection();});
-                this.collection.on("sort", this.renderCollection, this);
+                this.serviceTypes.fetch().done(function(data){
+                    self.ready=true;
+                    self.renderCollection();
+                    self.collection.on("sort", this.renderCollection, this);
+                });
+                
             } else if (!this.collection || this.collection.length < 1) {
                 this.collection = new Obiwang.Collections.Contract();
-                $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){self.ready=true;self.renderCollection();});
-                this.collection.on("sort", this.renderCollection, this);
-            }
-            //this.collection.on("reset", this.renderCollection, this);
-            
-            
+                $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
+                    self.ready=true;
+                    self.renderCollection();
+                    self.collection.on("sort", this.renderCollection, this);
+                });
+            }           
         },
         events: {
         'click  button.button-add': 'editView',
         'click  button.button-filter': 'modifyFilter',
-        'click .clickablecell':'editContract',
+        //'click .clickablecell':'editContract',
+        'click .edit,.del':'editContract',
         'click .textbox':'editAttr',
         'click .sortable':'sortCollection'
-        },        
+        },     
         modifyFilter:function(e){
             this.filter.push({attr:"originalText",value:null});
             this.renderCollection();
@@ -919,13 +930,40 @@ var ContractView=Wholeren.FormView.extend({
             var popUpView = new ContractEdit({view:this});
             $('.app').html(popUpView.render().el);
         },
-        editContract: function(e){
-            var id = $(e.currentTarget).data("id");
-            var item = this.collection.get(id);
-            console.log("clicked item ",item);
-            var popUpView = new ContractEdit({view:this,model:item});
-            $('.app').html(popUpView.render().el);
-        },
+        // editContract: function(e){
+        //     var id = $(e.currentTarget).data("id");
+        //     var item = this.collection.get(id);
+        //     console.log("clicked item ",item);
+        //     var popUpView = new ContractEdit({view:this,model:item});
+        //     $('.app').html(popUpView.render().el);
+        // },
+        editContract:function(e){
+            // Service id
+            var item=$(e.currentTarget);
+            var id = item.attr('href').substring(1);
+            var action=item.attr('class');
+            var self=this;
+            switch(action){
+                case 'del':
+                    var newApp=new Obiwang.Models['Contract']({id:id});
+                    newApp.destroy({
+                        success:function(d){
+                            self.rerenderSingle({id:id,del:true});            
+                        },
+                        error:function(model,response){
+                            util.handleRequestError(response);                       
+                        }
+                    });
+                    break;
+                case 'edit':
+                    var curCont=this.collection.get(id);
+                    if(!curCont){
+                        return;
+                    }
+                    var popUpView = new ContractEdit({view:this,model:curCont});
+                    $('.app').html(popUpView.render().el);
+            }
+        }   
 });
 
 /**
@@ -1081,9 +1119,6 @@ var ServiceView=Wholeren.FormView.extend({
                     self.collection.on("sort", this.renderCollection, this);
                 });
             }
-            
-            
-
         },
         events: {
         'click .add,.edit,.del':'editApplication',
