@@ -1155,7 +1155,7 @@ var ServiceView=Wholeren.FormView.extend({
                         return;
                     }
 
-                    var popUpView = new ApplicationEdit({view:this,model:curService,appId:curApp});
+                    var popUpView = new ApplicationEdit({view:this,service:curService,appId:curApp});
                     $('.app').html(popUpView.render().el);
             }             
         },
@@ -1199,14 +1199,14 @@ var ApplicationEdit=EditForm.extend({
     template: JST['serviceEdit'],
     initialize: function (options){
         this.parentView = options.view;
-        this.model={};
-        if(!options.model||!options.appId){
+        if(!options.service||!options.curApp){
             until.showError("No service or application selected!");
             this.close();
             return;
         }
-        this.model=options.model;
-        this.appId=options.curApp;
+        this.serviceId=options.service.id;
+        this.model=new Obiwang.Models['Application'](options.curApp);
+        this.model.set('service',options.service);
         this.modelChanges.id=this.model.get('id');
         _.bindAll(this,'renderSelect');
         _.bindAll(this,'render', 'afterRender'); 
@@ -1216,7 +1216,23 @@ var ApplicationEdit=EditForm.extend({
           _this.afterRender();
           return _this;
         }); 
-        }, 
+    }, 
+    submit:function(option){
+        if(this.formError) return;
+        var self=this;
+        this.model.save(this.modelChanges,{
+            patch:true,
+            success:function(d){
+                // refresh parent view
+                self.parentView.rerenderSingle({id:self.serviceId});
+                return self.close();
+                  
+            },
+            error:function(model,response){
+                util.handleRequestError(response);                       
+            }
+        });
+    },
     afterRender:function(){
          var self=this;
         $.ajax({
