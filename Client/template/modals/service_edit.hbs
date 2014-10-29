@@ -8,57 +8,75 @@
 
         <div class="form-group">
             <label >First Name</label>
-            <label >{{contract/client/firstName}}</label>
+            <input value="{{service/contract/client/firstName}}"/>
             <p></p>
         </div>
         <div class="form-group">
             <label >Last Name</label>
-            <label >{{contract/client/lastName}}</label>
+            <input value="{{service/contract/client/lastName}}"/>
+            <label >{{service/contract/client/lastName}}</label>
             <p></p>
         </div>
         <div class="form-group">
             <label >Chinese Name</label>
-            <label >{{contract/client/chineseName}}</label>
+            <input value="{{service/contract/client/chineseName}}"/>
             <p></p>
         </div>
         <div class="form-group">
             <label >Email</label>
-            <label >{{contract/client/primaryEmail}}</label>
+            <input value="{{service/contract/client/primaryEmail}}"/>
             <p></p>
         </div>
 </fieldset>
  <fieldset>
         <div class="form-group">
             <label >录取</label>
-            <select id="application.success" >
-                <option value="false">NO</option>
-                <option value="true">YES</option>
+            <select id="succeed" >
+                <option value="false"{{#ifCond succeed "false"}}selected{{/ifCond}}>NO</option>
+                <option value="true" {{#ifCond succeed "true"}}selected{{/ifCond}}>YES</option>
         </select>
         <p></p>
         </div>
         <div class="form-group">
             <label >新开发？</label>
-            <select id="application.newDev"   >
-                <option value="false">NO</option>
-                <option value="true">YES</option>
+            <select id="newDev"   >
+                <option value="false" {{#ifCond newDev "false"}}selected{{/ifCond}}>NO</option>
+                <option value="true" {{#ifCond newDev "false"}}selected{{/ifCond}}>YES</option>
         </select>
         <p></p>
         </div>
         <div class="form-group">
             <label >所申学校</label>
-            <input id="application.collegeName"  type="text" value="{{collegeName}}" />
+            <input id="collegeName"  type="text" value="{{collegeName}}" />
             <p></p>
         </div>
          <div class="form-group">
             <label >申请入读学期</label>
-            <input id="application.appliedSemester"  type="text" value="{{appliedSemester}}" />
+            <input id="appliedSemester"  type="text" value="{{appliedSemester}}" />
             <p></p>
         </div>        
+</fieldset>
+ <fieldset>
+        <div class="form-group">
+            <label >学生情况</label>
+            <input id="studentCondition"  type="text" value="{{studentCondition}}" />
+        <p></p>
+        </div>
+        <div class="form-group">
+            <label >Step1</label>
+            <input id="step1"  type="text" value="{{step1}}" />
+        <p></p>
+        </div>
+        <div class="form-group">
+            <label >Step2</label>
+            <input id="step2"  type="text" value="{{step2}}" />
+            <p></p>
+        </div>
 </fieldset>
 <fieldset>
     <div class="form-group">
         <label>writer</label>
-        <select id="application.writer">
+        <select id="writer">
             <option></option>
         </select>
     </div>

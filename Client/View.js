@@ -574,7 +574,7 @@ Settings.Pane = Backbone.View.extend({
         editAttr:function(e){
             var attr=$(e.currentTarget).data("attr");
             var type=$(e.currentTarget).data("type");
-            var id=$(e.currentTarget).parent().attr("name");
+            var id=$(e.currentTarget).parent().attr("name"); 
             var curValue=this.collection.get(id).get(attr);
             var modelName=$(e.currentTarget).data("model");
             var modelId=$(e.currentTarget).data("id");
@@ -859,21 +859,24 @@ var ContractView=Wholeren.FormView.extend({
     singleTemplate:JST['contractSingle'],
     templateName:'contract',
         initialize: function (options) {
+            _.bindAll(this,'rerenderSingle');
+            _.bindAll(this,'renderCollection');
+            _.bindAll(this,'renderCollectionCore');
             this.serviceTypes=new Obiwang.Collections.ServiceType();
             var self=this;
             this.render();
             if (options.collection) {
                 this.collection = options.collection;
                 this.serviceTypes.fetch().done(function(data){self.ready=true;self.renderCollection();});
+                this.collection.on("sort", this.renderCollection, this);
             } else if (!this.collection || this.collection.length < 1) {
                 this.collection = new Obiwang.Collections.Contract();
                 $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){self.ready=true;self.renderCollection();});
+                this.collection.on("sort", this.renderCollection, this);
             }
             //this.collection.on("reset", this.renderCollection, this);
-            this.collection.on("sort", this.renderCollection, this);
-            _.bindAll(this,'rerenderSingle');
-            _.bindAll(this,'renderCollection');
-            _.bindAll(this,'renderCollectionCore');
+            
+            
         },
         events: {
         'click  button.button-add': 'editView',
@@ -1052,12 +1055,16 @@ var ServiceView=Wholeren.FormView.extend({
     ready:false,
     templateName:'service',
         initialize: function (options) {
+            _.bindAll(this,'rerenderSingle');
+            _.bindAll(this,'renderCollection');
+            _.bindAll(this,'renderCollectionCore');
             this.el=options.el;
             var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
             this.user=new Obiwang.Collections.User();
             this.client=new Obiwang.Collections.Client();
             var self=this;
             this.collection = new Obiwang.Collections[modelName]();
+            this.render();
             if(options.id){
                 var model=new Obiwang.Models[modelName]({id:options.id});
                 $.when(model.fetch(),this.user.fetch(),this.client.fetch()).done(function(){
@@ -1065,21 +1072,21 @@ var ServiceView=Wholeren.FormView.extend({
                         self.collection.add(model);
                     self.ready=true;
                     self.renderCollectionCore();
+                    self.collection.on("sort", this.renderCollection, this);
                 });
             }else {
                 $.when(this.collection.fetch(),this.user.fetch(),this.client.fetch()).done(function(){
                     self.ready=true;
                     self.renderCollectionCore();
+                    self.collection.on("sort", this.renderCollection, this);
                 });
             }
-            this.render();
-            this.collection.on("sort", this.renderCollection, this);
-            _.bindAll(this,'rerenderSingle');
-            _.bindAll(this,'renderCollection');
-            _.bindAll(this,'renderCollectionCore');
+            
+            
+
         },
         events: {
-        'click .add.edit.del':'editApplication',
+        'click .add,.edit,.del':'editApplication',
         'click .textbox':'editAttr',
         'click .sortable':'sortCollection',
         },        
@@ -1116,46 +1123,48 @@ var ServiceView=Wholeren.FormView.extend({
         editApplication:function(e){
             // Service id
             var item=$(e.currentTarget);
-            var id = item.parent().attr('name');
-            var action=item.find('a').attr('class');
-            var appid=item.find('a').attr('href').substring(1);
+            var id = item.parent().parent().attr('name');
+            var action=item.attr('class');
+            var appid=item.attr('href').substring(1);
             var curService = this.collection.get(id);
             var self=this;
             switch(action){
                 case 'add':
                     var newApp=new Obiwang.Models['Application']({service:id});
-                    newApp.save({
+                    newApp.save({},{
                         success:function(d){
                             self.rerenderSingle({id:id});            
                         },
                         error:function(model,response){
                             util.handleRequestError(response);                       
-                        })
+                        }
                     });
                     break;
                 case 'del':
                     var newApp=new Obiwang.Models['Application']({id:appid});
-                    newApp.delete({
+                    newApp.destroy({
                         success:function(d){
                             self.rerenderSingle({id:id});            
                         },
                         error:function(model,response){
                             util.handleRequestError(response);                       
-                        })
+                        }
                     });
                     break;
                 case 'edit':
                     var apps=curService.get('application')||[];
-                    var curApp=apps.find(function(ele,ind,array){
+                    var curApp;
+                    apps.forEach(function(ele){
                         if(ele.id==appid){
-                            return true;
+                            curApp=ele;
+                            return;
                         }
                     });
                     if(!curApp){
                         return;
                     }
 
-                    var popUpView = new ApplicationEdit({view:this,service:curService,appId:curApp});
+                    var popUpView = new ApplicationEdit({view:this,service:curService,curApp:curApp});
                     $('.app').html(popUpView.render().el);
             }             
         },
@@ -1200,13 +1209,13 @@ var ApplicationEdit=EditForm.extend({
     initialize: function (options){
         this.parentView = options.view;
         if(!options.service||!options.curApp){
-            until.showError("No service or application selected!");
+            util.showError("No service or application selected!");
             this.close();
             return;
         }
         this.serviceId=options.service.id;
         this.model=new Obiwang.Models['Application'](options.curApp);
-        this.model.set('service',options.service);
+        this.model.set('service',options.service.toJSON());
         this.modelChanges.id=this.model.get('id');
         _.bindAll(this,'renderSelect');
         _.bindAll(this,'render', 'afterRender'); 

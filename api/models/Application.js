@@ -16,7 +16,7 @@ module.exports = {
 
 	newDev:{type:'boolean',defaultsTo:false},
 
-	succeed:{type:'boolean',defaultsTo:null},
+	succeed:{type:'boolean',defaultsTo:false},
 
 	appliedSemester:{type:'date'},
 
