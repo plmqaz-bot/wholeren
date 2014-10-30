@@ -56,3 +56,35 @@ insert into paymentoption values('美国汇款',NULL,NOW(),NOW());
 insert into paymentoption values('BrainTree',NULL,NOW(),NOW());
 insert into paymentoption values('Paypal',NULL,NOW(),NOW());
 
+#人员角色
+insert into role values('销售',NULL,NOW(),NOW());
+insert into role values('申请',NULL,NOW(),NOW());
+insert into role values('市场',NULL,NOW(),NOW());
+insert into role values('文书',NULL,NOW(),NOW());
+insert into role values('专家',NULL,NOW(),NOW());
+
+#服务
+insert into servicetype values('a.澄清','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('b.申诉','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('c1.找律师','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('c2.带律师的申诉','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('d1.紧急服务之cc或语言申请','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('d2.紧急服务之高中申请','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('d3.紧急服务之大U申请','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('e.身份激活','Emerg',NULL,NOW(),NOW());
+insert into servicetype values('i1.CC或语言申请','Transfer',NULL,NOW(),NOW());
+insert into servicetype values('i2.高中申请','Transfer',NULL,NOW(),NOW());
+insert into servicetype values('i3.大U申请(本或硕)','Transfer',NULL,NOW(),NOW());
+insert into servicetype values('i4.国会奖申请','Transfer',NULL,NOW(),NOW());
+insert into servicetype values('z.北京所购服务送的cc only申请','Transfer',NULL,NOW(),NOW());
+insert into servicetype values('p.文书','Transfer',NULL,NOW(),NOW());
+insert into servicetype values('f1.签证辅导普通','Visa',NULL,NOW(),NOW());
+insert into servicetype values('f2.签证辅导VIP','Visa',NULL,NOW(),NOW());
+insert into servicetype values('g.签证工具（PAP）','Visa',NULL,NOW(),NOW());
+insert into servicetype values('h1.学术正轨','Study',NULL,NOW(),NOW());
+insert into servicetype values('h2.早起鸟','Study',NULL,NOW(),NOW());
+insert into servicetype values('h3.单科辅导','Study',NULL,NOW(),NOW());
+insert into servicetype values('h4.托福辅导','Study',NULL,NOW(),NOW());
+insert into servicetype values('h5.ASPIRE全套1年','Study',NULL,NOW(),NOW());
+insert into servicetype values('h6.ASPIRE全套2年','Study',NULL,NOW(),NOW());
+insert into servicetype values('h7.选课辅导','Study',NULL,NOW(),NOW());

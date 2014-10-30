@@ -56,6 +56,25 @@ module.exports = {
 					});	
 				}else{
 					console.log('creating client');
+					Client.transaction().create(attribs.client).done(function(err,client){
+						if(err){
+							return client.rollback(function(err){
+								console.log('create client failed');
+								res.json(400,err);
+							})							 
+						}
+						attribs.client=client.id;
+						Contract.create(attribs).exec(function(err,data){
+						if(err){
+							return client.rollback(function(){
+								console.log('create contract failed');
+								return res.json(400,err);
+							});							
+						}
+						console.log("contract created");
+						return res.json(data);
+					});
+					})
 					Client.create(attribs.client).exec(function(err,client){
 					if(err){
 						return res.json(400,err);
@@ -76,8 +95,6 @@ module.exports = {
 		}else{
 			return res.json(400,{"error":"client is necessary to create a contract"});
 		}
-		
-
 	},
 	'updateContract':function(req,res){
 		var attribs=req.body;

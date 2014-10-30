@@ -148,6 +148,15 @@ Views.Login=Wholeren.baseView.extend({
         initialize: function () {
             this.submitted = "no";
             this.render();
+            this.roles=new Obiwang.Collections['Role']();
+            _.bindAll(this,'renderRole');
+            var self=this;
+            this.roles.fetch().done(function(){
+                self.renderRole();
+            }).fail(function(err){
+                console.log(err);
+            });
+            //this.roles.on('reset',this.renderRole);
         },
 
         templateName: "signup",
@@ -165,17 +174,32 @@ Views.Login=Wholeren.baseView.extend({
                     self.$("[name='name']").focus();
                 });
         },
-
+        renderRole:function(roles){
+            var select=$('.role').find('option').remove().end();
+            this.roles.forEach(function(ele){
+                var item=ele.toJSON();
+                var toAdd=$('<option>', { value : item.id }).text(item['role']);
+                select.append(toAdd);
+            });
+        },
         submitHandler: function (event) {
             event.preventDefault();
-            var name = this.$('.name').val(),
+            var nickname = this.$('.nickname').val(),
+                firstname = this.$('.firstname').val(),
+                lastname = this.$('.lastname').val(),
                 email = this.$('.email').val(),
                 password = this.$('.password').val(),
                 validationErrors = [],
                 self = this;
 
-            if (!validator.isLength(name, 1)) {
-                validationErrors.push("Please enter a name.");
+            if (!validator.isLength(nickname, 1)) {
+                validationErrors.push("Please enter a nickname.");
+            }
+            if (!validator.isLength(firstname, 1)) {
+                validationErrors.push("Please enter a firstname.");
+            }
+            if (!validator.isLength(lastname, 1)) {
+                validationErrors.push("Please enter a lastname.");
             }
 
             if (!validator.isEmail(email)) {
@@ -187,7 +211,7 @@ Views.Login=Wholeren.baseView.extend({
             }
 
             if (!validator.equals(this.submitted, "no")) {
-                validationErrors.push("Ghost is signing you up. Please wait...");
+                validationErrors.push("Wholeren is signing you up. Please wait...");
             }
 
             if (validationErrors.length) {
@@ -201,7 +225,9 @@ Views.Login=Wholeren.baseView.extend({
                         'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
                     },
                     data: {
-                        name: name,
+                        nickname: nickname,
+                        firstname: firstname,
+                        lastname: lastname,
                         email: email,
                         password: password
                     },
@@ -213,7 +239,7 @@ Views.Login=Wholeren.baseView.extend({
                         Wholeren.notifications.clearEverything();
                         Wholeren.notifications.addItem({
                             type: 'error',
-                            message: util.getRequestErrorMessage(xhr),
+                            message: xhr.responseText,
                             status: 'passive'
                         });
                     }

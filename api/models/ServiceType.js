@@ -12,7 +12,7 @@ module.exports = {
   	
   	service:{ collection:'Service', via:'serviceType'},
 
-  	category:{type:'string',required:true,defaultsTo:'Transfer'} // Only be Transfer, Emerg, Study, Visa
+  	category:{type:'string',required:true,defaultsTo:'Transfer',enum:['Transfer','Emerg','Study','Visa']} // Only be Transfer, Emerg, Study, Visa
 
   }
 };

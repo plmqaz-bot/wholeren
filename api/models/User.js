@@ -8,20 +8,19 @@
 module.exports = {
 
   attributes: {
-  	username:{type:'string',unique:true,required:true},
-
   	password:{type:'string',required:true,minLength:6},
 
-  	email:{type:'email',required:true},
+  	email:{type:'email',required:true,unique:true},
 
   	nickname:{type:'string',required:true,unique:true},
 
-  	firstName:{type:'string',required:true},
+  	firstname:{type:'string',required:true},
 
-  	lastName:{type:'string',required:true},
+  	lastname:{type:'string',required:true},
 
-  	role:{model:'Role',required:true}
+  	role:{model:'Role',required:true,defaultsTo:1},
 
+    active:{type:'boolean',required:true,defaultsTo:false}
   	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
 
   	//service:{collection:'Service',via:'serviceTeacher',dominant:true}

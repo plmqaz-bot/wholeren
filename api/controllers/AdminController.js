@@ -156,51 +156,53 @@ module.exports={
         }
     },
     'doSignup': function (req, res) {
-        var name = req.body.name,
+        var firstname = req.body.firstname,
+            nickname = req.body.nickname,
+            lastname = req.body.lastname,
             email = req.body.email,
             password = req.body.password;
 
-        api.users.add({
-            name: name,
+        User.create({
+            firstname: firstname,
+            lastname: lastname,
+            nickname: nickname,
             email: email,
             password: password
         }).then(function (user) {
-            api.settings.edit('email', email).then(function () {
-                var message = {
-                    to: email,
-                    subject: 'Your New Ghost Blog',
-                    html: '<p><strong>Hello!</strong></p>' +
-                          '<p>Good news! You\'ve successfully created a brand new Ghost blog over on ' + config().url + '</p>' +
-                          '<p>You can log in to your admin account with the following details:</p>' +
-                          '<p> Email Address: ' + email + '<br>' +
-                          'Password: The password you chose when you signed up</p>' +
-                          '<p>Keep this email somewhere safe for future reference, and have fun!</p>' +
-                          '<p>xoxo</p>' +
-                          '<p>Team Ghost<br>' +
-                          '<a href="https://ghost.org">https://ghost.org</a></p>'
-                };
-                mailer.send(message).otherwise(function (error) {
-                    errors.logError(
-                        error.message,
-                        "Unable to send welcome email, your blog will continue to function.",
-                        "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
-                    );
-                });
+                // var message = {
+                //     to: email,
+                //     subject: 'Your New Ghost Blog',
+                //     html: '<p><strong>Hello!</strong></p>' +
+                //           '<p>Good news! You\'ve successfully created a brand new Ghost blog over on ' + config().url + '</p>' +
+                //           '<p>You can log in to your admin account with the following details:</p>' +
+                //           '<p> Email Address: ' + email + '<br>' +
+                //           'Password: The password you chose when you signed up</p>' +
+                //           '<p>Keep this email somewhere safe for future reference, and have fun!</p>' +
+                //           '<p>xoxo</p>' +
+                //           '<p>Team Ghost<br>' +
+                //           '<a href="https://ghost.org">https://ghost.org</a></p>'
+                // };
+                // mailer.send(message).otherwise(function (error) {
+                //     errors.logError(
+                //         error.message,
+                //         "Unable to send welcome email, your blog will continue to function.",
+                //         "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
+                //     );
+                // });
 
                 req.session.regenerate(function (err) {
                     if (!err) {
                         if (req.session.user === undefined) {
                             req.session.user = user.id;
                         }
-                        res.json(200, {redirect: config().paths.subdir + '/ghost/'});
+                        res.json(200, {redirect: '/admin/contract/'});
                     }
                 });
-            });
-        }).otherwise(function (error) {
+                console.log("User created");
+        }).fail(function (error) {
+            console.log("Create failed");
+            console.log(error);
             res.json(401, {error: error.message});
         });
     },
-    'giveback':function(req,res){
-        res.json(req);
-    }
 }

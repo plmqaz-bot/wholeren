@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
   	role:{type:"string",required:true,unique:true },
 
-  	roleOnUser:{collection:'User',via:'role'},
+  	user:{collection:'User',via:'role'},
   	
   }
 };
