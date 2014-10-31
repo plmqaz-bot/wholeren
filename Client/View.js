@@ -571,7 +571,7 @@ Settings.Pane = Backbone.View.extend({
  Wholeren.FormView=Wholeren.baseView.extend({
         templateName:'contract',
         events: {
-        'click .textbox':'editAttr',
+        'click .textbox,.selectbox':'editAttr',
         'click .sortable':'sortCollection'
         },
         constructor:function(){
@@ -601,13 +601,18 @@ Settings.Pane = Backbone.View.extend({
             this.collection.sort();
         },
         editAttr:function(e){
-            var attr=$(e.currentTarget).data("attr");
-            var type=$(e.currentTarget).data("type");
-            var id=$(e.currentTarget).parent().attr("name"); 
+            var item=$(e.currentTarget);
+            var attr=item.data("attr");
+            var type=item.attr("class");
+            var id=item.parent().attr("name");
+            var filter=item.data("restri")||"";
+            var coll=item.data("coll")||"";
+            var optext=item.data("optext")||"";
             var curValue=this.collection.get(id).get(attr);
-            var modelName=$(e.currentTarget).data("model");
-            var modelId=$(e.currentTarget).data("id");
-             var popUpView=new AttributeEdit({view:this,id:id,attr:attr,type:type,curValue:curValue,modelName:modelName,modelId:modelId});
+            var modelName=item.data("model");
+            var modelId=item.data("id");
+
+             var popUpView=new AttributeEdit({view:this,id:id,filter:filter,coll:coll,optext:optext,attr:attr,type:type,curValue:curValue,modelName:modelName,modelId:modelId});
              popUpView.render();
              $('.app').html(popUpView.el);
         },
@@ -704,11 +709,14 @@ var AttributeEdit=Backbone.Modal.extend({
         this.modelName=options.modelName;
         _.bindAll(this,  'render', 'afterRender');
         this.parentView = options.view;
+        this.filter=options.filter.replace(/\'/g,"\"");
+        this.selectModel=options.coll;
         this.rerenderId = options.id;
         this.updateId=options.modelId||options.id;
         this.attr=options.attr;
         this.type=options.type;
         this.curValue=options.curValue||'';
+        this.optext=options.optext;
         var self=this;
         this.render=_.wrap(this.render,function(render){
             render();
@@ -721,12 +729,33 @@ var AttributeEdit=Backbone.Modal.extend({
     submitEl: '.ok',
     afterRender:function(model){
         switch(this.type){
-            case 'text':
+            case 'textbox':
             var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><textarea class="reply-content">'+this.curValue+'</textarea>').contents();        
             this.$el.find('.bbm-modal__section').append(ele);
             break;
-            case 'select':
-           break;
+            case 'selectbox':
+            var eletitle=$('<div/>').html('<p>Text for '+this.attr+'</p>').contents();
+            var ele=$('<div/>').html('<select class="reply-content"></select>').contents();
+            var choices=new Obiwang.Collections[this.selectModel]();
+            var self=this;
+            choices.fetch().done(function(){
+                choices.forEach(function(item){
+                    var choice=item.toJSON();
+                    var toAdd=$('<option>', { value : choice.id }).text(choice[self.optext]);
+                    if(self.filter){
+                        var obfilter=JSON.parse(self.filter);
+                        for(var key in obfilter){
+                            if(choice[key][key]!=obfilter[key]){
+                                return;
+                            }
+                        }
+                    }
+                    ele.append(toAdd);                   
+                });
+                self.$el.find('.bbm-modal__section').append(eletitle).append(ele);
+            })
+             
+            break;
             
         }
         return this;
@@ -919,7 +948,7 @@ var ContractView=Wholeren.FormView.extend({
         'click  button.button-filter': 'modifyFilter',
         //'click .clickablecell':'editContract',
         'click .edit,.del':'editContract',
-        'click .textbox':'editAttr',
+        'click .textbox,.selectbox':'editAttr',
         'click .sortable':'sortCollection'
         },     
         modifyFilter:function(e){
@@ -1148,7 +1177,7 @@ var ServiceView=Wholeren.FormView.extend({
         },
         events: {
         'click .add,.edit,.del':'editApplication',
-        'click .textbox':'editAttr',
+        'click .textbox,.selectbox':'editAttr',
         'click .sortable':'sortCollection',
         },        
         renderCollection: function (){
