@@ -18,4 +18,6 @@ crlf for security
 
 creating contract should be transaction, client should not be created. 
 
+Return don't close modal
+
 
