@@ -725,7 +725,7 @@ var AttributeEdit=Backbone.Modal.extend({
             var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><textarea class="reply-content">'+this.curValue+'</textarea>').contents();        
             this.$el.find('.bbm-modal__section').append(ele);
             break;
-            case 'selection':
+            case 'select':
            break;
             
         }

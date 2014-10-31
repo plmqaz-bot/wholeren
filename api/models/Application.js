@@ -18,7 +18,7 @@ module.exports = {
 
 	succeed:{type:'boolean',defaultsTo:false},
 
-	appliedSemester:{type:'date'},
+	appliedSemester:{type:'string'},
 
 	studentCondition:{type:'string'},
 
