@@ -753,8 +753,43 @@ var AttributeEdit=Backbone.Modal.extend({
                     ele.append(toAdd);                   
                 });
                 self.$el.find('.bbm-modal__section').append(eletitle).append(ele);
-            })
-             
+            });             
+            break;
+            case 'multiselectbox':
+            var eletitle=$('<div/>').html('<p>Text for '+this.attr+'</p>').contents();
+            //var ele=$('<div/>');
+             var ele=$('<div/>').html('<select class="reply-content" multiple size=10></select>').contents();
+            var choices=new Obiwang.Collections[this.selectModel]();
+            var self=this;
+            choices.fetch().done(function(){
+                choices.forEach(function(item){
+                    var choice=item.toJSON();
+                    //var toAdd=$('<input>', { value : choice.id,type:"checkbox",name:"names[]" }).text(choice[self.optext]);
+                     var toAdd=$('<option>', { value : choice.id }).text(choice[self.optext]);
+                    if(self.filter){
+                        var obfilter=JSON.parse(self.filter);
+                        for(var key in obfilter){
+                            if(choice[key][key]!=obfilter[key]){
+                                return;
+                            }
+                        }
+                    }
+                    //search if it exist
+                    if(self.curValue){
+                        self.curValue.forEach(function(curv){
+                            curv=curv[self.optext]||curv;
+                            if(curv.id==choice.id||curv==choice.id){
+                                toAdd.attr('selected', 'selected');
+                                return;
+                            }
+                        });
+                    }
+                    ele.append(toAdd);
+                    //ele.append($('<br>'));                   
+                });
+                ele.val(this.curValue);
+                self.$el.find('.bbm-modal__section').append(eletitle).append(ele);
+            });   
             break;
             
         }
@@ -780,6 +815,14 @@ var AttributeEdit=Backbone.Modal.extend({
                 util.handleRequestError(response);                       
             }
         });
+    },
+    clickOutside:function(){
+        return;
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
     }
 });
 
@@ -910,6 +953,11 @@ var EditForm=Backbone.Modal.extend({
     },
     clickOutside:function(){
         return;
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
     }
 });
 /*************************************************Views for Contract *****************************/
@@ -948,7 +996,7 @@ var ContractView=Wholeren.FormView.extend({
         'click  button.button-filter': 'modifyFilter',
         //'click .clickablecell':'editContract',
         'click .edit,.del':'editContract',
-        'click .textbox,.selectbox':'editAttr',
+        'click .textbox,.selectbox,.multiselectbox':'editAttr',
         'click .sortable':'sortCollection'
         },     
         modifyFilter:function(e){
@@ -1137,7 +1185,24 @@ var ContractEdit = EditForm.extend({
                 console.log('error fetch');
             }
         });
-   }
+   },
+   Submit:function(){
+        if(this.formError) return;
+        var self=this;
+        this.model.save(this.modelChanges,{
+            patch:true,
+            success:function(d){
+                // refresh parent view
+                    self.parentView.rerenderSingle({id:d.get('id')});
+                    return self.close();
+                  
+            },
+            error:function(model,response){
+                util.handleRequestError(response); 
+                self.refreshClientID();                      
+            }
+        });
+    },
 });
 /*************************************************Views for Services *****************************/
 var ServiceView=Wholeren.FormView.extend({

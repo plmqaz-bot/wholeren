@@ -4,7 +4,7 @@
  * @description :: Server-side logic for managing Contracts
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-
+var Promise=require('bluebird');
 module.exports = {
 	'getContract':function(req, res){
 		Contract.find().populateAll().exec(function(err,data){
@@ -98,6 +98,7 @@ module.exports = {
 	},
 	'updateContract':function(req,res){
 		var attribs=req.body;
+		
 		if(!req.params.id){
 			return res.json(404,{error:"no contract id to update"});
 		}
@@ -105,9 +106,10 @@ module.exports = {
 		if(attribs.client){
 			if(attribs.client.id){
 				// Update the client
+
+				delete attribs.client["contract"];
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
-				delete attribs.client["contract"];
 				Client.update({id:attribs.client.id},attribs.client,function(err,obj){
 					if(err){
 						return res.json(400,err);
@@ -115,6 +117,11 @@ module.exports = {
 					//console.log("client updated:",obj);
 					attribs.client=attribs.client.id;
 					console.log(attribs);
+					if(attribs['service']){
+						return privateUpdateService(attribs['service'],req.params.id,res);
+					}
+					delete attribs["createAt"];
+					delete attribs["updateAt"];
 					Contract.update({id:req.params.id},attribs,function(err,data){
 						if(err){
 							return res.json(400,err);
@@ -131,6 +138,9 @@ module.exports = {
 					}
 					//console.log("client created: ",client);
 					attribs.client=client.id;
+					if(attribs['service']){
+						return privateUpdateService(attribs['service'],req.params.id,res);
+					}
 					delete attribs["createAt"];
 					delete attribs["updateAt"];
 					Contract.update({id:req.params.id},attribs,function(err,data){
@@ -143,6 +153,9 @@ module.exports = {
 				});
 			}
 		}else{
+			if(attribs['service']){
+				return privateUpdateService(attribs['service'],req.params.id,res);
+			}
 			delete attribs["createAt"];
 			delete attribs["updateAt"];
 			Contract.update({id:req.params.id},attribs,function(err,data){
@@ -152,6 +165,66 @@ module.exports = {
 				return res.json(data);
 			});	
 		}
+	function privateUpdateService(attrs,id,res){
+		 // update service separatly
+    var serviceAttrs=attrs;// This should be arry of service to add [transfer,study...]
+    console.log(attrs);
+    if(!serviceAttrs) return next();
+    var toAdd=[]; // Will store the id of serviceTypes that need to be created. 
+    var toKeep=[]; // This store the service id that already exist. 
+    var toDel=[]; // Will store the id of services that should be deleted from contract;
+    var contractId=id;
+    delete attrs['service'];
+
+    var types;
+    var def=ServiceType.find();
+    var exist;
+    var def2=Contract.findOne({id:contractId}).populate('service');
+    console.log("before find",contractId);
+    Promise.all([def,def2]).spread(function(types,contract){
+        contract.service.forEach(function(item){
+        var curServiceTypeid=item.serviceType;
+        var curServiceType=_.find(types,function(type){return type.id==curServiceTypeid})||{};
+        console.log(curServiceType.serviceType);
+        if(curServiceType.serviceType){
+          var overlap=false;
+          serviceAttrs=_.reject(serviceAttrs,function(serv){
+              if(serv==curServiceType.serviceType||serv==curServiceTypeid){// If the service type overlaps with the service to add, then don't do anything 
+                overlap=true;
+                return true;
+              }else{
+                return false;
+              }
+          });
+          if(overlap){
+            toKeep.push(item.id);
+          }else{ // Not overlap, so this service need to be deleted
+            toDel.push(item.id);
+          }
+        }else{
+          toDel.push(item.id);
+        }
+      });
+    }).then(function(){
+      console.log("to add service type are ", serviceAttrs);
+      console.log("to keep service id are ", toKeep);
+      console.log("to del service are ",toDel);
+      var createTasks=[];
+      serviceAttrs.forEach(function(ele){
+      	// Add service, set the id to the contract. 
+      	createTasks.push(Service.create({serviceType:ele,contract:contractId}));
+      });
+      return Promise.all(createTasks);
+    }).then(function(){// delete these service-contract association
+    	var deleteTasks=[];
+    	toDel.forEach(function(ele){
+    		deleteTasks.push(Service.update({id:ele},{contract:-contractId}));
+    	});
+    	return Promise.all(deleteTasks);
+    }).then(function(){
+    	res.json(200);
+    }).error(function(err){console.log(err);res.json(400,err);});  
+	}
 
 	},
 	getAllOptions:function(req,res){
@@ -183,6 +256,7 @@ module.exports = {
 			return res.json(200,results);
 		});
 
-	}
+	},
+	
 };
 

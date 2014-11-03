@@ -4,7 +4,8 @@
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
-var Q=require('q');
+
+var Promise=require('bluebird');
 module.exports = {
 
   attributes: {
@@ -85,39 +86,51 @@ module.exports = {
     //visaService:{model:'Service'},
     service:{collection:'Service',via:'contract'}
   },
-  beforeUpdate: function (attrs, next) {
+  beforeUpdate2: function (attrs, next) {
     // update service separatly
-
-
     var serviceAttrs=attrs['service'];// This should be arry of service to add [transfer,study...]
-    var toAdd=serviceAttrs||[];
-    var toDel=[];
+    if(!serviceAttrs) return next();
+    var toAdd=[]; // Will store the id of serviceTypes that need to be created. 
+    var toKeep=[]; // This store the service id that already exist. 
+    var toDel=[]; // Will store the id of services that should be deleted from contract;
     var contractId=attrs['id'];
     delete attrs['service'];
+
     var types;
     var def=ServiceType.find();
     var exist;
     var def2=Contract.findOne({id:contractId}).populate('service');
     console.log("before find");
-    Q.all([def,def2]).spread(function(types,contract){
-      console.log("before process");
-      console.log("exist data",contract);
-/*        contract.service.forEach(function(item){
-        var curServiceid=item.serviceType;
-        var curServiceType=_.find(types,function(type){return type.id==curServiceid})||{};
+    Promise.all([def,def2]).spread(function(types,contract){
+        contract.service.forEach(function(item){
+        var curServiceTypeid=item.serviceType;
+        var curServiceType=_.find(types,function(type){return type.id==curServiceTypeid})||{};
         console.log(curServiceType.serviceType);
         if(curServiceType.serviceType){
-          var todel=false;
-          toAdd=_.reject(toAdd,function(serv){
-            todel=!(serv==curServiceType.serviceType||serv==curServiceid);
-            return !todel;
+          var overlap=false;
+          serviceAttrs=_.reject(serviceAttrs,function(serv){
+              if(serv==curServiceType.serviceType||serv==curServiceTypeid){// If the service type overlaps with the service to add, then don't do anything 
+                overlap=true;
+                return true;
+              }else{
+                return false;
+              }
           });
+          if(overlap){
+            toKeep.push(item.id);
+          }else{ // Not overlap, so this service type need to be deleted
+            toDel.push(curServiceTypeid);
+          }
         }else{
-          toDel.add(curServiceid);
+          toDel.push(curServiceTypeid);
         }
-      });*/
-        console.log(toAdd,toDel);
-    }).fail(function(err){console.log(err);next();});    
-  }
+      });
+    }).then(function(){
+      console.log("to add service type are ", serviceAttrs);
+      console.log("to keep service id are ", toKeep);
+      console.log("to del service are ",toDel);
+    }).error(function(err){console.log(err);});    
+  },
+
 };
 
