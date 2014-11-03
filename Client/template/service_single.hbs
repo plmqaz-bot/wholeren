@@ -8,16 +8,16 @@
         <td>{{../progress}}</td>
         <td>{{../serviceType/serviceType}}</td>
         <td>{{../contract/createdAt}}</td>
-        <td>{{newDev}}</td>
-        <td>{{succeed}}</td>
-        <td>{{collegeName}}</td>
+        <td >{{displayBool newDev}}</td>
+        <td >{{displayBool succeed}}</td>
+        <td data-attr="collageName" data-type="text" class="textbox" data-model="Application" data-id="{{id}}">{{collageName}}</td>
         <td data-attr="studentDestination" data-type="text" class="textbox" data-model="Service">{{../studentDestination}}</td>
         <td>{{appliedSemester}}</td>
-        <td>{{writer}}</td>
+        <td>{{#if writer}}{{writer/nickname}}{{/if}}</td>
         <td>{{studentCondition}}</td>
         <td>{{step1}}</td>
         <td>{{step2}}</td>
-        <td>{{../serviceTeacher/nickname}}</td>
+        <td>{{../service/contract/teacher/nickname}}</td>
         <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a><a class="del" href="#{{id}}">Delete</a></td>
         </tr> 
 {{/each}}
@@ -29,8 +29,8 @@
         <td>{{progress}}</td>
         <td>{{serviceType/serviceType}}</td>        
         <td>{{contract/createdAt}}</td>
-        <td>{{newDev}}</td>
-        <td>{{succeed}}</td>
+        <td>{{displayBool newDev}}</td>
+        <td>{{displayBool succeed}}</td>
         <td>{{collegeName}}</td>
         <td data-attr="studentDestination" data-type="text" class="textbox" data-model="Service" >{{studentDestination}}</td>
         <td>{{appliedSemester}}</td>
@@ -38,7 +38,7 @@
         <td>{{studentCondition}}</td>
         <td>{{step1}}</td>
         <td>{{step2}}</td>
-        <td>{{serviceTeacher/nickname}}</td>
+        <td>{{contract/teacher/nickname}}</td>
         <td><a class="add" href="#">Add</a></td>
         </tr> 
         {{/if}}

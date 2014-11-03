@@ -111,8 +111,8 @@
         <div class="form-group">
             <label >I-20是否有效</label>
             <select id="validI20" name="general[validI20]"  >
-            <option value="true" {{#ifCond validI20 'true' }} selected {{/ifCond}}>有效</option>
-            <option value="false" {{#ifCond validI20 'false' }} selected {{/ifCond}}>无效</option>
+            <option value="true" {{#if validI20 }} selected {{/if}}>有效</option>
+            <option value="false" {{#if validI20}} {{else}}selected {{/if}}>无效</option>
         </select>
         <p></p>
         </div>
@@ -168,8 +168,8 @@
          <div class="form-group">
             <label >$150 学校申请费</label>
             <select id="applicationFeePaid" name="general[applicationFeePaid]"  >
-            <option value="true" {{#ifCond applicationFeePaid 'true' }} selected {{/ifCond}}>已交</option>
-            <option value="false" {{#ifCond applicationFeePaid 'false' }} selected {{/ifCond}}>未交</option>
+            <option value="false" {{#if applicationFeePaid}} {{else}}selected{{/if}}>未交</option>
+            <option value="true" {{#if applicationFeePaid }} selected {{/if}}>已交</option>
         </select>
         <p></p>
         </div>
@@ -189,8 +189,9 @@
         <div class="form-group">
             <label >是否收尾款</label>
             <select id="endFee" name="general[endFee]"  >
-            <option value="true" {{#ifCond endFee 'true' }} selected {{/ifCond}}>是</option>
-            <option value="false" {{#ifCond endFee 'false' }} selected {{/ifCond}}>否</option>
+            <option value="false" {{#if endFee}}{{else}} selected {{/if}}>否</option>
+            <option value="true" {{#if endFee}} selected {{/if}}>是</option>
+            
         </select>
         <p></p>
         </div>

@@ -13,7 +13,7 @@
         <td>{{leadLevel.leadLevel}}</td>
         <td>{{status.status}}</td>
         <td>前期助理</td>
-        <td>{{sales/nickname}}</td>
+        <td data-attr="sales" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{sales/nickname}}</td>
         <td data-attr="expert" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{expert/nickname}}</td>
         <td data-attr="originalText"  class="textbox" data-model="Contract">{{shortText originalText}}</td>        
         <td data-attr="salesFollowup"  class="textbox" data-model="Contract">{{shortText salesFollowup}}</td>
@@ -21,14 +21,14 @@
         <td>专家咨询日期</td>
         <td data-attr="expertFollowup"  class="textbox" data-model="Contract">{{shortText expertFollowup}}</td>
         <td>{{country.country}}</td>
-        <td>{{validI20}}</td>
+        <td>{{displayBool validI20}}</td>
         <td>{{previousSchool}}</td>
         <td>{{targetSchool}}</td>
         <td>{{gpa}}</td>
         <td>{{toefl}}</td>
         <td>{{otherScore}}</td>
         <td>{{degree/degree}}</td>
-        <td>{{diagnose}}</td>
+        <td data-attr="diagnose"  class="textbox" data-model="Contract">{{diagnose}}</td>
         <td>{{contractSigned}}</td>
         <td>{{contractPaid}}</td>
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Transfer"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
@@ -37,9 +37,9 @@
         <td>{{#each service}}{{#ifCond serviceType/category "Visa"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
         <td>{{contractPrice}}</td>
         <td>{{contractDetail}}</td> 
-        <td>{{applicationFeePaid}}</td>
+        <td>{{displayBool applicationFeePaid}}</td>
         <td>{{paymentOption/paymentOption}}</td>
-        <td>{{endFee}}</td>
-        <td>{{teacher/nickname}}</td>
+        <td>{{displayBool endFee}}</td>
+        <td data-attr="teacher" data-restri="{'role':'申请'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{teacher/nickname}}</td>
         <td><a class="edit" href="#{{id}}">Edit</a><a class="del" href="#{{id}}">Delete</a></td>
         </tr> 

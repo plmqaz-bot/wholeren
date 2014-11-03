@@ -66,6 +66,10 @@ module.exports.routes = {
     controller:'service',
     action:'update'
   },
+  'GET /service/':{
+    controller:'service',
+    action:'getService'
+  },
   'PATCH /application/:id':{
     controller:'application',
     action:'update'

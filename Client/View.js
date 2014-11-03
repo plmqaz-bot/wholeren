@@ -21,6 +21,10 @@ Handlebars.registerHelper('shortText', function (text) {
     text=text||'';
     return text.substring(0,20);
 });
+Handlebars.registerHelper('displayBool', function(bool){
+    if(bool) return '是';
+    return '否';
+});
 Backbone.$ = $;
 //#endregion
 Wholeren.baseView= Backbone.View.extend({
@@ -979,7 +983,7 @@ var ContractView=Wholeren.FormView.extend({
                 this.serviceTypes.fetch().done(function(data){
                     self.ready=true;
                     self.renderCollection();
-                    self.collection.on("sort", this.renderCollection, this);
+                    self.collection.on("sort", self.renderCollection, self);
                 });
                 
             } else if (!this.collection || this.collection.length < 1) {
@@ -987,9 +991,10 @@ var ContractView=Wholeren.FormView.extend({
                 $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
                     self.ready=true;
                     self.renderCollection();
-                    self.collection.on("sort", this.renderCollection, this);
+                    self.collection.on("sort", self.renderCollection, self);
                 });
-            }           
+            }    
+            //self.collection.on("sort", this.renderCollection, this); 
         },
         events: {
         'click  button.button-add': 'editView',
@@ -1230,13 +1235,13 @@ var ServiceView=Wholeren.FormView.extend({
                         self.collection.add(model);
                     self.ready=true;
                     self.renderCollectionCore();
-                    self.collection.on("sort", this.renderCollection, this);
+                    self.collection.on("sort", self.renderCollection, self);
                 });
             }else {
                 $.when(this.collection.fetch(),this.user.fetch(),this.client.fetch()).done(function(){
                     self.ready=true;
                     self.renderCollectionCore();
-                    self.collection.on("sort", this.renderCollection, this);
+                    self.collection.on("sort", self.renderCollection, self);
                 });
             }
         },
@@ -1361,6 +1366,11 @@ var ServiceView=Wholeren.FormView.extend({
 
 var ApplicationEdit=EditForm.extend({
     template: JST['serviceEdit'],
+    events:{
+        "click .ok":"Submit",
+        "change select:not([id^='client.'])":"selectionChanged",
+        "change input":"inputChanged",
+    },
     initialize: function (options){
         this.parentView = options.view;
         if(!options.service||!options.curApp){
@@ -1381,10 +1391,11 @@ var ApplicationEdit=EditForm.extend({
           return _this;
         }); 
     }, 
-    submit:function(option){
+    Submit:function(option){
         if(this.formError) return;
         var self=this;
-        this.model.save(this.modelChanges,{
+        var changes=JSON.parse(JSON.stringify(this.modelChanges));
+        this.model.save(changes,{
             patch:true,
             success:function(d){
                 // refresh parent view
@@ -1400,20 +1411,35 @@ var ApplicationEdit=EditForm.extend({
     afterRender:function(){
          var self=this;
         $.ajax({
-            url: '/options/',
+            url: '/User/',
             type: 'GET',
             headers: {
                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
             },
             success: function (data) {
-                for(var key in data){
-                    self.renderSelect({name:key,content:data[key]});
-                }                
+                    self.renderSelect({name:'writer',content:data});
+                                
             },
             error: function (xhr) {
                 console.log('error');
             }
         });
+    },
+    renderSelect:function(collection){
+        var col=collection.content;
+        var tableName=collection.name;   
+        tableName=tableName.charAt(0).toLowerCase() + tableName.slice(1);
+        var self=this; 
+        var theSel=$('#'+tableName).find('option').remove().end();
+        theSel.append('<option></option>');
+        col.forEach(function(item){
+            var ele=item;
+            var toAdd=$('<option>', { value : ele.id }).text(ele['nickname']);
+            if(self.model.get(tableName)&&((self.model.get(tableName).id&&self.model.get(tableName).id==ele.id)||self.model.get(tableName)==ele.id)){
+                toAdd.attr('selected','selected');
+            }
+            theSel.append(toAdd); 
+        });  
     },
 });
 module.exports={

@@ -7,7 +7,15 @@
 var Promise=require('bluebird');
 module.exports = {
 	'getContract':function(req, res){
-		Contract.find().populateAll().exec(function(err,data){
+		var id=1;
+		Contract.find({
+			or:[
+			{expert:id},
+			{sales:id},
+			{teacher:id},
+			{teacher:null}
+			]
+		}).populateAll().exec(function(err,data){
 			// data.forEach(function(item){
 			// 	if(item.services){
 			// 		item.services.forEach(ele){
@@ -23,7 +31,9 @@ module.exports = {
 		
 	},
 	'createContract':function(req,res){
+		var saleid=1; // change it to the user's id
 		var attribs=req.body;
+		attribs['sales']=saleid;
 		if(attribs.client){
 			if(attribs.client.id){
 				// Update the client
@@ -56,40 +66,54 @@ module.exports = {
 					});	
 				}else{
 					console.log('creating client');
-					Client.transaction().create(attribs.client).done(function(err,client){
-						if(err){
-							return client.rollback(function(err){
-								console.log('create client failed');
-								res.json(400,err);
-							})							 
-						}
-						attribs.client=client.id;
-						Contract.create(attribs).exec(function(err,data){
-						if(err){
-							return client.rollback(function(){
-								console.log('create contract failed');
-								return res.json(400,err);
-							});							
-						}
-						console.log("contract created");
-						return res.json(data);
-					});
-					})
-					Client.create(attribs.client).exec(function(err,client){
-					if(err){
-						return res.json(400,err);
-					}
-					console.log("client created: ");
-					attribs.client=client.id;
-					Contract.create(attribs).exec(function(err,data){
-						if(err){
+					// Client.transaction().create(attribs.client).done(function(err,client){
+					// 	if(err){
+					// 		return client.rollback(function(err){
+					// 			console.log('create client failed');
+					// 			res.json(400,err);
+					// 		})							 
+					// 	}
+					// 	attribs.client=client.id;
+					// 	Contract.create(attribs).exec(function(err,data){
+					// 	if(err){
+					// 		return client.rollback(function(){
+					// 			console.log('create contract failed');
+					// 			return res.json(400,err);
+					// 		});							
+					// 	}
+					// 	console.log("contract created");
+					// 	return res.json(data);
+					// });
+					// })
+					Client.query('START TRANSACTION',function(){
+						Client.create(attribs.client).then(function(client){
+							attribs.client=client.id;
+							return Contract.create(attribs);
+						}).then(function(data){
+							Client.query('COMMIT');
+							return res.json(data);
+						},function(err){
+							console.log("error in creating contract");
+							Client.query('ROLLBACK');
 							return res.json(400,err);
-						}
-						console.log("contract created");
-						return res.json(data);
-					});		
+						});
+					});
 					
-				});
+					// Client.create(attribs.client).exec(function(err,client){
+					// if(err){
+					// 	return res.json(400,err);
+					// }
+					// console.log("client created: ");
+					// attribs.client=client.id;
+					// Contract.create(attribs).exec(function(err,data){
+					// 	if(err){
+					// 		return res.json(400,err);
+					// 	}
+					// 	console.log("contract created");
+					// 	return res.json(data);
+					// });		
+					
+					// });
 			}
 			}
 		}else{
