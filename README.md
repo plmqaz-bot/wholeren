@@ -8,7 +8,7 @@ signup--DONE
 
 Figure out a way to add and remove services --DONE
 
-View for all the users and change roles and stuff
+View for all the users and change roles and stuff --DONE
 
 data validation for every model attributes 
 
