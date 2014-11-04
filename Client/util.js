@@ -30,7 +30,8 @@ module.exports={
         },
         handleRequestError:function(response){
             Wholeren.notifications.clearEverything();
-                var errors=response.responseJSON;
+                var errors=response.responseJSON||{};
+                var errortext=response.responseText||"";
                 if(errors.invalidAttributes){
                     for(var key in errors.invalidAttributes){
                         if(errors.invalidAttributes.hasOwnProperty(key)){
@@ -44,6 +45,12 @@ module.exports={
                             });
                         }
                     }                     
+                }else{
+                    Wholeren.notifications.addItem({
+                                type: 'error',
+                                message: errortext,
+                                status: 'passive'
+                                });
                 }
         },
         showError:function(text){

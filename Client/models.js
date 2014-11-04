@@ -166,9 +166,12 @@ Collections={
             this.selectedStrat({sortAttr:'contract.createdAt'});
         }
     }),
-    User:Backbone.Collection.extend({
+    User:sortableCollection.extend({
         model: Models.User,
         url: '/User/',
+        initialize:function(){
+            this.selectedStrat({sortAttr:'nickname'});
+        }
     }),
     Application:Backbone.Collection.extend({
         model:Models.Application,

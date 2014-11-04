@@ -754,6 +754,11 @@ var AttributeEdit=Backbone.Modal.extend({
                             }
                         }
                     }
+                    if(self.curValue){
+                        if(self.curValue.id==choice.id||self.curValue==choice.id){
+                            toAdd.attr('selected', 'selected');
+                        }  
+                    }
                     ele.append(toAdd);                   
                 });
                 self.$el.find('.bbm-modal__section').append(eletitle).append(ele);
@@ -1411,7 +1416,7 @@ var ApplicationEdit=EditForm.extend({
     afterRender:function(){
          var self=this;
         $.ajax({
-            url: '/User/',
+            url: '/User/?role=4',
             type: 'GET',
             headers: {
                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -1442,6 +1447,85 @@ var ApplicationEdit=EditForm.extend({
         });  
     },
 });
+var UserView=Wholeren.FormView.extend({
+    filter:[],
+    singleTemplate:JST['userSingle'],
+    ready:false,
+    templateName:'user',
+        initialize: function (options) {
+            _.bindAll(this,'rerenderSingle');
+            _.bindAll(this,'renderCollection');
+            _.bindAll(this,'renderCollectionCore');
+            this.el=options.el;
+            var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
+            var self=this;
+            this.collection = new Obiwang.Collections[modelName]();
+            this.render();
+            this.collection.fetch().done(function(){
+                self.ready=true;
+                self.renderCollectionCore();
+                self.collection.on("sort", self.renderCollection, self);
+            });
+            
+        },
+        events: {
+        'click .textbox,.selectbox,.multiselectbox':'editAttr',
+        'click .sortable':'sortCollection',
+        },        
+        renderCollection: function (){
+            if(this.ready){
+                this.renderCollectionCore();       
+            }else{
+                 var self=this;
+                this.collection.fetch().done(function(){
+                self.ready=true;
+                self.renderCollectionCore();
+            });
+            }            
+        },
+        headline:function(obj){
+                return "NO NAME";
+        },
+        modifyRow:function(obj){
+
+            return obj;
+        },
+        
+        // renderCollectionCore:function(){
+        // // Remove all keywords
+        // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
+        // toRemove.remove();
+        // var headrow=$('#scrollableheader');
+        // var stableheadrow=$('#pinnedheader');
+        // var self=this;
+        // this.collection.forEach(function(item){
+        //     var obj=item.toJSON();
+        //     obj.application.forEach(function(ele){
+        //         var id=ele.writer;
+        //         if(id){
+        //             ele.writer=self.user.get(id).toJSON();
+        //         }
+        //     });
+        //     var id=obj.contract.client;
+        //     if(id){
+        //         obj.contract.client=self.client.get(id).toJSON();
+        //     }
+        //     var ele = self.singleTemplate(obj);
+        //     var toInsert = $('<div/>').html(ele).contents();
+        //     toInsert.insertAfter(headrow);
+        //     var headline='';
+        //     if(obj.contract.client){
+        //         headline=obj.contract.client.chineseName;
+                
+        //     }
+        //     if(!headline){
+        //             headline="NO NAME";
+        //     }
+        //     var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
+        //     headInsert.insertAfter(stableheadrow);
+        // });     
+        // },
+});
 module.exports={
 		Setting:SettingView,
 		Sidebar:Sidebar,
@@ -1449,6 +1533,7 @@ module.exports={
         Notification:Notification,
         Contract:ContractView,
         Service:ServiceView,
+        User:UserView,
         Auth:Views
 
 };

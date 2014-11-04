@@ -12,6 +12,7 @@ var Router=Backbone.Router.extend({
         'settings(/:pane)/' : 'settings',
         'contract(/:option)/':'contract',
         'service/(:option)':'service',
+        'user/(:option)':'user',
         'register/'        : 'register',
         'signup/'          : 'signup',
         'signin/'          : 'signin',
@@ -65,6 +66,11 @@ var Router=Backbone.Router.extend({
     service:function(option){
         if(!Wholeren.currentView){
             Wholeren.currentView=new  Wholeren.Views.Service({el:'.content-view-container',id:option});
+        }
+    },
+    user:function(option){
+        if(!Wholeren.currentView){
+            Wholeren.currentView=new  Wholeren.Views.User({el:'.content-view-container',id:option});
         }
     }
 	

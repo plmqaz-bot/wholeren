@@ -13,11 +13,11 @@ adminNavbar = {
         key: 'admin.navbar.contract',
         path: '/service/'
     },
-    add: {
-        name: 'New Post',
-        navClass: 'editor',
-        key: 'admin.navbar.editor',
-        path: '/editor/'
+    user: {
+        name: 'User',
+        navClass: 'contract',
+        key: 'admin.navbar.contract',
+        path: '/user/'
     },
     settings: {
         name: 'Settings',
@@ -61,18 +61,18 @@ module.exports={
         });
     },
     'service':function(req,res){
-        var allowedSections = ['', 'general', 'user', 'apps'],
-            section = req.url.replace(/(^\/admin\/service[\/]*|\/$)/ig, '');
-
-        // if (allowedSections.indexOf(section) < 0) {
-        //     return next();
-        // }
-
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'service')
         });
     },
+    'user':function(req,res){
+        res.render('contract', {
+            bodyClass: 'contract',
+            adminNav: setSelected(adminNavbar, 'user')
+        });
+    },
+
     'settings': function (req, res, next) {
         // TODO: Centralise list/enumeration of settings panes, so we don't run into trouble in future.
         var allowedSections = ['', 'general', 'user', 'apps'],
