@@ -10,11 +10,9 @@ Figure out a way to add and remove services --DONE
 
 View for all the users and change roles and stuff --DONE
 
-data validation for every model attributes 
+data validation for every model attributes, especially the dates format. 
 
-policy
-
-crlf for security
+policy, manager rank control everything. ...
 
 creating contract should be transaction, client should not be created.  --DONE
 
@@ -24,4 +22,6 @@ Add commet to contract or service or application.
 
 Filters as needed. 
 
+production database.
 
+crlf for security
