@@ -1007,7 +1007,8 @@ var ContractView=Wholeren.FormView.extend({
         //'click .clickablecell':'editContract',
         'click .edit,.del':'editContract',
         'click .textbox,.selectbox,.multiselectbox':'editAttr',
-        'click .sortable':'sortCollection'
+        'click .sortable':'sortCollection',
+        'click .comment_edit':'showComments',
         },     
         modifyFilter:function(e){
             this.filter.push({attr:"originalText",value:null});
@@ -1076,7 +1077,13 @@ var ContractView=Wholeren.FormView.extend({
                     var popUpView = new ContractEdit({view:this,model:curCont});
                     $('.app').html(popUpView.render().el);
             }
-        }   
+        },
+        showComments:function(e){
+            var item=$(e.currentTarget);
+            var id = item.attr('href').substring(1);
+            var m=new CommentModalView();
+            $('.app').html(m.render.el);
+        }  
 });
 
 /**
@@ -1525,6 +1532,78 @@ var UserView=Wholeren.FormView.extend({
         //     headInsert.insertAfter(stableheadrow);
         // });     
         // },
+});
+var CommentView=Wholeren.baseView.extend({
+    tagName:'li',
+    template: JST['commentSingle'],
+    events: {
+      "dblclick .view"  : "edit",
+      "click a.destroy" : "clear",
+      "keypress .edit"  : "updateOnEnter",
+      "blur .edit"      : "close"
+    },
+    initialize: function() {
+      this.listenTo(this.model, 'change', this.render);
+      this.listenTo(this.model, 'destroy', this.remove);
+    },
+    render: function() {
+      this.$el.html(this.template(this.model.toJSON()));
+      this.input = this.$('.edit');
+      return this;
+    },
+    edit: function() {
+      this.$el.addClass("editing");
+      this.input.focus();
+    },
+    clear: function() {
+      this.model.destroy();
+    },
+    updateOnEnter: function(e) {
+      if (e.keyCode == 13) this.close();
+    },
+    close: function() {
+      var value = this.input.val();
+      if (!value) {
+        this.clear();
+      } else {
+        this.model.save({comment: value});
+        this.$el.removeClass("editing");
+      }
+    },
+});
+var CommentModalView=Backbone.Modal.extend({
+    el: $("#todoapp"),
+    template: JST['comment'],
+    cancelEl: '.cancel',
+    submitEl: '.ok',
+    events: {
+      "keypress #new-todo":  "createOnEnter",
+    },
+    initialize: function() {
+
+      this.input = this.$("#new-todo");
+      this.Todos=new Obiwang.Collections.Comment();
+      this.listenTo(this.Todos, 'add', this.addOne);
+      this.listenTo(this.Todos, 'reset', this.addAll);
+      this.listenTo(this.Todos, 'all', this.render);
+      this.main = $('#main');
+
+      this.Todos.fetch();
+    },
+    addOne: function(todo) {
+      var view = new TodoView({model: todo});
+      this.$("#todo-list").append(view.render().el);
+    },
+    addAll: function() {
+      Todos.each(this.addOne, this);
+    },
+    createOnEnter: function(e) {
+      if (e.keyCode != 13) return;
+      if (!this.input.val()) return;
+
+      this.Todos.create({comment: this.input.val()});
+      this.input.val('');
+    },
 });
 module.exports={
 		Setting:SettingView,

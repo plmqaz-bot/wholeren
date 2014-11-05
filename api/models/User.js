@@ -20,7 +20,9 @@ module.exports = {
 
   	role:{model:'Role',required:true,defaultsTo:1},
 
-    active:{type:'boolean',required:true,defaultsTo:false}
+    active:{type:'boolean',required:true,defaultsTo:false},
+
+    rank:{type:'int',required:true,defaultsTo:1}
   	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
 
   	//service:{collection:'Service',via:'serviceTeacher',dominant:true}
@@ -39,6 +41,11 @@ module.exports = {
         next();
       });
     });
-  }
+  },
+  toJSON: function() {
+      var obj = this.toObject();
+      delete obj.password;
+      return obj;
+    }
 };
 

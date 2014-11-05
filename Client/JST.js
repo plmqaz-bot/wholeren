@@ -20,6 +20,8 @@ var tpServiceSingle=require('./template/service_single.hbs');
 var tpServiceEdit=require('./template/modals/service_edit.hbs');
 var tpUser=require('./template/user.hbs');
 var tpUserSingle=require('./template/user_single.hbs');
+var tpCommentSingle=require('./template/modals/comment_single.hbs');
+var tpComment=require('./template/modals/comment.hbs');
 var tpl={
     'contract':tpContract,
     'contractSingle':tpContractSingle,
@@ -33,6 +35,8 @@ var tpl={
     'serviceEdit':tpServiceEdit,
     'user':tpUser,
     'userSingle':tpUserSingle,
+    'commentSingle':tpCommentSingle,
+    'comment':tpComment,
 };
 
 module.exports=tpl;
