@@ -13,7 +13,7 @@ module.exports = {
 			{expert:id},
 			{sales:id},
 			{teacher:id},
-			{teacher:null}
+			{expert:null,sales:null}
 			]
 		}).populateAll().exec(function(err,data){
 			// data.forEach(function(item){

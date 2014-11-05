@@ -52,6 +52,14 @@ module.exports.connections = {
     database: 'test',
     charset   : 'utf8',
   },
+  productionMysqlServer: {
+    adapter: 'sails-mysql',
+    host: 'han.bio.cmu.edu',
+    user: 'han',
+    password: 'hanlai',
+    database: 'test',
+    charset   : 'utf8',
+  },
 
   /***************************************************************************
   *                                                                          *
