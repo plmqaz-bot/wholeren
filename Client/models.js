@@ -186,7 +186,16 @@ Collections={
     }),
     Comment:Backbone.Collection.extend({
         model:Models.Comment,
-        url:'/Comment/'
+        initialize:function(option){
+            this.cid=option.cid;
+            this.sid=option.sid;
+        },
+        url:function(){
+            if(this.cid)
+                return '/Comment/?contract='+this.cid;
+            if(this.sid)
+                return '/Comment/?service='+this.sid;   
+        }
     })
 }
 

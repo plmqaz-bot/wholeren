@@ -1081,8 +1081,8 @@ var ContractView=Wholeren.FormView.extend({
         showComments:function(e){
             var item=$(e.currentTarget);
             var id = item.attr('href').substring(1);
-            var m=new CommentModalView();
-            $('.app').html(m.render.el);
+            var m=new CommentModalView({cid:id});
+            $('.app').html(m.renderAll().el);
         }  
 });
 
@@ -1261,6 +1261,7 @@ var ServiceView=Wholeren.FormView.extend({
         'click .add,.edit,.del':'editApplication',
         'click .textbox,.selectbox':'editAttr',
         'click .sortable':'sortCollection',
+        'click .comment_edit':'showComments',
         },        
         renderCollection: function (){
             if(this.ready){
@@ -1340,6 +1341,12 @@ var ServiceView=Wholeren.FormView.extend({
                     $('.app').html(popUpView.render().el);
             }             
         },
+        showComments:function(e){
+            var item=$(e.currentTarget);
+            var id = item.attr('href').substring(1);
+            var m=new CommentModalView({sid:id});
+            $('.app').html(m.renderAll().el);
+        }  
         // renderCollectionCore:function(){
         // // Remove all keywords
         // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
@@ -1539,8 +1546,8 @@ var CommentView=Wholeren.baseView.extend({
     events: {
       "dblclick .view"  : "edit",
       "click a.destroy" : "clear",
-      "keypress .edit"  : "updateOnEnter",
-      "blur .edit"      : "close"
+      "keypress .editComment"  : "updateOnEnter",
+      "blur .editComment"      : "close"
     },
     initialize: function() {
       this.listenTo(this.model, 'change', this.render);
@@ -1548,7 +1555,7 @@ var CommentView=Wholeren.baseView.extend({
     },
     render: function() {
       this.$el.html(this.template(this.model.toJSON()));
-      this.input = this.$('.edit');
+      this.input = this.$('.editComment');
       return this;
     },
     edit: function() {
@@ -1572,38 +1579,67 @@ var CommentView=Wholeren.baseView.extend({
     },
 });
 var CommentModalView=Backbone.Modal.extend({
-    el: $("#todoapp"),
+    viewContainer:'.app',
+    //el: $("#todoapp"),
     template: JST['comment'],
     cancelEl: '.cancel',
     submitEl: '.ok',
     events: {
       "keypress #new-todo":  "createOnEnter",
     },
-    initialize: function() {
+    initialize: function(option) {
+        this.cid=option.cid;
+        this.sid=option.sid;
+        if(this.cid){
+            this.Todos=new Obiwang.Collections.Comment({cid:this.cid});
+        }else if(this.sid){
+            this.Todos=new Obiwang.Collections.Comment({sid:this.sid});
+        }else{
+            return;
+        }
 
-      this.input = this.$("#new-todo");
-      this.Todos=new Obiwang.Collections.Comment();
       this.listenTo(this.Todos, 'add', this.addOne);
-      this.listenTo(this.Todos, 'reset', this.addAll);
-      this.listenTo(this.Todos, 'all', this.render);
+      //this.listenTo(this.Todos, 'all', this.render);   
+      _.bindAll(this, "addAll");   
+    },
+    renderAll:function(){
+        this.render();
+        this.afterRender();
+        return this;
+    },
+    afterRender:function(){
+      this.input = this.$("#new-todo");
       this.main = $('#main');
-
+      var self=this;
       this.Todos.fetch();
     },
     addOne: function(todo) {
-      var view = new TodoView({model: todo});
-      this.$("#todo-list").append(view.render().el);
+      var view = new CommentView({model: todo});
+      var toa=view.render().el;
+      this.$el.find("#todo-list").append(toa);
     },
     addAll: function() {
-      Todos.each(this.addOne, this);
+      this.Todos.each(this.addOne, this);
     },
     createOnEnter: function(e) {
       if (e.keyCode != 13) return;
-      if (!this.input.val()) return;
-
-      this.Todos.create({comment: this.input.val()});
-      this.input.val('');
+      if (!this.$("#new-todo").val()) return;
+      if(this.cid){
+        this.Todos.create({comment: this.$("#new-todo").val(),contract:this.cid});
+      }
+      if(this.sid){
+        this.Todos.create({comment: this.$("#new-todo").val(),service:this.sid});
+      }
+      this.$("#new-todo").val("");
     },
+    clickOutside:function(){
+        return;
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
 });
 module.exports={
 		Setting:SettingView,
