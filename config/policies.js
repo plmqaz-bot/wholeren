@@ -48,4 +48,10 @@ module.exports.policies = {
 		// before letting any users feed our rabbits
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
+  AdminController:{
+    '*':true,
+    'Contract':'sessionAuth',
+    'Service':'sessionAuth',
+    'User':'managerAuth',
+  }
 };

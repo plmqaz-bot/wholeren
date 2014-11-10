@@ -1,4 +1,5 @@
 var _=require('lodash');
+var bcrypt = require('bcrypt');
 loginSecurity = [];
 adminNavbar = {
     contract: {
@@ -125,9 +126,29 @@ module.exports={
         denied = _.find(loginSecurity, function (ipTime) {
             return (ipTime.ip === remoteAddress);
         });
-
+        var email=req.body.email;
+        var pass=req.body.password;
+        var redirect=req.body.redirect;
         if (!denied) {
             loginSecurity.push({ip: remoteAddress, time: currentTime});
+            User.findOneByEmail(email).then(function(ppl){
+                if(!ppl){
+                    return res.json(400,'no user found');
+                }
+                bcrypt.compare(pass,ppl.password,function(err,valid){
+                    if(err) return res.json(400,'cannot compare password');
+                    if(!valid) return res.json(400,'password incorrect');
+                    req.session.user=ppl;
+                    req.session.authenticated=true;
+                    if(!redirect) redirect='/admin/contract/';
+                    loginSecurity=_.reject(loginSecurity,function(ipTime){
+                        return ipTime.ip===remoteAddress;
+                    });
+                    return res.json(200,{redirect:redirect});
+                })
+            }).fail(function(err){
+                return res.json(400,err);
+            });
             // api.users.check({email: req.body.email, pw: req.body.password}).then(function (user) {
             //     req.session.regenerate(function (err) {
             //         if (!err) {
@@ -147,10 +168,6 @@ module.exports={
             // }, function (error) {
             //     res.json(401, {error: error.message});
             // });
-            req.session.user=1;
-            
-            //res.json(401, {error:"Can not log you in!!!"});
-            res.json(200, {redirect: '/admin/contract/'});
         } else {
             res.json(401, {error: 'Slow down, there are way too many login attempts!'});
         }
@@ -193,7 +210,7 @@ module.exports={
                 req.session.regenerate(function (err) {
                     if (!err) {
                         if (req.session.user === undefined) {
-                            req.session.user = user.id;
+                            req.session.user = user;
                         }
                         res.json(200, {redirect: '/admin/contract/'});
                     }

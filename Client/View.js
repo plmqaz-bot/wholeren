@@ -800,7 +800,17 @@ var AttributeEdit=Backbone.Modal.extend({
                 self.$el.find('.bbm-modal__section').append(eletitle).append(ele);
             });   
             break;
-            
+            case 'boolbox':
+            var ele=$('<div/>').html('<select class="reply-content"></select>').contents();
+            var toAdd=$('<option>', { value : true }).text('TRUE');
+            if(this.curValue){
+                ele.append($('<option>', { value : true, selected:'selected' }).text('TRUE'));
+                ele.append($('<option>', { value : false}).text('FALSE'));
+            }else{
+                ele.append($('<option>', { value : true}).text('TRUE'));
+                ele.append($('<option>', { value : false, selected:'selected' }).text('FALSE'));
+            }
+            this.$el.find('.bbm-modal__section').append(eletitle).append(ele);
         }
         return this;
     },
@@ -1483,7 +1493,7 @@ var UserView=Wholeren.FormView.extend({
             
         },
         events: {
-        'click .textbox,.selectbox,.multiselectbox':'editAttr',
+        'click .textbox,.selectbox,.multiselectbox,.boolbox':'editAttr',
         'click .sortable':'sortCollection',
         },        
         renderCollection: function (){

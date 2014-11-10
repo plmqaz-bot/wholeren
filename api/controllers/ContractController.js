@@ -7,28 +7,22 @@
 var Promise=require('bluebird');
 module.exports = {
 	'getContract':function(req, res){
-		var id=1;
-		Contract.find({
-			or:[
-			{expert:id},
-			{sales:id},
-			{teacher:id},
-			{expert:null,sales:null}
-			]
-		}).populateAll().exec(function(err,data){
-			// data.forEach(function(item){
-			// 	if(item.services){
-			// 		item.services.forEach(ele){
-			// 			var id=ele.id;
-			// 			Services.findOne({id:id}).populateAll().exec(function{
-							
-			// 			});
-			// 		}
-			// 	}
-			// });
-			return res.json(data);
-		});	
-		
+		var id=req.session.user.id;
+		switch(req.session.user.rank){
+			case "2":
+			console.log("find all");
+			Contract.find().populateAll().exec(function(err,data){return res.json(data);});	
+			break;
+			case "1":
+			Contract.find({
+				or:[
+				{expert:id},
+				{sales:id},
+				{teacher:id},
+				{expert:null,sales:null}
+				]
+			}).populateAll().exec(function(err,data){return res.json(data);});	
+		}		
 	},
 	'createContract':function(req,res){
 		var saleid=1; // change it to the user's id
