@@ -31,3 +31,5 @@ Contract, service pagination, default maybe last 3 months?
 Filters as needed. 
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format
+
+

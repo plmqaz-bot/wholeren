@@ -169,25 +169,6 @@ module.exports={
             }).fail(function(err){
                 return res.json(400,err);
             });
-            // api.users.check({email: req.body.email, pw: req.body.password}).then(function (user) {
-            //     req.session.regenerate(function (err) {
-            //         if (!err) {
-            //             req.session.user = user.id;
-            //             var redirect = config().paths.subdir + '/ghost/';
-            //             if (req.body.redirect) {
-            //                 redirect += decodeURIComponent(req.body.redirect);
-            //             }
-            //             // If this IP address successfully logs in we
-            //             // can remove it from the array of failed login attempts.
-            //             loginSecurity = _.reject(loginSecurity, function (ipTime) {
-            //                 return ipTime.ip === remoteAddress;
-            //             });
-            //             res.json(200, {redirect: redirect});
-            //         }
-            //     });
-            // }, function (error) {
-            //     res.json(401, {error: error.message});
-            // });
         } else {
             res.json(401, {error: 'Slow down, there are way too many login attempts!'});
         }
