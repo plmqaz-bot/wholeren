@@ -6,25 +6,29 @@ adminNavbar = {
         name: 'Contract',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/contract/'
+        path: '/contract/',
+        display:true
     },
     service: {
         name: 'Service',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/service/'
+        path: '/service/',
+        display:true
     },
     user: {
         name: 'User',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/user/'
+        path: '/user/',
+        display:false
     },
     settings: {
         name: 'Settings',
         navClass: 'settings',
         key: 'admin.navbar.settings',
-        path: '/settings/'
+        path: '/settings/',
+        display:false
     }
 };
 loginSecurity=[];
@@ -55,6 +59,11 @@ module.exports={
         if (allowedSections.indexOf(section) < 0) {
             return next();
         }
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+        }else{
+            adminNavbar.user.display=false;
+        }
 
         res.render('contract', {
             bodyClass: 'contract',
@@ -62,12 +71,22 @@ module.exports={
         });
     },
     'service':function(req,res){
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+        }else{
+            adminNavbar.user.display=false;
+        }
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'service')
         });
     },
     'user':function(req,res){
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+        }else{
+            adminNavbar.user.display=false;
+        }
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'user')
@@ -140,6 +159,7 @@ module.exports={
                     if(!valid) return res.json(400,'password incorrect');
                     req.session.user=ppl;
                     req.session.authenticated=true;
+                    if(ppl.rank>1) req.session.manager=true;
                     if(!redirect) redirect='/admin/contract/';
                     loginSecurity=_.reject(loginSecurity,function(ipTime){
                         return ipTime.ip===remoteAddress;
