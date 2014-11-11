@@ -10,7 +10,7 @@ var View=require('./View');
 var Router=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
-        'contract(/:option)/':'contract',
+        'contract(/:option/)/':'contract',
         'service/(:option)':'service',
         'user/(:option)':'user',
         'register/'        : 'register',
