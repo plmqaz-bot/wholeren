@@ -25,6 +25,34 @@ var init=function(){
 		hashChange:false,
         root: '/admin/'
 	});
+    Wholeren.initPageAnimations();
+};
+Wholeren.hideToggles=function(){
+    $('[data-toggle]').each(function () {
+            var toggle = $(this).data('toggle');
+            $(this).parent().children(toggle + ':visible').fadeOut(150);
+        });
+
+        // Toggle active classes on menu headers
+        $('[data-toggle].active').removeClass('active');
+}
+Wholeren.initPageAnimations=function(){
+    $('[data-toggle]').each(function () {
+            var toggle = $(this).data('toggle');
+            $(this).parent().children(toggle).hide();
+        });
+    $('[data-toggle]').on('click',function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var $this = $(this),
+                toggle = $this.data('toggle'),
+                isAlreadyActive = $this.is('.active');
+                Wholeren.hideToggles();
+            if (!isAlreadyActive) {
+                $this.toggleClass('active');
+                $(this).parent().children(toggle).toggleClass('open').fadeToggle(150);
+            }
+    });
 };
 init();
 

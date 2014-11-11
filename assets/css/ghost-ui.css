@@ -85,7 +85,8 @@ template {
  * Remove the gray background color from active links in IE 10.
  */
 a {
-  background: transparent; }
+  background: transparent; 
+  padding-left:10px;}
 
 /**
  * Improve readability when focused and also mouse hovered in all browsers.
@@ -785,7 +786,7 @@ dl {
 
 mark {
   background-color: #ffc336; }
-
+fieldset p{color:red;}fieldset .error{border:1px solid red;}
 /* ==========================================================================
    Main Elements
    ========================================================================== */
@@ -1100,8 +1101,8 @@ select {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
-  width: 270px;
-  height: 30px;
+  width: 280px;
+  /*height: 30px;*/
   line-height: 30px; }
   @media (max-width: 550px) {
     select {
@@ -1113,7 +1114,9 @@ select {
 .form-group {
   position: relative;
   margin: 1.5em 0;
-  padding-left: 140px; }
+  padding-left: 140px;
+text-align:left;
+float:left;}
   @media (max-width: 550px) {
     .form-group {
       padding-left: 0; } }
@@ -2934,6 +2937,18 @@ nav li a {
         color: #aaa9a2;
         font-weight: 200;
         font-size: 2em; }
+
+.contract .contract-list{
+  -webkit-box-sizing:border-box;
+  -moz-box-sizing:border-box;
+  box-sizing:border-box;
+  width:100%;padding:15px;
+  position:absolute;bottom:0;
+  top:0;right:0;border-left:#edece4 2px solid;
+  background:#fff;
+  box-shadow:rgba(0,0,0,0.05) 0 1px 5px
+}
+.contract-list .content{clear:both;}
 
 @media (min-width: 401px), (min-width: 401px) {
   .editor .notifications {
