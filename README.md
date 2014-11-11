@@ -18,6 +18,7 @@ creating contract should be transaction, client should not be created.  --DONE
 
 Return don't close modal --DONE
 
+
 Add commet to contract or service or application.--DONE
 
 production database. --DONE
@@ -27,6 +28,7 @@ user login -DONE
 crlf for security
 
 Contract, service pagination, default maybe last 3 months?
+
 
 Filters as needed. 
 

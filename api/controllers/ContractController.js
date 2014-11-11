@@ -192,7 +192,7 @@ module.exports = {
     var toKeep=[]; // This store the service id that already exist. 
     var toDel=[]; // Will store the id of services that should be deleted from contract;
     var contractId=id;
-    delete attrs['service'];
+    var serviceTeacherid="";
 
     var types;
     var def=ServiceType.find();
@@ -200,6 +200,8 @@ module.exports = {
     var def2=Contract.findOne({id:contractId}).populate('service');
     console.log("before find",contractId);
     Promise.all([def,def2]).spread(function(types,contract){
+    	var teacher=contract.teacher||{};
+    	serviceTeacherid=teacher.id||"";
         contract.service.forEach(function(item){
         var curServiceTypeid=item.serviceType;
         var curServiceType=_.find(types,function(type){return type.id==curServiceTypeid})||{};
@@ -230,7 +232,7 @@ module.exports = {
       var createTasks=[];
       serviceAttrs.forEach(function(ele){
       	// Add service, set the id to the contract. 
-      	createTasks.push(Service.create({serviceType:ele,contract:contractId}));
+      	createTasks.push(Service.create({serviceType:ele,contract:contractId,serviceTeacher:serviceTeacherid}));
       });
       return Promise.all(createTasks);
     }).then(function(){// delete these service-contract association
