@@ -18,10 +18,22 @@ creating contract should be transaction, client should not be created.  --DONE
 
 Return don't close modal --DONE
 
+<<<<<<< HEAD
 Add commet to contract or service or application.-DONE
-
-Filters as needed. 
+=======
+Add commet to contract or service or application.--DONE
 
 production database. --DONE
 
+user login -DONE
+
 crlf for security
+
+Contract, service pagination, default maybe last 3 months?
+>>>>>>> origin/master
+
+Filters as needed. 
+
+make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format
+
+

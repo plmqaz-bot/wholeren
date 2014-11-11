@@ -51,5 +51,10 @@ module.exports.policies = {
   AdminController:{
     '*':true,
     'Contract':'sessionAuth',
+<<<<<<< HEAD
+=======
+    'Service':'sessionAuth',
+    'User':'managerAuth',
+>>>>>>> origin/master
   }
 };

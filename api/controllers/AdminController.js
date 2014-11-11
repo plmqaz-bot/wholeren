@@ -1,29 +1,34 @@
 var _=require('lodash');
+var bcrypt = require('bcrypt');
 loginSecurity = [];
 adminNavbar = {
     contract: {
         name: 'Contract',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/contract/'
+        path: '/contract/',
+        display:true
     },
     service: {
         name: 'Service',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/service/'
+        path: '/service/',
+        display:true
     },
     user: {
         name: 'User',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/user/'
+        path: '/user/',
+        display:false
     },
     settings: {
         name: 'Settings',
         navClass: 'settings',
         key: 'admin.navbar.settings',
-        path: '/settings/'
+        path: '/settings/',
+        display:false
     }
 };
 loginSecurity=[];
@@ -54,6 +59,11 @@ module.exports={
         if (allowedSections.indexOf(section) < 0) {
             return next();
         }
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+        }else{
+            adminNavbar.user.display=false;
+        }
 
         res.render('contract', {
             bodyClass: 'contract',
@@ -61,12 +71,22 @@ module.exports={
         });
     },
     'service':function(req,res){
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+        }else{
+            adminNavbar.user.display=false;
+        }
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'service')
         });
     },
     'user':function(req,res){
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+        }else{
+            adminNavbar.user.display=false;
+        }
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'user')
@@ -125,32 +145,30 @@ module.exports={
         denied = _.find(loginSecurity, function (ipTime) {
             return (ipTime.ip === remoteAddress);
         });
-
+        var email=req.body.email;
+        var pass=req.body.password;
+        var redirect=req.body.redirect;
         if (!denied) {
             loginSecurity.push({ip: remoteAddress, time: currentTime});
-            // api.users.check({email: req.body.email, pw: req.body.password}).then(function (user) {
-            //     req.session.regenerate(function (err) {
-            //         if (!err) {
-            //             req.session.user = user.id;
-            //             var redirect = config().paths.subdir + '/ghost/';
-            //             if (req.body.redirect) {
-            //                 redirect += decodeURIComponent(req.body.redirect);
-            //             }
-            //             // If this IP address successfully logs in we
-            //             // can remove it from the array of failed login attempts.
-            //             loginSecurity = _.reject(loginSecurity, function (ipTime) {
-            //                 return ipTime.ip === remoteAddress;
-            //             });
-            //             res.json(200, {redirect: redirect});
-            //         }
-            //     });
-            // }, function (error) {
-            //     res.json(401, {error: error.message});
-            // });
-            req.session.user=1;
-            
-            //res.json(401, {error:"Can not log you in!!!"});
-            res.json(200, {redirect: '/admin/contract/'});
+            User.findOneByEmail(email).then(function(ppl){
+                if(!ppl){
+                    return res.json(400,'no user found');
+                }
+                bcrypt.compare(pass,ppl.password,function(err,valid){
+                    if(err) return res.json(400,'cannot compare password');
+                    if(!valid) return res.json(400,'password incorrect');
+                    req.session.user=ppl;
+                    req.session.authenticated=true;
+                    if(ppl.rank>1) req.session.manager=true;
+                    if(!redirect) redirect='/admin/contract/';
+                    loginSecurity=_.reject(loginSecurity,function(ipTime){
+                        return ipTime.ip===remoteAddress;
+                    });
+                    return res.json(200,{redirect:redirect});
+                })
+            }).fail(function(err){
+                return res.json(400,err);
+            });
         } else {
             res.json(401, {error: 'Slow down, there are way too many login attempts!'});
         }
@@ -193,7 +211,7 @@ module.exports={
                 req.session.regenerate(function (err) {
                     if (!err) {
                         if (req.session.user === undefined) {
-                            req.session.user = user.id;
+                            req.session.user = user;
                         }
                         res.json(200, {redirect: '/admin/contract/'});
                     }

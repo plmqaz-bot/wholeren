@@ -5,7 +5,9 @@
     <nav id="global-nav" role="navigation">
         <ul id="main-menu" >
             {{#each adminNav}}
-                <li class="{{navClass}}{{#if selected}} active{{/if}}"><a href="{{admin_url}}{{path}}">{{name}}</a></li>
+                {{#if display}}
+                    <li class="{{navClass}}{{#if selected}} active{{/if}}"><a href="{{admin_url}}{{path}}">{{name}}</a></li>
+                {{/if}}
             {{/each}}
 
             <li id="usermenu" class="usermenu subnav">
