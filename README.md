@@ -18,7 +18,7 @@ creating contract should be transaction, client should not be created.  --DONE
 
 Return don't close modal --DONE
 
-Add commet to contract or service or application.
+Add commet to contract or service or application.-DONE
 
 Filters as needed. 
 
