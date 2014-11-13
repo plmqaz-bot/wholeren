@@ -28,7 +28,7 @@
     "bluebird":"*",
     "bcrypt":"*",
     "handlebars":"*",
-    "lodash":"*",
+    "lodash":"*"
   },
   "scripts": {
     "start": "node main.js",
