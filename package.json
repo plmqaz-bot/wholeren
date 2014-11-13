@@ -29,13 +29,13 @@
     "bcrypt":"*"
   },
   "scripts": {
-    "start": "node app.js",
-    "debug": "node debug app.js"
+    "start": "node main.js",
+    "debug": "node debug main.js"
   },
-  "main": "app.js",
+  "main": "main.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/han/testProject.git"
+    "url": "git://github.com/nickrechard/wholeren/archive/master.zip"
   },
   "author": "han",
   "license": ""
