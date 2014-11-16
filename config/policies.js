@@ -53,5 +53,11 @@ module.exports.policies = {
     'Contract':'sessionAuth',
     'Service':'sessionAuth',
     'User':'managerAuth',
-  }
+  },
+  RoleController:{
+    '*':'sessionAuth',
+    'find':true,
+    'findOne':true,
+  },
+
 };

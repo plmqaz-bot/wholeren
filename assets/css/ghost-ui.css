@@ -3981,6 +3981,20 @@ body.zen {
     -webkit-transition: background ease 0.25s;
     -moz-transition: background ease 0.25s;
     transition: background ease 0.25s; }
+    .signup-form select {
+       margin: 0;
+    width: 280px;
+    padding: 8px 10px;
+    position: relative;
+    border: none;
+    font-size: 1.1em;
+    font-weight: 200;
+    background: transparent;
+    box-shadow: none;
+    -webkit-transition: background ease 0.25s;
+    -moz-transition: background ease 0.25s;
+    transition: background ease 0.25s; 
+    }
     @media (max-width: 630px) {
       .signup-form input, .reset-form input {
         -webkit-transition: none;
