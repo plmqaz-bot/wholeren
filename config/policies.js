@@ -26,7 +26,7 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // '*': true,
+   '*': 'sessionAuth',
 
   /***************************************************************************
   *                                                                          *
@@ -53,6 +53,5 @@ module.exports.policies = {
     'Contract':'sessionAuth',
     'Service':'sessionAuth',
     'User':'managerAuth',
-
   }
 };
