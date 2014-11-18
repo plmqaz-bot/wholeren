@@ -32,11 +32,14 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': {
-    view: 'homepage',
-    locals:{
-      pathFromApp:'/sailsjs/newapp'
-      }
+  // '/': {
+  //   view: 'homepage',
+  //   locals:{
+  //     pathFromApp:'/sailsjs/newapp'
+  //     }
+  // },
+  '/':function(req,res,next){
+    res.redirect('/admin/contract/');
   },
   'POST /admin/doSignin':{
     controller: 'Admin',

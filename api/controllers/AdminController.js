@@ -43,14 +43,15 @@ module.exports={
 
     'index': function (req, res) {
         /*jslint unparam:true*/
-        function renderIndex() {
-            res.render('content', {
-                bodyClass: 'manage',
-                adminNav: setSelected(adminNavbar, 'content')
-            });
-        }
+        // function renderIndex() {
+        //     res.render('contract', {
+        //         bodyClass: 'contract',
+        //         adminNav: setSelected(adminNavbar, 'contract')
+        //     });
+        // }
 
-        renderIndex();
+        // renderIndex();
+        res.redirect('/admin/contract/');
     },
     'contract':function(req,res){
         var allowedSections = ['', 'general', 'user', 'apps'],
