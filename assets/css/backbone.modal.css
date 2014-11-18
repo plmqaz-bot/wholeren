@@ -1,5 +1,5 @@
 /* Modal positioning */
-.bbm-wrapper {
+.bbm-wrapper,.small-bbm-wrapper {
   box-sizing: border-box;
   position: absolute;
   left: 0;
@@ -10,14 +10,17 @@
   padding: 50px 10px;
   overflow-x: auto;
   overflow-y: scroll; }
-  .bbm-wrapper * {
+  .bbm-wrapper *, .small-bbm-wrapper *{
     box-sizing: border-box; }
 
-.bbm-modal {
+.bbm-modal, .small-bbm-modal{
   border-radius: 3px;
   margin: auto;
   width: auto;
   max-width: 1024px; }
+  .small-bbm-modal{
+    max-width:600px;
+  }
 
 .bbm-views {
   width: 100%;

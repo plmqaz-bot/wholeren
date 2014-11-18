@@ -1,7 +1,7 @@
-.bbm-wrapper {
+.bbm-wrapper, .small-bbm-wrapper {
   -webkit-transition: background-color 0.3s; }
 
-.bbm-modal {
+.bbm-modal, .small-bbm-modal{
   background: white;
   box-shadow: 0 0px 6px rgba(0, 0, 0, 0.6), 0 1px 2px rgba(0, 0, 0, 0.9); }
 
@@ -103,7 +103,7 @@
 
 /* ANIMATIONS */
 /* Open modal */
-@-webkit-keyframes bbm-open {
+@-webkit-keyframes bbm-open, small-bbm-open {
   0% {
     -webkit-transform: matrix(0.99126, 0, 0, 0.99126, 0, 43.8813);
     opacity: 0.1259; }
@@ -208,7 +208,7 @@
     -webkit-transform: matrix(1, 0, 0, 1, 0, 50);
     opacity: 1; } }
 
-.bbm-modal--open {
+.bbm-modal--open, .small-bbm--open {
   -webkit-animation-duration: 0.3s;
   -webkit-animation-name: bbm-open;
   -webkit-animation-timing-function: linear;

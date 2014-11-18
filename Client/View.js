@@ -709,6 +709,7 @@ Settings.Pane = Backbone.View.extend({
 
 var AttributeEdit=Backbone.Modal.extend({
     modelName:'',
+    prefix:"small-bbm",
     initialize: function (options){
         this.modelName=options.modelName;
         _.bindAll(this,  'render', 'afterRender');
@@ -1594,6 +1595,7 @@ var CommentModalView=Backbone.Modal.extend({
     template: JST['comment'],
     cancelEl: '.cancel',
     submitEl: '.ok',
+    prefix:'small-bbm',
     events: {
       "keypress #new-todo":  "createOnEnter",
     },
