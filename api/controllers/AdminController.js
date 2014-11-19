@@ -127,7 +127,7 @@ module.exports={
             hideNavbar: true,
             adminNav: setSelected(adminNavbar, 'login')
         });
-         res.end();
+        req.end();
     },
     'signup': function (req, res) {
         /*jslint unparam:true*/
