@@ -44,15 +44,15 @@ module.exports.connections = {
   * Run: npm install sails-mysql                                             *
   *                                                                          *
   ***************************************************************************/
-  someMysqlServer: {
+  awsMysqlServer: {
     adapter: 'sails-mysql',
-    host: 'han.bio.cmu.edu',
-    user: 'han',
-    password: 'hanlai',
-    database: 'test',
+    host: 'myawsmysql.cpeiagbmqrdo.us-west-2.rds.amazonaws.com',
+    user: 'wholeren',
+    password: '3000201S',
+    database: 'wholeren',
     charset   : 'utf8',
   },
-  productionMysqlServer: {
+  devMysqlServer: {
     adapter: 'sails-mysql',
     host: 'han.bio.cmu.edu',
     user: 'han',
