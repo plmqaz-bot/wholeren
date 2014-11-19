@@ -122,11 +122,12 @@ module.exports={
     },
     'signin': function (req, res) {
         /*jslint unparam:true*/
-         return res.render('login', {
+         res.render('login', {
             bodyClass: 'ghost-login',
             hideNavbar: true,
             adminNav: setSelected(adminNavbar, 'login')
         });
+         res.end();
     },
     'signup': function (req, res) {
         /*jslint unparam:true*/
