@@ -103,7 +103,7 @@ module.exports={
             return next();
         }
 
-        res.render('settings', {
+        return res.render('settings', {
             bodyClass: 'settings',
             adminNav: setSelected(adminNavbar, 'settings')
         });
@@ -122,7 +122,7 @@ module.exports={
     },
     'signin': function (req, res) {
         /*jslint unparam:true*/
-        res.render('login', {
+         return res.render('login', {
             bodyClass: 'ghost-login',
             hideNavbar: true,
             adminNav: setSelected(adminNavbar, 'login')
