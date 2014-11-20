@@ -12,7 +12,7 @@ View for all the users and change roles and stuff --DONE
 
 data validation for every model attributes, especially the dates format. 
 
-policy, manager rank control everything. ...
+policy, manager rank control everything. ...-DONE
 
 creating contract should be transaction, client should not be created.  --DONE
 
@@ -32,6 +32,6 @@ Contract, service pagination, default maybe last 3 months?
 
 Filters as needed. 
 
-make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format
+make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.
 
 

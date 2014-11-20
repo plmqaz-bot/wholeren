@@ -201,7 +201,7 @@ module.exports = {
     console.log("before find",contractId);
     Promise.all([def,def2]).spread(function(types,contract){
     	var teacher=contract.teacher||{};
-    	serviceTeacherid=teacher.id||"";
+    	serviceTeacherid=teacher.id||null;
         contract.service.forEach(function(item){
         var curServiceTypeid=item.serviceType;
         var curServiceType=_.find(types,function(type){return type.id==curServiceTypeid})||{};
@@ -232,6 +232,7 @@ module.exports = {
       var createTasks=[];
       serviceAttrs.forEach(function(ele){
       	// Add service, set the id to the contract. 
+      	console.log({serviceType:ele,contract:contractId,serviceTeacher:serviceTeacherid});
       	createTasks.push(Service.create({serviceType:ele,contract:contractId,serviceTeacher:serviceTeacherid}));
       });
       return Promise.all(createTasks);

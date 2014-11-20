@@ -193,6 +193,7 @@ Views.Login=Wholeren.baseView.extend({
                 lastname = this.$('.lastname').val(),
                 email = this.$('.email').val(),
                 password = this.$('.password').val(),
+                role=this.$('.role').val(),
                 validationErrors = [],
                 self = this;
 
@@ -233,7 +234,8 @@ Views.Login=Wholeren.baseView.extend({
                         firstname: firstname,
                         lastname: lastname,
                         email: email,
-                        password: password
+                        password: password,
+                        role:role
                     },
                     success: function (msg) {
                         window.location.href = msg.redirect;

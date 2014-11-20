@@ -179,14 +179,16 @@ module.exports={
             nickname = req.body.nickname,
             lastname = req.body.lastname,
             email = req.body.email,
-            password = req.body.password;
+            password = req.body.password,
+            role=req.body.role;
 
         User.create({
             firstname: firstname,
             lastname: lastname,
             nickname: nickname,
             email: email,
-            password: password
+            password: password,
+            role:role,
         }).then(function (user) {
                 // var message = {
                 //     to: email,
