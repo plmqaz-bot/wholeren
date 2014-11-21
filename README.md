@@ -30,11 +30,11 @@ STAGE 1.
 
 crlf for security
 
-Client generate tracking code. 
+Client generate tracking code. --DONE
 
 Contract add 学生专业， 付款时间， lead种类加 presale 和 CA --DONE
 
-Contract add 助理，助签 两个角色，也是销售里面选
+Contract add 助理，助签 两个角色，也是销售里面选 --DONE
 
 Contract Filter 时间段，经理查看主管的项目，咨询服务类别，是否应收尾款，是否已收尾款。
 

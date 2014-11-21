@@ -32,7 +32,7 @@ module.exports = {
   	
   	expertFollowup:{type:"string"},
   	
-  	originalText:{type:"string"},
+  	originalText:{type:"string", maxLength: 1023},
   	
   	country:{model:"Country",required:true,defaultsTo:1},
   	

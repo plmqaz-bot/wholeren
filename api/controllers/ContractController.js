@@ -19,7 +19,9 @@ module.exports = {
 				{expert:id},
 				{sales:id},
 				{teacher:id},
-				{expert:null,sales:null}
+				{assistant:id},
+				{assisCont:id},
+				{assistant:null,assisCont:null,expert:null,sales:null}
 				]
 			}).populateAll().exec(function(err,data){return res.json(data);});	
 		}		
