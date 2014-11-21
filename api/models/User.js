@@ -25,7 +25,7 @@ module.exports = {
 
     active:{type:'boolean',required:true,defaultsTo:false},
 
-    rank:{type:'int',required:true,defaultsTo:1},
+    rank:{type:'int',required:true,defaultsTo:1,max:3},
 
     boss:{model:'User'}
   	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},

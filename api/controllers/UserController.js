@@ -7,7 +7,7 @@
 
 module.exports = {
 	'getAllUser':function(req,res){
-		
+		// calculate count
 	}
 };
 
