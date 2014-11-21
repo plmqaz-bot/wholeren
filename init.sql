@@ -20,6 +20,8 @@ insert into lead values('Friend熟人介绍',NULL,NOW(),NOW());
 insert into lead values('Staff内部员工介绍',NULL,NOW(),NOW());
 insert into lead values('Free Session',NULL,NOW(),NOW());
 insert into lead values('Sec二次签约',NULL,NOW(),NOW());
+insert into lead values('PreSale',NULL,NOW(),NOW());
+insert into lead values('CA',NULL,NOW(),NOW());
 
 
 #LeadLevel

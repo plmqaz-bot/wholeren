@@ -48,6 +48,8 @@ module.exports = {
 
   	degree:{model:"Degree",required:true,defaultsTo:1},
 
+    major:{type:"string"},
+
   	diagnose:{type:"string"},
 
   	contractSigned:{type:"date"},
@@ -72,12 +74,16 @@ module.exports = {
 
     comment:{collection:"Comment"},
 
+    assistant:{model:'User'},
+
+    assisCont:{model:'User'},
+
     expert:{model:'User'},
 
     sales:{model:'User'},
 
     teacher:{model:'User'},
-        //transferService:{collection:'Service',via:'contract',dominate:true},
+    //transferService:{collection:'Service',via:'contract',dominate:true},
 
     //emergencyService:{collection:'Service',via:'contract',dominate:true},
 

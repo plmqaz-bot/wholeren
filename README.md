@@ -32,7 +32,7 @@ crlf for security
 
 Client generate tracking code. 
 
-Contract add 学生专业， 付款时间， lead种类加 presale 和 CA
+Contract add 学生专业， 付款时间， lead种类加 presale 和 CA --DONE
 
 Contract add 助理，助签 两个角色，也是销售里面选
 
@@ -65,6 +65,8 @@ Comment on Application,
 
 Contract, service pagination
 
+
+handle update on changing time and date. 
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.
 
