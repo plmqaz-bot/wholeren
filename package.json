@@ -30,7 +30,8 @@
     "handlebars":"*",
     "lodash":"*",
     "jquery":"*",
-    "backbone":"*"
+    "backbone":"*",
+    "node-uuid":"*"
   },
   "scripts": {
     "start": "node main.js",

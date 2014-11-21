@@ -8,13 +8,19 @@ var Promise=require('bluebird');
 module.exports = {
 	'getContract':function(req, res){
 		var id=req.session.user.id;
+		var promise;
 		switch(req.session.user.rank){
-			case "2":
-			console.log("find all");
-			Contract.find().populateAll().exec(function(err,data){return res.json(data);});	
+			case "3":
+			promise=Contract.find().populateAll();
 			break;
-			case "1":
-			Contract.find({
+			case "2":
+			promise=User.find({boss:id}).then(function(mypuppets){
+				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
+				return Contract.find(or:[{expert:{'in':puppetIDs}},{sales:{'in':puppetIDs}},{teacher:{'in':puppetIDs}},{assistant:{'in':puppetIDs}},{assisCont:{'in':puppetIDs}},{assistant:null,assisCont:null,expert:null,sales:null}]).populateAll();
+			});
+			break;
+			default:
+			promise=Contract.find({
 				or:[
 				{expert:id},
 				{sales:id},
@@ -23,7 +29,12 @@ module.exports = {
 				{assisCont:id},
 				{assistant:null,assisCont:null,expert:null,sales:null}
 				]
-			}).populateAll().exec(function(err,data){return res.json(data);});	
+			}).populateAll();
+		}
+		if(promise){
+			promise.then(function(data){return res.json(data);}).fail(function(err){return res.json(400,err)});	
+		}else{
+			res.json(400,'not found');
 		}		
 	},
 	'createContract':function(req,res){

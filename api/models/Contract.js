@@ -7,7 +7,9 @@
 
 var Promise=require('bluebird');
 module.exports = {
-
+  types:{
+    size:function(){return true;}
+  },
   attributes: {
     id:{type: 'integer',
     autoIncrement: true,
@@ -26,13 +28,13 @@ module.exports = {
 
   	status:{model:"Status"},
   	
-  	salesFollowup:{type:"string"},
+  	salesFollowup:{type:"string",maxLength: 511, size:511},
   	
-  	salesRecord:{type:"string"},
+  	salesRecord:{type:"string",maxLength: 511, size:511},
   	
-  	expertFollowup:{type:"string"},
+  	expertFollowup:{type:"string",maxLength: 511, size:511},
   	
-  	originalText:{type:"string", maxLength: 1023},
+  	originalText:{type:"string", maxLength: 1023, size:1023},
   	
   	country:{model:"Country",required:true,defaultsTo:1},
   	

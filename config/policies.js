@@ -60,5 +60,8 @@ module.exports.policies = {
     'find':true,
     'findOne':true,
   },
+  UserController:{
+    '*':'managerAuth'
+  }
 
 };

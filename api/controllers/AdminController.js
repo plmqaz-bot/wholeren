@@ -158,6 +158,7 @@ module.exports={
                 bcrypt.compare(pass,ppl.password,function(err,valid){
                     if(err) return res.json(400,'cannot compare password');
                     if(!valid) return res.json(400,'password incorrect');
+                    if(!ppl.active) return res.json(400, 'not activated, contact superviser');
                     req.session.user=ppl;
                     req.session.authenticated=true;
                     if(ppl.rank>1) req.session.manager=true;
