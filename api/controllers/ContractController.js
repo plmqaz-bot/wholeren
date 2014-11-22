@@ -16,7 +16,7 @@ module.exports = {
 			case "2":
 			promise=User.find({boss:id}).then(function(mypuppets){
 				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-				return Contract.find(or:[{expert:{'in':puppetIDs}},{sales:{'in':puppetIDs}},{teacher:{'in':puppetIDs}},{assistant:{'in':puppetIDs}},{assisCont:{'in':puppetIDs}},{assistant:null,assisCont:null,expert:null,sales:null}]).populateAll();
+				return Contract.find({or:[{expert:{'$in':puppetIDs}},{sales:{'$in':puppetIDs}},{teacher:{'$in':puppetIDs}},{assistant:{'$in':puppetIDs}},{assisCont:{'$in':puppetIDs}},{assistant:null,assisCont:null,expert:null,sales:null}]}).populateAll();
 			});
 			break;
 			default:

@@ -17,7 +17,7 @@ module.exports = {
 			case "2":
 			promise=User.find({boss:id}).then(function(mypuppets){
 				var puppetIDs=mypuppets.map(function(puppet){return puppet.id});
-				return Contract.find({contractSigned:{'!':null},{teacher:{'in':puppetIDs}}});
+				return Contract.find({contractSigned:{'!':null},teacher:{'$in':puppetIDs}});
 			});
 			break;
 			default:
