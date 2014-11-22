@@ -18,8 +18,8 @@
         <td>{{step1}}</td>
         <td>{{step2}}</td>
         <td>{{../service/contract/teacher/nickname}}</td>
-        <td></td>
-        <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a><a class="del" href="#{{id}}">Delete</a></td>
+        <td><a class="comment_edit" href="#{{id}}" data-type="app">Show Comments</a></td>
+        <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a>{{#if ../displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>
         </tr> 
 {{/each}}
 {{else}}
@@ -40,7 +40,7 @@
         <td>{{step1}}</td>
         <td>{{step2}}</td>
         <td>{{contract/teacher/nickname}}</td>
-        <td><a class="comment_edit" href="#{{id}}">Show Comments</a></td>
+        <td><a class="comment_edit" href="#{{id}}" data-type="serv">Show Comments</a></td>
         <td><a class="add" href="#">Add</a></td>
         </tr> 
         {{/if}}

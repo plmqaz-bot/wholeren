@@ -990,6 +990,7 @@ var ContractView=Wholeren.FormView.extend({
     singleTemplate:JST['contractSingle'],
     templateName:'contract',
         initialize: function (options) {
+            this.rank=$('#rank').text();
             _.bindAll(this,'rerenderSingle');
             _.bindAll(this,'renderCollection');
             _.bindAll(this,'renderCollectionCore');
@@ -1044,6 +1045,9 @@ var ContractView=Wholeren.FormView.extend({
                     ele.serviceType=self.serviceTypes.get(id).toJSON();
                 }
             });
+            if(this.rank>1){
+                obj.displayDelete=1;
+            }
             return obj;
         },
         headline:function(obj){
@@ -1243,6 +1247,7 @@ var ServiceView=Wholeren.FormView.extend({
     ready:false,
     templateName:'service',
         initialize: function (options) {
+            this.rank=$('#rank').text();
             _.bindAll(this,'rerenderSingle');
             _.bindAll(this,'renderCollection');
             _.bindAll(this,'renderCollectionCore');
@@ -1304,6 +1309,9 @@ var ServiceView=Wholeren.FormView.extend({
             if(id){
                 obj.contract.client=self.client.get(id).toJSON();
             }
+            if(this.rank>1){
+                obj.displayDelete=1;
+            }
             return obj;
         },
         editApplication:function(e){
@@ -1357,8 +1365,15 @@ var ServiceView=Wholeren.FormView.extend({
         showComments:function(e){
             var item=$(e.currentTarget);
             var id = item.attr('href').substring(1);
-            var m=new CommentModalView({sid:id});
-            $('.app').html(m.renderAll().el);
+            var type=item.data('type');
+            if(type=='app'){
+                var m=new CommentModalView({aid:id});
+                $('.app').html(m.renderAll().el); 
+            }else{
+                var m=new CommentModalView({sid:id});
+                $('.app').html(m.renderAll().el); 
+            }
+            
         }  
         // renderCollectionCore:function(){
         // // Remove all keywords
@@ -1604,10 +1619,13 @@ var CommentModalView=Backbone.Modal.extend({
     initialize: function(option) {
         this.cid=option.cid;
         this.sid=option.sid;
+        this.aid=option.aid;
         if(this.cid){
             this.Todos=new Obiwang.Collections.Comment({cid:this.cid});
         }else if(this.sid){
             this.Todos=new Obiwang.Collections.Comment({sid:this.sid});
+        }else if(this.aid){
+            this.Todos=new Obiwang.Collections.Comment({aid:this.aid});
         }else{
             return;
         }

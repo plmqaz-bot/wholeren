@@ -68,7 +68,8 @@ module.exports={
 
         res.render('contract', {
             bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'contract')
+            adminNav: setSelected(adminNavbar, 'contract'),
+            currentUser:req.session.user;
         });
     },
     'service':function(req,res){
@@ -79,7 +80,8 @@ module.exports={
         }
         res.render('contract', {
             bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'service')
+            adminNav: setSelected(adminNavbar, 'service'),
+            currentUser:req.session.user;
         });
     },
     'user':function(req,res){
@@ -90,7 +92,8 @@ module.exports={
         }
         res.render('contract', {
             bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'user')
+            adminNav: setSelected(adminNavbar, 'user'),
+            currentUser:req.session.user;
         });
     },
 

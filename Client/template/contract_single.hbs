@@ -44,5 +44,5 @@
         <td>{{displayBool endFee}}</td>
         <td data-attr="teacher" data-restri="{'role':'申请'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{teacher/nickname}}</td>
         <td><a class="comment_edit" href="#{{id}}">Show Comments</a></td>
-        <td><a class="edit" href="#{{id}}">Edit</a><a class="del" href="#{{id}}">Delete</a></td>
+        <td><a class="edit" href="#{{id}}">Edit</a>{{#if displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>
         </tr> 

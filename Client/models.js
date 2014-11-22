@@ -194,7 +194,9 @@ Collections={
             if(this.cid)
                 return '/Comment/?contract='+this.cid;
             if(this.sid)
-                return '/Comment/?service='+this.sid;   
+                return '/Comment/?service='+this.sid;
+            if(this.aid)
+                return '/Comment/?service='+this.aid;      
         }
     })
 }

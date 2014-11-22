@@ -44,9 +44,9 @@ Service 显示签约时间，不是创建时间。 已签约才出现 --DONE
 
 rank 2为主管，rank 3为经理。 主管管理部分人。  rank2 销售看管理contract， rank2,3 申请都看所有service。--DONE
 
-Contract Filter 时间段，经理查看主管的项目，咨询服务类别，是否应收尾款，是否已收尾款。
+rank 1不能delete， --DONE
 
-rank 1不能delete， 
+Contract Filter 时间段，经理查看主管的项目，咨询服务类别，是否应收尾款，是否已收尾款。
 
 User higher rank 可以修改rank, calculate count. 
 
