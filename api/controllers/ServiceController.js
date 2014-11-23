@@ -25,7 +25,8 @@ module.exports = {
 		}
 		promise.then(function(conts){
 			var conIDs=conts.map(function(c){return c.id;});
-			return Service.find({contract:{'in':conIDs}}).populateAll();
+			console.log(conIDs);
+			return Service.find({contract:conIDs}).populateAll();
 		}).then(function(data){
 			return res.json(data);
 		}).fail(function(err){

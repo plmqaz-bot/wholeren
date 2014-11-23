@@ -8,6 +8,9 @@
 module.exports = {
 	'getAllUser':function(req,res){
 		// calculate count
+		User.find().populateAll().then(function(data){
+			return res.json(data);
+		});
 	}
 };
 

@@ -12,6 +12,8 @@ module.exports = {
 
   	serviceType:{model:'ServiceType'},
 
+  	serviceStatus:{model:'ServiceStatus'},
+
   	progress:{type:'int'},
 
     serviceTeacher:{model:'User'},
@@ -20,9 +22,11 @@ module.exports = {
 
     comment:{collection:'Comment',via:'service'},
 
-    studentDestination:{type:'string'}
+    studentDestination:{type:'string'},
 
+	step1:{type:'date'},
 
+	step2:{type:'date'},
   }
 };
 

@@ -25,6 +25,28 @@ Handlebars.registerHelper('displayBool', function(bool){
     if(bool) return '是';
     return '否';
 });
+     Handlebars.registerHelper('detailStatus', function (serviceType,step,options) {
+ if(serviceType.indexOf('e')!=-1){
+            if(step==1){
+                return "Terminate Date";
+            }else{
+                return "File Date";
+            }
+        }else if(serviceType.indexOf('i2')!=-1||serviceType.indexOf('i3')!=-1){
+            if(step==1){
+                return "申请计划确认日期";
+            }else{
+                return "选校单确认日期";
+            }
+        }else if(serviceType.indexOf('p')!=-1){
+            if(step==1){
+                return "初稿预计完成日期";
+            }else{
+                return "终稿预计完成日期";
+            }
+        }
+    return "";
+    });
 Backbone.$ = $;
 //#endregion
 Wholeren.baseView= Backbone.View.extend({

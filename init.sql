@@ -90,3 +90,10 @@ insert into servicetype values('h4.托福辅导','Study',NULL,NOW(),NOW());
 insert into servicetype values('h5.ASPIRE全套1年','Study',NULL,NOW(),NOW());
 insert into servicetype values('h6.ASPIRE全套2年','Study',NULL,NOW(),NOW());
 insert into servicetype values('h7.选课辅导','Study',NULL,NOW(),NOW());
+
+#服务进度
+insert into servicestatus values('W.等待启动',NULL,NOW(),NOW());
+insert into servicestatus values('A.紧急处理中',NULL,NOW(),NOW());
+insert into servicestatus values('B.提交进行中',NULL,NOW(),NOW());
+insert into servicestatus values('C.已交等结果',NULL,NOW(),NOW());
+insert into servicestatus values('D.服务结束',NULL,NOW(),NOW());

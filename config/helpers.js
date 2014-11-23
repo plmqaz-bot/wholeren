@@ -24,8 +24,7 @@ var handlebars=require('sails/node_modules/express-handlebars/node_modules/handl
     //return config.urlFor(context, absolute);
     return "/admin";
     });
-     handlebars.registerHelper('application_steps', function(serviceType,step){
-        
-     });
+
+
 	
 
