@@ -46,6 +46,7 @@ rank 2为主管，rank 3为经理。 主管管理部分人。  rank2 销售看�
 
 rank 1不能delete， --DONE
 
+Service Step1, Step2 填写时间，未填写状态填写placeholder。 --DONE
 
 Comment on Application, --DONE
 
@@ -58,7 +59,7 @@ User higher rank 可以修改rank, calculate count.
 Service Filter 时间段，（签约时间） 服务类别（大类， i,d,e,b,a,z). 入学学期（一年四个）。 
 
 
-Service Step1, Step2 填写时间，未填写状态填写placeholder。 
+
 
 
 Contract and Service 更换老师，auto generate comment。 

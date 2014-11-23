@@ -214,7 +214,7 @@ module.exports={
                 //         "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
                 //     );
                 // });
-
+                EmailService.send();
                 req.session.regenerate(function (err) {
                     if (!err) {
                         if (req.session.user === undefined) {

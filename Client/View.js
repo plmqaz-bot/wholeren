@@ -25,7 +25,7 @@ Handlebars.registerHelper('displayBool', function(bool){
     if(bool) return '是';
     return '否';
 });
-     Handlebars.registerHelper('detailStatus', function (serviceType,step,options) {
+Handlebars.registerHelper('detailStatus', function (serviceType,step,options) {
  if(serviceType.indexOf('e')!=-1){
             if(step==1){
                 return "Terminate Date";
@@ -46,7 +46,7 @@ Handlebars.registerHelper('displayBool', function(bool){
             }
         }
     return "";
-    });
+});
 Backbone.$ = $;
 //#endregion
 Wholeren.baseView= Backbone.View.extend({
