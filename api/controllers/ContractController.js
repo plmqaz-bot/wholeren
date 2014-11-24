@@ -187,6 +187,12 @@ module.exports = {
 			if(attribs['service']){
 				return privateUpdateService(attribs['service'],req.params.id,res);
 			}
+
+			generateComment(attribs,'sales');
+			generateComment(attribs,'assistant');
+			generateComment(attribs,'assisCont');
+			generateComment(attribs,'expert');
+			generateComment(attribs,'teacher');
 			delete attribs["createAt"];
 			delete attribs["updateAt"];
 			Contract.update({id:req.params.id},attribs,function(err,data){
@@ -196,6 +202,20 @@ module.exports = {
 				return res.json(data);
 			});	
 		}
+	function generateComment(attrs,field){
+		if(!attrs[field])return;
+		var updateValue=attrs[field];
+		var oldValue="EMPTY";
+		var newValue="";
+		Contract.findOne({id:req.params.id}).populate(field).then(function(data){
+			oldValue=data.sales?data.sales.nickname:"";
+			var newUserid=updateValue.id?updateValue.id:updateValue;
+			return User.findOne({id:newUserid});
+		}).then(function(data){
+			newValue=data.nickname;
+			return Comment.create({comment:req.session.user.nickname+" has changed "+field+" from "+oldValue+" to "+newValue, contract:req.params.id});
+		}).fail(function(err){console.log(err);});
+	};
 	function privateUpdateService(attrs,id,res){
 		 // update service separatly
     var serviceAttrs=attrs;// This should be arry of service to add [transfer,study...]

@@ -106,9 +106,22 @@ var sortableCollection=Backbone.Collection.extend({
 Collections={
     Contract :sortableCollection.extend({
         model: Models.Contract,
-        url: '/Contract/',
+        url: function(){return '/Contract/find?where='+this.whereclaus();},
         initialize:function(){
             this.selectedStrat({sortAttr:'client.firstName'});
+            this.startDate="11/2/2014";
+            this.endDate="11/19/2014";
+        },
+        whereclaus:function(){
+            var where={};
+            where.createdAt={}
+            if(this.startDate){
+                where.createdAt['>']=new Date(this.startDate);
+            }
+            if(this.endDate){
+                where.createdAt['<']=new Date(this.endDate);
+            }
+            return JSON.stringify(where);
         }
     }),
     Client : Backbone.Collection.extend({
@@ -164,9 +177,23 @@ Collections={
     }),
     Service:sortableCollection.extend({
         model: Models.Service,
-        url: '/Service/',
+        url: function(){return '/Service/find?where='+this.whereclaus();},
+        
         initialize:function(){
             this.selectedStrat({sortAttr:'contract.createdAt'});
+            this.startDate="11/2/2014";
+            this.endDate="11/19/2014";
+        },
+        whereclaus:function(){
+            var where={};
+            where.createdAt={}
+            if(this.startDate){
+                where.createdAt['>']=new Date(this.startDate);
+            }
+            if(this.endDate){
+                where.createdAt['<']=new Date(this.endDate);
+            }
+            return JSON.stringify(where);
         }
     }),
     User:sortableCollection.extend({

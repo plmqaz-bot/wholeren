@@ -52,17 +52,22 @@ Comment on Application, --DONE
 
 Service 状态更新（5个状态）--DONE 按钮发送email。
 
-Contract Filter 时间段，经理查看主管的项目，咨询服务类别，是否应收尾款，是否已收尾款。
+Contract and Service 更换老师，auto generate comment。 --DONE
 
-User higher rank 可以修改rank, calculate count. 
+Contract Filter 时间段，经理查看主管的项目，--DONE
 
-Service Filter 时间段，（签约时间） 服务类别（大类， i,d,e,b,a,z). 入学学期（一年四个）。 
+咨询服务类别，是否应收尾款，是否已收尾款。
+
+User higher rank 可以修改rank, calculate count. --DONE
+
+Service Filter 时间段，--DONE
+
+（签约时间） 服务类别（大类， i,d,e,b,a,z). 入学学期（一年四个）。 
 
 
 
 
 
-Contract and Service 更换老师，auto generate comment。 
 
 
 handle how to activate user. 

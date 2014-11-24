@@ -72,6 +72,8 @@ module.exports = {
 
     contractUser:{model:"User"},
 
+    endFeeDue:{type:"boolean",defaultsTo:"false"},
+
     endFee:{type:"boolean",defaultsTo:"false"},
 
     comment:{collection:"Comment"},
