@@ -311,6 +311,8 @@ module.exports = {
 		});
 
 	},
-	
+	getFilters:function(req,res){
+		return res.json(200,{endFee:{type:'bool'.text:'已收尾款'},endFeeDue:{type:'bool'.text:'应收尾款'}});
+	},
 };
 

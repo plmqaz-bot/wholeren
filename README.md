@@ -56,7 +56,7 @@ Contract and Service 更换老师，auto generate comment。 --DONE
 
 Contract Filter 时间段，经理查看主管的项目，--DONE
 
-咨询服务类别，是否应收尾款，是否已收尾款。
+FILTER: 咨询服务类别，是否应收尾款，是否已收尾款。--Progress
 
 User higher rank 可以修改rank, calculate count. --DONE
 

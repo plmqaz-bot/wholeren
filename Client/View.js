@@ -613,6 +613,31 @@ Settings.Pane = Backbone.View.extend({
              }
             this.$el.html(ml);
         },
+        renderFilterButtons:function(options){
+            var last_ele=$('.page-actions').children().last();
+            for( var key in options){
+                var value=options[key]; // Key is the attribute name, value are either boolean or a table
+                switch (value.type){
+                    case "bool":
+                    var s=$('<select name="'+key+'" class="filter"></select>');
+                    $("<option />",{text:value.text}).appendTo(s);
+                    $("<option />",{value:true,text:"TRUE"}).appendTo(s);
+                    $("<option />",{value:false,text:"FALSE"}).appendTo(s);
+                    s.insertAfter(last_ele);
+                    break;
+                    case "table":
+                    var s=$('<select name="'+key+'" class="filter"></select>');
+                    $("<option .>",{text:value.text}).appendTo(s);
+                    _.forEach(function(ele){
+                        var id=ele.id;
+                        var txt=ele[key];
+                        $("<option .>",{value:id,text:txt}).appendTo(s);
+                    });
+                    s.insertAfter(last_ele);
+                    break;
+                }
+            }
+        },
         sortCollection:function(e){
             if(!this.collection) return;
             var attr=$(e.currentTarget).data("attr");
@@ -1035,6 +1060,20 @@ var ContractView=Wholeren.FormView.extend({
                     self.collection.on("sort", self.renderCollection, self);
                 });
             }    
+            // Now get filters
+            $.ajax({
+                url: '/contract/getFilters/',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                },
+                success: function (data) {
+                    self.renderFilterButtons(data);                
+                },
+                error: function (xhr) {
+                    console.log('error');
+                }
+            });
             //self.collection.on("sort", this.renderCollection, this); 
         },
         events: {
