@@ -7,16 +7,19 @@
 var Promise=require('bluebird');
 module.exports = {
 	'getContract':function(req, res){
+		var where=req.param('where')||{};
+		console.log(where);
+		where=JSON.parse(where);
 		var id=req.session.user.id;
 		var promise;
 		switch(req.session.user.rank){
 			case "3":
-			promise=Contract.find().populateAll();
+			promise=Contract.find().where(where).populateAll();
 			break;
 			case "2":
 			promise=User.find({boss:id}).then(function(mypuppets){
 				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]}).populateAll();
+				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]}).where(where).populateAll();
 			});
 			break;
 			default:
@@ -29,7 +32,7 @@ module.exports = {
 				{assisCont:id},
 				{assistant:null,assisCont:null,expert:null,sales:null}
 				]
-			}).populateAll();
+			}).where(where).populateAll();
 		}
 		if(promise){
 			promise.then(function(data){return res.json(data);}).fail(function(err){return res.json(400,err)});	
@@ -312,7 +315,17 @@ module.exports = {
 
 	},
 	getFilters:function(req,res){
-		return res.json(200,{endFee:{type:'bool'.text:'已收尾款'},endFeeDue:{type:'bool'.text:'应收尾款'}});
+		ContractCategory.find().then(function(data){
+			var filter={
+				endFee:{type:'bool',text:'已收尾款'},
+				endFeeDue:{type:'bool',text:'应收尾款'},
+				contractCategory:{type:'table',text:'咨询服务', value:data},
+			};
+			return res.json(200,filter);
+		}).fail(function(err){
+			return res.json(404,"problem fetching filters");
+		});
+		
 	},
 };
 

@@ -1104,6 +1104,9 @@ select {
   width: 280px;
   /*height: 30px;*/
   line-height: 30px; }
+select.filter{
+  width:auto;
+}
   @media (max-width: 550px) {
     select {
       width: 100%; } }

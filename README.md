@@ -56,13 +56,15 @@ Contract and Service 更换老师，auto generate comment。 --DONE
 
 Contract Filter 时间段，经理查看主管的项目，--DONE
 
-FILTER: 咨询服务类别，是否应收尾款，是否已收尾款。--Progress
+FILTER: 咨询服务类别，是否应收尾款，是否已收尾款。--Progress --DONE
 
 User higher rank 可以修改rank, calculate count. --DONE
 
 Service Filter 时间段，--DONE
 
-（签约时间） 服务类别（大类， i,d,e,b,a,z). 入学学期（一年四个）。 
+（签约时间） 服务类别（大类， i,d,e,b,a,z). --DONE
+
+入学学期（一年四个）。 
 
 
 

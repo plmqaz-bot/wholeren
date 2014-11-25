@@ -615,23 +615,24 @@ Settings.Pane = Backbone.View.extend({
         },
         renderFilterButtons:function(options){
             var last_ele=$('.page-actions').children().last();
+            var self=this;
             for( var key in options){
                 var value=options[key]; // Key is the attribute name, value are either boolean or a table
                 switch (value.type){
                     case "bool":
                     var s=$('<select name="'+key+'" class="filter"></select>');
-                    $("<option />",{text:value.text}).appendTo(s);
+                    $("<option />",{value:"",text:value.text}).appendTo(s);
                     $("<option />",{value:true,text:"TRUE"}).appendTo(s);
                     $("<option />",{value:false,text:"FALSE"}).appendTo(s);
                     s.insertAfter(last_ele);
                     break;
                     case "table":
                     var s=$('<select name="'+key+'" class="filter"></select>');
-                    $("<option .>",{text:value.text}).appendTo(s);
-                    _.forEach(function(ele){
+                    $("<option />",{value:"",text:value.text}).appendTo(s);
+                    value.value.forEach(function(ele){
                         var id=ele.id;
                         var txt=ele[key];
-                        $("<option .>",{value:id,text:txt}).appendTo(s);
+                        $("<option />",{value:id,text:txt}).appendTo(s);
                     });
                     s.insertAfter(last_ele);
                     break;
@@ -1058,6 +1059,7 @@ var ContractView=Wholeren.FormView.extend({
                     self.ready=true;
                     self.renderCollection();
                     self.collection.on("sort", self.renderCollection, self);
+                    self.collection.on("reset", self.renderCollection, self);
                 });
             }    
             // Now get filters
@@ -1078,16 +1080,20 @@ var ContractView=Wholeren.FormView.extend({
         },
         events: {
         'click  button.button-add': 'editView',
-        'click  button.button-filter': 'modifyFilter',
+        'click  button.button-alt': 'refetch',
+        'change .filter':'renderCollection',
         //'click .clickablecell':'editContract',
         'click .edit,.del':'editContract',
         'click .textbox,.selectbox,.multiselectbox':'editAttr',
         'click .sortable':'sortCollection',
         'click .comment_edit':'showComments',
         },     
-        modifyFilter:function(e){
-            this.filter.push({attr:"originalText",value:null});
-            this.renderCollection();
+        refetch:function(e){
+            var startDate=$('#startDate').val();
+            var endDate=$('#endDate').val();
+            this.collection.setdate({startDate:startDate,endDate:endDate});
+            this.collection.endDate=endDate;
+            this.collection.fetch({reset:true});
         },
         renderCollection: function (){
             var self=this;
@@ -1155,6 +1161,38 @@ var ContractView=Wholeren.FormView.extend({
                     var popUpView = new ContractEdit({view:this,model:curCont});
                     $('.app').html(popUpView.render().el);
             }
+        },
+        applyFilter:function(obj){
+            var filteredout=false;
+            var fs=$('.filter');
+            _.forEach(fs,function(ele){
+                var attr=ele.name;
+                var value=ele.value;
+                if(!value) return;
+
+                 var sub=attr.indexOf('.');
+                 var tocomp;
+                if(sub>0){
+                    tocomp=obj[attr.substring(0,sub)]||{};
+                    tocomp=tocomp[attr.substring(sub+1)];
+                }else{
+                    tocomp=obj[attr];
+                }
+                if(tocomp){
+                    if(tocomp.toString()==value){
+                    }else{
+                        if(!tocomp.id){
+                            filteredout=true;
+                        }else if(tocomp.id==value||tocomp.id.toString()==value){
+                        }else{
+                            filteredout=true;
+                        }
+                    }
+                }else{
+                    filteredout=true;
+                }
+            });
+            return filteredout;
         },
         showComments:function(e){
             var item=$(e.currentTarget);
@@ -1335,13 +1373,37 @@ var ServiceView=Wholeren.FormView.extend({
                     self.collection.on("sort", self.renderCollection, self);
                 });
             }
+            self.collection.on("reset",self.renderCollection,self);
+             // Now get filters
+            $.ajax({
+                url: '/service/getFilters/',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                },
+                success: function (data) {
+                    self.renderFilterButtons(data);                
+                },
+                error: function (xhr) {
+                    console.log('error');
+                }
+            });
         },
         events: {
         'click .add,.edit,.del':'editApplication',
+        'click  button.button-alt': 'refetch',
+        'change .filter':'renderCollection',
         'click .textbox,.selectbox':'editAttr',
         'click .sortable':'sortCollection',
         'click .comment_edit':'showComments',
-        },        
+        },    
+        refetch:function(e){
+            var startDate=$('#startDate').val();
+            var endDate=$('#endDate').val();
+            this.collection.setdate({startDate:startDate,endDate:endDate});
+            this.collection.endDate=endDate;
+            this.collection.fetch({reset:true});
+        },    
         renderCollection: function (){
             if(this.ready){
                 this.renderCollectionCore();       
@@ -1422,6 +1484,38 @@ var ServiceView=Wholeren.FormView.extend({
                     var popUpView = new ApplicationEdit({view:this,service:curService,curApp:curApp});
                     $('.app').html(popUpView.render().el);
             }             
+        },
+        applyFilter:function(obj){
+            var filteredout=false;
+            var fs=$('.filter');
+            _.forEach(fs,function(ele){
+                var attr=ele.name;
+                var value=ele.value;
+                if(!value) return;
+
+                 var sub=attr.indexOf('.');
+                 var tocomp;
+                if(sub>0){
+                    tocomp=obj[attr.substring(0,sub)]||{};
+                    tocomp=tocomp[attr.substring(sub+1)];
+                }else{
+                    tocomp=obj[attr];
+                }
+                if(tocomp){
+                    if(tocomp.toString()==value){
+                    }else{
+                        if(!tocomp.id){
+                            filteredout=true;
+                        }else if(tocomp.id==value||tocomp.id.toString()==value){
+                        }else{
+                            filteredout=true;
+                        }
+                    }
+                }else{
+                    filteredout=true;
+                }
+            });
+            return filteredout;
         },
         showComments:function(e){
             var item=$(e.currentTarget);
