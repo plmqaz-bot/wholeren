@@ -40,11 +40,20 @@ module.exports = {
 	'getFilters':function(req,res){
 		
 		ServiceType.find().then(function(data){
+			var semisters=['spring','summer','fall','winter'];
+			var applied=[];
+			var now=new Date().getFullYear();
+			semisters.forEach(function(ele){
+				applied.push({id:ele+now,"application.appliedSemester":ele+now});
+				applied.push({id:ele+(now+1),"application.appliedSemester":ele+(now+1)});
+			});
 			var filter={
 				serviceType:{type:'table',text:'服务类型', value:data},
+				"application.appliedSemester":{type:'table',text:'申请入读学期',value:applied},
 			};
 			return res.json(200,filter);
 		}).fail(function(err){
+			console.log(err);
 			return res.json(404,"Error fetching filters");
 		});
 

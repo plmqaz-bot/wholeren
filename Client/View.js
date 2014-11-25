@@ -633,7 +633,7 @@ Settings.Pane = Backbone.View.extend({
                     value.value.forEach(function(ele){
                         var id=ele.id;
                         var txt=ele[key];
-                        $("<option />",{value:id,text:txt}).appendTo(s);
+                        $("<option />",{value:JSON.stringify(id),text:txt}).appendTo(s);
                     });
                     s.insertAfter(last_ele);
                     break;
@@ -701,19 +701,56 @@ Settings.Pane = Backbone.View.extend({
             
         },
         applyFilter:function(obj){
+            var fs=$('.filter');
             var filteredout=false;
-            this.filter.forEach(function(f){
-                var attr=f.attr;
-                var value=f.value;
+            _.forEach(fs,function(ele){
+                var attr=ele.name;
+                var value=ele.value;
+                if(!value) return; // return if the filter is null
+                try{
+                    value=JSON.parse(value);
+                }catch(e){
+                     // if value cannot be parsed, then it is a string, not json;
+                }
                 var sub=attr.indexOf('.');
+                var tocomp;
                 if(sub>0){
-                    var tocomp=obj[attr.substring(0,sub)]||{};
-                    tocomp=tocomp[attr.substring(sub+1)];
-                    if(tocomp!=value){
-                        filteredout= true;
+                    tocomp=obj[attr.substring(0,sub)]||{};
+                    attr=attr.substring(sub+1);
+                }
+                if(tocomp instance of Array){
+
+                }else{
+                tocomp=obj[attr];
+                }
+                                
+                if(tocomp){
+                    if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+                        var ind=_.findIndex(value,function(v){
+                            if(tocomp.toString()==v||tocomp==v){
+                                return true;
+                            }else{
+                                if(!tocomp.id){
+                                }else if(tocomp.id==v||tocomp.id.toString()==v){
+                                    return true;
+                                }
+                            }
+                            return false;
+                        });
+                        if(ind<0) filteredout=true;
+                    }else{
+                        if(tocomp.toString()==value||tocomp==value){
+                        }else{
+                            if(!tocomp.id){
+                                filteredout=true;
+                            }else if(tocomp.id==value||tocomp.id.toString()==value){
+                            }else{
+                                filteredout=true;
+                            }
+                        }
                     }
-                }else if(obj[attr]!=value){
-                    filteredout= true;
+                }else{
+                    filteredout=true;
                 }
             });
             return filteredout;
@@ -1163,38 +1200,6 @@ var ContractView=Wholeren.FormView.extend({
                     $('.app').html(popUpView.render().el);
             }
         },
-        applyFilter:function(obj){
-            var filteredout=false;
-            var fs=$('.filter');
-            _.forEach(fs,function(ele){
-                var attr=ele.name;
-                var value=ele.value;
-                if(!value) return;
-
-                 var sub=attr.indexOf('.');
-                 var tocomp;
-                if(sub>0){
-                    tocomp=obj[attr.substring(0,sub)]||{};
-                    tocomp=tocomp[attr.substring(sub+1)];
-                }else{
-                    tocomp=obj[attr];
-                }
-                if(tocomp){
-                    if(tocomp.toString()==value){
-                    }else{
-                        if(!tocomp.id){
-                            filteredout=true;
-                        }else if(tocomp.id==value||tocomp.id.toString()==value){
-                        }else{
-                            filteredout=true;
-                        }
-                    }
-                }else{
-                    filteredout=true;
-                }
-            });
-            return filteredout;
-        },
         showComments:function(e){
             var item=$(e.currentTarget);
             var id = item.attr('href').substring(1);
@@ -1485,38 +1490,6 @@ var ServiceView=Wholeren.FormView.extend({
                     var popUpView = new ApplicationEdit({view:this,service:curService,curApp:curApp});
                     $('.app').html(popUpView.render().el);
             }             
-        },
-        applyFilter:function(obj){
-            var filteredout=false;
-            var fs=$('.filter');
-            _.forEach(fs,function(ele){
-                var attr=ele.name;
-                var value=ele.value;
-                if(!value) return;
-
-                 var sub=attr.indexOf('.');
-                 var tocomp;
-                if(sub>0){
-                    tocomp=obj[attr.substring(0,sub)]||{};
-                    tocomp=tocomp[attr.substring(sub+1)];
-                }else{
-                    tocomp=obj[attr];
-                }
-                if(tocomp){
-                    if(tocomp.toString()==value){
-                    }else{
-                        if(!tocomp.id){
-                            filteredout=true;
-                        }else if(tocomp.id==value||tocomp.id.toString()==value){
-                        }else{
-                            filteredout=true;
-                        }
-                    }
-                }else{
-                    filteredout=true;
-                }
-            });
-            return filteredout;
         },
         showComments:function(e){
             var item=$(e.currentTarget);

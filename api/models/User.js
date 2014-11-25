@@ -27,11 +27,15 @@ module.exports = {
 
     rank:{type:'int',required:true,defaultsTo:1,max:3},
 
-    boss:{model:'User'}
+    boss:{model:'User'},
   	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
 
   	//service:{collection:'Service',via:'serviceTeacher',dominant:true}
-
+    toJSON: function() {
+      var obj = this.toObject();
+      delete obj.password;
+      return obj;
+    }
   },
   beforeCreate: function (attrs, next) {
     var bcrypt = require('bcrypt');
@@ -48,10 +52,6 @@ module.exports = {
       });
     });
   },
-  toJSON: function() {
-      var obj = this.toObject();
-      delete obj.password;
-      return obj;
-    }
+  
 };
 

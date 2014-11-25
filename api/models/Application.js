@@ -18,7 +18,7 @@ module.exports = {
 
 	succeed:{type:'boolean',defaultsTo:false},
 
-	appliedSemester:{type:'string'},
+	appliedSemester:{type:'string', regex:'(spring|summer|fall|winter)201[0-9]'},
 
 	studentCondition:{type:'string'},
 

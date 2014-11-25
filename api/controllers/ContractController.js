@@ -319,7 +319,8 @@ module.exports = {
 			var filter={
 				endFee:{type:'bool',text:'已收尾款'},
 				endFeeDue:{type:'bool',text:'应收尾款'},
-				contractCategory:{type:'table',text:'咨询服务', value:data},
+				//contractCategory:{type:'table',text:'咨询服务', value:data},
+				contractCategory:{type:'table',text:'咨询服务', value:[{id:[7,8,9],contractCategory:"test"}]},
 			};
 			return res.json(200,filter);
 		}).fail(function(err){
