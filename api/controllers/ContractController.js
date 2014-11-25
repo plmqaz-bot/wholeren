@@ -7,7 +7,7 @@
 var Promise=require('bluebird');
 module.exports = {
 	'getContract':function(req, res){
-		var where=req.param('where')||{};
+		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
 		var id=req.session.user.id;

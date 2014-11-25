@@ -26,6 +26,7 @@ Handlebars.registerHelper('displayBool', function(bool){
     return '否';
 });
 Handlebars.registerHelper('detailStatus', function (serviceType,step,options) {
+    if(!serviceType) return "";
  if(serviceType.indexOf('e')!=-1){
             if(step==1){
                 return "Terminate Date";
