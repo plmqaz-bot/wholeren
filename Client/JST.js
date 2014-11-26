@@ -22,6 +22,7 @@ var tpUser=require('./template/user.hbs');
 var tpUserSingle=require('./template/user_single.hbs');
 var tpCommentSingle=require('./template/modals/comment_single.hbs');
 var tpComment=require('./template/modals/comment.hbs');
+var tpForgotten=require('./template/forgotten.hbs');
 var tpl={
     'contract':tpContract,
     'contractSingle':tpContractSingle,
@@ -37,6 +38,7 @@ var tpl={
     'userSingle':tpUserSingle,
     'commentSingle':tpCommentSingle,
     'comment':tpComment,
+    'forgotten':tpForgotten
 };
 
 module.exports=tpl;

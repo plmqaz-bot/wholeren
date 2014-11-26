@@ -27,13 +27,13 @@ var Router=Backbone.Router.extend({
         Wholeren.currentView = new Wholeren.Views.Auth.Login({ el: '.js-login-box' });
     },
 
-    // forgotten: function () {
-    //     Wholeren.currentView = new Wholeren.Views.Forgotten({ el: '.js-forgotten-box' });
-    // },
+    forgotten: function () {
+        Wholeren.currentView = new Wholeren.Views.Auth.Forgotten({ el: '.js-forgotten-box' });
+    },
 
-    // reset: function (token) {
-    //     Wholeren.currentView = new Wholeren.Views.ResetPassword({ el: '.js-reset-box', token: token });
-    // },
+    reset: function (token) {
+        Wholeren.currentView = new Wholeren.Views.ResetPassword({ el: '.js-reset-box', token: token });
+    },
     settings: function (pane) {
         if (!pane) {
         	

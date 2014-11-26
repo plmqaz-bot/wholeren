@@ -5,6 +5,7 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
+var uuid = require('node-uuid');
 module.exports = {
 
   attributes: {
@@ -29,7 +30,13 @@ module.exports = {
 
     otherInfo:{type:'string'},
 
-  	contract:{collection:'Contract',via:'client'}
-  }
+  	contract:{collection:'Contract',via:'client'},
+
+    publicKey:{type:'string',unique:true},
+  },
+  beforeCreate: function (attrs, next) {
+    attrs.publicKey=uuid.v1();
+    next();
+  },
 };
 

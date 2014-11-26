@@ -49,6 +49,10 @@ module.exports.routes = {
     controller: 'Admin',
     action:'doSignup'
   },
+  'POST /admin/forgotten':{
+    controller:'Admin',
+    action:'doForgotten'
+  },
   'GET /contract/':{
     controller:'contract',
     action:'getContract'

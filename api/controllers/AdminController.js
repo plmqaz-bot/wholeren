@@ -244,40 +244,40 @@ module.exports={
     'doForgotten': function (req, res) {
         var email = req.body.email;
 
-        api.users.generateResetToken(email).then(function (token) {
-            var siteLink = '<a href="' + config().url + '">' + config().url + '</a>',
-                resetUrl = config().url.replace(/\/$/, '') +  '/ghost/reset/' + token + '/',
-                resetLink = '<a href="' + resetUrl + '">' + resetUrl + '</a>',
-                message = {
-                    to: email,
-                    subject: 'Reset Password',
-                    html: '<p><strong>Hello!</strong></p>' +
-                          '<p>A request has been made to reset the password on the site ' + siteLink + '.</p>' +
-                          '<p>Please follow the link below to reset your password:<br><br>' + resetLink + '</p>' +
-                          '<p>Ghost</p>'
-                };
+        // api.users.generateResetToken(email).then(function (token) {
+        //     var siteLink = '<a href="' + config().url + '">' + config().url + '</a>',
+        //         resetUrl = config().url.replace(/\/$/, '') +  '/ghost/reset/' + token + '/',
+        //         resetLink = '<a href="' + resetUrl + '">' + resetUrl + '</a>',
+        //         message = {
+        //             to: email,
+        //             subject: 'Reset Password',
+        //             html: '<p><strong>Hello!</strong></p>' +
+        //                   '<p>A request has been made to reset the password on the site ' + siteLink + '.</p>' +
+        //                   '<p>Please follow the link below to reset your password:<br><br>' + resetLink + '</p>' +
+        //                   '<p>Ghost</p>'
+        //         };
 
-            return mailer.send(message);
-        }).then(function success() {
+        //     return mailer.send(message);
+        // }).then(function success() {
             var notification = {
                 type: 'success',
                 message: 'Check your email for further instructions',
                 status: 'passive',
                 id: 'successresetpw'
             };
+            res.json(200, {redirect: '/admin/signin/', notification:notification});
+            // return api.notifications.add(notification).then(function () {
+            //     res.json(200, {redirect: config().paths.subdir + '/ghost/signin/'});
+            // });
 
-            return api.notifications.add(notification).then(function () {
-                res.json(200, {redirect: config().paths.subdir + '/ghost/signin/'});
-            });
+        // }, function failure(error) {
+        //     // TODO: This is kind of sketchy, depends on magic string error.message from Bookshelf.
+        //     if (error && error.message === 'EmptyResponse') {
+        //         error.message = "Invalid email address";
+        //     }
 
-        }, function failure(error) {
-            // TODO: This is kind of sketchy, depends on magic string error.message from Bookshelf.
-            if (error && error.message === 'EmptyResponse') {
-                error.message = "Invalid email address";
-            }
-
-            res.json(401, {error: error.message});
-        });
+        //     res.json(401, {error: error.message});
+        // });
     },
     'reset': function (req, res) {
         // Validate the request token

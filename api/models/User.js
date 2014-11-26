@@ -5,15 +5,12 @@
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
 
-var uuid = require('node-uuid');
 module.exports = {
 
   attributes: {
   	password:{type:'string',required:true,minLength:6},
 
   	email:{type:'email',required:true,unique:true},
-
-    publicKey:{type:'string',unique:true},
 
   	nickname:{type:'string',required:true,unique:true},
 
@@ -47,7 +44,6 @@ module.exports = {
         if (err) return next(err);
 
         attrs.password = hash;
-        attrs.publicKey=uuid.v1();
         next();
       });
     });

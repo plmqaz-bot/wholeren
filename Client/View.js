@@ -277,6 +277,52 @@ Views.Login=Wholeren.baseView.extend({
         }
     });
 
+Views.Forgotten=Wholeren.baseView.extend({
+    templateName: "forgotten",
+    initialize: function () {
+                this.render();
+    },
+    afterRender: function () {
+        var self = this;
+        this.$el.css({"opacity": 0}).animate({"opacity": 1}, 500, function () {
+            self.$("[name='email']").focus();
+        });
+    },
+    events: {
+        'submit #forgotten': 'submitHandler'
+    },
+    submitHandler: function (event) {
+            event.preventDefault();
+
+            var email = this.$el.find('.email').val(),
+                validationErrors = [];
+
+            if (!validator.isEmail(email)) {
+                validationErrors.push("Please enter a correct email address.");
+            }
+
+            if (validationErrors.length) {
+                validator.handleErrors(validationErrors);
+            } else {
+                $.ajax({
+                    url: '/admin/forgotten/',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                    },
+                    data: {
+                        email: email
+                    },
+                    success: function (msg) {
+                        window.location.href = msg.redirect;
+                    },
+                    error: function (xhr) {
+                        util.handleRequestError(xhr);
+                    }
+                });
+            }
+        }
+});
 /*************************************************Views for Notifications *****************************/
 /**
      * This handles Notification groups
