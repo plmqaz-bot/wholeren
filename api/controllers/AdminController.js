@@ -233,4 +233,77 @@ module.exports={
             res.json(401, {error: error.message});
         });
     },
+    'forgotten': function (req, res) {
+        /*jslint unparam:true*/
+        res.render('forgotten', {
+            bodyClass: 'ghost-forgotten',
+            hideNavbar: true,
+            adminNav: setSelected(adminNavbar, 'login')
+        });
+    },
+    'doForgotten': function (req, res) {
+        var email = req.body.email;
+
+        api.users.generateResetToken(email).then(function (token) {
+            var siteLink = '<a href="' + config().url + '">' + config().url + '</a>',
+                resetUrl = config().url.replace(/\/$/, '') +  '/ghost/reset/' + token + '/',
+                resetLink = '<a href="' + resetUrl + '">' + resetUrl + '</a>',
+                message = {
+                    to: email,
+                    subject: 'Reset Password',
+                    html: '<p><strong>Hello!</strong></p>' +
+                          '<p>A request has been made to reset the password on the site ' + siteLink + '.</p>' +
+                          '<p>Please follow the link below to reset your password:<br><br>' + resetLink + '</p>' +
+                          '<p>Ghost</p>'
+                };
+
+            return mailer.send(message);
+        }).then(function success() {
+            var notification = {
+                type: 'success',
+                message: 'Check your email for further instructions',
+                status: 'passive',
+                id: 'successresetpw'
+            };
+
+            return api.notifications.add(notification).then(function () {
+                res.json(200, {redirect: config().paths.subdir + '/ghost/signin/'});
+            });
+
+        }, function failure(error) {
+            // TODO: This is kind of sketchy, depends on magic string error.message from Bookshelf.
+            if (error && error.message === 'EmptyResponse') {
+                error.message = "Invalid email address";
+            }
+
+            res.json(401, {error: error.message});
+        });
+    },
+    'reset': function (req, res) {
+        // Validate the request token
+        var token = req.params.token;
+
+        api.users.validateToken(token).then(function () {
+            // Render the reset form
+            res.render('reset', {
+                bodyClass: 'ghost-reset',
+                hideNavbar: true,
+                adminNav: setSelected(adminNavbar, 'reset')
+            });
+        }).otherwise(function (err) {
+            // Redirect to forgotten if invalid token
+            var notification = {
+                type: 'error',
+                message: 'Invalid or expired token',
+                status: 'persistent',
+                id: 'errorinvalidtoken'
+            };
+
+            errors.logError(err, 'admin.js', "Please check the provided token for validity and expiration.");
+
+            return api.notifications.add(notification).then(function () {
+                res.redirect(config().paths.subdir + '/ghost/forgotten');
+            });
+        });
+    },
 }

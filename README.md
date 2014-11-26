@@ -64,7 +64,11 @@ Service Filter 时间段，--DONE
 
 （签约时间） 服务类别（大类， i,d,e,b,a,z). --DONE
 
-入学学期（一年四个）。 
+入学学期（一年四个）。 --DONE
+
+
+
+forgot password
 
 
 
@@ -79,8 +83,6 @@ handle how to activate user.
 
 Contract, service pagination
 
-
-handle update on changing time and date. 
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.
 
