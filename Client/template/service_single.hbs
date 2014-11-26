@@ -1,26 +1,29 @@
 
 {{#if application}}
 {{#each application}}
+{{#ifCond display false}}
+{{else}}
 <tr name="{{../id}}">
-        <td>{{../contract/client/chineseName}}</td>
-        <td>{{../contract/client/firstName}}</td>
-        <td>{{../contract/client/lastName}}</td>
-        <td>{{../serviceStatus/serviceStatus}}</td>
-        <td>{{../serviceType/serviceType}}</td>
-        <td>{{../contract/contractSigned}}</td>
+        <td>{{../../contract/client/chineseName}}</td>
+        <td>{{../../contract/client/firstName}}</td>
+        <td>{{../../contract/client/lastName}}</td>
+        <td>{{../../serviceStatus/serviceStatus}}</td>
+        <td>{{../../serviceType/serviceType}}</td>
+        <td>{{../../contract/contractSigned}}</td>
         <td >{{displayBool newDev}}</td>
         <td >{{displayBool succeed}}</td>
         <td data-attr="collageName" data-type="text" class="textbox" data-model="Application" data-id="{{id}}">{{collageName}}</td>
-        <td data-attr="studentDestination" data-type="text" class="textbox" data-model="Service">{{../studentDestination}}</td>
+        <td data-attr="studentDestination" data-type="text" class="textbox" data-model="Service">{{../../studentDestination}}</td>
         <td>{{appliedSemester}}</td>
         <td>{{#if writer}}{{writer/nickname}}{{/if}}</td>
         <td>{{studentCondition}}</td>
-        <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{#if ../../step1}}{{../../step1}}{{else}}{{detailStatus ../../serviceType/serviceType 1}}{{/if}}</td>
-        <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{#if ../../step2}}{{../../step2}}{{else}}{{detailStatus ../../serviceType/serviceType 2}}{{/if}}</td>
-        <td>{{../service/contract/teacher/nickname}}</td>
+        <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{#if ../../../step1}}{{../../../step1}}{{else}}{{detailStatus ../../../serviceType/serviceType 1}}{{/if}}</td>
+        <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{#if ../../../step2}}{{../../../step2}}{{else}}{{detailStatus ../../../serviceType/serviceType 2}}{{/if}}</td>
+        <td>{{../../service/contract/teacher/nickname}}</td>
         <td><a class="comment_edit" href="#{{id}}" data-type="app">Show Comments</a></td>
-        <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a>{{#if ../displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>
+        <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a>{{#if ../../../displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>
         </tr> 
+{{/ifCond}}
 {{/each}}
 {{else}}
         <tr name="{{id}}">

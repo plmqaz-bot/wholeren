@@ -702,6 +702,17 @@ Settings.Pane = Backbone.View.extend({
         },
         applyFilter:function(obj){
             var fs=$('.filter');
+            function match(v1,v2){
+                if(v1.toString()==v2||v1==v2){
+                    return true;
+                }else{
+                    if(!v1.id){
+                    }else if(v1.id==v2||v1.id.toString()==v2){
+                        return true;
+                    }
+                }
+                return false;
+            }
             var filteredout=false;
             _.forEach(fs,function(ele){
                 var attr=ele.name;
@@ -718,40 +729,42 @@ Settings.Pane = Backbone.View.extend({
                     tocomp=obj[attr.substring(0,sub)]||{};
                     attr=attr.substring(sub+1);
                 }
-                if(tocomp instance of Array){
-
-                }else{
-                tocomp=obj[attr];
-                }
-                                
-                if(tocomp){
-                    if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
-                        var ind=_.findIndex(value,function(v){
-                            if(tocomp.toString()==v||tocomp==v){
-                                return true;
+                if(tocomp instanceof Array&&tocomp.length>1){
+                    tocomp.forEach(function(e){
+                        var c=e[attr];
+                        if(c){
+                            if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+                                var ind=_.findIndex(value,function(v){
+                                    return match(c,v);
+                                });
+                                if(ind<0) e.display=false;
                             }else{
-                                if(!tocomp.id){
-                                }else if(tocomp.id==v||tocomp.id.toString()==v){
-                                    return true;
+                                if(!match(c,value)){
+                                    e.display=false;
                                 }
                             }
-                            return false;
-                        });
-                        if(ind<0) filteredout=true;
-                    }else{
-                        if(tocomp.toString()==value||tocomp==value){
                         }else{
-                            if(!tocomp.id){
-                                filteredout=true;
-                            }else if(tocomp.id==value||tocomp.id.toString()==value){
-                            }else{
+                            e.display=false;
+                        }
+                    });
+                }else{
+                    tocomp=obj[attr];
+                    if(tocomp){
+                        if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+                            var ind=_.findIndex(value,function(v){
+                                return match(tocomp,v);
+                            });
+                            if(ind<0) filteredout=true;
+                        }else{
+                            if(!match(tocomp,value)){
                                 filteredout=true;
                             }
                         }
+                    }else{
+                        filteredout=true;
                     }
-                }else{
-                    filteredout=true;
-                }
+                }                                
+                
             });
             return filteredout;
         },
@@ -1412,12 +1425,28 @@ var ServiceView=Wholeren.FormView.extend({
         },    
         renderCollection: function (){
             if(this.ready){
+                this.resetCollection();
                 this.renderCollectionCore();       
             }else{
                  var self=this;
                 this.user=new Obiwang.Collections.User();
-                $.when(this.user.fetch(),this.client.fetch()).done(function(data){self.ready=true;self.renderCollectionCore();}); 
+                $.when(this.user.fetch(),this.client.fetch()).done(function(data){
+                    self.ready=true;
+                    self.resetCollection();
+                    self.renderCollectionCore();
+                }); 
             }            
+        },
+        resetCollection:function(){
+            this.collection.forEach(function(serv){
+                var apps=serv.get('application');
+                if(apps){
+                    apps.forEach(function(app){
+                        app.display=true;
+                    });
+                }
+                serv.set('application',apps);
+            });
         },
         headline:function(obj){
             if(obj.contract.client){
