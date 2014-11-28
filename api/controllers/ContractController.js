@@ -315,16 +315,19 @@ module.exports = {
 
 	},
 	getFilters:function(req,res){
+		var filter={
+			endFee:{type:'bool',text:'已收尾款'},
+			endFeeDue:{type:'bool',text:'应收尾款'}
+		};
 		ContractCategory.find().then(function(data){
-			var filter={
-				endFee:{type:'bool',text:'已收尾款'},
-				endFeeDue:{type:'bool',text:'应收尾款'},
-				//contractCategory:{type:'table',text:'咨询服务', value:data},
-				contractCategory:{type:'table',text:'咨询服务', value:[{id:[7,8,9],contractCategory:"test"}]},
-			};
+			filter.contractCategory={type:'table',text:'咨询服务', value:data};
+			return Lead.find();
+		}).then(function(data){	
+				//contractCategory:{type:'table',text:'咨询服务', value:[{id:[7,8,9],contractCategory:"test"}]},
+			filter.lead={type:'table',text:'Lead种类',value:data};
 			return res.json(200,filter);
 		}).fail(function(err){
-			return res.json(404,"problem fetching filters");
+			return res.json(404,err);
 		});
 		
 	},

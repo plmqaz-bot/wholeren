@@ -8,6 +8,7 @@
         <label>End Date</label><input id="endDate"></input>
         <button class="button-alt" >刷新</button>
     </section>
+
 </header>
 <section class="content">
 <div class="table-wrapper">
@@ -56,7 +57,8 @@
         <th>签约价明细</th> 
         <th class="sortable" data-attr='applicationFeePaid'>$150申请费</th>
         <th class="sortable" data-attr='paymentOption.paymentOption'>付款方式</th>
-        <th class="sortable" data-attr='endFee'>是否收尾款</th>
+        <th class="sortable" data-attr='endFeeDue'>是否应收尾款</th>
+        <th class="sortable" data-attr='endFee'>是否已收尾款</th>
         <th class="sortable" data-attr='teacher.nickname'>服务老师</th>
         <th>Comments</th>
         <th></th>
@@ -70,7 +72,7 @@
         <th class="sortable" data-attr='client.chineseName'>学生中文名</th>        
               
     </tr> </tbody></table></div></div>
-
+<label>Total Contract: </label><span id="total_count"></span>
     <div class="app"></div>
 </section>
 

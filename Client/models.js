@@ -109,8 +109,8 @@ Collections={
         url: function(){return '/Contract/?where='+this.whereclaus();},
         initialize:function(){
             this.selectedStrat({sortAttr:'client.firstName'});
-            this.startDate="11/2/2014";
-            this.endDate="11/19/2014";
+            this.startDate="09-01-2014";
+            this.endDate="";
         },
         setdate:function(options){
             this.startDate=options.startDate;

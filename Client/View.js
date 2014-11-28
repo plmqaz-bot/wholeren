@@ -834,13 +834,14 @@ Settings.Pane = Backbone.View.extend({
         var headrow=$('#scrollableheader');
         var stableheadrow=$('#pinnedheader');
         var self=this;
+        this.contractLength=0;
         this.collection.forEach(function(item){
             var obj=item.toJSON();
             if(self.applyFilter(obj)){
                 return;
             }
             obj=self.modifyRow(obj);
-            
+            self.contractLength++;
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
             toInsert.insertAfter(headrow);
@@ -1194,12 +1195,14 @@ var ContractView=Wholeren.FormView.extend({
         },
         renderCollection: function (){
             var self=this;
+
             if(!this.ready){
                 this.serviceTypes=new Obiwang.Collections.ServiceType();
                 this.serviceTypes.fetch({ reset: true }).done(function(data){self.ready=true;self.renderCollectionCore();}); 
             }else{
                 this.renderCollectionCore();
             }
+            $('#total_count').text(this.contractLength);
         },
         modifyRow:function(obj){
             var self=this;
