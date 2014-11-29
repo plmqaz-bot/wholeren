@@ -461,7 +461,7 @@ Notification.Collection = Wholeren.baseView.extend({
 });
 
 /******************************************Views for Settings*************************************/
-var SettingView = Backbone.View.extend({
+var MarketView = Backbone.View.extend({
     initialize: function (options) {
         $(".settings-content").removeClass('active');
         this.sidebar = new Sidebar({
@@ -487,7 +487,8 @@ var SettingView = Backbone.View.extend({
     }
 });
 
-var Sidebar = Backbone.View.extend({
+var Sidebar = Wholere.baseView.extend({
+    templateName:'marketSidebar',
     initialize: function (options) {
         
         this.el=options.el;
@@ -499,21 +500,15 @@ var Sidebar = Backbone.View.extend({
     events: {
         'click .settings-menu li': 'switchPane'
     },
-    render: function () {
-//      for (item in this.$el){
-//          alert(item+" "+this.$el[item]);
-//      }
-        //this.el.html(tpSidebar());
-    
-        //$(this.el).html("bb");
-        var ml = tpSidebar({});
-        if (ml[0] != '<') {
-            ml = ml.substring(1);
-        }
-        this.$el.html('');
-       this.$el.html(ml);
-        return this;
-    },
+    // render: function () {
+    //     var ml = tpSidebar({});
+    //     if (ml[0] != '<') {
+    //         ml = ml.substring(1);
+    //     }
+    //     this.$el.html('');
+    //    this.$el.html(ml);
+    //     return this;
+    // },
     switchPane: function (e) {
         e.preventDefault();
         var item = $(e.currentTarget),
@@ -527,7 +522,7 @@ var Sidebar = Backbone.View.extend({
         
         var self = this,
             model;
-        myApp.router.navigate('/settings/' + id + '/');
+        Wholere.router.navigate('/settings/' + id + '/');
         //myApp.trigger('urlchange');
         if (this.pane && id === this.pane.id) {
             return;
@@ -542,6 +537,7 @@ var Sidebar = Backbone.View.extend({
             this.pane=new Settings.Pane({ el: '.settings-content' });
         }
         this.pane.render();
+        this.pane.afterRender();
         
 //
 //        if (!this.models.hasOwnProperty(this.pane.options.modelType)) {
@@ -582,7 +578,7 @@ var Sidebar = Backbone.View.extend({
         
     }
 });
-Settings.Pane = Backbone.View.extend({
+Settings.Pane = Wholeren.baseView.extend({
     destroy: function () {
         this.$el.removeClass('active');
         this.undelegateEvents();
@@ -594,49 +590,20 @@ Settings.Pane = Backbone.View.extend({
         this.$el.fadeIn(300);
     },
     afterRender: function () {
-        
         this.$el.attr('id', this.id);
         this.$el.addClass('active');
-    },
-    saveSuccess: function (model, response, options) {
-        /*jshint unused:false*/
-//        Ghost.notifications.clearEverything();
-//        Ghost.notifications.addItem({
-//            type: 'success',
-//            message: 'Saved',
-//            status: 'passive'
-//        });
-    },
-    saveError: function (model, xhr) {
-        /*jshint unused:false*/
-//        Ghost.notifications.clearEverything();
-//        Ghost.notifications.addItem({
-//            type: 'error',
-//            message: Ghost.Views.Utils.getRequestErrorMessage(xhr),
-//            status: 'passive'
-//        });
-    },
-    validationError: function (message) {
-//        Ghost.notifications.clearEverything();
-//        Ghost.notifications.addItem({
-//            type: 'error',
-//            message: message,
-//            status: 'passive'
-//        });
     }
 });
     // ### General settings
  Settings.general = Settings.Pane.extend({
     id: "general",
+    templateName:"marketMessage",
 //    events: {
 //        'click .button-save': 'saveSettings',
 //        'click .js-modal-logo': 'showLogo',
 //        'click .js-modal-cover': 'showCover'
 //    },
-    render: function () {
-        var ml = tpGeneral();
-        
-        this.$el.html(ml);
+    afterRender: function () {
         this.$el.attr('id', this.id);
         this.$el.addClass('active');
     }
@@ -1880,6 +1847,22 @@ var CommentModalView=Backbone.Modal.extend({
         }
     }
 });
+var MarketView=Wholeren.baseView.extend({
+    templateName:'contract',
+    events: {
+    },
+    initialize:function(options){
+
+    },
+    render: function () {
+         var ml = this.template();
+         if (ml[0] != '<') {
+             ml = ml.substring(1);
+         }
+        this.$el.html(ml);
+    },
+
+});
 module.exports={
 		Setting:SettingView,
 		Sidebar:Sidebar,
@@ -1887,6 +1870,7 @@ module.exports={
         Notification:Notification,
         Contract:ContractView,
         Service:ServiceView,
+        Market:MarketView,
         User:UserView,
         Auth:Views
 

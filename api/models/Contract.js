@@ -31,6 +31,8 @@ module.exports = {
   	salesFollowup:{type:"string",maxLength: 511, size:511},
   	
   	salesRecord:{type:"string",maxLength: 511, size:511},
+
+    expertContactDate:{type:"date"},
   	
   	expertFollowup:{type:"string",maxLength: 511, size:511},
   	

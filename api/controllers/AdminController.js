@@ -16,6 +16,13 @@ adminNavbar = {
         path: '/service/',
         display:true
     },
+    market: {
+        name: 'Market',
+        navClass: 'contract',
+        key: 'admin.navbar.settings',
+        path: '/market/',
+        display:false
+    },
     user: {
         name: 'User',
         navClass: 'contract',
@@ -81,6 +88,18 @@ module.exports={
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'service'),
+            currentUser:req.session.user
+        });
+    },
+    'market':function(req,res){
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+        }else{
+            adminNavbar.user.display=false;
+        }
+        res.render('settings', {
+            bodyClass: 'settings',
+            adminNav: setSelected(adminNavbar, 'market'),
             currentUser:req.session.user
         });
     },

@@ -1,6 +1,6 @@
 /*************************************************All the templates *****************************/
-//var tpMsgPane = require('./template/settings/message.hbs');
-//var tpSidebar = require('./template/settings/sidebar.hbs');
+var tpMsgPane = require('./template/settings/message.hbs');
+var tpSidebar = require('./template/settings/sidebar.hbs');
 var tpGeneral = require('./template/settings/general.hbs');
 var tpReply = require('./template/modals/reply.hbs');
 //var tpChooseMaterial = require('./template/modals/material.hbs');
@@ -38,7 +38,9 @@ var tpl={
     'userSingle':tpUserSingle,
     'commentSingle':tpCommentSingle,
     'comment':tpComment,
-    'forgotten':tpForgotten
+    'forgotten':tpForgotten,
+    'marketSidebar':tpSidebar,
+    'marketMessage':tpMsgPane,
 };
 
 module.exports=tpl;
