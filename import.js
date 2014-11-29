@@ -1,20 +1,46 @@
 (function() {
+function importCSV(){
 	var parse=require('csv-parse');
 	var fs=require('fs');
 	var Promise=require('bluebird');
 	filename='toImport.csv';
+	var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={};
+	var options=Lead.find().then(function(data){
+		LEAD=data;
+		return LeadLevel.find();
+	}).then(function(data){
+		LEADLEVEL=data;
+		return Country.find();
+	}).then(function(data){
+		COUNTRY=data;
+		return Degree.find();
+	}).then(function(data){
+		DEGREE=data;
+		return PaymentOption.find();
+	}).then(function(data){
+		PAYMENT=data;
+		return ContractCategory.find();
+	}).then(function(data){
+		CATEGORY=data;
+		return Promise.resolve(data);
+	});
+
 
 	 fs.readFile(filename,'utf8',function(err,data){
 	 	if(err) throw err;
 	 	parse(data,{comment:'#'},function(err,output){
 		 	console.log(output[1][0]);
+		 	options.then(function(data){
+
+		 	});
  		})
 	 });
+	 
 	 function oneline(line){
 	 	var contract={};
 	 	var client={};
 	 	client.chineseName=line[1];
-	 	contract.contractCategory=line[2];
+	 	contract.contractCategory=line[2] // later get contractcategoryid;
 	 	contract.createdAt=line[3];
 	 	contract.lead=line[4]; // Later get the id;
 	 	contract.leadName=line[5];
@@ -27,7 +53,7 @@
 	 	contract.leadLevel=line[12]; // later get leadlevel id;
 	 	contract.expertContactdate=line[13];
 	 	//contract.expertFollowup=line[14];
-	 	contract.expertFollowup=line[15];
+	 	contract.expertFollowup=line[14]?line[14]:line[15];
 	 	client.lastName=line[16];
 	 	client.firstName=line[17];
 	 	contract.originalText=line[18];
@@ -43,7 +69,7 @@
 	 	contract.age=line[29];
 	 	contract.degree=line[30]; // later get degree id
 	 	contract.diagnose=line[31];
-	 	contract.contractSigned:line[32];
+	 	contract.contractSigned=line[32];
 	 	contract.contractPaid=line[33];
 	 	var Service=line[34]+","+line[35]+","+line[36]+","+line[37]; // Work on service
 	 	contract.contractPrice=line[38];
@@ -52,6 +78,8 @@
 	 	contract.paymentOption=line[41]; // later get payment id
 	 	contract.endFeeDue=line[42]=='是'?true:false;
 	 	contract.teacher=line[43]; // later get user id
+
+		exchangeOptions(contract);
 	 	getClient(client).then(function(cid){
 	 		contract.client=cid;
 	 		return getUser(contract.assistant);
@@ -67,12 +95,31 @@
 	 	}).then(function(tea){
 	 		contract.teacher=tea.id;
 	 		// add this contract
-	 		return Contract.create(contract);
+	 		console.log(contract);
+	 		return Promise.resolve(tea);
+	 		//return Contract.create(contract);
 	 	}).then(function(cont){
-	 		var contractID=cont.id;
-	 		return getService(contract.service,contractID);
+	 		//var contractID=cont.id;
+	 		//return getService(contract.service,contractID);
 	 	});
 	 };
+	 function exchangeOptions(contract){
+	 	//get the id of category
+	 	var categoryid=_.findIndex(CATEGORY,{'contractCategory':contract.contractCategory});
+	 	var leadid=_.findIndex(LEAD,{'lead':contract.lead});
+	 	var statusid=_.findIndex(STATUS,{'lead':contract.status});
+	 	var leadLevelid=_.findIndex(LEADLEVEL,{'leadLevel':contract.leadLevel});
+	 	var countryid=_.findIndex(COUNTRY,{'country':contract.country});
+	 	var degreeid=_.findIndex(DEGREE,{'degree':contract.degree});
+	 	var paymentid=_.findIndex(PAYMENT,{'paymentOption':contract.paymentOption});
+	 	contract.contractCategory=categoryid;
+	 	contract.lead=leadId;
+	 	contract.status=statusid;
+	 	contract.leadLevel=leadLevelid;
+	 	contract.country=countryid;
+	 	contract.degree=degreeid;
+	 	contract.paymentOption=paymentid;
+	 }
 	 function getClient(client){
 	 	var Promise=require('bluebird');
 	 	var clientId=null;
@@ -129,7 +176,7 @@
 	 	var id=1;
 	 	return id;
 	 }
-	
+}
 // 	data='"客户ID
 // (WRS019999)",学生中文名,"咨询服务类别
 // （单选）","首次咨询日期

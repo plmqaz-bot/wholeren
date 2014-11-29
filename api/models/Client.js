@@ -14,9 +14,9 @@ module.exports = {
     primaryKey: true,
     unique: true},
 
-  	firstName:{type:'string',required:true},
+  	firstName:{type:'string'},
 
-  	lastName:{type:'string',required:true},
+  	lastName:{type:'string'},
 
     chineseName:{type:'string',required:true},
 

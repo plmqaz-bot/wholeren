@@ -325,4 +325,197 @@ module.exports={
             });
         });
     },
+    'import':function(req,res){
+    var parse=require('csv-parse');
+    var fs=require('fs');
+    var Promise=require('bluebird');
+    filename='toImport.csv';
+    var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={};
+    var options=Lead.find().then(function(data){
+        LEAD=data;
+        return LeadLevel.find();
+    }).then(function(data){
+        LEADLEVEL=data;
+        return Country.find();
+    }).then(function(data){
+        COUNTRY=data;
+        return Degree.find();
+    }).then(function(data){
+        DEGREE=data;
+        return PaymentOption.find();
+    }).then(function(data){
+        PAYMENT=data;
+        return ContractCategory.find();
+    }).then(function(data){
+        CATEGORY=data;
+        return Promise.resolve(data);
+    });
+
+
+     fs.readFile(filename,'utf8',function(err,data){
+        if(err) throw err;
+        parse(data,{comment:'#'},function(err,output){
+            console.log(output[1][0]);
+            options.then(function(data){
+                    var firstline = true;
+                    output.forEach(function (line) {
+                        line.forEach(function (element) {
+                            element = element.replace('\"', '');
+                            element = element.replace('\'', '');
+                        });
+                        if (firstline) {
+                            firstline = false;
+                        } else {
+                            oneline(line);
+                        }
+
+                    });
+            });
+        })
+     });
+     
+     function oneline(line){
+        var contract={};
+        var client={};
+        client.chineseName=line[1];
+        contract.contractCategory=line[2] // later get contractcategoryid;
+        contract.createdAt=line[3];
+        contract.lead=line[4]; // Later get the id;
+        contract.leadName=line[5];
+        contract.assistant=line[6]; //Later get user id;
+        contract.sales=line[7]; //later get user id;
+        contract.expert=line[8]; // later get user id;
+        contract.status=line[9]; // later get id of status;
+        contract.salesFollowup=line[10];
+        contract.salesRecord=line[11];
+        contract.leadLevel=line[12]; // later get leadlevel id;
+        contract.expertContactdate=line[13];
+        //contract.expertFollowup=line[14];
+        contract.expertFollowup=line[14]?line[14]:line[15];
+        client.lastName=line[16];
+        client.firstName=line[17];
+        contract.originalText=line[18];
+        client.primaryEmail=line[19];
+        client.primaryPhone=line[20];
+        contract.country=line[22]; // later get country id;
+        contract.validI20=line[23]=='是'?true:false;
+        contract.previousSchool=line[24];
+        contract.targetSchool=line[25];
+        contract.gpa=line[26];
+        contract.toefl=line[27];
+        contract.otherScore=line[28];
+        contract.age=line[29];
+        contract.degree=line[30]; // later get degree id
+        contract.diagnose=line[31];
+        contract.contractSigned=line[32];
+        contract.contractPaid=line[33];
+        var Service=line[34]+","+line[35]+","+line[36]+","+line[37]; // Work on service
+        contract.contractPrice=line[38];
+        contract.contractDetail=line[39];
+        contract.endFee=line[40];
+        contract.paymentOption=line[41]; // later get payment id
+        contract.endFeeDue=line[42]=='是'?true:false;
+        contract.teacher=line[43]; // later get user id
+
+        exchangeOptions(contract);
+        getClient(client).then(function(cid){
+            contract.client=cid;
+            return getUser(contract.assistant);
+        }).then(function(assis){
+            contract.assistant=assis;
+            return getUser(contract.sales);
+        }).then(function(sale){
+            contract.sales=sale;
+            return getUser(contract.expert);
+        }).then(function(exp){
+            contract.expert=exp;
+            return getUser(contract.teacher);
+        }).then(function(tea){
+            contract.teacher=tea;
+            // add this contract
+            console.log(contract);
+            return Promise.resolve(tea);
+            //return Contract.create(contract);
+        }).then(function(cont){
+            //var contractID=cont.id;
+            //return getService(contract.service,contractID);
+        }).fail(function (err) { 
+            // it failed to import
+                console.log("ERROR on insert");
+        });
+     };
+     function exchangeOptions(contract){
+        //get the id of category
+        var categoryid=_.findIndex(CATEGORY,{'contractCategory':contract.contractCategory});
+        var leadid=_.findIndex(LEAD,{'lead':contract.lead});
+        var statusid=_.findIndex(STATUS,{'status':contract.status});
+        var leadLevelid=_.findIndex(LEADLEVEL,{'leadLevel':contract.leadLevel});
+        var countryid=_.findIndex(COUNTRY,{'country':contract.country});
+        var degreeid=_.findIndex(DEGREE,{'degree':contract.degree});
+        var paymentid=_.findIndex(PAYMENT,{'paymentOption':contract.paymentOption});
+        contract.contractCategory=categoryid>0?categoryid:null;
+        contract.lead=leadid>0?leadid:null;
+        contract.status=statusid>0?statusid:null;
+        contract.leadLevel=leadLevelid>0?leadLevelid:null;
+        contract.country = countryid>0?countryid:null;
+        contract.degree=degreeid>0?degreeid:null;
+        contract.paymentOption=paymentid>0?paymentid:null;
+     }
+     function getClient(client){
+        var Promise=require('bluebird');
+        var clientId=null;
+            var p = Promise.defer();
+        Client.findOne({chineseName:client.chineseName}).then(function(data){
+            if(data){
+                return p.resolve(data.id);
+            }else{
+                return Client.create(client);
+            }
+        }).then(function(data){
+            p.resolve(data.id);
+        }).fail(function(err){
+            console.log(err);
+            p.reject(err);
+        });
+        return p.promise;
+     };
+     function getUser(user){
+        
+        var useId=null;
+        var p=Promise.defer();
+        User.findOne({nickname:user}).then(function(data){
+            p.resolve(data.id);
+        }).fail(function(err){
+            console.log('user not found');
+            p.reject(err);
+        });
+        return p.promise;
+     }
+     function getService(service,contID){
+        service=service.replace("，",",");
+        var servs=service.split(",");
+        var p= Promise.defer();
+        var insertPs=[];
+        var serviceIDs=[];
+        servs.forEach(function(ele){
+            var id=findID(ele);
+            var curPromise=Service.create({contract:contID,serviceType:id}).then(function(s){
+                serviceID.push(s.id);
+            }).fail(function(err){
+                p.reject(err);
+            });
+            insertPs.push(curPromise);
+        });
+        Promise.all(insertPs).then(function(data){
+            p.resolve(serviceIDs); 
+        }).fail(function(err){
+            p.reject(err);
+        });
+        return p.promise;
+     }
+     function findID(servs){
+        var id=1;
+        return id;
+     }
+    }
 }
