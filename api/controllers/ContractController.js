@@ -14,12 +14,12 @@ module.exports = {
 		var promise;
 		switch(req.session.user.rank){
 			case "3":
-			promise=Contract.find().where(where).populateAll();
+			promise=Contract.find();
 			break;
 			case "2":
 			promise=User.find({boss:id}).then(function(mypuppets){
 				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]}).where(where).populateAll();
+				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]});
 			});
 			break;
 			default:
@@ -32,10 +32,41 @@ module.exports = {
 				{assisCont:id},
 				{assistant:null,assisCont:null,expert:null,sales:null}
 				]
-			}).where(where).populateAll();
+			});
 		}
 		if(promise){
-			promise.then(function(data){return res.json(data);}).fail(function(err){return res.json(400,err)});	
+			var toReturn=[];
+			promise.where(where).populate('client').populate('service').then(function(conts){
+				toReturn=conts;
+				console.log("found ", toReturn.length);
+				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find()]);
+			}).then(function(data){
+				// manually populate
+				var Hashs=[];
+				data.forEach(function(ele){
+					Hashs.push(Util.makePopulateHash(ele));
+				});
+				console.log(Hashs);
+				toReturn.forEach(function(ele){
+					if(ele.contractCategory) ele.contractCategory=Hashs[0][ele.contractCategory];
+					if(ele.country) ele.country=Hashs[1][ele.country];
+					if(ele.degree) ele.degree=Hashs[2][ele.degree];
+					if(ele.lead) ele.lead=Hashs[3][ele.lead];
+					if(ele.leadLevel) ele.leadLevel=Hashs[4][ele.leadLevel];
+					if(ele.paymentOption) ele.paymentOption=Hashs[5][ele.paymentOption];
+					if(ele.status) ele.status=Hashs[6][ele.status];
+					if(ele.assistant) ele.assistant=Hashs[7][ele.assistant];
+					if(ele.assisCont) ele.assisCont=Hashs[7][ele.assisCont];
+					if(ele.expert) ele.expert=Hashs[7][ele.expert];
+					if(ele.sales) ele.sales=Hashs[7][ele.sales];
+					if(ele.teacher) ele.teacher=Hashs[7][ele.teacher];
+				});
+				
+				return Promise.resolve(toReturn);
+			}).then(function(data){
+				console.log(data.length);
+				return res.json(data);
+			}).fail(function(err){return res.json(400,err)});	
 		}else{
 			res.json(400,'not found');
 		}		
