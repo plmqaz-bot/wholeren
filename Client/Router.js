@@ -10,6 +10,7 @@ var View=require('./View');
 var Router=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
+        'market(/:pane)/':'market',
         'contract(/:option/)/':'contract',
         'service/(:option)':'service',
         'user/(:option)':'user',
@@ -52,6 +53,13 @@ var Router=Backbone.Router.extend({
 //        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
 //            Ghost.currentView = new Ghost.Views.Settings({ el: '#main', pane: pane });
 //        }
+    },
+    market:function(pane){
+        if(!pane){
+            this.navigate('/market/general/',{trigger:true,replace:true});
+            return;
+        }
+        Wholeren.currentView=new Wholeren.Views.Market({ el: '#main', pane: pane });
     },
     contract:function(option){
         if(option){

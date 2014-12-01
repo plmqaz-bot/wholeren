@@ -4,7 +4,7 @@
  * @description :: Server-side logic for managing Services
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-
+var Promise=require('bluebird');
 module.exports = {
 	'getService':function(req, res){
 		var id=req.session.user.id;
@@ -28,10 +28,18 @@ module.exports = {
 		}
 		promise.then(function(conts){
 			var conIDs=conts.map(function(c){return c.id;});
+			var clientIDs=conts.map(function(c){return c.client});
 			console.log(conIDs);
-			return Service.find({contract:conIDs}).populateAll();
+			return Promise.all([Service.find({contract:conIDs}).populateAll(),Client.find({id:clientIDs})]);
 		}).then(function(data){
-			return res.json(data);
+			// manual populate client
+			var allClient=Util.makePopulateHash(data[1]);
+			var allService=data[0];
+			allService.forEach(function(ele){
+				var cid=ele.contract.client||0;
+				ele.contract.client=allClient[ele.contract.client];
+			});
+			return res.json(allService);
 		}).fail(function(err){
 			return res.json({error:err});
 		});	

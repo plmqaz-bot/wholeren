@@ -59,7 +59,7 @@ Models={
     }),
     Comment:Backbone.Model.extend({
         urlRoot:'/Comment/'
-    })
+    }),
 
 };
 var sortableCollection=Backbone.Collection.extend({

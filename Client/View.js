@@ -461,7 +461,7 @@ Notification.Collection = Wholeren.baseView.extend({
 });
 
 /******************************************Views for Settings*************************************/
-var MarketView = Backbone.View.extend({
+var SettingView = Backbone.View.extend({
     initialize: function (options) {
         $(".settings-content").removeClass('active');
         this.sidebar = new Sidebar({
@@ -487,7 +487,7 @@ var MarketView = Backbone.View.extend({
     }
 });
 
-var Sidebar = Wholere.baseView.extend({
+var Sidebar = Wholeren.baseView.extend({
     templateName:'marketSidebar',
     initialize: function (options) {
         
@@ -500,15 +500,14 @@ var Sidebar = Wholere.baseView.extend({
     events: {
         'click .settings-menu li': 'switchPane'
     },
-    // render: function () {
-    //     var ml = tpSidebar({});
-    //     if (ml[0] != '<') {
-    //         ml = ml.substring(1);
-    //     }
-    //     this.$el.html('');
-    //    this.$el.html(ml);
-    //     return this;
-    // },
+    render: function () {
+        var ml = this.template();
+        if (ml[0] != '<') {
+            ml = ml.substring(1);
+        }
+       this.$el.html(ml);
+        return this;
+    },
     switchPane: function (e) {
         e.preventDefault();
         var item = $(e.currentTarget),
@@ -522,7 +521,7 @@ var Sidebar = Wholere.baseView.extend({
         
         var self = this,
             model;
-        Wholere.router.navigate('/settings/' + id + '/');
+        Wholeren.router.navigate('/market/' + id + '/');
         //myApp.trigger('urlchange');
         if (this.pane && id === this.pane.id) {
             return;
@@ -530,11 +529,11 @@ var Sidebar = Wholere.baseView.extend({
         if(this.pane)
         this.pane.destroy();
         this.setActive(id);
-        var toDisplay=Settings[id];
+        var toDisplay=Market[id];
         if(toDisplay){
             this.pane =new toDisplay({ el: '.settings-content' }); 
         }else{
-            this.pane=new Settings.Pane({ el: '.settings-content' });
+            this.pane=new Market.Pane({ el: '.settings-content' });
         }
         this.pane.render();
         this.pane.afterRender();
@@ -1377,7 +1376,6 @@ var ServiceView=Wholeren.FormView.extend({
     filter:[],
     singleTemplate:JST['serviceSingle'],
     user:{},
-    client:{},
     ready:false,
     templateName:'service',
         initialize: function (options) {
@@ -1388,13 +1386,12 @@ var ServiceView=Wholeren.FormView.extend({
             this.el=options.el;
             var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
             this.user=new Obiwang.Collections.User();
-            this.client=new Obiwang.Collections.Client();
             var self=this;
             this.collection = new Obiwang.Collections[modelName]();
             this.render();
             if(options.id){
                 var model=new Obiwang.Models[modelName]({id:options.id});
-                $.when(model.fetch(),this.user.fetch(),this.client.fetch()).done(function(){
+                $.when(model.fetch(),this.user.fetch()).done(function(){
                     if(model)
                         self.collection.add(model);
                     self.ready=true;
@@ -1402,7 +1399,7 @@ var ServiceView=Wholeren.FormView.extend({
                     self.collection.on("sort", self.renderCollection, self);
                 });
             }else {
-                $.when(this.collection.fetch(),this.user.fetch(),this.client.fetch()).done(function(){
+                $.when(this.collection.fetch(),this.user.fetch()).done(function(){
                     self.ready=true;
                     self.renderCollectionCore();
                     self.collection.on("sort", self.renderCollection, self);
@@ -1446,7 +1443,7 @@ var ServiceView=Wholeren.FormView.extend({
             }else{
                  var self=this;
                 this.user=new Obiwang.Collections.User();
-                $.when(this.user.fetch(),this.client.fetch()).done(function(data){
+                this.user.fetch().done(function(data){
                     self.ready=true;
                     self.resetCollection();
                     self.renderCollectionCore();
@@ -1479,10 +1476,10 @@ var ServiceView=Wholeren.FormView.extend({
                     ele.writer=self.user.get(id).toJSON();
                 }
             });
-            var id=obj.contract.client;
-            if(id){
-                obj.contract.client=self.client.get(id).toJSON();
-            }
+            // var id=obj.contract.client;
+            // if(id){
+            //     obj.contract.client=self.client.get(id).toJSON();
+            // }
             if(this.rank>1){
                 obj.displayDelete=1;
             }
@@ -1847,24 +1844,113 @@ var CommentModalView=Backbone.Modal.extend({
         }
     }
 });
-var MarketView=Wholeren.baseView.extend({
-    templateName:'contract',
+var Market={};
+Market.Pane = Wholeren.baseView.extend({
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    
+    render: function () {
+        this.$el.hide();
+        this.$el.html("Selected pane does not exist");
+        this.$el.fadeIn(300);
+    },
+    afterRender: function () {
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    }
+});
+Market.general=Market.Pane.extend({
+    templateName:'marketMessage',
+    id:"general",
     events: {
     },
     initialize:function(options){
+        this.result=[{"col1":"testdata","col2":"data2"},{"col1":"testdata2","col2":"data4"}];
+        
 
-    },
+
+    },  
     render: function () {
          var ml = this.template();
          if (ml[0] != '<') {
              ml = ml.substring(1);
          }
         this.$el.html(ml);
+        var self=this;
+        $.ajax({
+                url: '/market/general/',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                },
+                success: function (msg) {
+                    self.displayQuery(msg);
+                },
+                error: function (xhr) {
+                    Wholeren.notifications.clearEverything();
+                    Wholeren.notifications.addItem({
+                        type: 'error',
+                        message: util.getRequestErrorMessage(xhr),
+                        status: 'passive'
+                    });
+                }
+            });
     },
+    displayQuery:function(data){
+        var tab=$('<table/>');
+        if(!data) return;
+        var keys=_.keys(data[0]);
+        var headline=$('<tr/>');
+        keys.forEach(function(ele){
+            var attr=$('<th/>').text(ele);
+            headline.append(attr);
+        });
+        tab.append(headline);
+        //Now insert every row
+        data.forEach(function(row){
+            var curRow=$('<tr/>');
+            keys.forEach(function(key){
+                curRow.append($('<td/>').text(row[key]));
+            });
+            tab.append(curRow);
+        });
+        $('.content').append(tab);
+    },
+    afterRender: function () {
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    }
 
 });
+
+var MarketView=Wholeren.baseView.extend({
+    initialize: function (options) {
+        $(".settings-content").removeClass('active');
+        this.sidebar = new Sidebar({
+            el: '.settings-sidebar',
+            pane: options.pane,
+            model: this.model
+        });
+        this.listenTo(Wholeren.router, 'route:market', this.changePane);
+        
+    },
+    changePane: function (pane) {
+        if (!pane) {
+            return;
+        }
+        this.sidebar.showContent(pane);
+    },
+    render: function () {
+        this.sidebar.render();
+//        if(!this.sidebar.pane)
+//          this.showContent('general');
+//        else
+//          this.sidebar.renderPane({});
+    }
+});
 module.exports={
-		Setting:SettingView,
 		Sidebar:Sidebar,
         Panes: Settings,
         Notification:Notification,

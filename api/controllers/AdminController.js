@@ -72,8 +72,10 @@ module.exports={
         }
         if(req.session.manager){
             adminNavbar.user.display=true;
+            adminNavbar.market.display=true;
         }else{
             adminNavbar.user.display=false;
+            adminNavbar.market.display=false;
         }
 
         res.render('contract', {
@@ -85,8 +87,10 @@ module.exports={
     'service':function(req,res){
         if(req.session.manager){
             adminNavbar.user.display=true;
+            adminNavbar.market.display=true;
         }else{
             adminNavbar.user.display=false;
+            adminNavbar.market.display=false;
         }
         res.render('contract', {
             bodyClass: 'contract',
@@ -97,8 +101,10 @@ module.exports={
     'market':function(req,res){
         if(req.session.manager){
             adminNavbar.user.display=true;
+            adminNavbar.market.display=true;
         }else{
             adminNavbar.user.display=false;
+            adminNavbar.market.display=false;
         }
         res.render('settings', {
             bodyClass: 'settings',
@@ -109,8 +115,10 @@ module.exports={
     'user':function(req,res){
         if(req.session.manager){
             adminNavbar.user.display=true;
+            adminNavbar.market.display=true;
         }else{
             adminNavbar.user.display=false;
+            adminNavbar.market.display=false;
         }
         res.render('contract', {
             bodyClass: 'contract',
@@ -356,7 +364,6 @@ module.exports={
      fs.readFile(filename,'utf8',function(err,data){
         if(err) throw err;
         parse(data,{comment:'#'},function(err,output){
-            console.log(output[1][0]);
             options.then(function(data){
                     var firstline = true;
                 var linepromises = [];
@@ -369,7 +376,6 @@ module.exports={
                     if (firstline) {
                         firstline = false;
                     } else {
-                        console.log("line ",i);
                        var curP = oneline(line).then(function(data){
                             console.log("finish line ",i);
                         }).fail(function(err){
@@ -386,7 +392,7 @@ module.exports={
         var client={};
         client.chineseName=line[1];
         contract.contractCategory=line[2].replace(/^\s+|\s+$/g, ''); // later get contractcategoryid;
-        contract.createdAt=line[3];
+        contract.createdAt=new Date(line[3]);
         contract.lead=line[4]; // Later get the id;
         contract.leadName=line[5];
         contract.assistant=line[6]; //Later get user id;
@@ -396,7 +402,7 @@ module.exports={
         contract.salesFollowup=line[10];
         contract.salesRecord=line[11];
         contract.leadLevel=line[12]; // later get leadlevel id;
-        contract.expertContactdate=line[13];
+        contract.expertContactdate=new Date(line[13]);
         //contract.expertFollowup=line[14];
         contract.expertFollowup=line[14]?line[14]:line[15];
         client.lastName=line[16];
@@ -416,8 +422,8 @@ module.exports={
         contract.age=line[29];
         contract.degree=line[30]; // later get degree id
         contract.diagnose=line[31];
-        contract.contractSigned=line[32];
-        contract.contractPaid=line[33];
+        contract.contractSigned=new Date(line[32]);
+        contract.contractPaid=new Date(line[33]);
         var Service=line[34]+","+line[35]+","+line[36]+","+line[37]; // Work on service
         temp=parseFloat(line[38]);
         contract.contractPrice=temp?temp:0.0;
@@ -533,11 +539,9 @@ module.exports={
             if(!ele) return;
             var id=findID(ele);
            if(id){
-                console.log({contract:contID,serviceType:id});
                 var curPromise=Service.findOne({contract:contID,serviceType:id}).then(function(data){
                     if(data){
                         serviceIDs.push(data.id);
-                        console.log("found service");
                         return Promise.resolve(data);
                     }else{
                         console.log("create service");
@@ -567,13 +571,13 @@ module.exports={
         }
         var id;
         var keyword=servs.substring(0,2);
-        console.log("keyword is ",keyword);
+        //console.log("keyword is ",keyword);
         
         SERVICETYPE.forEach(function(ele){
             var eachone=ele['serviceType'];
 
             if(eachone.indexOf(keyword)>=0){
-                console.log("found servicetype ",ele.id);
+               // console.log("found servicetype ",ele.id);
                 id=ele.id;
             }
         });
