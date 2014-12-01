@@ -17,8 +17,8 @@
         <td>{{appliedSemester}}</td>
         <td>{{#if writer}}{{writer/nickname}}{{/if}}</td>
         <td>{{studentCondition}}</td>
-        <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{#if ../../../step1}}{{../../../step1}}{{else}}{{detailStatus ../../../serviceType/serviceType 1}}{{/if}}</td>
-        <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{#if ../../../step2}}{{../../../step2}}{{else}}{{detailStatus ../../../serviceType/serviceType 2}}{{/if}}</td>
+        <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{detailStatus ../../serviceType/serviceType 1}}{{../../step1}}</td>
+        <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{detailStatus ../../serviceType/serviceType 2}}{{../../step2}}</td>
         <td>{{../../service/contract/teacher/nickname}}</td>
         <td><a class="comment_edit" href="#{{id}}" data-type="app">Show Comments</a></td>
         <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a>{{#if ../../../displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>
@@ -40,8 +40,8 @@
         <td>{{appliedSemester}}</td>
         <td>{{writer}}</td>
         <td data-attr="studentCondition" data-type="text" class="textbox" data-model="Service">{{studentCondition}}</td>
-        <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{#if step1}}{{step1}}{{else}}{{detailStatus serviceType/serviceType 1}}{{/if}}</td>
-        <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{#if step2}}{{step2}}{{else}}{{detailStatus serviceType/serviceType 2}}{{/if}}</td>
+        <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{detailStatus serviceType/serviceType 1}}{{step1}}</td>
+        <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{detailStatus serviceType/serviceType 2}}{{step2}}</td>
         <td>{{contract/teacher/nickname}}</td>
         <td><a class="comment_edit" href="#{{id}}" data-type="serv">Show Comments</a></td>
         <td><a class="add" href="#">Add</a></td>

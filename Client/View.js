@@ -29,21 +29,21 @@ Handlebars.registerHelper('detailStatus', function (serviceType,step,options) {
     if(!serviceType) return "";
  if(serviceType.indexOf('e')!=-1){
             if(step==1){
-                return "Terminate Date";
+                return "Terminate Date:";
             }else{
-                return "File Date";
+                return "File Date:";
             }
         }else if(serviceType.indexOf('i2')!=-1||serviceType.indexOf('i3')!=-1){
             if(step==1){
-                return "申请计划确认日期";
+                return "申请计划确认日期:";
             }else{
-                return "选校单确认日期";
+                return "选校单确认日期:";
             }
         }else if(serviceType.indexOf('p')!=-1){
             if(step==1){
-                return "初稿预计完成日期";
+                return "初稿预计完成日期:";
             }else{
-                return "终稿预计完成日期";
+                return "终稿预计完成日期:";
             }
         }
     return "";
@@ -714,12 +714,17 @@ Settings.Pane = Wholeren.baseView.extend({
         },
         applyFilter:function(obj){
             var fs=$('.filter');
-            function match(v1,v2){
+            function match(v1,v2,ele){
                 if(v1.toString()==v2||v1==v2){
                     return true;
                 }else{
                     if(!v1.id){
                     }else if(v1.id==v2||v1.id.toString()==v2){
+                        return true;
+                    }
+                }
+                if(ele.tagName.toLowerCase()=='input'){
+                    if(v1.indexOf(v2)!=-1){
                         return true;
                     }
                 }
@@ -747,11 +752,11 @@ Settings.Pane = Wholeren.baseView.extend({
                         if(c){
                             if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                                 var ind=_.findIndex(value,function(v){
-                                    return match(c,v);
+                                    return match(c,v,ele);
                                 });
                                 if(ind<0) e.display=false;
                             }else{
-                                if(!match(c,value)){
+                                if(!match(c,value,ele)){
                                     e.display=false;
                                 }
                             }
@@ -764,11 +769,11 @@ Settings.Pane = Wholeren.baseView.extend({
                     if(tocomp){
                         if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                             var ind=_.findIndex(value,function(v){
-                                return match(tocomp,v);
+                                return match(tocomp,v,ele);
                             });
                             if(ind<0) filteredout=true;
                         }else{
-                            if(!match(tocomp,value)){
+                            if(!match(tocomp,value,ele)){
                                 filteredout=true;
                             }
                         }
@@ -1150,7 +1155,7 @@ var ContractView=Wholeren.FormView.extend({
         'click  button.button-add': 'editView',
         'click  button.button-alt': 'refetch',
         'change .filter':'renderCollection',
-        //'click .clickablecell':'editContract',
+        'click .clickablecell':'editContract',
         'click .edit,.del':'editContract',
         'click .textbox,.selectbox,.multiselectbox':'editAttr',
         'click .sortable':'sortCollection',
@@ -1180,10 +1185,9 @@ var ContractView=Wholeren.FormView.extend({
                 var id=ele.serviceType;
                 if(id){
                     var servT=self.serviceTypes.get(id);
-                    if(!servT){
-                        console.log("something wrong");
+                    if(servT){
+                        ele.serviceType=servT.toJSON();
                     }
-                    ele.serviceType=self.serviceTypes.get(id).toJSON();
                 }
             });
             if(this.rank>1){
@@ -1873,27 +1877,35 @@ Market.general=Market.Pane.extend({
     templateName:'marketMessage',
     id:"general",
     events: {
+        'click .button-alt':'refetch'
     },
-    initialize:function(options){
-        this.result=[{"col1":"testdata","col2":"data2"},{"col1":"testdata2","col2":"data4"}];
-        
-
-
-    },  
-    render: function () {
-         var ml = this.template();
-         if (ml[0] != '<') {
-             ml = ml.substring(1);
-         }
-        this.$el.html(ml);
+    refetch:function(){
+        var startDate=$('#startDate').val();
+        var endDate=$('#endDate').val();
+        var where={};
+        where.createdAt={}
+        try{
+            if(startDate){
+                where.createdAt['>']=new Date(startDate);
+            }
+            if(endDate){
+                where.createdAt['<']=new Date(endDate);
+            }
+            if(where.createdAt){
+                where= JSON.stringify(where);
+            }
+        }catch(e){
+            where= "{}";
+        }
         var self=this;
         $.ajax({
-                url: '/market/general/',
+                url: '/market/general/?where='+where,
                 type: 'GET',
                 headers: {
                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
                 },
                 success: function (msg) {
+                    self.result=msg;
                     self.displayQuery(msg);
                 },
                 error: function (xhr) {
@@ -1906,7 +1918,16 @@ Market.general=Market.Pane.extend({
                 }
             });
     },
+    render: function () {
+         var ml = this.template();
+         if (ml[0] != '<') {
+             ml = ml.substring(1);
+         }
+        this.$el.html(ml);
+        this.refetch();
+    },
     displayQuery:function(data){
+
         var tab=$('<table/>');
         if(!data) return;
         var keys=_.keys(data[0]);
@@ -1924,7 +1945,7 @@ Market.general=Market.Pane.extend({
             });
             tab.append(curRow);
         });
-        $('.content').append(tab);
+        $('.content').html(tab);
     },
     afterRender: function () {
         this.$el.attr('id', this.id);

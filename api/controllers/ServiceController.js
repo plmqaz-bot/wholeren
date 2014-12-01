@@ -15,7 +15,7 @@ module.exports = {
 		var promise;
 		switch (req.session.user.rank){
 			case "3":
-			promise=Contract.find({contractSigned:{'!':null}}).where(where);
+			promise=Contract.find({or:[{contractSigned:{'!':null}},status:[3,4,5,6]]}).where(where);
 			break;
 			case "2":
 			promise=User.find({boss:id}).then(function(mypuppets){
