@@ -16,7 +16,7 @@ module.exports = {
     primaryKey: true,
     unique: true},
 
-    contractCategory:{model:'ContractCategory',required:true,defaultsTo:1},
+    contractCategory:{model:'ContractCategory'},
 
   	client:{model:'Client',required:true,defaultsTo:1},
   	
@@ -38,7 +38,7 @@ module.exports = {
   	
   	originalText:{type:"string", maxLength: 2048, size:2048},
   	
-  	country:{model:"Country",required:true,defaultsTo:1},
+  	country:{model:"Country"},
   	
   	validI20:{type:"boolean",required:true,defaultsTo: 'true'},
   	
@@ -46,11 +46,11 @@ module.exports = {
 
   	toefl:{type:"float"},
 
-  	age:{type:"int"},
+  	age:{type:"string"},
 
     otherScore:{type:"string"},
 
-  	degree:{model:"Degree",required:true,defaultsTo:1},
+  	degree:{model:"Degree"},
 
     major:{type:"string"},
 

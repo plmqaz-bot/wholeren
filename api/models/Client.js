@@ -20,11 +20,11 @@ module.exports = {
 
     chineseName:{type:'string',required:true},
 
-  	primaryPhone:{type:'string',required:true},
+  	primaryPhone:{type:'string'},
 
   	secondaryPhone:{type:'string'},
 
-  	primaryEmail:{type:'email',required:true,unique:true},
+  	primaryEmail:{type:'string'},
 
   	secondaryEmail:{type:'email'},
 

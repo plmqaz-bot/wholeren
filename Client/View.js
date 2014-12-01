@@ -785,6 +785,10 @@ Settings.Pane = Wholeren.baseView.extend({
             obj.service.forEach(function(ele){
                 var id=ele.serviceType;
                 if(id){
+                    var servT=self.serviceTypes.get(id);
+                    if(!servT.toJSON){
+                        console.log("something wrong");
+                    }
                     ele.serviceType=self.serviceTypes.get(id).toJSON();
                 }
             });
@@ -1175,6 +1179,10 @@ var ContractView=Wholeren.FormView.extend({
             obj.service.forEach(function(ele){
                 var id=ele.serviceType;
                 if(id){
+                    var servT=self.serviceTypes.get(id);
+                    if(!servT){
+                        console.log("something wrong");
+                    }
                     ele.serviceType=self.serviceTypes.get(id).toJSON();
                 }
             });

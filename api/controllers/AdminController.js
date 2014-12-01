@@ -338,25 +338,33 @@ module.exports={
     },
     'import':function(req,res){
 
-    var filename='TR.csv';
+    var filename='60EM.csv';
     var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={},SERVICETYPE={};
     var options=Lead.find().then(function(data){
-        LEAD=data;
+        LEAD=makeHash(data,'lead');
         return LeadLevel.find();
     }).then(function(data){
-        LEADLEVEL=data;
+        LEADLEVEL=makeHash(data,'leadLevel');
         return Country.find();
     }).then(function(data){
-        COUNTRY=data;
+        COUNTRY=makeHash(data,'country');
         return Degree.find();
     }).then(function(data){
-        DEGREE=data;
+        DEGREE=makeHash(data,'degree');
         return PaymentOption.find();
     }).then(function(data){
-        PAYMENT=data;
+        PAYMENT=makeHash(data,'paymentOption');
         return ContractCategory.find();
     }).then(function(data){
-        CATEGORY=data;
+        CATEGORY=makeHash(data,'contractCategory');
+        //console.log(data);
+        //console.log(CATEGORY);
+        return Status.find();
+    }).then(function(data){
+        STATUS=makeHash(data,'status');
+        return ServiceType.find();
+    }).then(function(data){
+        SERVICETYPE=data;
         return Promise.resolve(data);
     });
 
@@ -376,6 +384,7 @@ module.exports={
                     if (firstline) {
                         firstline = false;
                     } else {
+                        console.log("start line ",i);
                        var curP = oneline(line).then(function(data){
                             console.log("finish line ",i);
                         }).fail(function(err){
@@ -393,15 +402,15 @@ module.exports={
         client.chineseName=line[1];
         contract.contractCategory=line[2].replace(/^\s+|\s+$/g, ''); // later get contractcategoryid;
         contract.createdAt=new Date(line[3]);
-        contract.lead=line[4]; // Later get the id;
+        contract.lead=line[4].replace(/^\s+|\s+$/g, ''); // Later get the id;
         contract.leadName=line[5];
         contract.assistant=line[6]; //Later get user id;
         contract.sales=line[7]; //later get user id;
         contract.expert=line[8]; // later get user id;
-        contract.status=line[9]; // later get id of status;
+        contract.status=line[9].replace(/^\s+|\s+$/g, ''); // later get id of status;
         contract.salesFollowup=line[10];
         contract.salesRecord=line[11];
-        contract.leadLevel=line[12]; // later get leadlevel id;
+        contract.leadLevel=line[12].replace(/^\s+|\s+$/g, ''); // later get leadlevel id;
         contract.expertContactdate=new Date(line[13]);
         //contract.expertFollowup=line[14];
         contract.expertFollowup=line[14]?line[14]:line[15];
@@ -410,7 +419,7 @@ module.exports={
         contract.originalText=line[18];
         client.primaryEmail=line[19].replace(/^\s+|\s+$/g, '');
         client.primaryPhone=line[20];
-        contract.country=line[22]; // later get country id;
+        contract.country=line[22].replace(/^\s+|\s+$/g, ''); // later get country id;
         contract.validI20=line[23]=='是'?true:false;
         contract.previousSchool=line[24];
         contract.targetSchool=line[25];
@@ -420,7 +429,7 @@ module.exports={
         contract.toefl=temp?temp:0.0;
         contract.otherScore=line[28];
         contract.age=line[29];
-        contract.degree=line[30]; // later get degree id
+        contract.degree=line[30].replace(/^\s+|\s+$/g, ''); // later get degree id
         contract.diagnose=line[31];
         contract.contractSigned=new Date(line[32]);
         contract.contractPaid=new Date(line[33]);
@@ -429,15 +438,16 @@ module.exports={
         contract.contractPrice=temp?temp:0.0;
         contract.contractDetail=line[39];
         contract.endFee=line[40];
-        contract.paymentOption=line[41]; // later get payment id
+        contract.paymentOption=line[41].replace(/^\s+|\s+$/g, ''); // later get payment id
         contract.endFeeDue=line[42]=='是'?true:false;
         contract.teacher=line[43]; // later get user id
-
+        console.log("before getting id");
         exchangeOptions(contract);
         var p=Promise.defer();
+        //console.log("look for stuff");
         return getClient(client).then(function(cid){
             contract.client=cid.id;
-            //console.log("client id is ",contract.client);
+            console.log("client id is ",contract.client);
             return getUser(contract.assistant);
         }).then(function(assis){
             contract.assistant=assis;
@@ -456,7 +466,7 @@ module.exports={
         }).then(function(cont){
           if(cont){
                 // if found, use it
-                console.log("found contract",contract.client);
+                console.log("found contract",cont.id);
                  return Promise.resolve(cont);
             }else{
                 var stringcontract=JSON.stringify(contract);
@@ -479,18 +489,21 @@ module.exports={
         var categoryid=CATEGORY[contract.contractCategory];
         //console.log(contract.contractCategory," got id ",categoryid);
         //var leadid=contract.lead?(_.find(LEAD,{'lead':contract.lead})).id:0;
+        //console.log(LEAD);
         var leadid=LEAD[contract.lead];
-        //console.log(contract.lead," got id ",leadid);
+        console.log(contract.lead," got id ",leadid);
         //var statusid=contract.status?(_.find(STATUS,{'status':contract.status})).id:0;
+        //console.log(STATUS);
         var statusid=STATUS[contract.status];
-        //console.log(contract.status," got id ",statusid);
+        if(!statusid&&contract.status) console.log(contract.status," got id ",statusid);
         //var leadLevelid=contract.leadLevel?(_.find(LEADLEVEL,{'leadLevel':contract.leadLevel})).id:0;
         var leadLevelid=LEADLEVEL[contract.leadLevel];
         //console.log(contract.leadLevel," got id ",leadLevelid);
         //var countryid=contract.country?(_.find(COUNTRY,{'country':contract.country})).id:0;
         var countryid=COUNTRY[contract.country];
-        //console.log(contract.country," got id ",countryid);
+         //console.log(contract.country," got id ",countryid);
         //var degreeid=contract.degree?(_.find(DEGREE,{'degree':contract.degree})).id:0;
+        //console.log(DEGREE);
         var degreeid=DEGREE[contract.degree];
         //console.log(contract.degree," got id ",degreeid);
         //var paymentid=contract.paymentOption?(_.find(PAYMENT,{'paymentOption':contract.paymentOption})).id:0;
@@ -504,11 +517,12 @@ module.exports={
         contract.degree=degreeid>0?degreeid:4;
         contract.paymentOption=paymentid>0?paymentid:null;
      }
-     function getClient(client){
+     function getClient(getC){
         var clientId=null;
             var p = Promise.defer();
         return Client.findOne({chineseName:getC.chineseName}).then(function(data){
             if(data){
+                //console.log("found client",data);
                 return Promise.resolve(data);
             }else{
                 var c=JSON.stringify(getC);
@@ -534,7 +548,7 @@ module.exports={
         var p= Promise.defer();
         var insertPs=[];
         var serviceIDs=[];
-        console.log(servs);
+        //console.log(servs);
         _.forEach(servs,function(ele){
             if(!ele) return;
             var id=findID(ele);
@@ -544,7 +558,7 @@ module.exports={
                         serviceIDs.push(data.id);
                         return Promise.resolve(data);
                     }else{
-                        console.log("create service");
+                        //console.log("create service");
                         return Service.create({contract:contID,serviceType:id}).then(function(s){
                             serviceIDs.push(s.id);
                         });
@@ -559,13 +573,12 @@ module.exports={
             // });
              //insertPs.push(curPromise);
 
-        return Promise.all(insertPs).then(function(data){
-            console.log("insert service done ",serviceIDs); 
-        });
+        return Promise.all(insertPs);//.then(function(data){
+           // console.log("insert service done ",serviceIDs); 
+        //});
         
      }
      function findID(servs){
-        var id=1;
         if(!servs){
             return undefined;
         }
