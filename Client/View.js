@@ -1957,6 +1957,7 @@ module.exports={
         Contract:ContractView,
         Service:ServiceView,
         Market:MarketView,
+        Setting:SettingView,
         User:UserView,
         Auth:Views
 
