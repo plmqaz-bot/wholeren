@@ -26,8 +26,8 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // '*': 'sessionAuth',
-  '*':true,
+   '*': 'sessionAuth',
+  //'*':true,
 
   /***************************************************************************
   *                                                                          *
@@ -54,10 +54,11 @@ module.exports.policies = {
     'Contract':'sessionAuth',
     'Service':'sessionAuth',
     'User':'managerAuth',
+    'Import':'managerAuth',
   },
   ContractController:{
-    //'*':'sessionAuth',
-    '*':true,
+    '*':'sessionAuth',
+    //'*':true,
     'delete':'managerAuth'
   },
   ServiceController:{

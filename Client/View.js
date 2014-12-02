@@ -712,6 +712,10 @@ Settings.Pane = Wholeren.baseView.extend({
             });
             
         },
+        renderSingle:function(model){
+            var id=model.get('id');
+            var cur=$('#'+model.get('id'));
+        }
         applyFilter:function(obj){
             var fs=$('.filter');
             function match(v1,v2,ele){
