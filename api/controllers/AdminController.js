@@ -338,7 +338,7 @@ module.exports={
     },
     'import':function(req,res){
 
-    var filename='60EM.csv';
+    var filename='EM.csv';
     var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={},SERVICETYPE={};
     var options=Lead.find().then(function(data){
         LEAD=makeHash(data,'lead');
@@ -385,51 +385,58 @@ module.exports={
                         firstline = false;
                     } else {
                         console.log("start line ",i);
-                       var curP = oneline(line).then(function(data){
-                            console.log("finish line ",i);
+                       var curP = oneline(line,i).then(function(data){
+                            console.log("finish line ",data);
                         }).fail(function(err){
                             console.log(err);
                         });
+                        i++;
                     }
                 });
             });
         });
      });
      
-     function oneline(line){
+     function oneline(line,linenum){
         var contract={};
         var client={};
+        
         client.chineseName=line[1];
-        contract.contractCategory=line[2].replace(/^\s+|\s+$/g, ''); // later get contractcategoryid;
+        contract.contractCategory=stripstring(line[2]); // later get contractcategoryid;
         contract.createdAt=new Date(line[3]);
-        contract.lead=line[4].replace(/^\s+|\s+$/g, ''); // Later get the id;
+        contract.lead=stripstring(line[4]); // Later get the id;
         contract.leadName=line[5];
         contract.assistant=line[6]; //Later get user id;
         contract.sales=line[7]; //later get user id;
         contract.expert=line[8]; // later get user id;
-        contract.status=line[9].replace(/^\s+|\s+$/g, ''); // later get id of status;
+        contract.status=stripstring(line[9]); // later get id of status;
         contract.salesFollowup=line[10];
         contract.salesRecord=line[11];
-        contract.leadLevel=line[12].replace(/^\s+|\s+$/g, ''); // later get leadlevel id;
+        contract.leadLevel=stripstring(line[12]); // later get leadlevel id;
         contract.expertContactdate=new Date(line[13]);
         //contract.expertFollowup=line[14];
+
         contract.expertFollowup=line[14]?line[14]:line[15];
         client.lastName=line[16];
         client.firstName=line[17];
         contract.originalText=line[18];
-        client.primaryEmail=line[19].replace(/^\s+|\s+$/g, '');
+        client.primaryEmail=stripstring(line[19]);
         client.primaryPhone=line[20];
-        contract.country=line[22].replace(/^\s+|\s+$/g, ''); // later get country id;
+        //console.log("before getting country",linenum);
+        contract.country=stripstring(line[22]); // later get country id;
+        //console.log("after getting country",linenum);
         contract.validI20=line[23]=='是'?true:false;
         contract.previousSchool=line[24];
+
         contract.targetSchool=line[25];
         var temp=parseFloat(line[26]);
         contract.gpa=temp?temp:0.0;
         temp=parseFloat(line[27]);
+
         contract.toefl=temp?temp:0.0;
         contract.otherScore=line[28];
         contract.age=line[29];
-        contract.degree=line[30].replace(/^\s+|\s+$/g, ''); // later get degree id
+        contract.degree=stripstring(line[30]); // later get degree id
         contract.diagnose=line[31];
         contract.contractSigned=new Date(line[32]);
         contract.contractPaid=new Date(line[33]);
@@ -438,10 +445,10 @@ module.exports={
         contract.contractPrice=temp?temp:0.0;
         contract.contractDetail=line[39];
         contract.endFee=line[40];
-        contract.paymentOption=line[41].replace(/^\s+|\s+$/g, ''); // later get payment id
+        contract.paymentOption=stripstring(line[41]); // later get payment id
         contract.endFeeDue=line[42]=='是'?true:false;
         contract.teacher=line[43]; // later get user id
-        console.log("before getting id");
+        
         exchangeOptions(contract);
         var p=Promise.defer();
         //console.log("look for stuff");
@@ -461,8 +468,8 @@ module.exports={
         }).then(function(tea){
             contract.teacher=tea;
             // add this contract
-            console.log("look for contract",contract.client);
-            return Contract.findOne({client:contract.client,salesFollowup:contract.salesFollowup});
+            console.log("look for contract",contract.client,contract.contractCategory);
+            return Contract.findOne({client:contract.client,contractCategory:contract.contractCategory});
         }).then(function(cont){
           if(cont){
                 // if found, use it
@@ -478,6 +485,8 @@ module.exports={
             var contractID=data.id;
             return getService(Service,contractID);     
                // p.resolve("current");
+        }).then(function(data){
+            return Promise.resolve(linenum);
         }).fail(function(err){
             console.log(err);
         });
@@ -491,11 +500,11 @@ module.exports={
         //var leadid=contract.lead?(_.find(LEAD,{'lead':contract.lead})).id:0;
         //console.log(LEAD);
         var leadid=LEAD[contract.lead];
-        console.log(contract.lead," got id ",leadid);
+        //console.log(contract.lead," got id ",leadid);
         //var statusid=contract.status?(_.find(STATUS,{'status':contract.status})).id:0;
         //console.log(STATUS);
         var statusid=STATUS[contract.status];
-        if(!statusid&&contract.status) console.log(contract.status," got id ",statusid);
+        //if(!statusid&&contract.status) console.log(contract.status," got id ",statusid);
         //var leadLevelid=contract.leadLevel?(_.find(LEADLEVEL,{'leadLevel':contract.leadLevel})).id:0;
         var leadLevelid=LEADLEVEL[contract.leadLevel];
         //console.log(contract.leadLevel," got id ",leadLevelid);
@@ -603,6 +612,13 @@ module.exports={
             hash[ele[name]]=ele['id'];
         });
         return hash;
+    }
+    function stripstring(str){
+        if(str){
+            return str.replace(/^\s+|\s+$/g, '');
+        }else{
+            return "";
+        }
     }
     }
 }

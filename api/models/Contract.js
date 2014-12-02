@@ -28,13 +28,13 @@ module.exports = {
 
   	status:{model:"Status"},
   	
-  	salesFollowup:{type:"string",maxLength: 511, size:511},
+  	salesFollowup:{type:"string",maxLength: 1024, size:1024},
   	
-  	salesRecord:{type:"string",maxLength: 511, size:511},
+  	salesRecord:{type:"string",maxLength: 1024, size:1024},
 
     expertContactDate:{type:"date"},
   	
-  	expertFollowup:{type:"string",maxLength: 511, size:511},
+  	expertFollowup:{type:"string",maxLength: 1024, size:1024},
   	
   	originalText:{type:"string", maxLength: 2048, size:2048},
   	

@@ -23,22 +23,22 @@
         <td data-attr="expertFollowup"  class="textbox" data-model="Contract">{{shortText expertFollowup}}</td>
         <td>{{country.country}}</td>
         <td>{{displayBool validI20}}</td>
-        <td>{{previousSchool}}</td>
-        <td>{{targetSchool}}</td>
+        <td>{{shortText previousSchool}}</td>
+        <td>{{shortText targetSchool}}</td>
         <td>{{gpa}}</td>
         <td>{{toefl}}</td>
         <td>{{otherScore}}</td>
         <td>{{degree/degree}}</td>
         <td>{{major}}</td>
-        <td data-attr="diagnose"  class="textbox" data-model="Contract">{{diagnose}}</td>
+        <td data-attr="diagnose"  class="textbox" data-model="Contract">{{shortText diagnose}}</td>
         <td>{{contractSigned}}</td>
         <td>{{contractPaid}}</td>
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Transfer"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
-        <td>{{#each service}}{{#ifCond serviceType/category "Emerg"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
-        <td>{{#each service}}{{#ifCond serviceType/category "Study"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
-        <td>{{#each service}}{{#ifCond serviceType/category "Visa"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
+        <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Emerg"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
+        <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Study"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
+        <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Visa"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
         <td>{{contractPrice}}</td>
-        <td>{{contractDetail}}</td> 
+        <td>{{shortText contractDetail}}</td> 
         <td>{{displayBool applicationFeePaid}}</td>
         <td>{{paymentOption/paymentOption}}</td>
         <td>{{displayBool endFeeDue}}</td>
