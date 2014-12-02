@@ -19,7 +19,7 @@ Handlebars.registerHelper('ifCond', function (v1, v2, options) {
 });
 Handlebars.registerHelper('shortText', function (text) {
     text=text||'';
-    return text.substring(0,20);
+    return text.substring(0,14);
 });
 Handlebars.registerHelper('displayBool', function(bool){
     if(bool) return '是';
@@ -1155,7 +1155,7 @@ var ContractView=Wholeren.FormView.extend({
         'click  button.button-add': 'editView',
         'click  button.button-alt': 'refetch',
         'change .filter':'renderCollection',
-        'click .clickablecell':'editContract',
+        'click .clickablecell':'editContract2',
         'click .edit,.del':'editContract',
         'click .textbox,.selectbox,.multiselectbox':'editAttr',
         'click .sortable':'sortCollection',
@@ -1197,7 +1197,8 @@ var ContractView=Wholeren.FormView.extend({
         },
         headline:function(obj){
             if(obj.client){
-                return obj.client.chineseName;                
+                var text=obj.client.chineseName;
+                return text.substring(0,14);                
             }else{
                 return "NO NAME";
             }
@@ -1206,13 +1207,13 @@ var ContractView=Wholeren.FormView.extend({
             var popUpView = new ContractEdit({view:this});
             $('.app').html(popUpView.render().el);
         },
-        // editContract: function(e){
-        //     var id = $(e.currentTarget).data("id");
-        //     var item = this.collection.get(id);
-        //     console.log("clicked item ",item);
-        //     var popUpView = new ContractEdit({view:this,model:item});
-        //     $('.app').html(popUpView.render().el);
-        // },
+        editContract2: function(e){
+            var id = $(e.currentTarget).data("id");
+            var item = this.collection.get(id);
+            console.log("clicked item ",item);
+            var popUpView = new ContractEdit({view:this,model:item});
+            $('.app').html(popUpView.render().el);
+        },
         editContract:function(e){
             // Service id
             var item=$(e.currentTarget);

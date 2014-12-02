@@ -1,26 +1,29 @@
 <tr name="{{id}}">
-        <td>{{client/chineseName}}</td>
-        <td>{{client/firstName}}</td>
-        <td>{{client/lastName}}</td>
-        <td>{{age}}</td>
-        <td>{{shortText client/primaryEmail}}</td>
-        <td>{{shortText client/primaryPhone}}</td>
-        <td>{{client/otherInfo}}</td>
+        <td>{{shortText client/chineseName}}</td>
+        
+        
+        
         <td>{{contractCategory/contractCategory}}</td>
         <td>{{createdAt}}</td>
         <td>{{lead/lead}}</td>
-        <td>{{leadName}}</td>
+        <td>{{shortText leadName}}</td>
         <td>{{leadLevel.leadLevel}}</td>
-        <td>{{status.status}}</td>
+        
         <td data-attr="assistant" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{assistant/nickname}}</td>
         <td data-attr="assisCont" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{assisCont/nickname}}</td>
         <td data-attr="sales" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{sales/nickname}}</td>
         <td data-attr="expert" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{expert/nickname}}</td>
-        <td data-attr="originalText"  class="textbox" data-model="Contract">{{shortText originalText}}</td>        
+        <td>{{status.status}}</td>    
         <td data-attr="salesFollowup"  class="textbox" data-model="Contract">{{shortText salesFollowup}}</td>
         <td data-attr="salesRecord"  class="textbox" data-model="Contract">{{shortText salesRecord}}</td>
         <td>{{expertContactDate}}</td>
         <td data-attr="expertFollowup"  class="textbox" data-model="Contract">{{shortText expertFollowup}}</td>
+        <td>{{client/firstName}}</td>
+        <td>{{client/lastName}}</td>
+        <td data-attr="originalText"  class="textbox" data-model="Contract">{{shortText originalText}}</td>  
+        <td>{{shortText client/primaryEmail}}</td>
+        <td>{{shortText client/primaryPhone}}</td>
+        <td>{{client/otherInfo}}</td>
         <td>{{country.country}}</td>
         <td>{{displayBool validI20}}</td>
         <td>{{shortText previousSchool}}</td>
@@ -28,6 +31,7 @@
         <td>{{gpa}}</td>
         <td>{{toefl}}</td>
         <td>{{otherScore}}</td>
+        <td>{{age}}</td>
         <td>{{degree/degree}}</td>
         <td>{{major}}</td>
         <td data-attr="diagnose"  class="textbox" data-model="Contract">{{shortText diagnose}}</td>
