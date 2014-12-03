@@ -692,14 +692,20 @@ Settings.Pane = Wholeren.baseView.extend({
                 self.renderCollection();
                 return;
             }
-            toRender.fetch({
+            this.collection.get(options.id).fetch({
                 reset:true,
                 success:function(model,response,options){
-                    self.collection.remove(self.collection.get(model.get('id')));
-                    if(model){
-                        self.collection.push(model);
+                    if(!model){
+                       self.collection.remove(self.collection.get(model.get('id')));
                     }
-                    self.renderCollection();
+                    // pinned previous row
+                    var id=model.get('id');
+
+                    var pinned= $("tr.pin[name='"+id+"']").prev();
+                    var row=$("tr[name='"+id+"']").not('.pin').prev();
+                    //self.renderCollection();
+                    self.removeCurRow(model);
+                    self.renderSingle(model,row,pinned);
                 },
                 error: function(model,response,options){
                         Wholeren.notifications.clearEverything();
@@ -710,11 +716,49 @@ Settings.Pane = Wholeren.baseView.extend({
                         });
                 }
             });
+            // toRender.fetch({
+            //     reset:true,
+            //     success:function(model,response,options){
+            //         if(model){
+            //             self.collection.set(model.get('id'),model);
+            //         }else{
+            //             self.collection.remove(self.collection.get(model.get('id')));
+            //         }
+            //         // pinned previous row
+            //         var pinned=$('.clickablecell#'+model.get('id'));
+            //         var row=$('#'+model.get('id')).not('.clickablecell');
+            //         //self.renderCollection();
+            //         self.renderSingle(model,row,pinned);
+            //     },
+            //     error: function(model,response,options){
+            //             Wholeren.notifications.clearEverything();
+            //             Wholeren.notifications.addItem({
+            //                 type: 'error',
+            //                 message: util.getRequestErrorMessage(response),
+            //                 status: 'passive'
+            //             });
+            //     }
+            // });
             
         },
-        renderSingle:function(model){
+        removeCurRow:function(model){
             var id=model.get('id');
-            var cur=$('#'+model.get('id'));
+            $("tr[name='"+id+"']").remove();
+        },
+        renderSingle:function(model,previousRow,previousPinnedRow){
+            var self=this;
+            var obj=model.toJSON();
+            if(self.applyFilter(obj)){
+                return;
+            }
+            obj=self.modifyRow(obj);
+            var ele = self.singleTemplate(obj);
+            var toInsert = $('<div/>').html(ele).contents();
+            toInsert.insertAfter(previousRow);
+            var headline=self.headline(obj);
+
+            var headInsert=$('<div/>').html('<tr name="'+obj.id+'" class="pin"><td data-id="'+obj.id+'" class="clickablecell">'+headline+'</td></tr>').contents();
+            headInsert.insertAfter(previousPinnedRow);
         },
         applyFilter:function(obj){
             var fs=$('.filter');
@@ -797,10 +841,12 @@ Settings.Pane = Wholeren.baseView.extend({
                     var servT=self.serviceTypes.get(id);
                     if(!servT.toJSON){
                         console.log("something wrong");
+                    }else{
+                        ele.serviceType=servT.toJSON();
                     }
-                    ele.serviceType=self.serviceTypes.get(id).toJSON();
                 }
             });
+            this.contractLength++;
             return obj;
         },
         headline:function(obj){
@@ -814,20 +860,14 @@ Settings.Pane = Wholeren.baseView.extend({
         var stableheadrow=$('#pinnedheader');
         var self=this;
         this.contractLength=0;
+        var counter=0;
         this.collection.forEach(function(item){
-            var obj=item.toJSON();
-            if(self.applyFilter(obj)){
+            if(counter>200){
                 return;
+            }else{
+                self.renderSingle(item,headrow,stableheadrow);
+                counter++;   
             }
-            obj=self.modifyRow(obj);
-            self.contractLength++;
-            var ele = self.singleTemplate(obj);
-            var toInsert = $('<div/>').html(ele).contents();
-            toInsert.insertAfter(headrow);
-            var headline=self.headline(obj);
-
-            var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
-            headInsert.insertAfter(stableheadrow);
         });     
         },
 
@@ -1119,6 +1159,8 @@ var ContractView=Wholeren.FormView.extend({
             _.bindAll(this,'rerenderSingle');
             _.bindAll(this,'renderCollection');
             _.bindAll(this,'renderCollectionCore');
+            _.bindAll(this,'renderSingle');
+            _.bindAll(this,'modifyRow');
             this.serviceTypes=new Obiwang.Collections.ServiceType();
             var self=this;
             this.render();
