@@ -46,6 +46,8 @@ Temporary Items
 node_modules/
 .tmp/
 assets/js/bundle.js
+assets/js/all.js
+config/connections.js
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
