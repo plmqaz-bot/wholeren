@@ -56,7 +56,7 @@ module.exports.connections = {
     adapter: 'sails-mysql',
     host: 'han.bio.cmu.edu',
     user: 'han',
-    password: 'hanlai',
+    password: 'hanlai111',
     database: 'test',
     charset   : 'utf8',
   },
