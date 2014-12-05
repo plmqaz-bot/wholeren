@@ -54,3 +54,4 @@ config/connections.js
 !.elasticbeanstalk/*.global.yml
 
 config/connections.js
+config/connections.js
