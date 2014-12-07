@@ -70,13 +70,13 @@ Service Filter 时间段，--DONE
 
 forgot password
 
-import data
+import data --DONE
 
 
 
 
 
-handle how to activate user. 
+handle how to activate user.  --DONE
 
 
 

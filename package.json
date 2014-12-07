@@ -31,7 +31,8 @@
     "lodash":"*",
     "jquery":"*",
     "backbone":"*",
-    "node-uuid":"*"
+    "node-uuid":"*",
+    "csv-parse":"*"
   },
   "scripts": {
     "start": "node main.js",
