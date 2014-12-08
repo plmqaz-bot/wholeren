@@ -44,7 +44,7 @@ module.exports = {
 				// manually populate
 				var Hashs=[];
 				data.forEach(function(ele){
-					Hashs.push(Util.makePopulateHash(ele));
+					Hashs.push(Utilfunctions.makePopulateHash(ele));
 				});
 				console.log(Hashs);
 				toReturn.forEach(function(ele){

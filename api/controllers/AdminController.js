@@ -337,9 +337,14 @@ module.exports={
         });
     },
     'import':function(req,res){
-        Util.importContract('EM.txt');
+        Utilfunctions.importContract('EM.csv')
+         .then(function(data){
+             console.log('import done');
+         }).error(function(err){
+            console.log('errors: ',err);
+         });
     },
     'importUser':function(req,res){
-        Util.importUser();
+        Utilfunctions.importUser();
     }
 }

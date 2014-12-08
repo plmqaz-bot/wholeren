@@ -66,27 +66,16 @@ Service Filter 时间段，--DONE
 
 入学学期（一年四个）。 --DONE
 
-
-
 forgot password
 
-import data --DONE
-
-
+import data  sales name unknow , what to do ?
 
 import User
 
 setup User profile
 
-
 handle how to activate user.  --DONE
-
-
-
 
 Contract, service pagination
 
-
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.
-
-

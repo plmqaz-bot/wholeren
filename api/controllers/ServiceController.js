@@ -33,7 +33,7 @@ module.exports = {
 			return Promise.all([Service.find({contract:conIDs}).populateAll(),Client.find({id:clientIDs})]);
 		}).then(function(data){
 			// manual populate client
-			var allClient=Util.makePopulateHash(data[1]);
+			var allClient=Utilfunctions.makePopulateHash(data[1]);
 			var allService=data[0];
 			allService.forEach(function(ele){
 				var cid=ele.contract.client||0;
