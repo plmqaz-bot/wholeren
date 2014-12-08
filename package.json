@@ -32,7 +32,8 @@
     "jquery":"*",
     "backbone":"*",
     "node-uuid":"*",
-    "csv-parse":"*"
+    "csv-parse":"*",
+    "backbone.paginator":"*"
   },
   "scripts": {
     "start": "node main.js",

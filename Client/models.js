@@ -1,4 +1,5 @@
-﻿var Backbone = require('backbone');
+﻿var Backbone = require('./backbone.paginator.js');
+//var PageableCollection=require('backbone.paginator');
 $ = require('jquery');
 Backbone.$ = $;
 Models = {};
@@ -62,11 +63,17 @@ Models={
     }),
 
 };
-var sortableCollection=Backbone.Collection.extend({
+var sortableCollection=Backbone.PageableCollection.extend({
     sortAttr:{
             attribute:'client',
             nested:'firstName',
             asec:true
+        },
+        mode:""
+        state:{
+            firstPage:0,
+            currentPage:2,
+            totalRecords:200
         },
         comparator:function(A,B){
             var aAttr='';
@@ -106,7 +113,8 @@ var sortableCollection=Backbone.Collection.extend({
 Collections={
     Contract :sortableCollection.extend({
         model: Models.Contract,
-        url: function(){return '/Contract/?where='+this.whereclaus();},
+        url: '/Contract/',
+        //url: function(){return '/Contract/?where='+this.whereclaus();},
         initialize:function(){
             this.selectedStrat({sortAttr:'client.firstName'});
             this.startDate="09-01-2014";

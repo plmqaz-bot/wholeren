@@ -326,14 +326,14 @@ module.exports = {
 	    });
 	    function createUser(line, lineNumber,roleHash){
 	    	var input={
-		    	firstname:line[0];
-		    	lastname:line[1];
-		    	nickname:line[2];
-		    	password:"123456";
-		    	role:line[3]?roleHash[line[3]]:roleHash['销售'];
-		    	boss:line[4];
-		    	rank:line[5];
-		    	email:line[6];
+		    	firstname:line[0],
+		    	lastname:line[1],
+		    	nickname:line[2],
+		    	password:"123456",
+		    	role:line[3]?roleHash[line[3]]:roleHash['销售'],
+		    	boss:line[4],
+		    	rank:line[5],
+		    	email:line[6]
 	    	};
 	    	return User.create(input).then(function(data){
 	    		console.log("finish line ",lineNumber);
