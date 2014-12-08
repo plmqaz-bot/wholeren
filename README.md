@@ -73,15 +73,13 @@ forgot password
 import data --DONE
 
 
+
 import User
 
 setup User profile
 
 
-
-
-
-handle how to activate user. 
+handle how to activate user.  --DONE
 
 
 

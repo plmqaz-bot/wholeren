@@ -31,7 +31,9 @@
     "lodash":"*",
     "jquery":"*",
     "backbone":"*",
-    "node-uuid":"*"
+    "node-uuid":"*",
+    "csv-parse":"*",
+    "backbone.paginator":"*"
   },
   "scripts": {
     "start": "node main.js",
