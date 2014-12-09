@@ -345,6 +345,10 @@ module.exports={
          });
     },
     'importUser':function(req,res){
-        Utilfunctions.importUser();
+        Utilfunctions.importUser().then(function(data){
+             console.log('import done');
+         }).error(function(err){
+            console.log('errors: ',err);
+         });
     }
 }

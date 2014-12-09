@@ -10,13 +10,21 @@ module.exports = {
   attributes: {
   	password:{type:'string',required:true,minLength:6},
 
-  	email:{type:'email',required:true,unique:true},
+  	email:{type:'email'},
+
+    personalemail:{type:'email',required:true,unique:true},
 
   	nickname:{type:'string',required:true,unique:true},
 
   	firstname:{type:'string',required:true},
 
   	lastname:{type:'string',required:true},
+
+    phone:{type:'string'},
+
+    skype:{type:'string'},
+
+    wechat:{type:'string'},
 
   	role:{model:'Role',required:true,defaultsTo:1},
 

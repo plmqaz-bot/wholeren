@@ -9,6 +9,13 @@ var Promise=require('bluebird');
         });
         return hash;
 	};
+	function stripstring(str){
+	        if(str){
+	            return str.replace(/^\s+|\s+$/g, '');
+	        }else{
+	            return "";
+	        }
+	    };
 module.exports = {
 	'makePopulateHash':function(data){
 		hash={};
@@ -81,7 +88,7 @@ module.exports = {
 	                return Promise.all(allPromises);
 	            }).then(function(data){
 	                	toReturn.resolve("done");
-                }).error(function(err){
+                }).fail(function(err){
 	            	console.log('finished with errors',err);
 	            	toReturn.reject("finished with errors");
 	            });
@@ -98,7 +105,7 @@ module.exports = {
 	        contract.lead=stripstring(line[4]); // Later get the id;
 	        contract.leadName=line[5];
 	        contract.assistant=line[6]; //Later get user id;
-	        contract.sales=line[7]; //later get user id;
+	        contract.sales=(line[7]||"").split(/[\s,\/]+/).toLowerCase(); //later get user id;
 	        contract.expert=line[8]; // later get user id;
 	        contract.status=stripstring(line[9]); // later get id of status;
 	        contract.salesFollowup=line[10];
@@ -232,8 +239,9 @@ module.exports = {
 	        });
 	    };
 	    function getUser(user){
-	        
-	        return User.findOne({ nickname: user }).then(function (data){
+	        if (user.length<1) user="ting";
+	        if(user.length>1) user=user[0];
+	        return User.findOne({ or:[{nickname: user},{firstname: user},{lastname: user}] }).then(function (data){
 	                if (data) {
 	                    return Promise.resolve(data.id);
 	                } else { 
@@ -296,25 +304,21 @@ module.exports = {
 
 	        return id;
 	    }
-	    function stripstring(str){
-	        if(str){
-	            return str.replace(/^\s+|\s+$/g, '');
-	        }else{
-	            return "";
-	        }
-	    }
     },
     'importUser':function(){
-    	var filename='user.txt';
+    	var filename='user.csv';
     	var roleProm=Role.find();
+    	var toReturn=Promise.defer();
     	fs.readFile(filename,'utf8',function(err,data){
 	        if(err) throw err;
-	        parse(data,{comment:'#'},function(err,output){
+	        parse(data,{comment:'#'},function(err2,output){
+	        	if (err2) throw err2;
                 var firstline = true;
                 var linepromises = [];
                 var i=0;
                 roleProm.then(function(role){
                 	var roleHash=makeHash(role,'role');
+                	var allPromises=[];
                 	output.forEach(function (line) {
 	                    line.forEach(function (element) {
 	                        element = element.replace('\"', '');
@@ -324,38 +328,53 @@ module.exports = {
 	                        firstline = false;
 	                    } else {
 	                        console.log("start line ",i);
-	                       var curP = createUser(line,i,roleHash).then(function(data){
+	                        var curP = createUser(line,i,roleHash).then(function(data){
 	                            console.log("finish line ",data);
-	                        }).error(function(err){
-	                            console.log(err);
+	                        }).fail(function(err){
+	                            console.log("error occurred during creation",err);
 	                        });
+	                        allPromises.push(curP);
 	                        i++;
 	                    }
                 	});
-                });                	            
+                	return Promise.all(allPromises);
+                }).then(function(data){
+	                	toReturn.resolve("done");
+                }).fail(function(err){
+	            	console.log('error occurred in the array',err);
+	            	toReturn.reject({error:"finished with errors",err:err});
+	            });                	            
 	        });
 	    });
+		return toReturn.promise;
 	    function createUser(line, lineNumber,roleHash){
 	    	var input={
-		    	firstname:line[2],
-		    	lastname:line[1],
-		    	nickname:line[1],
+		    	firstname:line[3],
+		    	lastname:line[2],
+		    	nickname:line[1].toLowerCase(),
 		    	password:"123456",
-		    	role:line[10]?roleHash[line[10]]:roleHash['销售'],
-		    	boss:line[8],
+		    	role:parseInt(line[10]?roleHash[line[10]]:roleHash['销售']),
+		    	//boss:line[8],
 		    	rank:line[9],
-		    	email:line[5]
+		    	email:stripstring(line[5]),
+		    	phone:line[4],
+		    	skype:line[7],
+		    	personalemail:stripstring(line[6])
 	    	};
-	    	if(!input.email) return Promise.reject({error:'no email',line:line});
-	    	return User.findOne({email:input.email}).then(function(data){
+	    	//if(!input.email) throw {error:err,line:lineNumber};
+	    	return User.findOne({or:[{personalemail:input.email},{email:input.email}]}).then(function(data){
 	    		if(data){
 	    			input.id=data.id;
-	    			return User.update(input);
+	    			//console.log('updating user',input);
+	    			//delete input.password;
+	    			//return User.update(input);
+	    			return Promise.resolve(data);
 	    		}else{
+	    			console.log('creating user',input);
 	    			return User.create(input);
 	    		}
-	    	}).error(function(err){
-	    		throw {error:err,line:lineNumber};
+	    	}).fail(function(err){
+	    		return Promise.reject({error:err,line:lineNumber});
 	    	});
 	    }
     }
