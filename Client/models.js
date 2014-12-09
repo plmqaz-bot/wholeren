@@ -69,7 +69,7 @@ var sortableCollection=Backbone.PageableCollection.extend({
             nested:'firstName',
             asec:true
         },
-        mode:""
+        mode:"",
         state:{
             firstPage:0,
             currentPage:2,
