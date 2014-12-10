@@ -13,16 +13,22 @@ module.exports = {
 		where=JSON.parse(where);
 		// First find all signed contracts
 		var promise;
+		if(req.session.user.rank<3&&(req.session.user.role!=2&&req.session.user.role!=4)){
+			return res.json(404, {error:"not authorized"});
+		}
 		switch (req.session.user.rank){
 			case "3":
 			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}]}).where(where);
 			break;
 			case "2":
-			promise=User.find({boss:id}).then(function(mypuppets){
-				var puppetIDs=mypuppets.map(function(puppet){return puppet.id});
-				return Contract.find({contractSigned:{'!':null},teacher:puppetIDs}).where(where);
-			});
+			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}]}).where(where);
 			break;
+			// case "2":
+			// promise=User.find({boss:id}).then(function(mypuppets){
+			// 	var puppetIDs=mypuppets.map(function(puppet){return puppet.id});
+			// 	return Contract.find({contractSigned:{'!':null},teacher:puppetIDs}).where(where);
+			// });
+			// break;
 			default:
 			promise=Contract.find({contractSigned:{'!':null},or:[{teacher:id},{teacher:null}]}).where(where);
 		}

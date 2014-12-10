@@ -14,12 +14,13 @@ module.exports = {
 		var promise;
 		switch(req.session.user.rank){
 			case "3":
-			promise=Contract.find();
+			promise=Contract.find().where(where).populate('client').populate('service');
 			break;
 			case "2":
 			promise=User.find({boss:id}).then(function(mypuppets){
 				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]});
+				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]})
+				.where(where).populate('client').populate('service');
 			});
 			break;
 			default:
@@ -32,11 +33,11 @@ module.exports = {
 				{assisCont:id},
 				{assistant:null,assisCont:null,expert:null,sales:null}
 				]
-			});
+			}).where(where).populate('client').populate('service');
 		}
 		if(promise){
 			var toReturn=[];
-			promise.where(where).populate('client').populate('service').then(function(conts){
+			promise.then(function(conts){
 				toReturn=conts;
 				console.log("found ", toReturn.length);
 				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find()]);

@@ -104,9 +104,9 @@ module.exports = {
 	        contract.createdAt=new Date(line[3]);
 	        contract.lead=stripstring(line[4]); // Later get the id;
 	        contract.leadName=line[5];
-	        contract.assistant=line[6]; //Later get user id;
-	        contract.sales=(line[7]||"").split(/[\s,\/]+/).toLowerCase(); //later get user id;
-	        contract.expert=line[8]; // later get user id;
+	        contract.assistant=(line[6]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //Later get user id;
+	        contract.sales=(line[7]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //later get user id;
+	        contract.expert=(line[8]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id;
 	        contract.status=stripstring(line[9]); // later get id of status;
 	        contract.salesFollowup=line[10];
 	        contract.salesRecord=line[11];
@@ -145,7 +145,7 @@ module.exports = {
 	        contract.endFee=line[40];
 	        contract.paymentOption=stripstring(line[41]); // later get payment id
 	        contract.endFeeDue=line[42]=='是'?true:false;
-	        contract.teacher=line[43]; // later get user id
+	        contract.teacher=(line[43]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/);; // later get user id
 	        
 	        exchangeOptions(contract);
 	        //var p=Promise.defer();
@@ -155,16 +155,19 @@ module.exports = {
 	            console.log("client id is ",contract.client);
 	            return getUser(contract.assistant);
 	        }).then(function(assis){
+	            if(!assis&&contract.assistant[0].length>0) throw {reason:"unknown assistant",assistant:contract.assistant,line:linenum};
 	            contract.assistant=assis;
 	            return getUser(contract.sales);
 	        }).then(function(sale){
-	        	if(!sale) throw {reason:"unknown sales",sales:contract.sales,line:linenum};
+	        	if(!sale) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
 	            contract.sales=sale;
 	            return getUser(contract.expert);
 	        }).then(function(exp){
+	            if(!exp&&contract.expert[0].length>0) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
 	            contract.expert=exp;
 	            return getUser(contract.teacher);
 	        }).then(function(tea){
+	            if(!tea&&contract.teacher[0].length>0) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
 	            contract.teacher=tea;
 	            // add this contract
 	            console.log("look for contract",contract.client,contract.contractCategory);
@@ -238,16 +241,26 @@ module.exports = {
 	            }
 	        });
 	    };
-	    function getUser(user){
-	        if (user.length<1) user="ting";
-	        if(user.length>1) user=user[0];
+	    function getUser(user,defaultUser){
+	    	user=user[0];
+	        if (user.length<1) {
+	        	if(defaultUser)
+	        		user="ting";
+	        	else
+	        		return Promise.resolve(null);
+	        }
 	        return User.findOne({ or:[{nickname: user},{firstname: user},{lastname: user}] }).then(function (data){
-	                if (data) {
-	                    return Promise.resolve(data.id);
-	                } else { 
-	                    return Promise.resolve(null);
-	                }
-	            });
+                if (data) {
+                    return Promise.resolve(data.id);
+                } else { 
+                    return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
+                    	if(data)
+                    		return Promise.resolve(data.id);
+                    	else
+                    		return Promise.resolve(null);
+                    });
+                }
+	        });
 	    }
 	    function getService(service,contID){
 	        service=service.replace("，",",");
@@ -309,7 +322,7 @@ module.exports = {
     	var filename='user.csv';
     	var roleProm=Role.find();
     	var toReturn=Promise.defer();
-    	fs.readFile(filename,'utf8',function(err,data){
+    	fs.readFile(filename,'utf8',function(err,data){ 
 	        if(err) throw err;
 	        parse(data,{comment:'#'},function(err2,output){
 	        	if (err2) throw err2;
@@ -361,6 +374,9 @@ module.exports = {
 		    	skype:line[7],
 		    	personalemail:stripstring(line[6])
 	    	};
+	    	if(!input.email){
+	    		input.email=input.personalemail;
+	    	}
 	    	//if(!input.email) throw {error:err,line:lineNumber};
 	    	return User.findOne({or:[{personalemail:input.email},{email:input.email}]}).then(function(data){
 	    		if(data){

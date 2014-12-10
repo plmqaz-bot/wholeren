@@ -113,8 +113,8 @@ var sortableCollection=Backbone.PageableCollection.extend({
 Collections={
     Contract :sortableCollection.extend({
         model: Models.Contract,
-        url: '/Contract/',
-        //url: function(){return '/Contract/?where='+this.whereclaus();},
+        //url: '/Contract/',
+        url: function(){return '/Contract/?where='+this.whereclaus();},
         initialize:function(){
             this.selectedStrat({sortAttr:'client.firstName'});
             this.startDate="09-01-2014";
@@ -126,7 +126,7 @@ Collections={
         },
         whereclaus:function(){
             var where={};
-            where.createdAt={}
+            where.createdAt={};
             try{
                 if(this.startDate){
                     where.createdAt['>']=new Date(this.startDate);

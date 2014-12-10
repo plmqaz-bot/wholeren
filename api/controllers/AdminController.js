@@ -337,7 +337,7 @@ module.exports={
         });
     },
     'import':function(req,res){
-        Utilfunctions.importContract('EM.csv')
+        Utilfunctions.importContract('EM_12_7.csv')
          .then(function(data){
              console.log('import done');
          }).error(function(err){

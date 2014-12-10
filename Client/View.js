@@ -1,8 +1,9 @@
 ﻿"use strict";
-var $ = require('jquery');
+var $ = require('./floatThead.js');
 //var Backbone = require('backbone');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
+Backbone.$=$;
 var Handlebars = require('hbsfy/runtime');
 var Obiwang = require('./models');
 var Settings = {};
@@ -797,7 +798,7 @@ Settings.Pane = Wholeren.baseView.extend({
                 if(tocomp instanceof Array&&tocomp.length>1){
                     tocomp.forEach(function(e){
                         var c=e[attr];
-                        if(c){
+                        if(typeof c !== 'undefined'){
                             if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                                 var ind=_.findIndex(value,function(v){
                                     return match(c,v,ele);
@@ -814,7 +815,7 @@ Settings.Pane = Wholeren.baseView.extend({
                     });
                 }else{
                     tocomp=obj[attr];
-                    if(tocomp){
+                    if(typeof tocomp !== 'undefined'){
                         if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                             var ind=_.findIndex(value,function(v){
                                 return match(tocomp,v,ele);
@@ -846,28 +847,34 @@ Settings.Pane = Wholeren.baseView.extend({
                     }
                 }
             });
+            if(this.rank>1){
+                obj.displayDelete=1;
+            }
             this.contractLength++;
             return obj;
         },
         headline:function(obj){
             return "NO NAME";
         },
+        removeAll:function(){
+            var toRemove = $('.content tbody tr').not('#scrollerfirst').not('#pinnedfirst');
+            toRemove.remove();
+        },
         renderCollectionCore:function(){
         // Remove all keywords
-        var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
-        toRemove.remove();
-        var headrow=$('#scrollableheader');
-        var stableheadrow=$('#pinnedheader');
+        this.removeAll();
+        var headrow=$('#scrollerfirst');
+        var stableheadrow=$('#pinnedfirst');
         var self=this;
         this.contractLength=0;
         var counter=0;
         this.collection.forEach(function(item){
-            if(counter>200){
-                return;
-            }else{
+            // if(counter>200){
+            //     return;
+            // }else{
                 self.renderSingle(item,headrow,stableheadrow);
-                counter++;   
-            }
+            //     counter++;   
+            // }
         });     
         },
 
@@ -1164,6 +1171,7 @@ var ContractView=Wholeren.FormView.extend({
             this.serviceTypes=new Obiwang.Collections.ServiceType();
             var self=this;
             this.render();
+          // $('.Contracts.responsive').floatThead();
             if (options.collection) {
                 this.collection = options.collection;
                 this.serviceTypes.fetch().done(function(data){
@@ -1212,6 +1220,7 @@ var ContractView=Wholeren.FormView.extend({
             var endDate=$('#endDate').val();
             this.collection.setdate({startDate:startDate,endDate:endDate});
             this.collection.endDate=endDate;
+            this.removeAll();
             this.collection.fetch({reset:true});
         },
         renderCollection: function (){
@@ -1225,26 +1234,13 @@ var ContractView=Wholeren.FormView.extend({
             }
             $('#total_count').text(this.contractLength);
         },
-        modifyRow:function(obj){
-            var self=this;
-            obj.service.forEach(function(ele){
-                var id=ele.serviceType;
-                if(id){
-                    var servT=self.serviceTypes.get(id);
-                    if(servT){
-                        ele.serviceType=servT.toJSON();
-                    }
-                }
-            });
-            if(this.rank>1){
-                obj.displayDelete=1;
-            }
-            return obj;
-        },
         headline:function(obj){
             if(obj.client){
                 var text=obj.client.chineseName;
-                return text.substring(0,14);                
+                if(text)
+                    return text.substring(0,14);
+                else
+                    return "NO NAME";
             }else{
                 return "NO NAME";
             }
@@ -1493,6 +1489,7 @@ var ServiceView=Wholeren.FormView.extend({
             var endDate=$('#endDate').val();
             this.collection.setdate({startDate:startDate,endDate:endDate});
             this.collection.endDate=endDate;
+            this.removeAll();
             this.collection.fetch({reset:true});
         },    
         renderCollection: function (){
@@ -1529,12 +1526,14 @@ var ServiceView=Wholeren.FormView.extend({
         },
         modifyRow:function(obj){
             var self=this;
-            obj.application.forEach(function(ele){
-                var id=ele.writer;
-                if(id){
-                    ele.writer=self.user.get(id).toJSON();
-                }
-            });
+            if(obj.application){
+                obj.application.forEach(function(ele){
+                    var id=ele.writer;
+                    if(id){
+                        ele.writer=self.user.get(id).toJSON();
+                    }
+                });   
+            }
             // var id=obj.contract.client;
             // if(id){
             //     obj.contract.client=self.client.get(id).toJSON();
@@ -1944,6 +1943,7 @@ Market.general=Market.Pane.extend({
         }catch(e){
             where= "{}";
         }
+        $('.content').html("");
         var self=this;
         $.ajax({
                 url: '/market/general/?where='+where,

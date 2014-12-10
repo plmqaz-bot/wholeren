@@ -2,11 +2,14 @@
 
 <header>
     <h1 class="title">Contracts</h1>
-    <section class="page-actions" style="float:right">
+    <section class="page-actions1" style="float:right">
         <button class="button-add">Add New</button>
         <label>Start Date</label><input id="startDate" value="09-01-2014"></input>
         <label>End Date</label><input id="endDate"></input>
         <button class="button-alt" >刷新</button>
+        
+    </section>
+    <section class="page-actions" style="float:right">
         <label>Lead</label><input class="filter" name="leadName"></input>
     </section>
 
@@ -15,7 +18,7 @@
 <div class="table-wrapper">
     <div class="scrollable">
         <table class="Contracts responsive">
-        <tbody><tr id="scrollableheader">
+        <thead><tr id="scrollableheader">
         <th class="sortable" data-attr='client.chineseName'>学生中文名</th>
         <th class="sortable" data-attr='contractCategory'>咨询服务类别</th>
         <th class="sortable" data-attr='degree.degree'>就读学位</th>
@@ -68,13 +71,17 @@
         <th></th>
 
               
-    </tr>
-    
+    </tr></thead>
+    <tbody>
+        <tr id="scrollerfirst"></tr>
     </tbody></table>
     </div><div class="pinned"><table class="Contracts">
-        <tbody><tr id="pinnedheader" style="height: 39px;">
+    <thead>
+        <tr id="pinnedheader" style="height: 39px;">
         <th class="sortable" data-attr='client.chineseName'>学生中文名</th>        
-              
+    </tr></thead>
+    <tbody>          
+    <tr id="pinnedfirst">
     </tr> </tbody></table></div></div>
 <label>Total Contract: </label><span id="total_count"></span>
     <div class="app"></div>
