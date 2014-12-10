@@ -30,20 +30,26 @@ module.exports = {
 			// });
 			// break;
 			default:
-			promise=Contract.find({contractSigned:{'!':null},or:[{teacher:id},{teacher:null}]}).where(where);
+			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],or:[{teacher:id},{teacher:null}]}).where(where);
 		}
 		promise.then(function(conts){
+			console.log(conts);
 			var conIDs=conts.map(function(c){return c.id;});
 			var clientIDs=conts.map(function(c){return c.client});
 			console.log(conIDs);
-			return Promise.all([Service.find({contract:conIDs}).populateAll(),Client.find({id:clientIDs})]);
+			return Promise.all([Service.find({contract:conIDs}).populateAll(),Client.find({id:clientIDs}),User.find()]);
 		}).then(function(data){
 			// manual populate client
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
 			var allService=data[0];
+			var allUser=Utilfunctions.makePopulateHash(data[2]);
+			console.log(data);
 			allService.forEach(function(ele){
 				var cid=ele.contract.client||0;
 				ele.contract.client=allClient[ele.contract.client];
+				if(ele.contract.teacher){
+					ele.contract.teacher=allUser[ele.contract.teacher];
+				}
 			});
 			return res.json(allService);
 		}).fail(function(err){

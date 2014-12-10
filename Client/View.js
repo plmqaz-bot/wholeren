@@ -1454,7 +1454,7 @@ var ServiceView=Wholeren.FormView.extend({
                     self.collection.on("sort", self.renderCollection, self);
                 });
             }else {
-                $.when(this.collection.fetch(),this.user.fetch()).done(function(){
+                this.collection.fetch().done(function(){
                     self.ready=true;
                     self.renderCollectionCore();
                     self.collection.on("sort", self.renderCollection, self);
@@ -1493,18 +1493,18 @@ var ServiceView=Wholeren.FormView.extend({
             this.collection.fetch({reset:true});
         },    
         renderCollection: function (){
-            if(this.ready){
+            // if(this.ready){
                 this.resetCollection();
                 this.renderCollectionCore();       
-            }else{
-                 var self=this;
-                this.user=new Obiwang.Collections.User();
-                this.user.fetch().done(function(data){
-                    self.ready=true;
-                    self.resetCollection();
-                    self.renderCollectionCore();
-                }); 
-            }            
+            // }else{
+            //      var self=this;
+            //     this.user=new Obiwang.Collections.User();
+            //     this.user.fetch().done(function(data){
+            //         self.ready=true;
+            //         self.resetCollection();
+            //         self.renderCollectionCore();
+            //     }); 
+            // }            
         },
         resetCollection:function(){
             this.collection.forEach(function(serv){
