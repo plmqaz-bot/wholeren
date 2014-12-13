@@ -3,18 +3,18 @@
         
         
         
-        <td>{{contractCategory/contractCategory}}</td>
-        <td>{{degree/degree}}</td>
+        <td data-attr="contractCategory" data-coll="ContractCategory" data-optext="contractCategory" class="selectbox" data-model="Contract">{{contractCategory/contractCategory}}</td>
+        <td data-attr="degree" data-coll="Degree" data-optext="degree" class="selectbox" data-model="Contract">{{degree/degree}}</td>
         <td>{{createdAt}}</td>
-        <td>{{lead/lead}}</td>
-        <td>{{shortText leadName}}</td>
-        <td>{{leadLevel.leadLevel}}</td>
+        <td data-attr="lead" data-coll="Lead" data-optext="lead" class="selectbox" data-model="Contract">{{lead/lead}}</td>
+        <td data-attr="leadName" data-coll="LeadName" class="singletextbox" data-model="Contract">{{shortText leadName}}</td>
+        <td data-attr="leadLevel" data-coll="LeadLevel" data-optext="leadLevel" class="selectbox" data-model="Contract">{{leadLevel/leadLevel}}</td>
         
         <td data-attr="assistant" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{assistant/nickname}}</td>
         <td data-attr="assisCont" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{assisCont/nickname}}</td>
         <td data-attr="sales" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{sales/nickname}}</td>
         <td data-attr="expert" data-restri="{'role':'销售'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{expert/nickname}}</td>
-        <td>{{status.status}}</td>    
+        <td data-attr="status" data-coll="Status" data-optext="status" class="selectbox" data-model="Contract">{{status/status}}</td>    
         <td data-attr="salesFollowup"  class="textbox" data-model="Contract">{{shortText salesFollowup}}</td>
         <td data-attr="salesRecord"  class="textbox" data-model="Contract">{{shortText salesRecord}}</td>
         <td>{{expertContactDate}}</td>
@@ -25,29 +25,29 @@
         <td>{{shortText client/primaryEmail}}</td>
         <td>{{shortText client/primaryPhone}}</td>
         <td>{{client/otherInfo}}</td>
-        <td>{{country.country}}</td>
-        <td>{{displayBool validI20}}</td>
-        <td>{{shortText previousSchool}}</td>
-        <td>{{shortText targetSchool}}</td>
-        <td>{{gpa}}</td>
-        <td>{{toefl}}</td>
-        <td>{{otherScore}}</td>
-        <td>{{age}}</td>
+        <td data-attr="country" data-coll="Country" data-optext="country" class="selectbox" data-model="Contract">{{country/country}}</td>
+        <td data-attr="validI20"  class="boolbox" data-model="Contract">{{displayBool validI20}}</td>
+        <td data-attr="previousSchool"  class="textbox" data-model="Contract">{{shortText previousSchool}}</td>
+        <td data-attr="targetSchool"  class="textbox" data-model="Contract">{{shortText targetSchool}}</td>
+        <td data-attr="gpa"  class="singletextbox" data-model="Contract">{{gpa}}</td>
+        <td data-attr="toefl"  class="singletextbox" data-model="Contract">{{toefl}}</td>
+        <td data-attr="otherScore"  class="singletextbox" data-model="Contract">{{otherScore}}</td>
+        <td data-attr="age"  class="singletextbox" data-model="Contract">{{age}}</td>
         
-        <td>{{major}}</td>
+        <td data-attr="major"  class="singletextbox" data-model="Contract">{{major}}</td>
         <td data-attr="diagnose"  class="textbox" data-model="Contract">{{shortText diagnose}}</td>
-        <td>{{contractSigned}}</td>
-        <td>{{contractPaid}}</td>
+        <td data-attr="contractSigned"  class="singletextbox" data-model="Contract">{{contractSigned}}</td>
+        <td data-attr="contractPaid"  class="singletextbox" data-model="Contract">{{contractPaid}}</td>
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Transfer"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Emerg"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Study"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Visa"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
-        <td>{{contractPrice}}</td>
-        <td>{{shortText contractDetail}}</td> 
+        <td data-attr="contractPrice"  class="singletextbox" data-model="Contract">{{contractPrice}}</td>
+        <td data-attr="contractDetail"  class="textbox" data-model="Contract">{{shortText contractDetail}}</td> 
         <td>{{displayBool applicationFeePaid}}</td>
-        <td>{{paymentOption/paymentOption}}</td>
-        <td>{{displayBool endFeeDue}}</td>
-        <td>{{displayBool endFee}}</td>
+        <td data-attr="paymentOption" data-coll="PaymentOption" data-optext="paymentOption" class="selectbox" data-model="Contract">{{paymentOption/paymentOption}}</td>
+        <td data-attr="endFeeDue"  class="boolbox" data-model="Contract">{{displayBool endFeeDue}}</td>
+        <td data-attr="endFee"  class="boolbox" data-model="Contract"> {{displayBool endFee}}</td>
         <td data-attr="teacher" data-restri="{'role':'申请'}" data-coll="User" data-optext="nickname" class="selectbox" data-model="Contract">{{teacher/nickname}}</td>
         <td><a class="comment_edit" href="#{{id}}">Show Comments</a></td>
         <td><a class="edit" href="#{{id}}">Edit</a>{{#if displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>

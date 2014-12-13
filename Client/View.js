@@ -23,8 +23,15 @@ Handlebars.registerHelper('shortText', function (text) {
     return text.substring(0,14);
 });
 Handlebars.registerHelper('displayBool', function(bool){
-    if(bool) return '是';
-    return '否';
+    if(bool!=undefined){
+        if(bool==true){
+            return '是';   
+        }else{
+            return '否';
+        }
+    }else{
+        return '';   
+    }
 });
 Handlebars.registerHelper('detailStatus', function (serviceType,step,options) {
     if(!serviceType) return "";
@@ -910,6 +917,10 @@ var AttributeEdit=Backbone.Modal.extend({
         switch(this.type){
             case 'textbox':
             var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><textarea class="reply-content">'+this.curValue+'</textarea>').contents();        
+            this.$el.find('.bbm-modal__section').append(ele);
+            break;
+            case 'singletextbox':
+            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><input type="text" class="reply-content">'+this.curValue+'</input>').contents();        
             this.$el.find('.bbm-modal__section').append(ele);
             break;
             case 'selectbox':
