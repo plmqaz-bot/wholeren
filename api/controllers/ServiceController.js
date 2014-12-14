@@ -33,10 +33,8 @@ module.exports = {
 			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],or:[{teacher:id},{teacher:null}]}).where(where);
 		}
 		promise.then(function(conts){
-			console.log(conts);
 			var conIDs=conts.map(function(c){return c.id;});
 			var clientIDs=conts.map(function(c){return c.client});
-			console.log(conIDs);
 			return Promise.all([Service.find({contract:conIDs}).populateAll(),Client.find({id:clientIDs}),User.find()]);
 		}).then(function(data){
 			// manual populate client
@@ -44,6 +42,7 @@ module.exports = {
 			var allService=data[0];
 			var allUser=Utilfunctions.makePopulateHash(data[2]);
 			console.log(data);
+			console.log(allService.length);
 			allService.forEach(function(ele){
 				var cid=ele.contract.client||0;
 				ele.contract.client=allClient[ele.contract.client];
@@ -51,6 +50,7 @@ module.exports = {
 					ele.contract.teacher=allUser[ele.contract.teacher];
 				}
 			});
+			console.log("sending");
 			return res.json(allService);
 		}).fail(function(err){
 			return res.json({error:err});

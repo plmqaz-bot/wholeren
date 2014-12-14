@@ -619,6 +619,7 @@ Settings.Pane = Wholeren.baseView.extend({
 /************************************************Views for Forms**************************************/
  Wholeren.FormView=Wholeren.baseView.extend({
         templateName:'contract',
+        curPage:1,
         events: {
         'click .textbox,.selectbox':'editAttr',
         'click .sortable':'sortCollection'
@@ -875,7 +876,16 @@ Settings.Pane = Wholeren.baseView.extend({
         var self=this;
         this.contractLength=0;
         var counter=0;
-        this.collection.forEach(function(item){
+        // add pagination
+        $('.pagination').children().remove();
+        var total=this.collection.getTotalPage();
+        for(var i=0;i<total;i++){
+            if(i==this.curPage)
+                $('.pagination').append('<span class="page active">'+i+'</span>');
+            else
+                $('.pagination').append('<a href="#" class="page">'+i+'</a>');
+        }
+        this.collection.getPage(this.curPage).forEach(function(item){
             // if(counter>200){
             //     return;
             // }else{
@@ -884,6 +894,12 @@ Settings.Pane = Wholeren.baseView.extend({
             // }
         });     
         },
+        switchPage:function(e){
+            var item=$(e.currentTarget);
+            var page=item.text();
+            this.curPage=parseInt(page);
+            this.renderCollectionCore();
+        }
 
 
 });
@@ -920,7 +936,7 @@ var AttributeEdit=Backbone.Modal.extend({
             this.$el.find('.bbm-modal__section').append(ele);
             break;
             case 'singletextbox':
-            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><input type="text" class="reply-content">'+this.curValue+'</input>').contents();        
+            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><input type="text" class="reply-content" value="'+this.curValue+'"/>>').contents();        
             this.$el.find('.bbm-modal__section').append(ele);
             break;
             case 'selectbox':
@@ -1222,9 +1238,10 @@ var ContractView=Wholeren.FormView.extend({
         'change .filter':'renderCollection',
         'click .clickablecell':'editContract2',
         'click .edit,.del':'editContract',
-        'click .textbox,.selectbox,.multiselectbox':'editAttr',
+        'click .textbox,.selectbox,.multiselectbox,.singletextbox,.boolbox':'editAttr',
         'click .sortable':'sortCollection',
         'click .comment_edit':'showComments',
+        'click a.page':'switchPage'
         },     
         refetch:function(e){
             var startDate=$('#startDate').val();
@@ -1494,6 +1511,7 @@ var ServiceView=Wholeren.FormView.extend({
         'click .textbox,.selectbox':'editAttr',
         'click .sortable':'sortCollection',
         'click .comment_edit':'showComments',
+        'click a.page':'switchPage'
         },    
         refetch:function(e){
             var startDate=$('#startDate').val();
@@ -1930,12 +1948,14 @@ Market.Pane = Wholeren.baseView.extend({
         this.$el.addClass('active');
     }
 });
+
 Market.general=Market.Pane.extend({
     templateName:'marketMessage',
     id:"general",
     events: {
         'click .button-alt':'refetch'
     },
+    requrestUrl:'general',
     refetch:function(){
         var startDate=$('#startDate').val();
         var endDate=$('#endDate').val();
@@ -1957,7 +1977,7 @@ Market.general=Market.Pane.extend({
         $('.content').html("");
         var self=this;
         $.ajax({
-                url: '/market/general/?where='+where,
+                url: '/market/'+self.requrestUrl+'/?where='+where,
                 type: 'GET',
                 headers: {
                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -2012,6 +2032,10 @@ Market.general=Market.Pane.extend({
 
 });
 
+Market.view1=Market.general.extend({
+
+    requrestUrl:'view1'
+});
 var MarketView=Wholeren.baseView.extend({
     initialize: function (options) {
         $(".settings-content").removeClass('active');

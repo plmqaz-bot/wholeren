@@ -70,6 +70,7 @@ var sortableCollection=Backbone.PageableCollection.extend({
             asec:true
         },
         mode:"",
+        pagesize:100,
         state:{
             firstPage:0,
             currentPage:2,
@@ -109,14 +110,28 @@ var sortableCollection=Backbone.PageableCollection.extend({
             }
             this.sortAttr['asec']=dir=="asec";
         },
+        getPage:function(pageNum){
+            try{
+                var pn=parseInt(pageNum);
+                return this.slice((pn-1)*this.pagesize,(pn)*this.pagesize);
+            }catch(e){
+                var pn=1;
+                return this.slice((pn-1)*this.pagesize,(pn)*this.pagesize);
+            }
+        },
+        getTotalPage:function(){
+            return Math.ceil(this.length/this.pagesize);
+        }
 });
 Collections={
     Contract :sortableCollection.extend({
         model: Models.Contract,
+        
         //url: '/Contract/',
         url: function(){return '/Contract/?where='+this.whereclaus();},
         initialize:function(){
             this.selectedStrat({sortAttr:'client.firstName'});
+
             this.startDate="09-01-2014";
             this.endDate="";
         },
@@ -141,7 +156,8 @@ Collections={
                 return "{}";
             }
             return "{}";
-        }
+        },
+
     }),
     Client : Backbone.Collection.extend({
         model: Models.Client,
@@ -200,8 +216,8 @@ Collections={
         
         initialize:function(){
             this.selectedStrat({sortAttr:'contract.createdAt'});
-            this.startDate="11/2/2014";
-            this.endDate="11/19/2014";
+            this.startDate="9/1/2014";
+            this.endDate="";
         },
         setdate:function(options){
             this.startDate=options.startDate;
