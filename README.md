@@ -76,6 +76,8 @@ setup User profile
 
 handle how to activate user.  --DONE
 
-Contract, service pagination
+Contract, service pagination --DONE
+
+ bug in add application!
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.
