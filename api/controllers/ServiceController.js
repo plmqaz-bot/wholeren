@@ -6,6 +6,15 @@
  */
 var Promise=require('bluebird');
 module.exports = {
+	'findOne':function(req,res){
+		if(!req.params.id){
+			return res.json(404,{error:"no service id "});
+		}
+		var promise=Service.findOne({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],id:req.params.id}).populateAll();
+		if(req.session.user.rank<2){
+			promise=promise.where({or:[{teacher:id},{teacher:null}]});
+		}
+	}
 	'getService':function(req, res){
 		var id=req.session.user.id;
 		var where=req.param('where')||{};
@@ -13,9 +22,9 @@ module.exports = {
 		where=JSON.parse(where);
 		// First find all signed contracts
 		var promise;
-		if(req.session.user.rank<3&&(req.session.user.role!=2&&req.session.user.role!=4)){
-			return res.json(404, {error:"not authorized"});
-		}
+		//if(req.session.user.rank<3&&(req.session.user.role!=2&&req.session.user.role!=4)){
+		//	return res.json(404, {error:"not authorized"});
+		//}
 		switch (req.session.user.rank){
 			case "3":
 			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}]}).where(where);
@@ -41,14 +50,21 @@ module.exports = {
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
 			var allService=data[0];
 			var allUser=Utilfunctions.makePopulateHash(data[2]);
-			console.log(data);
-			console.log(allService.length);
+			//console.log(data);
+			//console.log(allService.length);
 			allService.forEach(function(ele){
 				var cid=ele.contract.client||0;
 				ele.contract.client=allClient[ele.contract.client];
 				if(ele.contract.teacher){
 					ele.contract.teacher=allUser[ele.contract.teacher];
 				}
+				// populate application writer
+				ele.application=ele.application||[];
+				ele.application.forEach(function(app){
+					if(app.writer){
+						app.writer=allUser[app.writer];
+					}
+				});
 			});
 			console.log("sending");
 			return res.json(allService);

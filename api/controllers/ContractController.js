@@ -19,7 +19,7 @@ module.exports = {
 			case "2":
 			promise=User.find({boss:id}).then(function(mypuppets){
 				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]})
+				return Contract.find({or:[{expert:puppetIDs},{sales:puppetIDs},{teacher:puppetIDs},{assistant:puppetIDs},{assisCont:puppetIDs},{teacher:puppetIDs},{assistant:null,assisCont:null,expert:null,sales:null}]})
 				.where(where).populate('client').populate('service');
 			});
 			break;
@@ -31,6 +31,7 @@ module.exports = {
 				{teacher:id},
 				{assistant:id},
 				{assisCont:id},
+				{teacher:id},
 				{assistant:null,assisCont:null,expert:null,sales:null}
 				]
 			}).where(where).populate('client').populate('service');
@@ -73,7 +74,7 @@ module.exports = {
 		}		
 	},
 	'createContract':function(req,res){
-		var saleid=1; // change it to the user's id
+		var saleid=req.session.user.id; // change it to the user's id
 		var attribs=req.body;
 		attribs['sales']=saleid;
 		if(attribs.client){
