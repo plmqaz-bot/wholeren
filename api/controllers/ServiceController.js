@@ -10,10 +10,27 @@ module.exports = {
 		if(!req.params.id){
 			return res.json(404,{error:"no service id "});
 		}
-		var promise=Service.findOne({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],id:req.params.id}).populateAll();
+		var promise=Service.findOne({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],id:req.params.id});
 		if(req.session.user.rank<2){
 			promise=promise.where({or:[{teacher:id},{teacher:null}]});
 		}
+		var toReturn={};
+		promise.populateAll().then(function(serv){
+			toReturn=serv;
+			var clientID=serv.contract.client;
+			return Promise.all([Client.find({id:clientID}),User.find()]);
+		}).then(function(data){
+			toReturn.contract.client=data[0];
+			var allUser=Utilfunctions.makePopulateHash(data[1]);
+			toReturn.contract.teacher=allUser[toReturn.contract.teacher];
+			toReturn.application=toReturn.application||[];
+			toReturn.application.forEach(function(app){
+				if(app.writer){
+					app.writer=allUser[app.writer];
+				}
+			});
+			return res.json(toReturn);
+		});
 	}
 	'getService':function(req, res){
 		var id=req.session.user.id;
