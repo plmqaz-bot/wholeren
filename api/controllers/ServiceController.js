@@ -17,6 +17,7 @@ module.exports = {
 		var toReturn={};
 		promise.populateAll().then(function(serv){
 			toReturn=serv;
+			if(!serv) return Promise.reject({error:"not found"});
 			var clientID=serv.contract.client;
 			return Promise.all([Client.find({id:clientID}),User.find()]);
 		}).then(function(data){
@@ -30,8 +31,10 @@ module.exports = {
 				}
 			});
 			return res.json(toReturn);
+		}).fail(function(err){
+			return res.json(400,err);
 		});
-	}
+	},
 	'getService':function(req, res){
 		var id=req.session.user.id;
 		var where=req.param('where')||{};
@@ -39,9 +42,20 @@ module.exports = {
 		where=JSON.parse(where);
 		// First find all signed contracts
 		var promise;
+		var wherequery="";
+		if(where.contractSigned){
+			if(where.contractSigned['>']){
+				wherequery+="and contractsigned>'"+where.contractSigned['>']+"'";
+			}
+			if(where.contractSigned['<']){
+				wherequery+="and contractsigned<'"+where.contractSigned['<']+"'";
+			}
+		}
 		//if(req.session.user.rank<3&&(req.session.user.role!=2&&req.session.user.role!=4)){
 		//	return res.json(404, {error:"not authorized"});
 		//}
+		var sql="select service.id from service outter join application left join contract on contract.id=service.contract \
+		where contract.contractsigned not null and contract.status in [3,4,5,6] "+wherequery+" and (contract.teacher is null or contract.teacher="+id+" or application.writer="+id+";";
 		switch (req.session.user.rank){
 			case "3":
 			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}]}).where(where);

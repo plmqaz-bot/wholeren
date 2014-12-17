@@ -393,5 +393,13 @@ module.exports = {
 	    		return Promise.reject({error:err,line:lineNumber});
 	    	});
 	    }
-    }
+    },
+    'nativeQuery':function(query){
+    	var promise=Promise.defer();
+    	Contract.query(query,function(err,data){
+    		if(err) promise.reject(err);
+    		promise.resolve(data);
+    	});
+    	return promise.promise;
+    },
 }

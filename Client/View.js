@@ -879,7 +879,7 @@ Settings.Pane = Wholeren.baseView.extend({
         // add pagination
         $('.pagination').children().remove();
         var total=this.collection.getTotalPage();
-        for(var i=0;i<total;i++){
+        for(var i=1;i<=total;i++){
             if(i==this.curPage)
                 $('.pagination').append('<span class="page active">'+i+'</span>');
             else
@@ -1557,7 +1557,7 @@ var ServiceView=Wholeren.FormView.extend({
             var self=this;
             if(obj.application){
                 obj.application.forEach(function(ele){
-                    var id=ele.writer;
+                    var id=parseInt(ele.writer);
                     if(id){
                         ele.writer=self.user.get(id).toJSON();
                     }
