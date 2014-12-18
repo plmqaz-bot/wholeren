@@ -17,7 +17,7 @@ insert into contractcategory values('辅导',NULL,NOW(),NOW());
 insert into lead values('Campus校代介绍',NULL,NOW(),NOW());
 insert into lead values('Web电话/网络',NULL,NOW(),NOW());
 insert into lead values('Customer老客户介绍',NULL,NOW(),NOW());
-#insert into lead values('Friend熟人介绍',NULL,NOW(),NOW()); # this is in Partner now
+#insert into lead values('Friend熟人介绍',NULL,NOW(),NOW()); # this is in Staff now
 insert into lead values('Staff内部员工介绍',NULL,NOW(),NOW());
 #insert into lead values('Free Session',NULL,NOW(),NOW()); # this is in Sec
 insert into lead values('Sec二次签约',NULL,NOW(),NOW());
@@ -98,3 +98,45 @@ insert into servicestatus values('A.紧急处理中',NULL,NOW(),NOW());
 insert into servicestatus values('B.提交进行中',NULL,NOW(),NOW());
 insert into servicestatus values('C.已交等结果',NULL,NOW(),NOW());
 insert into servicestatus values('D.服务结束',NULL,NOW(),NOW());
+
+
+
+#Now create some views for summary information
+# This is the monthly Information. 
+create or replace view MonthlySummary as 
+(select 
+IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) as 'M',
+IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) as 'Y',
+sum(contractPrice) as '总收入',
+count(*) as '总咨询量',
+sum(IF(status.status like 'C%' or status.status like 'D%',1,0)) as '总签约量',
+sum(IF(contractcategory.contractCategory like '%紧急%',1,0)) as '紧急咨询量',
+sum(IF(contractcategory.contractCategory like '%紧急%' and (status.status like 'C%' or status.status like 'D%'),1,0))  as '紧急签约量',
+sum(IF(contractcategory.contractCategory like '%紧急%' and (status.status like 'C%' or status.status like 'D%'),contractPrice,0))  as '紧急签约额',
+sum(IF(contractcategory.contractCategory like '%转学%',1,0)) as '转学咨询量',
+sum(IF(contractcategory.contractCategory like '%转学%' and (status.status like 'C%' or status.status like 'D%'),1,0))  as '转学签约量',
+sum(IF(contractcategory.contractCategory like '%转学%' and (status.status like 'C%' or status.status like 'D%'),contractPrice,0))  as '转学签约额'
+from contract c
+left join contractcategory on c.contractCategory=contractcategory.id
+left join status on c.status=status.id
+group by M,Y) ;
+
+create or replace view FullSummary as
+select CONCAT(m1.M,'/',m1.Y) as 'Time',
+m1.总收入,
+(m1.总收入-m2.总收入)/m2.总收入 as '收入月增长率',
+m1.总咨询量,
+(m1.总咨询量-m2.总咨询量)/m2.总咨询量 as '咨询量月增长率',
+m1.总签约量,
+m1.总收入/m1.总签约量 as '平均签约价',
+m1.紧急咨询量,
+(m1.紧急咨询量-m2.紧急咨询量)/m2.紧急咨询量 as '紧急咨询量月增长率',
+m1.紧急签约量,
+m1.紧急签约额,
+m1.紧急签约量/m1.紧急咨询量 as '紧急签约率',
+m1.转学咨询量,
+(m1.转学咨询量-m2.转学咨询量)/m2.转学咨询量 as '转学咨询量月增长率',
+m1.转学签约量,
+m1.转学签约额,
+m1.转学签约量/m1.转学咨询量 as '转学签约率'
+ from MonthlySummary m1 left join MonthlySummary m2 on m1.M=(m2.M%12+1) and m1.Y=m2.Y+FLOOR(m2.M/12);
