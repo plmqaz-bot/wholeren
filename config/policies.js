@@ -62,7 +62,8 @@ module.exports.policies = {
     'delete':'managerAuth'
   },
   ServiceController:{
-    '*':'sessionAuth',
+    //'*':'sessionAuth',
+    '*':true,
     'delete':'managerAuth'
   },
   RoleController:{

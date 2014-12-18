@@ -10,19 +10,30 @@ module.exports = {
 		if(!req.params.id){
 			return res.json(404,{error:"no service id "});
 		}
-		var promise=Service.findOne({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],id:req.params.id});
-		if(req.session.user.rank<2){
-			promise=promise.where({or:[{teacher:id},{teacher:null}]});
+		var userId=req.session.user.id;
+		var promise;
+		var sql="select distinct(service.id),client.id as client \
+from service left join application on service.id=application.service \
+inner join contract on contract.id=service.contract \
+inner join status on contract.status=status.id \
+inner join client on contract.client=client.id \
+where contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') and service.id="+req.params.id+" ";
+		if(req.session.user.rank>1){
+			sql+=";";
+			promise=Utilfunctions.nativeQuery(sql);
+		}else{
+			sql+="and (contract.teacher is null or contract.teacher="+userId+"  or application.writer="+userId+" );";
+			promise=Utilfunctions.nativeQuery(sql);
 		}
-		var toReturn={};
-		promise.populateAll().then(function(serv){
-			toReturn=serv;
-			if(!serv) return Promise.reject({error:"not found"});
-			var clientID=serv.contract.client;
-			return Promise.all([Client.find({id:clientID}),User.find()]);
+		promise.then(function(serv){
+			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
+			var servid=serv[0].id;
+			var clientid=serv[0].client;
+			return Promise.all([Service.findOne({id:servid}).populateAll(), Client.findOne({id:clientid}),User.find()]);
 		}).then(function(data){
-			toReturn.contract.client=data[0];
-			var allUser=Utilfunctions.makePopulateHash(data[1]);
+			var toReturn=data[0];
+			toReturn.contract.client=data[1];
+			var allUser=Utilfunctions.makePopulateHash(data[2]);
 			toReturn.contract.teacher=allUser[toReturn.contract.teacher];
 			toReturn.application=toReturn.application||[];
 			toReturn.application.forEach(function(app){
@@ -31,8 +42,9 @@ module.exports = {
 				}
 			});
 			return res.json(toReturn);
-		}).fail(function(err){
-			return res.json(400,err);
+		}).catch(function(err){
+			console.log("error ",err);
+			return res.json(404,err);
 		});
 	},
 	'getService':function(req, res){
@@ -54,14 +66,20 @@ module.exports = {
 		//if(req.session.user.rank<3&&(req.session.user.role!=2&&req.session.user.role!=4)){
 		//	return res.json(404, {error:"not authorized"});
 		//}
-		var sql="select service.id from service outter join application left join contract on contract.id=service.contract \
-		where contract.contractsigned not null and contract.status in [3,4,5,6] "+wherequery+" and (contract.teacher is null or contract.teacher="+id+" or application.writer="+id+";";
+		var sql="select distinct(service.id),client.id as client \
+from service left join application on service.id=application.service \
+inner join contract on contract.id=service.contract \
+inner join status on contract.status=status.id \
+inner join client on contract.client=client.id \
+where contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+wherequery+" ";
 		switch (req.session.user.rank){
 			case "3":
-			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}]}).where(where);
+			sql+=";";
+			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			case "2":
-			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}]}).where(where);
+			sql+=";";
+			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			// case "2":
 			// promise=User.find({boss:id}).then(function(mypuppets){
@@ -70,12 +88,17 @@ module.exports = {
 			// });
 			// break;
 			default:
-			promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],or:[{teacher:id},{teacher:null}]}).where(where);
+			sql+="and (contract.teacher is null or contract.teacher="+id+"  or application.writer="+id+" );";
+			//promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],or:[{teacher:id},{teacher:null}]}).where(where);
+			promise=Utilfunctions.nativeQuery(sql);
 		}
-		promise.then(function(conts){
-			var conIDs=conts.map(function(c){return c.id;});
-			var clientIDs=conts.map(function(c){return c.client});
-			return Promise.all([Service.find({contract:conIDs}).populateAll(),Client.find({id:clientIDs}),User.find()]);
+		promise.then(function(servIDs){
+
+			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"not found"});
+			console.log("native done");
+			var idarray=servIDs.map(function(c){return c.id;});
+			var clientIDs=servIDs.map(function(c){return c.client});
+			return Promise.all([Service.find({id:idarray}).populateAll(),Client.find({id:clientIDs}),User.find()]);
 		}).then(function(data){
 			// manual populate client
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
@@ -99,8 +122,9 @@ module.exports = {
 			});
 			console.log("sending");
 			return res.json(allService);
-		}).fail(function(err){
-			return res.json({error:err});
+		}).catch(function(err){
+			console.log("error occurred text: ",err,";");
+			return res.json(404,{error:err});
 		});	
 		//var sql="select * from service left join contract on service.contract=contract.id left join application on application.service=service.id";
 	},

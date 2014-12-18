@@ -78,6 +78,12 @@ handle how to activate user.  --DONE
 
 Contract, service pagination --DONE
 
- bug in add application!
+ bug in add application! --DONE
+
+ working on Service for application writer. Get service and findOne. --DONE
+
+ service block services to prevent add application, 
+
+ test service, and how to modify service and application.  
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

@@ -396,6 +396,7 @@ module.exports = {
     },
     'nativeQuery':function(query){
     	var promise=Promise.defer();
+    	console.log(query);
     	Contract.query(query,function(err,data){
     		if(err) promise.reject(err);
     		promise.resolve(data);

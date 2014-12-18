@@ -1474,19 +1474,23 @@ var ServiceView=Wholeren.FormView.extend({
             this.render();
             if(options.id){
                 var model=new Obiwang.Models[modelName]({id:options.id});
-                $.when(model.fetch(),this.user.fetch()).done(function(){
+                model.fetch().then(function(){
                     if(model)
                         self.collection.add(model);
                     self.ready=true;
                     self.renderCollectionCore();
                     self.collection.on("sort", self.renderCollection, self);
+                }).fail(function(err){
+                    util.handleRequestError(err); 
                 });
             }else {
-                this.collection.fetch().done(function(){
+                this.collection.fetch().then(function(){
                     self.ready=true;
                     self.renderCollectionCore();
                     self.collection.on("sort", self.renderCollection, self);
-                });
+                }).fail(function(err){
+                    util.handleRequestError(err); 
+                });;
             }
             self.collection.on("reset",self.renderCollection,self);
              // Now get filters
