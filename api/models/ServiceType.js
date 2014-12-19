@@ -10,9 +10,11 @@ module.exports = {
   attributes: {
   	serviceType:{type:'string',required:true,unique:true},
   	
-  	service:{ collection:'Service', via:'serviceType'},
+  	//service:{ collection:'Service', via:'serviceType'},
 
-  	category:{type:'string',required:true,defaultsTo:'Transfer',enum:['Transfer','Emerg','Study','Visa']} // Only be Transfer, Emerg, Study, Visa
+  	category:{type:'string',required:true,defaultsTo:'Transfer',enum:['Transfer','Emerg','Study','Visa']}, // Only be Transfer, Emerg, Study, Visa
+
+  	addApplication:{type:'bool',required:true,defaultsTo:false}
 
   }
 };

@@ -803,7 +803,7 @@ Settings.Pane = Wholeren.baseView.extend({
                     tocomp=obj[attr.substring(0,sub)]||{};
                     attr=attr.substring(sub+1);
                 }
-                if(tocomp instanceof Array&&tocomp.length>1){
+                if(tocomp instanceof Array&&tocomp.length>0){
                     tocomp.forEach(function(e){
                         var c=e[attr];
                         if(typeof c !== 'undefined'){
