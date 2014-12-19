@@ -12,7 +12,7 @@ module.exports = {
 
   	serviceType:{model:'ServiceType'},
 
-  	serviceStatus:{model:'ServiceStatus'},
+  	serviceStatus:{model:'ServiceStatus',required:true,defaultsTo:1},
 
   	progress:{type:'int'},
 
