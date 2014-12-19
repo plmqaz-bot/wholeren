@@ -82,8 +82,11 @@ Contract, service pagination --DONE
 
  working on Service for application writer. Get service and findOne. --DONE
 
- service block services to prevent add application, 
+ service block services to prevent add application, -DONE
 
- test service, and how to modify service and application.  
+ test service, and how to modify service and application.  -DONE
+
+
+ 
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

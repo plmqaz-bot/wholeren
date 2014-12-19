@@ -757,9 +757,9 @@ Settings.Pane = Wholeren.baseView.extend({
         renderSingle:function(model,previousRow,previousPinnedRow){
             var self=this;
             var obj=model.toJSON();
-            if(self.applyFilter(obj)){
-                return;
-            }
+            //if(self.applyFilter(obj)){
+            //    return;
+            //}
             obj=self.modifyRow(obj);
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
@@ -806,7 +806,7 @@ Settings.Pane = Wholeren.baseView.extend({
                 if(tocomp instanceof Array&&tocomp.length>0){
                     tocomp.forEach(function(e){
                         var c=e[attr];
-                        if(typeof c !== 'undefined'){
+                        if(c!=undefined){
                             if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                                 var ind=_.findIndex(value,function(v){
                                     return match(c,v,ele);
@@ -823,7 +823,7 @@ Settings.Pane = Wholeren.baseView.extend({
                     });
                 }else{
                     tocomp=obj[attr];
-                    if(typeof tocomp !== 'undefined'){
+                    if(tocomp!=undefined){
                         if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                             var ind=_.findIndex(value,function(v){
                                 return match(tocomp,v,ele);
@@ -878,14 +878,15 @@ Settings.Pane = Wholeren.baseView.extend({
         var counter=0;
         // add pagination
         $('.pagination').children().remove();
-        var total=this.collection.getTotalPage();
+        var collectionToRender=this.collection.complexFilter($('.filter'));
+        var total=collectionToRender.getTotalPage();
         for(var i=1;i<=total;i++){
             if(i==this.curPage)
                 $('.pagination').append('<span class="page active">'+i+'</span>');
             else
                 $('.pagination').append('<a href="#" class="page">'+i+'</a>');
         }
-        this.collection.getPage(this.curPage).forEach(function(item){
+        collectionToRender.getPage(this.curPage).forEach(function(item){
             // if(counter>200){
             //     return;
             // }else{
@@ -1202,18 +1203,20 @@ var ContractView=Wholeren.FormView.extend({
             if (options.collection) {
                 this.collection = options.collection;
                 this.serviceTypes.fetch().done(function(data){
+                    self.collection.on("sort", self.renderCollection, self);
                     self.ready=true;
                     self.renderCollection();
-                    self.collection.on("sort", self.renderCollection, self);
+                    
                 });
                 
             } else if (!this.collection || this.collection.length < 1) {
                 this.collection = new Obiwang.Collections.Contract();
                 $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
-                    self.ready=true;
-                    self.renderCollection();
+                    
                     self.collection.on("sort", self.renderCollection, self);
                     self.collection.on("reset", self.renderCollection, self);
+                    self.ready=true;
+                    self.renderCollection();
                 });
             }    
             // Now get filters

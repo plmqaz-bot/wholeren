@@ -121,6 +121,83 @@ var sortableCollection=Backbone.PageableCollection.extend({
         },
         getTotalPage:function(){
             return Math.ceil(this.length/this.pagesize);
+        },
+        complexFilter:function(filterElements){
+            fs=filterElements;
+            function match(v1,v2,ele){
+                if(v1.toString()==v2||v1==v2){
+                    return true;
+                }else{
+                    if(!v1.id){
+                    }else if(v1.id==v2||v1.id.toString()==v2){
+                        return true;
+                    }
+                }
+                if(ele.tagName.toLowerCase()=='input'){
+                    if(v1.indexOf(v2)!=-1){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            return this.filter(function(eachone){
+                var obj=eachone.toJSON();
+                var filteredout=false;
+                _.forEach(fs,function(ele){
+                    var attr=ele.name;
+                    var value=ele.value;
+                    if(!value) return; // return if the filter is null
+                    try{
+                        value=JSON.parse(value);
+                    }catch(e){
+                         // if value cannot be parsed, then it is a string, not json;
+                    }
+                    var sub=attr.indexOf('.');
+                    var tocomp;
+                    if(sub>0){
+                        tocomp=obj[attr.substring(0,sub)]||{};
+                        attr=attr.substring(sub+1);
+                    }
+                    if(tocomp instanceof Array&&tocomp.length>0){
+                        tocomp.forEach(function(e){
+                            var c=e[attr];
+                            if(c!=undefined){
+                                if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+                                    var ind=_.findIndex(value,function(v){
+                                        return match(c,v,ele);
+                                    });
+                                    if(ind<0) e.display=false;
+                                }else{
+                                    if(!match(c,value,ele)){
+                                        e.display=false;
+                                    }
+                                }
+                            }else{
+                                e.display=false;
+                            }
+                        });
+                    }else{
+                        tocomp=obj[attr];
+                        if(tocomp!=undefined){
+                            if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+                                var ind=_.findIndex(value,function(v){
+                                    return match(tocomp,v,ele);
+                                });
+                                if(ind<0) filteredout=true;
+                            }else{
+                                if(!match(tocomp,value,ele)){
+                                    filteredout=true;
+                                }
+                            }
+                        }else{
+                            filteredout=true;
+                        }
+                    }                                
+                    
+                });
+                return !filteredout;
+            });
+            
         }
 });
 Collections={
