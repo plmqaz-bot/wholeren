@@ -140,7 +140,7 @@ var sortableCollection=Backbone.PageableCollection.extend({
                 }
                 return false;
             }
-            return this.filter(function(eachone){
+            var filteredArray= this.filter(function(eachone){
                 var obj=eachone.toJSON();
                 var filteredout=false;
                 _.forEach(fs,function(ele){
@@ -197,6 +197,8 @@ var sortableCollection=Backbone.PageableCollection.extend({
                 });
                 return !filteredout;
             });
+            var toReturn= new this.constructor(filteredArray,this.attributes);
+            return toReturn;
             
         }
 });
