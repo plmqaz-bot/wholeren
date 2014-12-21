@@ -27,6 +27,8 @@ module.exports = {
 	step1:{type:'date'},
 
 	step2:{type:'date'},
+
+  price:{type:'number'}
   }
 };
 
