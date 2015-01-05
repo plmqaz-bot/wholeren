@@ -10,10 +10,11 @@ module.exports = {
   attributes: {
   	service:{model:'Service'},
   	user:{model:'User'},
-  	startprogress:{type:'string'},
-  	endprogress:{type:'string'},
-  	date:{type:'date'}
-
+  	startprogress:{model:'ServiceStatus'},
+  	endprogress:{model:'ServiceStatus'},
+  	year:{type:'int'},
+  	month:{type:'int'},
+  	extra:{type:'number'}
   }
 };
 

@@ -72,7 +72,7 @@ console.log(sql);
       }
       return res.json(data);
     });
-    }
+    },
     'MonthlyChange':function(req,res){
 
       var sql="select * from FullSummary; ";

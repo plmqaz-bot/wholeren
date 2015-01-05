@@ -18,7 +18,7 @@ module.exports = {
 
   	commission:{type:'number',required:true,defaultsTo:0},
 
-  	flatCommission:{type:'number',required:true, defaultsTo:0}
+  	
 
   }
 };

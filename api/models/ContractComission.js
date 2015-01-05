@@ -14,7 +14,9 @@ module.exports = {
 
   	service:{model:'Service',required:true},
 
-  	activeRole:{model:'SalesComissionRole'}
+  	activeRole:{model:'SalesRole'},
+
+  	extra:{type:'number'}
   }
 };
 

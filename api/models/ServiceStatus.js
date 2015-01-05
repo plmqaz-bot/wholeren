@@ -8,7 +8,10 @@
 module.exports = {
 
   attributes: {
-  	serviceStatus:{type:"string"}
+  	serviceStatus:{type:"string"},
+  	service:{model:'ServiceType'},
+  	flatComission:{type:'number'},
+  	perApp:{type:'bool'}
   }
 };
 
