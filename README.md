@@ -87,6 +87,13 @@ Contract, service pagination --DONE
  test service, and how to modify service and application.  -DONE
 
 
+
+View for sales:
+1. monthly sales contract comission 
+2. monthly sales target/completion 
+3. monthly sales record. --DONE
+
+
  
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

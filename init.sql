@@ -66,7 +66,7 @@ insert into role values('市场',NULL,NOW(),NOW());
 insert into role values('文书',NULL,NOW(),NOW());
 insert into role values('专家',NULL,NOW(),NOW());
 
-#服务
+#服务 TODO: add the recommended price and also base comission
 insert into servicetype values('a.澄清','Emerg',NULL,NOW(),NOW());
 insert into servicetype values('b.申诉','Emerg',NULL,NOW(),NOW());
 insert into servicetype values('c1.找律师','Emerg',NULL,NOW(),NOW());
@@ -91,6 +91,9 @@ insert into servicetype values('h4.托福辅导','Study',NULL,NOW(),NOW());
 insert into servicetype values('h5.ASPIRE全套1年','Study',NULL,NOW(),NOW());
 insert into servicetype values('h6.ASPIRE全套2年','Study',NULL,NOW(),NOW());
 insert into servicetype values('h7.选课辅导','Study',NULL,NOW(),NOW());
+insert into servicetype values('薛涌留美预科','Study',NULL,NOW(),NOW());
+insert into servicetype values('紧急助理','Study',NULL,NOW(),NOW());
+insert into servicetype values('选课指导','Study',NULL,NOW(),NOW());
 
 #服务进度
 insert into servicestatus values('W.等待启动',NULL,NOW(),NOW());

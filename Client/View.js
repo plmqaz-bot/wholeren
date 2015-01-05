@@ -497,6 +497,7 @@ var SettingView = Backbone.View.extend({
 
 var Sidebar = Wholeren.baseView.extend({
     templateName:'marketSidebar',
+    submenu:'market',
     initialize: function (options) {
         
         this.el=options.el;
@@ -529,7 +530,7 @@ var Sidebar = Wholeren.baseView.extend({
         
         var self = this,
             model;
-        Wholeren.router.navigate('/market/' + id + '/');
+        Wholeren.router.navigate('/'+this.submenu+'/' + id + '/');
         //myApp.trigger('urlchange');
         if (this.pane && id === this.pane.id) {
             return;
@@ -754,7 +755,8 @@ Settings.Pane = Wholeren.baseView.extend({
             var id=model.get('id');
             $("tr[name='"+id+"']").remove();
         },
-        renderSingle:function(model,previousRow,previousPinnedRow){
+        renderSingle:function(model,previousRow,previousPinnedRow,append){
+            append=typeof append!=='undefined'?append:false;
             var self=this;
             var obj=model.toJSON();
             //if(self.applyFilter(obj)){
@@ -763,11 +765,17 @@ Settings.Pane = Wholeren.baseView.extend({
             obj=self.modifyRow(obj);
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
-            toInsert.insertAfter(previousRow);
+            
             var headline=self.headline(obj);
 
             var headInsert=$('<div/>').html('<tr name="'+obj.id+'" class="pin"><td data-id="'+obj.id+'" class="clickablecell">'+headline+'</td></tr>').contents();
-            headInsert.insertAfter(previousPinnedRow);
+            if(append==true){
+                if(previousRow.parent()) previousRow.parent().append(toInsert);
+                if(previousPinnedRow.parent())previousPinnedRow.parent().append(headInsert);
+            }else{
+                toInsert.insertAfter(previousRow);
+                headInsert.insertAfter(previousPinnedRow);
+            }            
         },
         applyFilter:function(obj){
             var fs=$('.filter');
@@ -890,7 +898,7 @@ Settings.Pane = Wholeren.baseView.extend({
             // if(counter>200){
             //     return;
             // }else{
-                self.renderSingle(item,headrow,stableheadrow);
+                self.renderSingle(item,headrow,stableheadrow,true);
             //     counter++;   
             // }
         });     
@@ -1956,7 +1964,7 @@ Market.Pane = Wholeren.baseView.extend({
     }
 });
 
-Market.general=Market.Pane.extend({
+Market.General=Market.Pane.extend({
     templateName:'marketMessage',
     id:"general",
     events: {
@@ -2039,9 +2047,12 @@ Market.general=Market.Pane.extend({
 
 });
 
-Market.view1=Market.general.extend({
+Market.view1=Market.General.extend({
 
-    requrestUrl:'view1'
+    requrestUrl:'contractOfSaleAndExpert'
+});
+Market.view2=Market.General.extend({
+    requrestUrl:'MonthlyChange'
 });
 var MarketView=Wholeren.baseView.extend({
     initialize: function (options) {

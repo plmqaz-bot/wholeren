@@ -14,7 +14,11 @@ module.exports = {
 
   	category:{type:'string',required:true,defaultsTo:'Transfer',enum:['Transfer','Emerg','Study','Visa']}, // Only be Transfer, Emerg, Study, Visa
 
-  	addApplication:{type:'bool',required:true,defaultsTo:false}
+  	addApplication:{type:'bool',required:true,defaultsTo:false},
+
+  	commission:{type:'number',required:true,defaultsTo:0},
+
+  	flatCommission:{type:'number',required:true, defaultsTo:0}
 
   }
 };
