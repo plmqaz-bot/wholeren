@@ -18,7 +18,9 @@ module.exports = {
 			});
 			break;
 			default:
-			promise=User.find({id:id});
+			promise=User.find({id:id}).then(function(data){
+				
+			});
 		}
 		promise.then(function(data){
 			var sql="";

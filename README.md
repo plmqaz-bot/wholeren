@@ -94,6 +94,8 @@ View for sales:
 3. monthly sales record. --DONE
 
 
+edit init.sql to create the procedures
+
  
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

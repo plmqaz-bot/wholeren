@@ -1,12 +1,30 @@
 use test;
 # sales comission table
-select user.id as "userid",service.id as "serviceid",user.nickname,servicetype.serviceType,service.price,salesrole.comissionPercent,salesrole.flatComission,servicetype.commission from user 
+select user.id as "userid",service.id as "serviceid",user.nickname,servicetype.serviceType,service.price,salesrole.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.commission from user 
 inner join contract on (contract.sales=user.id or contract.assistant=user.id)
 inner join service on (service.contract=contract.id)
 left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
 left join salesrole on (activeRole=salesrole.id)
 left join servicetype on (service.serviceType=servicetype.id);
 
+DROP PROCEDURE IF EXISTS test;
+delimiter ;;
+create PROCEDURE test (uid int,sid int)
+COMMENT ''
+BEGIN
+declare whereclaus varchar(50);
+if(uid>0) then
+set whereclaus:='user.id='+uid;
+end if;
+select user.id as "userid",service.id as "serviceid",user.nickname,servicetype.serviceType,service.price,salesrole.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.commission from user 
+inner join contract on (contract.sales=user.id or contract.assistant=user.id)
+inner join service on (service.contract=contract.id)
+left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
+left join salesrole on (activeRole=salesrole.id)
+left join servicetype on (service.serviceType=servicetype.id);
+END;;
+delimiter ;
+call test(1);
 #make sure they are unique
 alter table contractcomission add unique unique_index(user,service);
 alter table servicecomission add unique unique_index(user,service,application);

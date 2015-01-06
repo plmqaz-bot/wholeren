@@ -81,6 +81,22 @@ module.exports.routes = {
     controller:'user',
     action:'getAllUser',
   },
+  'GET /SalesComission/':{
+    controller:'comission',
+    action:'getSalesComission'
+  },
+  'POST /SalesComission/':{
+    controller:'comission',
+    action:'updateSalesComission'
+  },
+  'GET /ServiceComission/':{
+    controller:'comission',
+    action:'getServiceComission'
+  },
+  'POST /ServiceComission/':{
+    controller:'comission',
+    action:'updateServiceComission'
+  },
   'PATCH /user/:id':{
     controller:'user',
     action:'update'
