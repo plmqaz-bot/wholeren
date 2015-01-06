@@ -1684,6 +1684,56 @@ var ServiceView=Wholeren.FormView.extend({
         // },
 });
 
+
+var ComissionView=Wholeren.FormView.extend({
+    initialize: function (options) {
+            this.rank=$('#rank').text();
+            _.bindAll(this,'rerenderSingle');
+            _.bindAll(this,'renderCollection');
+            _.bindAll(this,'renderCollectionCore');
+            _.bindAll(this,'renderSingle');
+            _.bindAll(this,'modifyRow');
+            this.serviceTypes=new Obiwang.Collections.ServiceType();
+            var self=this;
+            this.render();
+          // $('.Contracts.responsive').floatThead();
+            if (options.collection) {
+                this.collection = options.collection;
+                this.serviceTypes.fetch().done(function(data){
+                    self.collection.on("sort", self.renderCollection, self);
+                    self.ready=true;
+                    self.renderCollection();
+                    
+                });
+                
+            } else if (!this.collection || this.collection.length < 1) {
+                this.collection = new Obiwang.Collections.Contract();
+                $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
+                    
+                    self.collection.on("sort", self.renderCollection, self);
+                    self.collection.on("reset", self.renderCollection, self);
+                    self.ready=true;
+                    self.renderCollection();
+                });
+            }    
+            // Now get filters
+            $.ajax({
+                url: '/contract/getFilters/',
+                type: 'GET',
+                headers: {
+                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                },
+                success: function (data) {
+                    self.renderFilterButtons(data);                
+                },
+                error: function (xhr) {
+                    console.log('error');
+                }
+            });
+            //self.collection.on("sort", this.renderCollection, this); 
+        },
+
+});
 var ApplicationEdit=EditForm.extend({
     template: JST['serviceEdit'],
     events:{

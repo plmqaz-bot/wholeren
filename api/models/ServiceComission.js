@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
   	service:{model:'Service'},
   	user:{model:'User'},
+  	application:{model:'Application'},
   	startprogress:{model:'ServiceStatus'},
   	endprogress:{model:'ServiceStatus'},
   	year:{type:'int'},

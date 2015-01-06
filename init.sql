@@ -143,3 +143,5 @@ m1.转学签约量,
 m1.转学签约额,
 m1.转学签约量/m1.转学咨询量 as '转学签约率'
  from MonthlySummary m1 left join MonthlySummary m2 on m1.M=(m2.M%12+1) and m1.Y=m2.Y+FLOOR(m2.M/12);
+
+ 
