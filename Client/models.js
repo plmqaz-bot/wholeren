@@ -49,6 +49,9 @@ Models={
     idAttribute: "id",
     urlRoot:'/Service/'
     }),
+    SalesComission: Backbone.Model.extend({
+        urlRoot:'/SalesComission/'
+    }),
     User:Backbone.Model.extend({
         urlRoot:'/User/'
     }),
@@ -161,7 +164,7 @@ var sortableCollection=Backbone.PageableCollection.extend({
                     if(tocomp instanceof Array&&tocomp.length>0){
                         tocomp.forEach(function(e){
                             var c=e[attr];
-                            if(c!=undefined){
+                            if(c!==undefined){
                                 if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                                     var ind=_.findIndex(value,function(v){
                                         return match(c,v,ele);
@@ -178,7 +181,7 @@ var sortableCollection=Backbone.PageableCollection.extend({
                         });
                     }else{
                         tocomp=obj[attr];
-                        if(tocomp!=undefined){
+                        if(tocomp!==undefined){
                             if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
                                 var ind=_.findIndex(value,function(v){
                                     return match(tocomp,v,ele);
@@ -192,7 +195,7 @@ var sortableCollection=Backbone.PageableCollection.extend({
                         }else{
                             filteredout=true;
                         }
-                    }                                
+                    }                               
                     
                 });
                 return !filteredout;
@@ -304,7 +307,39 @@ Collections={
         },
         whereclaus:function(){
             var where={};
-            where.contractSigned={}
+            where.contractSigned={};
+             try{
+               if(this.startDate){
+                    where.contractSigned['>']=new Date(this.startDate);
+                }
+                if(this.endDate){
+                    where.contractSigned['<']=new Date(this.endDate);
+                }
+                if(where.contractSigned){
+                    return JSON.stringify(where);
+                }
+            }catch(e){
+                return "{}";
+            }
+            return "{}";
+        }
+    }),
+    SalesComission:sortableCollection.extend({
+        model:Models.SalesComission,
+        url: function(){return '/SalesComission/?where='+this.whereclaus();},
+        
+        initialize:function(){
+            this.selectedStrat({sortAttr:'contract.createdAt'});
+            this.startDate="9/1/2014";
+            this.endDate="";
+        },
+        setdate:function(options){
+            this.startDate=options.startDate;
+            this.endDate=options.endDate;
+        },
+        whereclaus:function(){
+            var where={};
+            where.contractSigned={};
              try{
                if(this.startDate){
                     where.contractSigned['>']=new Date(this.startDate);

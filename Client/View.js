@@ -1686,52 +1686,49 @@ var ServiceView=Wholeren.FormView.extend({
 
 
 var ComissionView=Wholeren.FormView.extend({
+    singleTemplate:JST['salesComissionSingle'],
+    templateName:'salesComission',
     initialize: function (options) {
-            this.rank=$('#rank').text();
-            _.bindAll(this,'rerenderSingle');
-            _.bindAll(this,'renderCollection');
-            _.bindAll(this,'renderCollectionCore');
-            _.bindAll(this,'renderSingle');
-            _.bindAll(this,'modifyRow');
-            this.serviceTypes=new Obiwang.Collections.ServiceType();
-            var self=this;
-            this.render();
-          // $('.Contracts.responsive').floatThead();
-            if (options.collection) {
-                this.collection = options.collection;
-                this.serviceTypes.fetch().done(function(data){
-                    self.collection.on("sort", self.renderCollection, self);
-                    self.ready=true;
-                    self.renderCollection();
-                    
-                });
-                
-            } else if (!this.collection || this.collection.length < 1) {
-                this.collection = new Obiwang.Collections.Contract();
-                $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
-                    
-                    self.collection.on("sort", self.renderCollection, self);
-                    self.collection.on("reset", self.renderCollection, self);
-                    self.ready=true;
-                    self.renderCollection();
-                });
-            }    
-            // Now get filters
-            $.ajax({
-                url: '/contract/getFilters/',
-                type: 'GET',
-                headers: {
-                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
-                },
-                success: function (data) {
-                    self.renderFilterButtons(data);                
-                },
-                error: function (xhr) {
-                    console.log('error');
-                }
-            });
-            //self.collection.on("sort", this.renderCollection, this); 
-        },
+        this.rank=$('#rank').text();
+        _.bindAll(this,'rerenderSingle');
+        _.bindAll(this,'renderCollection');
+        _.bindAll(this,'renderCollectionCore');
+        this.el=options.el;
+        var self=this;
+        this.collection = new Obiwang.Collections['SalesComission']();
+        this.render();
+        this.collection.fetch().then(function(){
+            self.renderCollectionCore();
+            self.collection.on("sort", self.renderCollection, self);
+            self.collection.on("reset",self.renderCollection,self);
+        }).fail(function(err){
+            util.handleRequestError(err); 
+        });
+    },
+    events: {
+    'click .add,.edit,.del':'editApplication',
+    'click  button.button-alt': 'refetch',
+    'click .sortable':'sortCollection',
+    'click a.page':'switchPage'
+    },    
+    refetch:function(e){
+        var startDate=$('#startDate').val();
+        var endDate=$('#endDate').val();
+        this.collection.setdate({startDate:startDate,endDate:endDate});
+        this.collection.endDate=endDate;
+        this.removeAll();
+        this.collection.fetch({reset:true});
+    },    
+    renderCollection: function (){
+        this.renderCollectionCore();                 
+    },
+    headline:function(obj){
+        if(obj.contract.client){
+            return obj.contract.client.chineseName;                
+        }else{
+            return "NO NAME";
+        }
+    },
 
 });
 var ApplicationEdit=EditForm.extend({
