@@ -7,24 +7,33 @@
 var Promise=require('bluebird');
 module.exports = {
 	'getSalesComission':function(req,res){
-		var id=req.session.user.id;
-		var promise;
-		switch(req.session.user.rank){
-			case "2":
-			promise=User.find({boss:id}).then(function(mypuppets){
-				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-				var where=JSON.stringify(puppetIDs).replace("[","(").replace("]",")");
-				return Promise.resolve(where);
-			});
-			break;
-			default:
-			promise=User.find({id:id}).then(function(data){
+		//var id=req.session.user.id;
+		var id=165;
+		console.log(id);
+		// var promise;
+		// switch(req.session.user.rank){
+		// 	case "2":
+		// 	promise=User.find({boss:id}).then(function(mypuppets){
+		// 		var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
+		// 		var where=JSON.stringify(puppetIDs).replace("[","(").replace("]",")");
+		// 		return Promise.resolve(where);
+		// 	});
+		// 	break;
+		// 	default:
+		// 	promise=User.find({id:id}).then(function(data){
 				
-			});
-		}
-		promise.then(function(data){
-			var sql="";
+		// 	});
+		// }
+		
+		var sql="call SalesComission(0,0,'2014-01-01','2015-01-01');";
+		Contract.query(sql,function(err,data){
+			if(err){
+				console.log(err);
+				return res.json(400,err);
+			}
+			return res.json(data[0]);
 		});
+		
 	},
 	'updateSalesComission':function(req,res){
 		var attribs=req.body;

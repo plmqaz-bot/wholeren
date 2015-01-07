@@ -11,6 +11,7 @@ var Notification = {};
 var validator=require('./validator.js');
 var util=require('./util');
 var JST=require('./JST');
+var backgrid=require('backgrid');
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 === v2) {
@@ -1685,9 +1686,61 @@ var ServiceView=Wholeren.FormView.extend({
 });
 
 
-var ComissionView=Wholeren.FormView.extend({
-    singleTemplate:JST['salesComissionSingle'],
+var SalesComissionView=Wholeren.FormView.extend({
     templateName:'salesComission',
+    initialize: function (options) {
+        this.rank=$('#rank').text();
+        // _.bindAll(this,'rerenderSingle');
+        // _.bindAll(this,'renderCollection');
+        // _.bindAll(this,'renderCollectionCore');
+        this.el=options.el;
+        // var self=this;
+         this.collection = new Obiwang.Collections['SalesComission']();
+         this.render();
+        // this.collection.fetch().then(function(){
+        //     self.renderCollectionCore();
+        //     self.collection.on("sort", self.renderCollection, self);
+        //     self.collection.on("reset",self.renderCollection,self);
+        // }).fail(function(err){
+        //     util.handleRequestError(err); 
+        // });
+        this.columns=[{name:'userid',label:'User',editable: false,cell:'integer'}];
+        var grid=new backgrid.Grid({columns:this.columns,collection:this.collection});
+        $('.table-wrapper').append(grid.render().el);
+        var paginator = new backgrid.Extension.Paginator({
+              collection: this.collection
+            });
+        $('.table-wrapper').after(paginator.render().el);
+        this.collection.fetch({reset:true});
+    },
+    events: {
+    'click  button.button-alt': 'refetch',
+    //'click .sortable':'sortCollection',
+    'click a.page':'switchPage'
+    },    
+    // refetch:function(e){
+    //     var startDate=$('#startDate').val();
+    //     var endDate=$('#endDate').val();
+    //     this.collection.setdate({startDate:startDate,endDate:endDate});
+    //     this.collection.endDate=endDate;
+    //     this.removeAll();
+    //     this.collection.fetch({reset:true});
+    // },    
+    // renderCollection: function (){
+    //     this.renderCollectionCore();                 
+    // },
+    // headline:function(obj){
+    //     if(obj.contract.client){
+    //         return obj.contract.client.chineseName;                
+    //     }else{
+    //         return "NO NAME";
+    //     }
+    // }
+});
+
+var ServiceComissionView=Wholeren.FormView.extend({
+    singleTemplate:JST['serviceComissionSingle'],
+    templateName:'serviceComission',
     initialize: function (options) {
         this.rank=$('#rank').text();
         _.bindAll(this,'rerenderSingle');
@@ -1695,7 +1748,7 @@ var ComissionView=Wholeren.FormView.extend({
         _.bindAll(this,'renderCollectionCore');
         this.el=options.el;
         var self=this;
-        this.collection = new Obiwang.Collections['SalesComission']();
+        this.collection = new Obiwang.Collections['ServiceComission']();
         this.render();
         this.collection.fetch().then(function(){
             self.renderCollectionCore();
@@ -1706,7 +1759,6 @@ var ComissionView=Wholeren.FormView.extend({
         });
     },
     events: {
-    'click .add,.edit,.del':'editApplication',
     'click  button.button-alt': 'refetch',
     'click .sortable':'sortCollection',
     'click a.page':'switchPage'
@@ -1728,8 +1780,7 @@ var ComissionView=Wholeren.FormView.extend({
         }else{
             return "NO NAME";
         }
-    },
-
+    }
 });
 var ApplicationEdit=EditForm.extend({
     template: JST['serviceEdit'],
@@ -2135,6 +2186,6 @@ module.exports={
         Market:MarketView,
         Setting:SettingView,
         User:UserView,
-        Auth:Views
-
+        Auth:Views,
+        SalesComission:SalesComissionView
 };

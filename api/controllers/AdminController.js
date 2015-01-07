@@ -23,7 +23,7 @@ adminNavbar = {
         name: 'Comission',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/Comission/',
+        path: '/comission/',
         display:true
     },
     market: {

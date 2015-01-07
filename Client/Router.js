@@ -13,6 +13,7 @@ var Router=Backbone.Router.extend({
         'market(/:pane)/':'market',
         'contract(/:option/)/':'contract',
         'service/(:option)':'service',
+        'comission/(:option)':'salescomission',
         'user/(:option)':'user',
         'register/'        : 'register',
         'signup/'          : 'signup',
@@ -74,6 +75,11 @@ var Router=Backbone.Router.extend({
     service:function(option){
         if(!Wholeren.currentView){
             Wholeren.currentView=new  Wholeren.Views.Service({el:'.content-view-container',id:option});
+        }
+    },
+    salescomission:function(option){
+        if(!Wholeren.currentView){
+            Wholeren.currentView=new  Wholeren.Views.SalesComission({el:'.content-view-container',id:option});
         }
     },
     user:function(option){

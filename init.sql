@@ -148,7 +148,7 @@ m1.转学签约量/m1.转学咨询量 as '转学签约率'
 # SALES COMISSION whole table or single 
 DROP PROCEDURE IF EXISTS SalesComission;
 delimiter ;;
-create PROCEDURE SalesComission (uid int,sid int)
+create PROCEDURE SalesComission (uid int,sid int, start date, end date)
 COMMENT ''
 BEGIN
 select user.id as "userid",service.id as "serviceid",contract.id as "contractid",user.nickname,servicetype.serviceType,service.price,salesrole.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.commission from user 
@@ -157,6 +157,6 @@ inner join service on (service.contract=contract.id)
 left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
 left join salesrole on (activeRole=salesrole.id)
 left join servicetype on (service.serviceType=servicetype.id)
-where (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0) ;
+where (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0) and (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null);
 END;;
 delimiter ;

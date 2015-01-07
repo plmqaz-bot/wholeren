@@ -72,12 +72,10 @@ var sortableCollection=Backbone.PageableCollection.extend({
             nested:'firstName',
             asec:true
         },
-        mode:"",
-        pagesize:100,
+        mode:"client",
+        pagesize:20,
         state:{
-            firstPage:0,
-            currentPage:2,
-            totalRecords:200
+            pageSize:100
         },
         comparator:function(A,B){
             var aAttr='';
