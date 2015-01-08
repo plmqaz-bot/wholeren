@@ -16,7 +16,7 @@ module.exports = {
 
   	activeRole:{model:'SalesRole'},
 
-  	extra:{type:'number'}
+  	extra:{type:'float'}
   }
 };
 

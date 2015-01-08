@@ -1,6 +1,7 @@
 ﻿"use strict";
 var $ = require('./floatThead.js');
 //var Backbone = require('backbone');
+var backgrid=require('./backgrid.js');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
 Backbone.$=$;
@@ -11,7 +12,7 @@ var Notification = {};
 var validator=require('./validator.js');
 var util=require('./util');
 var JST=require('./JST');
-var backgrid=require('backgrid');
+
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 === v2) {
@@ -1704,28 +1705,38 @@ var SalesComissionView=Wholeren.FormView.extend({
         // }).fail(function(err){
         //     util.handleRequestError(err); 
         // });
-        this.columns=[{name:'userid',label:'User',editable: false,cell:'integer'}];
+        this.columns=[
+        {name:'contract',label:'Contract',editable:false,cell:'string'},
+        {name:'nickname',label:'User',editable: false,cell:'string'},
+        {name:'serviceType',label:'Service',cell:'string'},
+        {name:'price',label:'Price',editable:false,cell:'number'},
+        {name:'salesRole',label:'Role',cell:'string'},
+        {name:'comissionPercent',label:'RoleComission',editable: false,cell:'number'},
+        {name:'flatComission',label:'Flat',editable: false,cell:'number'},
+        {name:'comission',label:'ServiceComission',editable: false,cell:'number'},
+        {name:'extra',label:'Extra',cell:'number'},
+        ];
         var grid=new backgrid.Grid({columns:this.columns,collection:this.collection});
         $('.table-wrapper').append(grid.render().el);
-        var paginator = new backgrid.Extension.Paginator({
-              collection: this.collection
-            });
-        $('.table-wrapper').after(paginator.render().el);
-        this.collection.fetch({reset:true});
+        // var paginator = new backgrid.Extension.Paginator({
+        //       collection: this.collection
+        //     });
+        // $('.table-wrapper').after(paginator.render().el);
+         //this.collection.fetch({reset:true});
     },
     events: {
     'click  button.button-alt': 'refetch',
     //'click .sortable':'sortCollection',
     'click a.page':'switchPage'
     },    
-    // refetch:function(e){
-    //     var startDate=$('#startDate').val();
-    //     var endDate=$('#endDate').val();
-    //     this.collection.setdate({startDate:startDate,endDate:endDate});
-    //     this.collection.endDate=endDate;
-    //     this.removeAll();
-    //     this.collection.fetch({reset:true});
-    // },    
+    refetch:function(e){
+        var startDate=$('#startDate').val();
+        var endDate=$('#endDate').val();
+        this.collection.setdate({startDate:startDate,endDate:endDate});
+        this.collection.endDate=endDate;
+        this.collection.reset();
+        this.collection.fetch({reset:true});
+    },    
     // renderCollection: function (){
     //     this.renderCollectionCore();                 
     // },

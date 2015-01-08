@@ -15,7 +15,7 @@ module.exports = {
   	endprogress:{model:'ServiceStatus'},
   	year:{type:'int'},
   	month:{type:'int'},
-  	extra:{type:'number'}
+  	extra:{type:'float'}
   }
 };
 

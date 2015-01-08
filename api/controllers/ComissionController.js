@@ -37,19 +37,29 @@ module.exports = {
 	},
 	'updateSalesComission':function(req,res){
 		var attribs=req.body;
-		if(attribs==null) return res.json(404);
+		if(attribs==null) return res.json(400,'no attribs');
 		if(attribs.user==null||attribs.service==null){
-			return res.json(404);
+			return res.json(404, 'not valid');
 		}
+		var toupdate={};
+		if(attribs.activeRole) toupdate.activeRole=attribs.activeRole;
+		if(attribs.extra) toupdate.extra=attribs.extra;
+		toupdate.user=attribs.user;
+		toupdate.service=attribs.service;
+		console.log(toupdate);
 		ContractComission.findOne({user:attribs.user,service:attribs.service}).then(function(data){
 			if(data){
-				attribs.id=data.id
-				return ContractComission.update(attribs);
+				//toupdate.id=data.id
+				console.log("updating ",toupdate);
+				return ContractComission.update({id:data.id},toupdate);
 			}else{
-				return ContractComission.create(attribs);
+				console.log("creating ",toupdate);
+				return ContractComission.create(toupdate);
 			}
 		}).then(function(data){
-			return res.json(200);
+			console.log('done');
+
+			return res.json({extra:10});
 		}).fail(function(err){
 			console.log(err);
 			return res.json(400,err);

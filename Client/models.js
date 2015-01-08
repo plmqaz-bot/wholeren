@@ -50,6 +50,13 @@ Models={
     urlRoot:'/Service/'
     }),
     SalesComission: Backbone.Model.extend({
+            initialize: function () {
+            Backbone.Model.prototype.initialize.apply(this, arguments);
+            this.on("change", function (model, options) {
+                if (options && options.save === false) return;
+                model.save();
+            });
+        },
         urlRoot:'/SalesComission/'
     }),
     User:Backbone.Model.extend({
@@ -72,10 +79,12 @@ var sortableCollection=Backbone.PageableCollection.extend({
             nested:'firstName',
             asec:true
         },
-        mode:"client",
-        pagesize:20,
+        mode:"",
+        pagesize:100,
         state:{
-            pageSize:100
+            firstPage:0,
+            currentPage:0,
+            totalRecords:200
         },
         comparator:function(A,B){
             var aAttr='';
@@ -330,6 +339,7 @@ Collections={
             this.selectedStrat({sortAttr:'contract.createdAt'});
             this.startDate="9/1/2014";
             this.endDate="";
+            this.mode="client";
         },
         setdate:function(options){
             this.startDate=options.startDate;

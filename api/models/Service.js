@@ -28,7 +28,7 @@ module.exports = {
 
 	step2:{type:'date'},
 
-  price:{type:'number'}
+  price:{type:'float'}
   }
 };
 

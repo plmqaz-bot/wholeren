@@ -16,7 +16,7 @@ module.exports = {
 
   	addApplication:{type:'bool',required:true,defaultsTo:false},
 
-  	commission:{type:'number',required:true,defaultsTo:0},
+  	comission:{type:'number',required:true,defaultsTo:0},
 
   	
 
