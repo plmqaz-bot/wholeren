@@ -2,6 +2,7 @@
 var parse=require('csv-parse');
 var fs=require('fs');
 var Promise=require('bluebird');
+var _=require('lodash');
  function makeHash(data,name){
         var hash={};
         data.forEach(function(ele){
@@ -26,6 +27,17 @@ module.exports = {
     },
     makeHash:function(data,name){
     	makeHash(data,name);
+    },
+    backgridHash:function(data,name){
+    	return _.map(data,function(ele){
+    		return [ele[name],ele['id']];
+    	});
+    },
+    formatDate:function(date){
+    	var d=new Date(date);
+    	console.log(d);
+    	console.log(d.getMonth());
+    	return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
     },
     importContract:function(filename){
 		var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={},SERVICETYPE={};

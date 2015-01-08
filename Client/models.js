@@ -339,7 +339,7 @@ Collections={
             this.selectedStrat({sortAttr:'contract.createdAt'});
             this.startDate="9/1/2014";
             this.endDate="";
-            this.mode="client";
+            this.mode="";
         },
         setdate:function(options){
             this.startDate=options.startDate;

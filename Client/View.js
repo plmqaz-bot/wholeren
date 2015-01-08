@@ -1,7 +1,7 @@
 ﻿"use strict";
 var $ = require('./floatThead.js');
 //var Backbone = require('backbone');
-var backgrid=require('./backgrid.js');
+var Backgrid=require('./backgrid.js');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
 Backbone.$=$;
@@ -15,7 +15,7 @@ var JST=require('./JST');
 
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
-    if (v1 === v2) {
+    if (v1 == v2) {
         return options.fn(this);
     }
     return options.inverse(this);
@@ -1705,19 +1705,45 @@ var SalesComissionView=Wholeren.FormView.extend({
         // }).fail(function(err){
         //     util.handleRequestError(err); 
         // });
-        this.columns=[
-        {name:'contract',label:'Contract',editable:false,cell:'string'},
-        {name:'nickname',label:'User',editable: false,cell:'string'},
-        {name:'serviceType',label:'Service',cell:'string'},
-        {name:'price',label:'Price',editable:false,cell:'number'},
-        {name:'salesRole',label:'Role',cell:'string'},
-        {name:'comissionPercent',label:'RoleComission',editable: false,cell:'number'},
-        {name:'flatComission',label:'Flat',editable: false,cell:'number'},
-        {name:'comission',label:'ServiceComission',editable: false,cell:'number'},
-        {name:'extra',label:'Extra',cell:'number'},
-        ];
-        var grid=new backgrid.Grid({columns:this.columns,collection:this.collection});
-        $('.table-wrapper').append(grid.render().el);
+        var testroles;
+        var self=this;
+        $.ajax({
+            url: '/SalesComission/roles/',
+            type: 'GET',
+            headers: {
+                'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+            },
+            success: function (data) {
+                testroles=[{name:10,values:data}]; 
+                self.myselect=Backgrid.SelectCell.extend({
+                    optionValues:testroles,
+                    formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                        toRaw: function (formattedValue, model) {
+                          return formattedValue == null ? null: parseInt(formattedValue);
+                        }
+                    })
+                });
+                var columns=[
+                {name:'contract',label:'Contract',editable:false,cell:'string'},
+                {name:'nickname',label:'User',editable: false,cell:'string'},
+                {name:'serviceType',label:'Service',cell:'string'},
+                {name:'price',label:'Price',editable:false,cell:'number'},
+                {name:'salesRole',label:'Role',cell:self.myselect},
+                {name:'comissionPercent',label:'RoleComission',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
+                {name:'flatComission',label:'Flat',editable: false,cell:'number'},
+                {name:'comission',label:'ServiceComission',editable: false,cell:'number'},
+                {name:'extra',label:'Extra',cell:'number'},
+                {name:'final',label:'佣金',cell:'number'}
+                ];
+                var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+                $('.table-wrapper').append(grid.render().el);                           
+            },
+            error: function (xhr) {
+                console.log('error');
+            }
+        });
+        
+        
         // var paginator = new backgrid.Extension.Paginator({
         //       collection: this.collection
         //     });
@@ -1730,6 +1756,7 @@ var SalesComissionView=Wholeren.FormView.extend({
     'click a.page':'switchPage'
     },    
     refetch:function(e){
+        if(!this.myselect) return;
         var startDate=$('#startDate').val();
         var endDate=$('#endDate').val();
         this.collection.setdate({startDate:startDate,endDate:endDate});

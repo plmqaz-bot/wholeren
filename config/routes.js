@@ -85,6 +85,10 @@ module.exports.routes = {
     controller:'comission',
     action:'getSalesComission'
   },
+  'GET /SalesComission/roles/':{
+    controller:'comission',
+    action:'getSalesRoles'
+  },
   'POST /SalesComission/':{
     controller:'comission',
     action:'updateSalesComission'

@@ -67,33 +67,38 @@ insert into role values('文书',NULL,NOW(),NOW());
 insert into role values('专家',NULL,NOW(),NOW());
 
 #服务 TODO: add the recommended price and also base comission
-insert into servicetype values('a.澄清','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('b.申诉','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('c1.找律师','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('c2.带律师的申诉','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('d1.紧急服务之cc或语言申请','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('d2.紧急服务之高中申请','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('d3.紧急服务之大U申请','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('e.身份激活','Emerg',NULL,NOW(),NOW());
-insert into servicetype values('i1.CC或语言申请','Transfer',NULL,NOW(),NOW());
-insert into servicetype values('i2.高中申请','Transfer',NULL,NOW(),NOW());
-insert into servicetype values('i3.大U申请(本或硕)','Transfer',NULL,NOW(),NOW());
-insert into servicetype values('i4.国会奖申请','Transfer',NULL,NOW(),NOW());
-insert into servicetype values('z.北京所购服务送的cc only申请','Transfer',NULL,NOW(),NOW());
-insert into servicetype values('p.文书','Transfer',NULL,NOW(),NOW());
-insert into servicetype values('f1.签证辅导普通','Visa',NULL,NOW(),NOW());
-insert into servicetype values('f2.签证辅导VIP','Visa',NULL,NOW(),NOW());
-insert into servicetype values('g.签证工具（PAP）','Visa',NULL,NOW(),NOW());
-insert into servicetype values('h1.学术正轨','Study',NULL,NOW(),NOW());
-insert into servicetype values('h2.早起鸟','Study',NULL,NOW(),NOW());
-insert into servicetype values('h3.单科辅导','Study',NULL,NOW(),NOW());
-insert into servicetype values('h4.托福辅导','Study',NULL,NOW(),NOW());
-insert into servicetype values('h5.ASPIRE全套1年','Study',NULL,NOW(),NOW());
-insert into servicetype values('h6.ASPIRE全套2年','Study',NULL,NOW(),NOW());
-insert into servicetype values('h7.选课辅导','Study',NULL,NOW(),NOW());
-insert into servicetype values('薛涌留美预科','Study',NULL,NOW(),NOW());
-insert into servicetype values('紧急助理','Study',NULL,NOW(),NOW());
-insert into servicetype values('选课指导','Study',NULL,NOW(),NOW());
+insert into servicetype values('a.澄清','Emerg',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('b.申诉','Emerg',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('c1.找律师','Emerg',false,0.5,NULL,NOW(),NOW());
+insert into servicetype values('c2.带律师的申诉','Emerg',false,0.5,NULL,NOW(),NOW());
+insert into servicetype values('d1.紧急服务之cc或语言申请','Emerg',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('d2.紧急服务之高中申请','Emerg',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('d3.紧急服务之大U申请','Emerg',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('e.身份激活','Emerg',false,0.5,NULL,NOW(),NOW());
+insert into servicetype values('j.$4500省心装(申诉+紧急转)','Emerg',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('L.$7000 紧急礼包二','Emerg',true,0.82,NULL,NOW(),NOW());
+insert into servicetype values('M.$11000, 紧急礼包4，全包','Emerg',true,0.85,NULL,NOW(),NOW());
+insert into servicetype values('K.$5000正规+转学','Emerg',true,0.75,NULL,NOW(),NOW());
+insert into servicetype values('i1.CC或语言申请','Transfer',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('i2.高中申请','Transfer',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('i3.大U申请(本或硕)','Transfer',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('i4.国会奖申请','Transfer',true,0.9,NULL,NOW(),NOW());
+insert into servicetype values('z.北京所购服务送的cc only申请','Transfer',0.9,true,NULL,NOW(),NOW());
+insert into servicetype values('p.文书','Transfer',true,0.75,NULL,NOW(),NOW());
+insert into servicetype values('f1.签证辅导普通','Visa',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('f2.签证辅导VIP','Visa',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('g.签证工具（PAP）','Visa',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('h1.学术正轨','Study',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('h2.早起鸟','Study',true,0.6,NULL,NOW(),NOW());
+insert into servicetype values('h3.单科辅导','Study',false,0.6,NULL,NOW(),NOW());
+insert into servicetype values('h4.托福辅导','Study',false,0.6,NULL,NOW(),NOW());
+insert into servicetype values('h5.ASPIRE全套1年','Study',false,0.6,NULL,NOW(),NOW());
+insert into servicetype values('h6.ASPIRE全套2年','Study',false,0.6,NULL,NOW(),NOW());
+insert into servicetype values('h7.选课辅导','Study',false,0.6,NULL,NOW(),NOW());
+insert into servicetype values('薛涌留美预科','Study',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('紧急助理','Study',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('选课指导','Study',false,0.9,NULL,NOW(),NOW());
+
 
 #服务进度
 insert into servicestatus values('W.等待启动',NULL,NOW(),NOW());
@@ -102,7 +107,27 @@ insert into servicestatus values('B.提交进行中',NULL,NOW(),NOW());
 insert into servicestatus values('C.已交等结果',NULL,NOW(),NOW());
 insert into servicestatus values('D.服务结束',NULL,NOW(),NOW());
 
-
+#销售角色
+insert into salesrole values('紧急销售',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('紧急专家',0.035,0,NULL,NOW(),NOW());
+insert into salesrole values('转学销售',0.08,0,NULL,NOW(),NOW());
+insert into salesrole values('转学专家',0.035,0,NULL,NOW(),NOW());
+insert into salesrole values('紧急销售之协助签约1级',0.036,0,NULL,NOW(),NOW());
+insert into salesrole values('紧急销售之协助签约2级',0.048,0,NULL,NOW(),NOW());
+insert into salesrole values('转学销售之协助签约1级',0.048,0,NULL,NOW(),NOW());
+insert into salesrole values('转学销售之协助签约2级',0.064,0,NULL,NOW(),NOW());
+insert into salesrole values('薛涌销售',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('紧急助理',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('选课指导',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('紧急协助签约2级',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('紧急协助签约1级',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('转学协助签约2级',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('转学协助签约1级',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('签证一次辅导&过',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('签证一次辅导&不过',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('签证第二次后辅导&不过',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('签证2次辅活以上辅导&过',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('无角色',0,0,NULL,NOW(),NOW());
 
 #Now create some views for summary information
 # This is the monthly Information. 
@@ -148,15 +173,17 @@ m1.转学签约量/m1.转学咨询量 as '转学签约率'
 # SALES COMISSION whole table or single 
 DROP PROCEDURE IF EXISTS SalesComission;
 delimiter ;;
-create PROCEDURE SalesComission (uid int,sid int, start date, end date)
+create PROCEDURE SalesComission (uid int,sid int, start date, end date,single bool)
 COMMENT ''
 BEGIN
-select user.id as "userid",service.id as "serviceid",contract.id as "contractid",user.nickname,servicetype.serviceType,service.price,salesrole.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.commission from user 
+select user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
 inner join contract on (contract.sales=user.id or contract.assistant=user.id)
 inner join service on (service.contract=contract.id)
 left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
-left join salesrole on (activeRole=salesrole.id)
+left join salesrole on (contractcomission.salesRole=salesrole.id)
 left join servicetype on (service.serviceType=servicetype.id)
-where (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0) and (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null);
+where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
+ and (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null);
 END;;
 delimiter ;
+

@@ -89,11 +89,11 @@ Contract, service pagination --DONE
 
 
 View for sales:
-1. monthly sales contract comission 
+1. monthly sales contract comission --DONE
 2. monthly sales target/completion 
 3. monthly sales record. --DONE
 
-
+sales comission select time --DONE
 edit init.sql to create the procedures
 
  

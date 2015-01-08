@@ -24,8 +24,16 @@ module.exports = {
 				
 		// 	});
 		// }
-		
-		var sql="call SalesComission(0,0,'2014-01-01','2015-01-01');";
+		var where=req.param('where')||"{}";
+		where=JSON.parse(where);
+		where=where['contractSigned']||{};
+		console.log(where);
+		var startdate=where['>']?"'"+Utilfunctions.formatDate(where['>'])+"'":"null";
+		var enddate=where['<']?"'"+Utilfunctions.formatDate(where['<'])+"'":"null";
+
+		console.log(startdate);
+		console.log(enddate);
+		var sql="call SalesComission(0,0,"+startdate+","+enddate+",false);";
 		Contract.query(sql,function(err,data){
 			if(err){
 				console.log(err);
@@ -42,7 +50,7 @@ module.exports = {
 			return res.json(404, 'not valid');
 		}
 		var toupdate={};
-		if(attribs.activeRole) toupdate.activeRole=attribs.activeRole;
+		if(attribs.salesRole) toupdate.salesRole=attribs.salesRole;
 		if(attribs.extra) toupdate.extra=attribs.extra;
 		toupdate.user=attribs.user;
 		toupdate.service=attribs.service;
@@ -58,8 +66,13 @@ module.exports = {
 			}
 		}).then(function(data){
 			console.log('done');
-
-			return res.json({extra:10});
+			var sql="call SalesComission("+toupdate.user+","+toupdate.service+",'2014-01-01','2015-01-01',true);"
+			ContractComission.query(sql,function(err,data){
+				if(err) return res.json(400,err);
+				if(data[0]) return res.json(data[0][0]);
+				return res.json({});
+				
+			});
 		}).fail(function(err){
 			console.log(err);
 			return res.json(400,err);
@@ -96,6 +109,13 @@ module.exports = {
 		}).fail(function(err){
 			console.log(err);
 			return res.json(400,err);
+		});
+	},
+	'getSalesRoles':function(req,res){
+		SalesRole.find().then(function(data){
+			return res.json(Utilfunctions.backgridHash(data,'salesRole'));
+		}).fail(function(err){
+			return res.json(404,err);
 		});
 	}
 };
