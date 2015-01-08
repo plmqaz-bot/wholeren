@@ -1691,32 +1691,17 @@ var SalesComissionView=Wholeren.FormView.extend({
     templateName:'salesComission',
     initialize: function (options) {
         this.rank=$('#rank').text();
-        // _.bindAll(this,'rerenderSingle');
-        // _.bindAll(this,'renderCollection');
-        // _.bindAll(this,'renderCollectionCore');
         this.el=options.el;
-        // var self=this;
-         this.collection = new Obiwang.Collections['SalesComission']();
-         this.render();
-        // this.collection.fetch().then(function(){
-        //     self.renderCollectionCore();
-        //     self.collection.on("sort", self.renderCollection, self);
-        //     self.collection.on("reset",self.renderCollection,self);
-        // }).fail(function(err){
-        //     util.handleRequestError(err); 
-        // });
+        this.collection = new Obiwang.Collections['SalesComission']();
+        this.render();
         var testroles;
         var self=this;
-        $.ajax({
-            url: '/SalesComission/roles/',
-            type: 'GET',
-            headers: {
-                'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
-            },
-            success: function (data) {
+        util.ajaxGET('/SalesComission/roles/').then(function(data){
                 testroles=[{name:10,values:data}]; 
                 self.myselect=Backgrid.SelectCell.extend({
-                    optionValues:testroles,
+                    optionValues:function(){
+                        return testroles
+                    },
                     formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
                         toRaw: function (formattedValue, model) {
                           return formattedValue == null ? null: parseInt(formattedValue);
@@ -1736,23 +1721,13 @@ var SalesComissionView=Wholeren.FormView.extend({
                 {name:'final',label:'佣金',cell:'number'}
                 ];
                 var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                $('.table-wrapper').append(grid.render().el);                           
-            },
-            error: function (xhr) {
-                console.log('error');
-            }
-        });
-        
-        
-        // var paginator = new backgrid.Extension.Paginator({
-        //       collection: this.collection
-        //     });
-        // $('.table-wrapper').after(paginator.render().el);
-         //this.collection.fetch({reset:true});
+                $('.table-wrapper').append(grid.render().el);
+            }).error(function(err){
+                console.log(err);
+            });        
     },
     events: {
     'click  button.button-alt': 'refetch',
-    //'click .sortable':'sortCollection',
     'click a.page':'switchPage'
     },    
     refetch:function(e){
@@ -1764,16 +1739,6 @@ var SalesComissionView=Wholeren.FormView.extend({
         this.collection.reset();
         this.collection.fetch({reset:true});
     },    
-    // renderCollection: function (){
-    //     this.renderCollectionCore();                 
-    // },
-    // headline:function(obj){
-    //     if(obj.contract.client){
-    //         return obj.contract.client.chineseName;                
-    //     }else{
-    //         return "NO NAME";
-    //     }
-    // }
 });
 
 var ServiceComissionView=Wholeren.FormView.extend({
@@ -1781,9 +1746,6 @@ var ServiceComissionView=Wholeren.FormView.extend({
     templateName:'serviceComission',
     initialize: function (options) {
         this.rank=$('#rank').text();
-        _.bindAll(this,'rerenderSingle');
-        _.bindAll(this,'renderCollection');
-        _.bindAll(this,'renderCollectionCore');
         this.el=options.el;
         var self=this;
         this.collection = new Obiwang.Collections['ServiceComission']();

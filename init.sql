@@ -112,22 +112,33 @@ insert into salesrole values('紧急销售',0.06,0,NULL,NOW(),NOW());
 insert into salesrole values('紧急专家',0.035,0,NULL,NOW(),NOW());
 insert into salesrole values('转学销售',0.08,0,NULL,NOW(),NOW());
 insert into salesrole values('转学专家',0.035,0,NULL,NOW(),NOW());
-insert into salesrole values('紧急销售之协助签约1级',0.036,0,NULL,NOW(),NOW());
-insert into salesrole values('紧急销售之协助签约2级',0.048,0,NULL,NOW(),NOW());
-insert into salesrole values('转学销售之协助签约1级',0.048,0,NULL,NOW(),NOW());
-insert into salesrole values('转学销售之协助签约2级',0.064,0,NULL,NOW(),NOW());
+#insert into salesrole values('销售之协助签约1级',0.036,0,NULL,NOW(),NOW());
+#insert into salesrole values('销售之协助签约2级',0.048,0,NULL,NOW(),NOW());
+insert into salesrole values('销售之协助签约1级',0.048,0,NULL,NOW(),NOW());
+insert into salesrole values('销售之协助签约2级',0.064,0,NULL,NOW(),NOW());
 insert into salesrole values('薛涌销售',0.06,0,NULL,NOW(),NOW());
 insert into salesrole values('紧急助理',0.06,0,NULL,NOW(),NOW());
 insert into salesrole values('选课指导',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('紧急协助签约2级',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('紧急协助签约1级',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('转学协助签约2级',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('转学协助签约1级',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('签证一次辅导&过',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('签证一次辅导&不过',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('签证第二次后辅导&不过',0.06,0,NULL,NOW(),NOW());
-insert into salesrole values('签证2次辅活以上辅导&过',0.06,0,NULL,NOW(),NOW());
+#insert into salesrole values('紧急协助签约2级',0.06,0,NULL,NOW(),NOW());
+#insert into salesrole values('紧急协助签约1级',0.06,0,NULL,NOW(),NOW());
+insert into salesrole values('转学协助签约2级',0.032,0,NULL,NOW(),NOW());
+insert into salesrole values('转学协助签约1级',0.016,0,NULL,NOW(),NOW());
+insert into salesrole values('签证一次辅导&过',0,133,NULL,NOW(),NOW());
+insert into salesrole values('签证一次辅导&不过',0,50,NULL,NOW(),NOW());
+insert into salesrole values('签证第二次后辅导&不过',0,17,NULL,NOW(),NOW());
+insert into salesrole values('签证2次辅活以上辅导&过',0,83,NULL,NOW(),NOW());
+insert into salesrole values('助签销售Level1',0.016,0,NULL,NOW(),NOW());
+insert into salesrole values('助签销售Level2',0,032,NULL,NOW(),NOW());
+insert into salesrole values('申请合作助签Level1',0.015,0,NULL,NOW(),NOW());
+insert into salesrole values('申请合作助签Level2',0.035,0,NULL,NOW(),NOW());
+insert into salesrole values('独立助签',0.05,0,NULL,NOW(),NOW());
+insert into salesrole values('Lead介绍人(陌生)',0.075,0,NULL,NOW(),NOW());
 insert into salesrole values('无角色',0,0,NULL,NOW(),NOW());
+
+
+
+
+
 
 #Now create some views for summary information
 # This is the monthly Information. 
