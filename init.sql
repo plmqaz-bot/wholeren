@@ -170,18 +170,21 @@ insert into servlevel values('DR',NULL,NOW(),NOW());
 
 # Now hard part 服务佣金的lookup table
 select id from servicetype where serviceType like 'a%' into @stype;
-select id from servsrole where servRole ='负责老师' into @srole;
-select id from servicestatus where servRole ='进入服务' into @sprogress1;
-select id from servicestatus where servRole ='选校确定' into @sprogress2;
-select id from servicestatus where servRole ='提交申请' into @sprogress3;
-select id from servicestatus where servRole ='录取佣金' into @sprogress4;
-select id from servicestatus where servRole ='完成服务' into @sprogress5;
+select id from servrole where servRole ='负责老师' into @srole;
+select id from servicestatus where serviceStatus ='进入服务' into @sprogress1;
+select id from servicestatus where serviceStatus ='选校确定' into @sprogress2;
+select id from servicestatus where serviceStatus ='提交申请' into @sprogress3;
+select id from servicestatus where serviceStatus ='录取佣金' into @sprogress4;
+select id from servicestatus where serviceStatus ='完成服务' into @sprogress5;
 insert into servcomissionlookup values(@stype,@srole,NULL,0,30,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,30,@sprogress5,0.5,0,NULL,NOW(),NOW());
 select id from servicetype where serviceType like 'b%' into @stype;	
 insert into servcomissionlookup values(@stype,@srole,NULL,0,100,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,100,@sprogress5,0.5,0,NULL,NOW(),NOW());
-select id from servicetype where serviceType like 'c%' into @stype;	
+select id from servicetype where serviceType like 'c1%' into @stype;	
+insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress1,0.5,0,NULL,NOW(),NOW());
+insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress5,0.5,0,NULL,NOW(),NOW());
+select id from servicetype where serviceType like 'c2%' into @stype;	
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress5,0.5,0,NULL,NOW(),NOW());
 select id from servicetype where serviceType like 'e%' into @stype;	
@@ -220,28 +223,28 @@ insert into servcomissionlookup values(@stype,@srole,NULL,30,0,@sprogress2,0.2,0
 insert into servcomissionlookup values(@stype,@srole,NULL,30,0,@sprogress3,0.3,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,30,0,@sprogress4,0.3,0,NULL,NOW(),NOW());
 select id from servicetype where serviceType like 'i3%' into @stype;	
-select id from servsrole where servRole ='申请全负责老师' into @srole;
+select id from servrole where servRole ='申请全负责老师' into @srole;
 insert into servcomissionlookup values(@stype,@srole,NULL,65,0,@sprogress1,0.2,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,65,0,@sprogress2,0.2,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,65,0,@sprogress3,0.3,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,65,0,@sprogress4,0.3,0,NULL,NOW(),NOW());
-select id from servsrole where servRole ='申请老师' into @srole;
+select id from servrole where servRole ='申请老师' into @srole;
 insert into servcomissionlookup values(@stype,@srole,NULL,30,0,@sprogress1,0,50,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,30,0,@sprogress2,0,100,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,30,0,@sprogress3,0.7,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,30,0,@sprogress4,0.3,0,NULL,NOW(),NOW());
-select id from servsrole where servRole ='选校专家' into @srole;
+select id from servrole where servRole ='选校专家' into @srole;
 insert into servcomissionlookup values(@stype,@srole,NULL,0,0,@sprogress1,0,60,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,0,@sprogress2,0,60,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,0,@sprogress3,0.7,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,0,@sprogress4,0.3,0,NULL,NOW(),NOW());
 
 #文书单卖
-select id from servicestatus where servRole ='文书启动' into @sprogress1;
-select id from servicestatus where servRole ='提交文书' into @sprogress2;
-select id from servicestatus where servRole ='拿到录取' into @sprogress3;
+select id from servicestatus where serviceStatus ='文书启动' into @sprogress1;
+select id from servicestatus where serviceStatus ='提交文书' into @sprogress2;
+select id from servicestatus where serviceStatus ='拿到录取' into @sprogress3;
 select id from servicetype where serviceType like 'p%' into @stype;
-select id from servsrole where servRole ='文书全负责老师' into @srole;
+select id from servrole where servRole ='文书全负责老师' into @srole;
 select id from servlevel where servLevel ='D1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,60,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,60,@sprogress2,0.5,0,NULL,NOW(),NOW());
@@ -257,7 +260,7 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,100,@sprogress2,0
 select id from servlevel where servLevel ='DR' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,30,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,30,@sprogress2,0.5,0,NULL,NOW(),NOW());
-select id from servsrole where servRole ='文书专家' into @srole;
+select id from servrole where servRole ='文书专家' into @srole;
 select id from servlevel where servLevel ='D1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,40,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,40,@sprogress2,0.5,0,NULL,NOW(),NOW());
@@ -273,7 +276,7 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,70,@sprogress2,0.
 select id from servlevel where servLevel ='DR' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,20,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,20,@sprogress2,0.5,0,NULL,NOW(),NOW());
-select id from servsrole where servRole ='文书编辑' into @srole;
+select id from servrole where servRole ='文书编辑' into @srole;
 select id from servlevel where servLevel ='D1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,20,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,20,@sprogress2,0.5,0,NULL,NOW(),NOW());
@@ -289,7 +292,7 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,30,@sprogress2,0.
 select id from servlevel where servLevel ='DR' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,10,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,10,@sprogress2,0.5,0,NULL,NOW(),NOW());
-select id from servsrole where servRole ='Native editor' into @srole;
+select id from servrole where servRole ='Native editor' into @srole;
 select id from servlevel where servLevel ='D1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,40,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,40,@sprogress2,0.5,0,NULL,NOW(),NOW());
@@ -309,7 +312,7 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,20,@sprogress2,0.
 #所有文书服务
 
 @stype:=0;
-select id from servsrole where servRole ='文书全负责老师' into @srole;
+select id from servrole where servRole ='文书全负责老师' into @srole;
 select id from servlevel where servLevel ='H1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,50,@sprogress1,0.3,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,50,@sprogress2,0.4,0,NULL,NOW(),NOW());
@@ -346,7 +349,7 @@ select id from servlevel where servLevel ='UR' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,30,@sprogress1,0.3,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,30,@sprogress2,0.4,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,30,@sprogress3,0.3,0,NULL,NOW(),NOW());
-select id from servsrole where servRole ='文书专家' into @srole;
+select id from servrole where servRole ='文书专家' into @srole;
 select id from servlevel where servLevel ='H1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,35,@sprogress1,0.3,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,35,@sprogress2,0.4,0,NULL,NOW(),NOW());
@@ -383,7 +386,7 @@ select id from servlevel where servLevel ='UR' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,21,@sprogress1,0.3,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,21,@sprogress2,0.4,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,21,@sprogress3,0.3,0,NULL,NOW(),NOW());
-select id from servsrole where servRole ='文书编辑' into @srole;
+select id from servrole where servRole ='文书编辑' into @srole;
 select id from servlevel where servLevel ='H1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,15,@sprogress1,0.3,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,15,@sprogress2,0.4,0,NULL,NOW(),NOW());
