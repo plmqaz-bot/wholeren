@@ -12,8 +12,6 @@ module.exports = {
 
   	serviceType:{model:'ServiceType'},
 
-  	serviceStatus:{model:'ServiceStatus',required:true,defaultsTo:1},
-
   	progress:{type:'int'},
 
     serviceTeacher:{model:'User'},
