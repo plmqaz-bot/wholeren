@@ -311,7 +311,7 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,20,@sprogress2,0.
 
 #所有文书服务
 
-@stype:=0;
+SET @stype=0;
 select id from servrole where servRole ='文书全负责老师' into @srole;
 select id from servlevel where servLevel ='H1' into @slevel;
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,50,@sprogress1,0.3,0,NULL,NOW(),NOW());
