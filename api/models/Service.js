@@ -14,7 +14,7 @@ module.exports = {
 
   	progress:{type:'int'},
 
-    serviceTeacher:{model:'User'},
+    serviceTeacher:{collection:'User'},
 
     application:{collection:'Application', via:'service'},
 

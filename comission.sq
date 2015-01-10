@@ -1,31 +1,31 @@
 use test;
-# sales comission table
-select user.id as "userid",service.id as "serviceid",user.nickname,servicetype.serviceType,service.price,salesrole.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.commission from user 
-inner join contract on (contract.sales=user.id or contract.assistant=user.id)
-inner join service on (service.contract=contract.id)
-left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
-left join salesrole on (activeRole=salesrole.id)
-left join servicetype on (service.serviceType=servicetype.id);
-
-DROP PROCEDURE IF EXISTS test;
+DROP PROCEDURE IF EXISTS SalesComission;
 delimiter ;;
-create PROCEDURE test (uid int,sid int)
+create PROCEDURE SalesComission (uid int,sid int, start date, end date,single bool)
 COMMENT ''
 BEGIN
-declare whereclaus varchar(50);
-if(uid>0) then
-set whereclaus:='user.id='+uid;
-end if;
-select user.id as "userid",service.id as "serviceid",user.nickname,servicetype.serviceType,service.price,salesrole.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.commission from user 
-inner join contract on (contract.sales=user.id or contract.assistant=user.id)
+select user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
+inner join contract on (contract.sales=user.id or contract.assistant=user.id or contract.assisCont=user.id or contract.expert=user.id)
 inner join service on (service.contract=contract.id)
 left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
-left join salesrole on (activeRole=salesrole.id)
-left join servicetype on (service.serviceType=servicetype.id);
+left join salesrole on (contractcomission.salesRole=salesrole.id)
+left join servicetype on (service.serviceType=servicetype.id)
+where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
+ and (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null);
 END;;
 delimiter ;
-call test(1);
+call test(169,0);
 #make sure they are unique
 alter table contractcomission add unique unique_index(user,service);
+alter table contractcomission drop index unique_index;
 alter table servicecomission add unique unique_index(user,service,application);
-select * from servicestatus
+
+select user.id from user where boss=169;
+select * from user;
+select * from 
+use test;
+call SalesComission(0,0,null,null,false);
+
+
+
+select user.id from user where boss=169;

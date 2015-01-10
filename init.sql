@@ -484,3 +484,12 @@ where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id
 END;;
 delimiter ;
 
+
+SELECT * FROM service 
+inner join contract on service.contract=contract.id
+inner join service_user st on st.service=service.id
+inner join user on st.user=user.id
+left join servicecomission on (user.id=servicecomission.user and service.id=servicecomission.service)
+left join servcomissionlookup s1 on (s1.serviceType=service.serviceType and s1.serviceStatus=servicecomission.startprogress and s1.servRole=servicecomission.servRole)
+left join servcomissionlookup s2 on (s2.serviceType=service.serviceType and s2.serviceStatus=servicecomission.startprogress and s2.servRole=servicecomission.servRole)
+ where contract.id =6583 and servicecomission.year=@year and servicecomission.month=@month;
