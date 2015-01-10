@@ -261,7 +261,7 @@ module.exports = {
 	        	else
 	        		return Promise.resolve(null);
 	        }
-	        return User.findOne({ or:[{nickname: user},{firstname: user},{lastname: user}] }).then(function (data){
+	        return User.findOne({ or:[{nickname: {'contains':user}},{firstname: {'contains':user}},{lastname: {'contains':user}}] }).then(function (data){
                 if (data) {
                     return Promise.resolve(data.id);
                 } else { 

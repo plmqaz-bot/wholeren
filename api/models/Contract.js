@@ -78,7 +78,7 @@ module.exports = {
 
     endFee:{type:"boolean",defaultsTo:"false"},
 
-    comment:{collection:"Comment"},
+    comment:{collection:"Comment",via:'contract'},
 
     assistant:{model:'User'},
 

@@ -487,9 +487,9 @@ delimiter ;
 
 SELECT * FROM service 
 inner join contract on service.contract=contract.id
-inner join service_user st on st.service=service.id
-inner join user on st.user=user.id
+inner join service_serviceteacher__user_serviceteacher_user st on st.service_serviceTeacher=service.id
+inner join user on st.user_searviceTeacher_user=user.id
 left join servicecomission on (user.id=servicecomission.user and service.id=servicecomission.service)
-left join servcomissionlookup s1 on (s1.serviceType=service.serviceType and s1.serviceStatus=servicecomission.startprogress and s1.servRole=servicecomission.servRole)
-left join servcomissionlookup s2 on (s2.serviceType=service.serviceType and s2.serviceStatus=servicecomission.startprogress and s2.servRole=servicecomission.servRole)
+left join servcomissionlookup s1 on (s1.serviceType=service.serviceType and s1.serviceStatus=servicecomission.startprogress and s1.servRole=servicecomission.servRole and (s1.servLevel is null or s1.servLevel=servicecomission.servLevel))
+left join servcomissionlookup s2 on (s2.serviceType=service.serviceType and s2.serviceStatus=servicecomission.startprogress and s2.servRole=servicecomission.servRole and (s2.servLevel is null or s2.servLevel=servicecomission.servLevel))
  where contract.id =6583 and servicecomission.year=@year and servicecomission.month=@month;
