@@ -50,14 +50,24 @@ Models={
     urlRoot:'/Service/'
     }),
     SalesComission: Backbone.Model.extend({
-            initialize: function () {
-            Backbone.Model.prototype.initialize.apply(this, arguments);
-            this.on("change", function (model, options) {
-                if (options && options.save === false) return;
-                model.save();
-            });
+        initialize: function () {
+        Backbone.Model.prototype.initialize.apply(this, arguments);
+        this.on("change", function (model, options) {
+            if (options && options.save === false) return;
+            model.save();
+        });
         },
         urlRoot:'/SalesComission/'
+    }),
+    ServiceComission:Backbone.Model.extend({
+        initialize: function () {
+        Backbone.Model.prototype.initialize.apply(this, arguments);
+        this.on("change", function (model, options) {
+            if (options && options.save === false) return;
+            model.save();
+        });
+        },
+        urlRoot:'/ServiceComission/'
     }),
     User:Backbone.Model.extend({
         urlRoot:'/User/'
@@ -333,10 +343,16 @@ Collections={
     }),
     SalesComission:sortableCollection.extend({
         model:Models.SalesComission,
-        url: function(){return '/SalesComission/?where='+this.whereclaus();},
+        url: function(){
+            var toreturn='/SalesComission/?';
+            if(this.startDate)
+                toreturn+='startdate='+this.startDate;
+            if(this.endDate)
+                toreturn+="&enddate="+this.endDate;
+            return toreturn;
+        },
         
         initialize:function(){
-            this.selectedStrat({sortAttr:'contract.createdAt'});
             this.startDate="9/1/2014";
             this.endDate="";
             this.mode="";
@@ -345,24 +361,27 @@ Collections={
             this.startDate=options.startDate;
             this.endDate=options.endDate;
         },
-        whereclaus:function(){
-            var where={};
-            where.contractSigned={};
-             try{
-               if(this.startDate){
-                    where.contractSigned['>']=new Date(this.startDate);
-                }
-                if(this.endDate){
-                    where.contractSigned['<']=new Date(this.endDate);
-                }
-                if(where.contractSigned){
-                    return JSON.stringify(where);
-                }
-            }catch(e){
-                return "{}";
-            }
-            return "{}";
-        }
+    }),
+    ServiceComission:sortableCollection.extend({
+        model:Models.ServiceComission,
+        url: function(){
+            var toreturn='/ServiceComission/?';
+            if(this.year)
+                toreturn+='year='+this.year;
+            if(this.month)
+                toreturn+="&month="+this.month;
+            return toreturn;
+        },
+        
+        initialize:function(){
+            this.year=new Date().getFullYear();
+            this.month=new Date().getMonth()+1;
+            this.mode="";
+        },
+        setdate:function(options){
+            this.year=options.year;
+            this.month=options.month;
+        },
     }),
     User:sortableCollection.extend({
         model: Models.User,

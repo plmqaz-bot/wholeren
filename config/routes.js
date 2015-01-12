@@ -97,10 +97,23 @@ module.exports.routes = {
     controller:'comission',
     action:'getServiceComission'
   },
+  'GET /ServiceComission/roles/':{
+    controller:'comission',
+    action:'getServiceRoles'
+  },
+  'GET /ServiceComission/level/':{
+    controller:'comission',
+    action:'getServiceLevel'
+  },
+  'GET /ServiceComission/status/':{
+    controller:'comission',
+    action:'getServiceStatus'
+  },
   'POST /ServiceComission/':{
     controller:'comission',
     action:'updateServiceComission'
   },
+
   'PATCH /user/:id':{
     controller:'user',
     action:'update'

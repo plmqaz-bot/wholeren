@@ -26,6 +26,13 @@ adminNavbar = {
         path: '/comission/',
         display:true
     },
+    servicecomission: {
+        name: 'ServiceComission',
+        navClass: 'contract',
+        key: 'admin.navbar.contract',
+        path: '/servicecomission/',
+        display:true
+    },
     market: {
         name: 'Market',
         navClass: 'contract',
@@ -130,6 +137,20 @@ module.exports={
         res.render('contract', {
             bodyClass: 'contract',
             adminNav: setSelected(adminNavbar, 'comission'),
+            currentUser:req.session.user
+        });
+    },
+    'servicecomission':function(req,res){
+        if(req.session.manager){
+            adminNavbar.user.display=true;
+            adminNavbar.market.display=true;
+        }else{
+            adminNavbar.user.display=false;
+            adminNavbar.market.display=false;
+        }
+        res.render('contract', {
+            bodyClass: 'contract',
+            adminNav: setSelected(adminNavbar, 'servicecomission'),
             currentUser:req.session.user
         });
     },

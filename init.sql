@@ -99,13 +99,14 @@ insert into servicetype values('薛涌留美预科','Study',false,0.9,NULL,NOW()
 insert into servicetype values('紧急助理','Study',false,0.9,NULL,NOW(),NOW());
 insert into servicetype values('选课指导','Study',false,0.9,NULL,NOW(),NOW());
 
+#Service Progress	
+insert into serviceprogress values('W.等待启动',NULL,NOW(),NOW());
+insert into serviceprogress values('A.紧急处理中',NULL,NOW(),NOW());
+insert into serviceprogress values('B.提交进行中',NULL,NOW(),NOW());
+insert into serviceprogress values('C.已交等结果',NULL,NOW(),NOW());
+insert into serviceprogress values('D.服务结束',NULL,NOW(),NOW());
 
 #服务进度
-#insert into servicestatus values('W.等待启动',NULL,NOW(),NOW());
-#insert into servicestatus values('A.紧急处理中',NULL,NOW(),NOW());
-#insert into servicestatus values('B.提交进行中',NULL,NOW(),NOW());
-#insert into servicestatus values('C.已交等结果',NULL,NOW(),NOW());
-#insert into servicestatus values('D.服务结束',NULL,NOW(),NOW());
 insert into servicestatus values('进入服务',NULL,NOW(),NOW());
 insert into servicestatus values('选校确定',NULL,NOW(),NOW());
 insert into servicestatus values('提交申请',NULL,NOW(),NOW());
@@ -502,7 +503,7 @@ inner join servicetype on service.serviceType=servicetype.id
 left join servicecomission on (user.id=servicecomission.user and service.id=servicecomission.service)
 left join servcomissionlookup s1 on (s1.serviceType=service.serviceType and s1.serviceStatus=servicecomission.startprogress and s1.servRole=servicecomission.servRole and (s1.servLevel is null or s1.servLevel=servicecomission.servLevel))
 left join servcomissionlookup s2 on (s2.serviceType=service.serviceType and s2.serviceStatus=servicecomission.endprogress and s2.servRole=servicecomission.servRole and (s2.servLevel is null or s2.servLevel=servicecomission.servLevel))
-where contract.contractsigned is not NULL and ((servicecomission.year=year and servicecomission.month=month) or (servicecomission.year is NULL and servicecomission.month is NULL))
+where contract.contractsigned is not NULL and ((servicecomission.year=year and servicecomission.month=month) or (year is NULL and month is NULL))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
 END;;
 delimiter ;

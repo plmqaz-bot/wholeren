@@ -1697,7 +1697,7 @@ var SalesComissionView=Wholeren.FormView.extend({
         var testroles;
         var self=this;
         util.ajaxGET('/SalesComission/roles/').then(function(data){
-                testroles=[{name:10,values:data}]; 
+                testroles=[{name:"role",values:data}]; 
                 self.myselect=Backgrid.SelectCell.extend({
                     optionValues:function(){
                         return testroles
@@ -1735,14 +1735,12 @@ var SalesComissionView=Wholeren.FormView.extend({
         var startDate=$('#startDate').val();
         var endDate=$('#endDate').val();
         this.collection.setdate({startDate:startDate,endDate:endDate});
-        this.collection.endDate=endDate;
         this.collection.reset();
         this.collection.fetch({reset:true});
     },    
 });
 
-var ServiceComissionView=Wholeren.FormView.extend({
-    singleTemplate:JST['serviceComissionSingle'],
+var ServiceComissionView=SalesComissionView.extend({
     templateName:'serviceComission',
     initialize: function (options) {
         this.rank=$('#rank').text();
@@ -1750,37 +1748,82 @@ var ServiceComissionView=Wholeren.FormView.extend({
         var self=this;
         this.collection = new Obiwang.Collections['ServiceComission']();
         this.render();
-        this.collection.fetch().then(function(){
-            self.renderCollectionCore();
-            self.collection.on("sort", self.renderCollection, self);
-            self.collection.on("reset",self.renderCollection,self);
-        }).fail(function(err){
-            util.handleRequestError(err); 
-        });
-    },
-    events: {
-    'click  button.button-alt': 'refetch',
-    'click .sortable':'sortCollection',
-    'click a.page':'switchPage'
-    },    
+        var self=this;
+        util.ajaxGET('/ServiceComission/roles/').then(function(data){
+                var roleselect=Backgrid.SelectCell.extend({
+                    optionValues: [{name:10,values:data}],
+                    formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                        toRaw: function (formattedValue, model) {
+                          return formattedValue == null ? null: parseInt(formattedValue);
+                        }
+                    })
+                });
+                var levelselect=roleselect.extend({
+                    optionValues:function(){
+                        var self=this;
+                        var role=this.model.get('servRole');
+                        var type=this.model.get('type');
+                        $.ajax({
+                            async: false,
+                            url: "/ServiceComission/level/?role="+role+"&type="+type,
+                        }).done(function (data) {
+                            self._optionValues = [{name:"Level",values:data}];
+                        });
+                        return self._optionValues;
+                        // util.ajaxSyncGET('/ServiceComission/level/?role='+role+"&type="+type).then(function(data){
+                        //     self._optionValues=[{name:"Level",values:data}];
+                        // }).error(function(err){
+                        //     console.log(err);
+                        // });
+                        // return self._optionValues;
+                    }
+                });
+                var statusselect=roleselect.extend({
+                    optionValues:function(){
+                        var self=this;
+                        var role=this.model.get('servRole');
+                        var type=this.model.get('type');
+                        if(!role){
+                            console.log("wtf");
+                        }
+                        $.ajax({
+                            async: false,
+                            url: "/ServiceComission/status/?role="+role+"&type="+type,
+                        }).done(function (data) {
+                            self._optionValues = [{name:"Status",values:data}];
+                        });
+                        return self._optionValues;
+                    } 
+                });
+                var columns=[
+                {name:'contract',label:'Contract',editable:false,cell:'string'},
+                {name:'nickname',label:'User',editable: false,cell:'string'},
+                {name:'serviceType',label:'Service',editable: false,cell:'string'},
+                {name:'price',label:'Price',editable:false,cell:'number'},
+                {name:'servRole',label:'Role',cell:roleselect},
+                {name:'servLevel',label:'Level',cell:levelselect},
+                {name:'startprogress',label:'StartStatus',cell:statusselect},
+                {name:'startprogress',label:'StartStatus',cell:statusselect},
+                {name:'extra',label:'Extra',cell:'number'},
+                {name:'startComission',label:'ServiceComission1',editable: false,cell:'number'},
+                {name:'endComission',label:'ServiceComission2',editable: false,cell:'number'},
+                // {name:'final',label:'佣金',cell:'number'}
+                ];
+                var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+                $('.table-wrapper').append(grid.render().el);
+                self.ready=true;
+            }).error(function(err){
+                console.log(err);
+            });   
+    },  
     refetch:function(e){
-        var startDate=$('#startDate').val();
-        var endDate=$('#endDate').val();
-        this.collection.setdate({startDate:startDate,endDate:endDate});
-        this.collection.endDate=endDate;
-        this.removeAll();
+        if(!this.ready) return;
+        var year=$('#year').val();
+        var month=$('#month').val();
+        this.collection.setdate({year:year,month:month});
+        this.collection.reset();
         this.collection.fetch({reset:true});
-    },    
-    renderCollection: function (){
-        this.renderCollectionCore();                 
-    },
-    headline:function(obj){
-        if(obj.contract.client){
-            return obj.contract.client.chineseName;                
-        }else{
-            return "NO NAME";
-        }
-    }
+    },  
 });
 var ApplicationEdit=EditForm.extend({
     template: JST['serviceEdit'],
@@ -2187,5 +2230,6 @@ module.exports={
         Setting:SettingView,
         User:UserView,
         Auth:Views,
-        SalesComission:SalesComissionView
+        SalesComission:SalesComissionView,
+        ServiceComission:ServiceComissionView
 };

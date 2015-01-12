@@ -9,34 +9,16 @@ module.exports = {
 	'getSalesComission':function(req,res){
 		//var id=req.session.user.id;
 		var id=165;
-		console.log(id);
-		// var promise;
-		// switch(req.session.user.rank){
-		// 	case "2":
-		// 	promise=User.find({boss:id}).then(function(mypuppets){
-		// 		var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-		// 		var where=JSON.stringify(puppetIDs).replace("[","(").replace("]",")");
-		// 		return Promise.resolve(where);
-		// 	});
-		// 	break;
-		// 	default:
-		// 	promise=User.find({id:id}).then(function(data){
-				
-		// 	});
-		// }
-		var where=req.param('where')||"{}";
-		where=JSON.parse(where);
-		where=where['contractSigned']||{};
-		console.log(where);
-		var startdate=where['>']?"'"+Utilfunctions.formatDate(where['>'])+"'":"null";
-		var enddate=where['<']?"'"+Utilfunctions.formatDate(where['<'])+"'":"null";
-
+		var start=req.param('startdate');
+		var end=req.param('enddate');
+		var startdate=start?"'"+Utilfunctions.formatDate(start)+"'":"null";
+		var enddate=end?"'"+Utilfunctions.formatDate(end)+"'":"null";
 		console.log(startdate);
 		console.log(enddate);
 		var sql="call SalesComission(0,0,"+startdate+","+enddate+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
-		}).fail(function(err){
+		}).error(function(err){
 			console.log(err);
 			return res.json(400,err);
 		});		
@@ -77,7 +59,20 @@ module.exports = {
 		});
 	},
 	'getServiceComission':function(req,res){
-
+		var id=165;
+		var year=req.param('year');
+		var month=req.param('month');
+		var year=year?"'"+Utilfunctions.formatDate(year)+"'":"null";
+		var month=month?"'"+Utilfunctions.formatDate(month)+"'":"null";
+		console.log(year);
+		console.log(month);
+		var sql="call ServiceComission(0,0,"+year+","+month+",false);";
+		Utilfunctions.nativeQuery(sql).then(function(data){
+			return res.json(data[0]);
+		}).error(function(err){
+			console.log(err);
+			return res.json(400,err);
+		});	
 	},
 	'updateServiceComission':function(req,res){
 		var attribs=req.body;
@@ -104,7 +99,7 @@ module.exports = {
 			}
 		}).then(function(data){
 			return res.json(200);
-		}).fail(function(err){
+		}).error(function(err){
 			console.log(err);
 			return res.json(400,err);
 		});
@@ -112,7 +107,38 @@ module.exports = {
 	'getSalesRoles':function(req,res){
 		SalesRole.find().then(function(data){
 			return res.json(Utilfunctions.backgridHash(data,'salesRole'));
-		}).fail(function(err){
+		}).error(function(err){
+			return res.json(404,err);
+		});
+	},
+	'getServiceRoles':function(req,res){
+		ServRole.find().then(function(data){
+			return res.json(Utilfunctions.backgridHash(data,'servRole'));
+		}).error(function(err){
+			return res.json(404,err);
+		})
+	},
+	'getServiceLevel':function(req,res){
+		var role=JSON.parse(req.param('role'));
+		var type=JSON.parse(req.param('type'));
+		if(role==null||type==null)return res.json([["No level",null]]);
+		Utilfunctions.nativeQuery('select distinct(servlevel.servLevel),servlevel.id from servcomissionlookup s inner join servlevel on s.servlevel=servlevel.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
+			if(data.length<1) return res.json([["No level",null]]);
+			return res.json(Utilfunctions.backgridHash(data,'servLevel'));
+		}).error(function(err){
+			console.log(err);
+			return res.json(404,err);
+		});
+	},
+	'getServiceStatus':function(req,res){
+		var role=JSON.parse(req.param('role'));
+		var type=JSON.parse(req.param('type'));
+		if(role==null||type==null)return res.json([["No Status",null]]);
+		Utilfunctions.nativeQuery('select distinct(servicestatus.serviceStatus),servicestatus.id from servcomissionlookup s inner join servicestatus on s.serviceStatus=servicestatus.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
+			if(data.length<1) return res.json(404,{error:"No status to choose"});
+			return res.json(Utilfunctions.backgridHash(data,'serviceStatus'));
+		}).error(function(err){
+			console.log(err);
 			return res.json(404,err);
 		});
 	}

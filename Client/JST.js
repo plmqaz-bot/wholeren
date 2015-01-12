@@ -37,6 +37,7 @@ module.exports={
     'serviceSingle':require('./template/service_single.hbs'),
     'serviceEdit':require('./template/modals/service_edit.hbs'),
     'salesComission':require('./template/salesComission.hbs'),
+    'serviceComission':require('./template/serviceComission.hbs'),
     'user':require('./template/user.hbs'),
     'userSingle':require('./template/user_single.hbs'),
     'commentSingle':require('./template/modals/comment_single.hbs'),

@@ -80,9 +80,9 @@ module.exports={
         return defer.promise;
     },
     ajaxSyncGET:function(url){
-        var toReturn={};
+        var defer=Promise.defer();
         $.ajax({
-            async:false
+            async:false,
             url: url,
             type: 'GET',
             headers: {
@@ -95,7 +95,8 @@ module.exports={
                 defer.reject(xhr);
             }
         });
+        return defer.promise;
     }
-
+ 
 
 }
