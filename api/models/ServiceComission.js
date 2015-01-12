@@ -11,6 +11,7 @@ module.exports = {
   	service:{model:'Service'},
   	user:{model:'User'},
     servRole:{model:'ServRole'},
+    servLevel:{model:'ServLevel'},
   	startprogress:{model:'ServiceStatus'},
   	endprogress:{model:'ServiceStatus'},
   	year:{type:'int'},
