@@ -1803,7 +1803,7 @@ var ServiceComissionView=SalesComissionView.extend({
                 {name:'servRole',label:'Role',cell:roleselect},
                 {name:'servLevel',label:'Level',cell:levelselect},
                 {name:'startprogress',label:'StartStatus',cell:statusselect},
-                {name:'startprogress',label:'StartStatus',cell:statusselect},
+                {name:'endprogress',label:'EndStatus',cell:statusselect},
                 {name:'extra',label:'Extra',cell:'number'},
                 {name:'startComission',label:'ServiceComission1',editable: false,cell:'number'},
                 {name:'endComission',label:'ServiceComission2',editable: false,cell:'number'},

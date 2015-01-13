@@ -53,7 +53,7 @@ module.exports = {
 				return res.json({});
 				
 			});
-		}).error(function(err){
+		}).catch(function(err){
 			console.log(err);
 			return res.json(400,err);
 		});
@@ -62,8 +62,8 @@ module.exports = {
 		var id=165;
 		var year=req.param('year');
 		var month=req.param('month');
-		var year=year?"'"+Utilfunctions.formatDate(year)+"'":"null";
-		var month=month?"'"+Utilfunctions.formatDate(month)+"'":"null";
+		var year=year?"'"+parseInt(year)+"'":"null";
+		var month=month?"'"+parseInt(month)+"'":"null";
 		console.log(year);
 		console.log(month);
 		var sql="call ServiceComission(0,0,"+year+","+month+",false);";
@@ -87,9 +87,9 @@ module.exports = {
 		if(attribs.endprogress!=null) toupdate.endprogress=attribs.endprogress;
 		if(attribs.extra!=null) toupdate.extra=attribs.extra;
 		
-		ServiceComission.find(toupdate).then(function(data){
+		ServiceComission.findOne({service:toupdate.service,user:toupdate.user,year:toupdate.year,month:toupdate.month}).then(function(data){
 			if(data){
-				console.log("updating");
+				console.log("updating",toupdate,data.id);
 				return ServiceComission.update({id:data.id},toupdate);
 			}else{
 				console.log("creating ",toupdate);
@@ -97,13 +97,14 @@ module.exports = {
 			}
 		}).then(function(data){
 			console.log('done');
+
 			var sql="call ServiceComission("+toupdate.user+","+toupdate.service+","+attribs.year+","+attribs.month+",true);"
 			return Utilfunctions.nativeQuery(sql);
 		}).then(function(data){
-				if(err) return res.json(400,err);
+			console.log(data);
 				if(data[0]) return res.json(data[0][0]);
 				return res.json({});				
-		}).error(function(err){
+		}).catch(function(err){
 			console.log(err);
 			return res.json(400,err);
 		});
@@ -118,7 +119,7 @@ module.exports = {
 	'getServiceRoles':function(req,res){
 		ServRole.find().then(function(data){
 			return res.json(Utilfunctions.backgridHash(data,'servRole'));
-		}).error(function(err){
+		}).catch(function(err){
 			return res.json(404,err);
 		})
 	},
@@ -129,7 +130,7 @@ module.exports = {
 		Utilfunctions.nativeQuery('select distinct(servlevel.servLevel),servlevel.id from servcomissionlookup s inner join servlevel on s.servlevel=servlevel.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
 			if(data.length<1) return res.json([["No level",null]]);
 			return res.json(Utilfunctions.backgridHash(data,'servLevel'));
-		}).error(function(err){
+		}).catch(function(err){
 			console.log(err);
 			return res.json(404,err);
 		});
@@ -139,9 +140,9 @@ module.exports = {
 		var type=JSON.parse(req.param('type'));
 		if(role==null||type==null)return res.json([["No Status",null]]);
 		Utilfunctions.nativeQuery('select distinct(servicestatus.serviceStatus),servicestatus.id from servcomissionlookup s inner join servicestatus on s.serviceStatus=servicestatus.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
-			if(data.length<1) return res.json(404,{error:"No status to choose"});
+			if(data.length<1) return res.json([["No Status",null]]);
 			return res.json(Utilfunctions.backgridHash(data,'serviceStatus'));
-		}).error(function(err){
+		}).catch(function(err){
 			console.log(err);
 			return res.json(404,err);
 		});

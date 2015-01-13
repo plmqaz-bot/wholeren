@@ -9,8 +9,8 @@ module.exports = {
 
   attributes: {
   	salesRole:{type:'string'},
-  	comissionPercent:{type:'number'},
-  	flatComission:{type:'number'}
+  	comissionPercent:{type:'float'},
+  	flatComission:{type:'float'}
   }
 };
 
