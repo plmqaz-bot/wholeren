@@ -492,9 +492,11 @@ delimiter ;;
 create PROCEDURE ServiceComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-SELECT  service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.price, servicecomission.servRole,servicecomission.servLevel, servicecomission.startprogress,servicecomission.endprogress,
+SELECT  service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", service.price, servicecomission.servRole,servicecomission.servLevel, servicecomission.startprogress,servicecomission.endprogress,
 (select  ((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat from application where application.service=service.id) as "startComission",
-(select  ((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat from application where application.service=service.id) as "endComission"
+(select  ((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat from application where application.service=service.id) as "endComission",
+month as "month",
+year as "year"
 FROM service 
 inner join contract on service.contract=contract.id
 inner join service_serviceteacher__user_serviceteacher_user st on st.service_serviceTeacher=service.id

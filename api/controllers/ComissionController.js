@@ -18,7 +18,7 @@ module.exports = {
 		var sql="call SalesComission(0,0,"+startdate+","+enddate+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
-		}).error(function(err){
+		}).catch(function(err){
 			console.log(err);
 			return res.json(400,err);
 		});		
@@ -53,7 +53,7 @@ module.exports = {
 				return res.json({});
 				
 			});
-		}).fail(function(err){
+		}).error(function(err){
 			console.log(err);
 			return res.json(400,err);
 		});
@@ -69,7 +69,7 @@ module.exports = {
 		var sql="call ServiceComission(0,0,"+year+","+month+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
-		}).error(function(err){
+		}).catch(function(err){
 			console.log(err);
 			return res.json(400,err);
 		});	
@@ -80,25 +80,29 @@ module.exports = {
 		if(attribs.user==null||attribs.service==null||attribs.year==null||attribs.month==null){
 			return res.json(404);
 		}
-		Service.findOne({id:attribs.service}).populate('ServiceType').then(function(data){
+		var toupdate={service:attribs.service,user:attribs.user,year:attribs.year,month:attribs.month};
+		if(attribs.servRole!=null) toupdate.servRole=attribs.servRole;
+		if(attribs.servLevel!=null) toupdate.servLevel=attribs.servLevel;
+		if(attribs.startprogress!=null) toupdate.startprogress=attribs.startprogress;
+		if(attribs.endprogress!=null) toupdate.endprogress=attribs.endprogress;
+		if(attribs.extra!=null) toupdate.extra=attribs.extra;
+		
+		ServiceComission.find(toupdate).then(function(data){
 			if(data){
-				if(data.serviceType.addApplication){
-					if(attribs.application){
-						return ServiceComission.findOne({user:attribs.user,service:attribs.service,year:attribs.year,month:attribs.month,application:attribs.application});
-					}
-				}else{
-					return ServiceComission.findOne({user:attribs.user,service:attribs.service,year:attribs.year,month:attribs.month});
-				}
-			}
-		}).then(function(data){
-			if(data){
-				attribs.id=data.id
-				return ServiceComission.update(attribs);
+				console.log("updating");
+				return ServiceComission.update({id:data.id},toupdate);
 			}else{
-				return ServiceComission.create(attribs);
+				console.log("creating ",toupdate);
+				return ServiceComission.create(toupdate);
 			}
 		}).then(function(data){
-			return res.json(200);
+			console.log('done');
+			var sql="call ServiceComission("+toupdate.user+","+toupdate.service+","+attribs.year+","+attribs.month+",true);"
+			return Utilfunctions.nativeQuery(sql);
+		}).then(function(data){
+				if(err) return res.json(400,err);
+				if(data[0]) return res.json(data[0][0]);
+				return res.json({});				
 		}).error(function(err){
 			console.log(err);
 			return res.json(400,err);
@@ -107,7 +111,7 @@ module.exports = {
 	'getSalesRoles':function(req,res){
 		SalesRole.find().then(function(data){
 			return res.json(Utilfunctions.backgridHash(data,'salesRole'));
-		}).error(function(err){
+		}).catch(function(err){
 			return res.json(404,err);
 		});
 	},
