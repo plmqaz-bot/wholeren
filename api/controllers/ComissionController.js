@@ -84,9 +84,9 @@ module.exports = {
 		if(isNaN(attribs.year)||isNaN(attribs.month)||attribs.year<1969||attribs.year>2100||attribs.month<1||attribs.month>12) return json(400,{error:"invalid year and month"});
 		var toupdate={service:attribs.service,user:attribs.user,year:attribs.year,month:attribs.month};
 		if(attribs.servRole!=null) toupdate.servRole=attribs.servRole;
-		if(attribs.servLevel!=null) toupdate.servLevel=attribs.servLevel;
-		if(attribs.startprogress!=null) toupdate.startprogress=attribs.startprogress;
-		if(attribs.endprogress!=null) toupdate.endprogress=attribs.endprogress;
+		 toupdate.servLevel=attribs.servLevel;
+		 toupdate.startprogress=attribs.startprogress;
+		 toupdate.endprogress=attribs.endprogress;
 		if(attribs.extra!=null) toupdate.extra=attribs.extra;
 		
 		ServiceComission.findOne({service:toupdate.service,user:toupdate.user,year:toupdate.year,month:toupdate.month}).then(function(data){
@@ -126,24 +126,20 @@ module.exports = {
 		})
 	},
 	'getServiceLevel':function(req,res){
-		var role=parseInt(req.param('role'));
-		var type=parseInt(req.param('type'));
-		if(isNaN(role)||isNaN(type))return res.json([["No level",null]]);
-		Utilfunctions.nativeQuery('select distinct(servlevel.servLevel),servlevel.id from servcomissionlookup s inner join servlevel on s.servlevel=servlevel.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
+		Utilfunctions.nativeQuery('select s.servRole, s.serviceType,s.servLevel as "lid",s.serviceStatus as "sid", servlevel.servLevel,servicestatus.serviceStatus from servcomissionlookup s left join servlevel on s.servlevel=servlevel.id inner join servicestatus on s.serviceStatus=servicestatus.id;').then(function(data){
 			if(data.length<1) return res.json([["No level",null]]);
-			return res.json(Utilfunctions.backgridHash(data,'servLevel'));
+			//return res.json(Utilfunctions.backgridHash(data,'servLevel'));
+			return res.json(data);
 		}).catch(function(err){
 			console.log(err);
 			return res.json(404,err);
 		});
 	},
 	'getServiceStatus':function(req,res){
-		var role=parseInt(req.param('role'));
-		var type=parseInt(req.param('type'));
-		if(isNaN(role)||isNaN(type))return res.json([["No Status",null]]);
-		Utilfunctions.nativeQuery('select distinct(servicestatus.serviceStatus),servicestatus.id from servcomissionlookup s inner join servicestatus on s.serviceStatus=servicestatus.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
+		Utilfunctions.nativeQuery('select s.servRole, s.serviceType,s.serviceStatus, servicestatus.serviceStatus from servcomissionlookup s inner join servicestatus on s.serviceStatus=servicestatus.id;').then(function(data){
 			if(data.length<1) return res.json([["No Status",null]]);
-			return res.json(Utilfunctions.backgridHash(data,'serviceStatus'));
+			//return res.json(Utilfunctions.backgridHash(data,'serviceStatus'));
+			return res.json(data);
 		}).catch(function(err){
 			console.log(err);
 			return res.json(404,err);

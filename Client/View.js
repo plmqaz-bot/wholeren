@@ -12,7 +12,7 @@ var Notification = {};
 var validator=require('./validator.js');
 var util=require('./util');
 var JST=require('./JST');
-
+var Promise=require('bluebird');
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 == v2) {
@@ -1745,57 +1745,64 @@ var ServiceComissionView=SalesComissionView.extend({
     initialize: function (options) {
         this.rank=$('#rank').text();
         this.el=options.el;
+        this.cache=[];
         var self=this;
         this.collection = new Obiwang.Collections['ServiceComission']();
         this.render();
-        var self=this;
-        util.ajaxGET('/ServiceComission/roles/').then(function(data){
-                var roleselect=Backgrid.SelectCell.extend({
-                    optionValues: [{name:10,values:data}],
-                    formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                        toRaw: function (formattedValue, model) {
-                          return formattedValue == null ? null: parseInt(formattedValue);
-                        }
-                    })
-                });
-                var levelselect=roleselect.extend({
-                    optionValues:function(){
-                        var self=this;
-                        var role=this.model.get('servRole');
-                        var type=this.model.get('type');
-                        $.ajax({
-                            async: false,
-                            url: "/ServiceComission/level/?role="+role+"&type="+type,
-                        }).done(function (data) {
-                            self._optionValues = [{name:"Level",values:data}];
-                        });
-                        return self._optionValues;
-                        // util.ajaxSyncGET('/ServiceComission/level/?role='+role+"&type="+type).then(function(data){
-                        //     self._optionValues=[{name:"Level",values:data}];
-                        // }).error(function(err){
-                        //     console.log(err);
-                        // });
-                        // return self._optionValues;
+        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(roles,data){
+            var roleselect=Backgrid.SelectCell.extend({
+                optionValues: [{name:10,values:roles}],
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
                     }
-                });
-                var statusselect=roleselect.extend({
-                    optionValues:function(){
-                        var self=this;
-                        var role=this.model.get('servRole');
-                        var type=this.model.get('type');
-                        if(!role){
-                            console.log("wtf");
-                        }
-                        $.ajax({
-                            async: false,
-                            url: "/ServiceComission/status/?role="+role+"&type="+type,
-                        }).done(function (data) {
-                            self._optionValues = [{name:"Status",values:data}];
+                })
+            });
+            var levelselect=roleselect.extend({
+                optionValues:function(){
+                    var cell=this;
+                    var role=this.model.get('servRole')||0;
+                    var type=this.model.get('type')||0;
+                    self.cache[role]=self.cache[role]||[];
+                    self.cache[role][type]=self.cache[role][type]||[];
+                    self.cache[role][type]["level"]=self.cache[role][type]["level"]||[];
+                    if(self.cache[role][type]["level"].length<1){                     
+                        var shrunk=_.where(data,{servRole:role,serviceType:type});
+                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
+                            shrunk.push(e);
                         });
-                        return self._optionValues;
-                    } 
-                });
-                var columns=[
+                        var unique=_.uniq(shrunk,false,function(e){return e.lid;});
+                        self.cache[role][type]["level"]=_.map(unique,function(e){return [e.servLevel,e.lid]});                         
+                    }
+                    var toadd=self.cache[role][type]["level"].slice(0);//clone it
+                    toadd.push(["No Level",null]);
+                    cell._optionValues=[{name:10,values:toadd}];
+                    return cell._optionValues;                    
+                }
+            });
+            var statusselect=roleselect.extend({
+                optionValues:function(){
+                    var cell=this;
+                    var role=this.model.get('servRole')||0;
+                    var type=this.model.get('type')||0;
+                    self.cache[role]=self.cache[role]||[];
+                    self.cache[role][type]=self.cache[role][type]||[];
+                    self.cache[role][type]["status"]=self.cache[role][type]["status"]||[];
+                    if(self.cache[role][type]["status"].length<1){
+                        var shrunk=_.where(data,{servRole:role,serviceType:type});
+                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
+                            shrunk.push(e);
+                        });
+                        var unique=_.uniq(shrunk,false,function(e){return e.sid;});
+                        self.cache[role][type]["status"]=_.map(unique,function(e){return [e.serviceStatus,e.sid]});
+                    }
+                    var toadd=self.cache[role][type]["status"].slice(0);//clone it
+                    toadd.push(["No Status",null]);
+                    cell._optionValues=[{name:10,values:toadd}];
+                    return cell._optionValues;
+                } 
+            });
+            var columns=[
                 {name:'contract',label:'Contract',editable:false,cell:'string'},
                 {name:'nickname',label:'User',editable: false,cell:'string'},
                 {name:'serviceType',label:'Service',editable: false,cell:'string'},
@@ -1809,12 +1816,12 @@ var ServiceComissionView=SalesComissionView.extend({
                 {name:'endComission',label:'ServiceComission2',editable: false,cell:'number'},
                 // {name:'final',label:'佣金',cell:'number'}
                 ];
-                var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
                 $('.table-wrapper').append(grid.render().el);
                 self.ready=true;
             }).error(function(err){
                 console.log(err);
-            });   
+            });  
     },  
     refetch:function(e){
         if(!this.ready) return;
