@@ -94,6 +94,8 @@ View for sales:
 3. monthly sales record. --DONE
 
 sales comission select time --DONE
+
+redo how service comission get the select options. should be done in client
 edit init.sql to create the procedures
 
  

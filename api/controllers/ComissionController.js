@@ -60,10 +60,9 @@ module.exports = {
 	},
 	'getServiceComission':function(req,res){
 		var id=165;
-		var year=req.param('year');
-		var month=req.param('month');
-		var year=year?"'"+parseInt(year)+"'":"null";
-		var month=month?"'"+parseInt(month)+"'":"null";
+		var year=parseInt(req.param('year'));
+		var month=parseInt(req.param('month'));
+		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return json(400,{error:"invalid year and month"});
 		console.log(year);
 		console.log(month);
 		var sql="call ServiceComission(0,0,"+year+","+month+",false);";
@@ -76,10 +75,13 @@ module.exports = {
 	},
 	'updateServiceComission':function(req,res){
 		var attribs=req.body;
-		if(attribs==null) return res.json(404);
+		attribs.year=parseInt(attribs.year);
+		attribs.month=parseInt(attribs.month)
+		if(attribs==null) return res.json(404,{error:"not enough parameters"});
 		if(attribs.user==null||attribs.service==null||attribs.year==null||attribs.month==null){
-			return res.json(404);
-		}
+			return res.json(404,{error:"not enough parameters"});
+		}		
+		if(isNaN(attribs.year)||isNaN(attribs.month)||attribs.year<1969||attribs.year>2100||attribs.month<1||attribs.month>12) return json(400,{error:"invalid year and month"});
 		var toupdate={service:attribs.service,user:attribs.user,year:attribs.year,month:attribs.month};
 		if(attribs.servRole!=null) toupdate.servRole=attribs.servRole;
 		if(attribs.servLevel!=null) toupdate.servLevel=attribs.servLevel;
@@ -124,9 +126,9 @@ module.exports = {
 		})
 	},
 	'getServiceLevel':function(req,res){
-		var role=JSON.parse(req.param('role'));
-		var type=JSON.parse(req.param('type'));
-		if(role==null||type==null)return res.json([["No level",null]]);
+		var role=parseInt(req.param('role'));
+		var type=parseInt(req.param('type'));
+		if(isNaN(role)||isNaN(type))return res.json([["No level",null]]);
 		Utilfunctions.nativeQuery('select distinct(servlevel.servLevel),servlevel.id from servcomissionlookup s inner join servlevel on s.servlevel=servlevel.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
 			if(data.length<1) return res.json([["No level",null]]);
 			return res.json(Utilfunctions.backgridHash(data,'servLevel'));
@@ -136,9 +138,9 @@ module.exports = {
 		});
 	},
 	'getServiceStatus':function(req,res){
-		var role=JSON.parse(req.param('role'));
-		var type=JSON.parse(req.param('type'));
-		if(role==null||type==null)return res.json([["No Status",null]]);
+		var role=parseInt(req.param('role'));
+		var type=parseInt(req.param('type'));
+		if(isNaN(role)||isNaN(type))return res.json([["No Status",null]]);
 		Utilfunctions.nativeQuery('select distinct(servicestatus.serviceStatus),servicestatus.id from servcomissionlookup s inner join servicestatus on s.serviceStatus=servicestatus.id where s.servRole='+role+' and s.serviceType='+type+';').then(function(data){
 			if(data.length<1) return res.json([["No Status",null]]);
 			return res.json(Utilfunctions.backgridHash(data,'serviceStatus'));

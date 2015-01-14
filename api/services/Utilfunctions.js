@@ -280,6 +280,7 @@ module.exports = {
 	        var p= Promise.defer();
 	        var insertPs=[];
 	        var serviceIDs=[];
+	        var teacher=[contract.teacher];
 	        //console.log(servs);
 	        _.forEach(servs,function(ele){
 	            if(!ele) return;
@@ -291,7 +292,7 @@ module.exports = {
 	                        return Promise.resolve(data);
 	                    }else{
 	                        //console.log("create service");
-	                        return Service.create({contract:contID,serviceType:id}).then(function(s){
+	                        return Service.create({contract:contID,serviceType:id,serviceTeacher:teacher}).then(function(s){
 	                            serviceIDs.push(s.id);
 	                        });
 	                    }
