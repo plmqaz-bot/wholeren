@@ -336,12 +336,12 @@ module.exports={
             errors.logError(err, 'admin.js', "Please check the provided token for validity and expiration.");
 
             return api.notifications.add(notification).then(function () {
-                res.redirect(config().paths.subdir + '/ghost/forgotten');
+                res.redirect(config().paths.subdir + '/admin/forgotten');
             });
         });
     },
     'import':function(req,res){
-        Utilfunctions.importContract('TR_1_10.csv')
+        Utilfunctions.importContract('EM_1_10.csv')
          .then(function(data){
              console.log('import done');
          }).error(function(err){

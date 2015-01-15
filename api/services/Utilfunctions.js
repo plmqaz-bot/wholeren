@@ -110,7 +110,7 @@ module.exports = {
 	    function oneline(line,linenum){
 	        var contract={};
 	        var client={};
-	        
+	        var serviceTeachers=[];
 	        client.chineseName=line[1];
 	        contract.contractCategory=stripstring(line[2]); // later get contractcategoryid;
 	        contract.createdAt=new Date(line[3]);
@@ -168,36 +168,53 @@ module.exports = {
 	            return getUser(contract.assistant);
 	        }).then(function(assis){
 	            if(_.contains(assis=assis||[],null)) throw {reason:"unknown assistant",assistant:contract.assistant,line:linenum};
-	            contract.assistant=assis;
+	            var count=1;
+	            assis.forEach(function(e){
+	            	if(count>4)return;
+	            	if(e) {
+	            		contract['assistant'+count]=parseInt(e);
+	            		count++;
+	            	}
+	            });
+	            delete contract['assistant'];
+	            //contract.assistant=assis;
 	            return getUser(contract.sales);
 	        }).then(function(sale){
 	        	if(_.contains(sale=sale||[],null)) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
-	            contract.sales=sale;
+	            contract.sales=sale[0];
+	            if(sale.length>1)console.log("weird sales",sale);
 	            return getUser(contract.expert);
 	        }).then(function(exp){
 	            if(_.contains(exp=exp||[],null)) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
-	            contract.expert=exp;
+	            contract.expert=exp[0];
+	            if(exp.length>1)console.log("weird exp",exp);
 	            return getUser(contract.teacher);
 	        }).then(function(tea){
 	            if(_.contains(tea=tea||[],null)) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
-	            contract.teacher=tea;
+	            contract.teacher=tea[0];
+	            serviceTeachers=tea;
+	            if(tea.length>1)console.log("weird tea",tea);
 	            // add this contract
 	            console.log("look for contract",contract.client,contract.contractCategory);
 	            return Contract.findOne({client:contract.client,contractCategory:contract.contractCategory});
 	        }).then(function(cont){
-	          if(cont){
+	        	cont=cont||{};
+	          if(cont.id){
 	                // if found, use it
 	                console.log("found contract",cont.id);
 	                 return Promise.resolve(cont);
 	            }else{
+	            	console.log("creating contract",contract);
 	                var stringcontract=JSON.stringify(contract);
 	                contract=JSON.parse(stringcontract);
-	                console.log("creating contract",contract);
+	                
 	                return Contract.create(contract);      
 	            }
 	        }).then(function(data){
+	        	data=data||{};
 	            var contractID=data.id;
-	            return getService(Service,contractID);     
+	            console.log("creating service for contract ",contractID);
+	            return getService(Service,contractID,serviceTeachers);     
 	               // p.resolve("current");
 	        }).then(function(data){
 	            return Promise.resolve(linenum);
@@ -259,10 +276,11 @@ module.exports = {
 	        	if(defaultUser)
 	        		user="ting";
 	        	else
-	        		return Promise.resolve(null);
+	        		return Promise.resolve([]);
 	        }
 	        var allprom=_.map(users,function(user){
 				if (user.length<1) {
+					console.log(users,"weird users");
 		        	if(defaultUser)
 		        		user="ting";
 		        	else
@@ -284,30 +302,38 @@ module.exports = {
 	        return Promise.all(allprom);
 	        
 	    }
-	    function getService(service,contID){
+	    function getService(service,contID,teacher){
 	        service=service.replace("，",",");
-	        var servs=service.split(",");
+	        service=service.replace(String.fromCharCode(65292),",");
+	        service=service.replace(/\d/g,'');
+	        var servs=service.split(/[,+]/);
 	        var p= Promise.defer();
 	        var insertPs=[];
 	        var serviceIDs=[];
-	        var teacher=[contract.teacher];
+	        teacher=teacher||[];
+	        teacher=teacher.length<1?teacher:null;
+			console.log("add services ",contID)
 	        //console.log(servs);
 	        _.forEach(servs,function(ele){
 	            if(!ele) return;
 	            var id=findID(ele);
 	           if(id){
 	                var curPromise=Service.findOne({contract:contID,serviceType:id}).then(function(data){
-	                    if(data){
+	                	data=data||{};
+	                    if(data.id){
+	                    	console.log("found service ",data.id);
 	                        serviceIDs.push(data.id);
 	                        return Promise.resolve(data);
 	                    }else{
-	                        //console.log("create service");
+	                        console.log("create service",{contract:contID,serviceType:id,serviceTeacher:teacher});
 	                        return Service.create({contract:contID,serviceType:id,serviceTeacher:teacher}).then(function(s){
 	                            serviceIDs.push(s.id);
 	                        });
 	                    }
 	                });
 	                insertPs.push(curPromise);
+	             }else{
+	             	console.log("unknown service type ",ele);
 	             }
 	        });
 	          

@@ -19,7 +19,7 @@
         <td data-attr="price" data-type="text" class="textbox" data-model="Service">{{../../price}}</td>
         <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{detailStatus ../../serviceType/serviceType 1}}{{../../step1}}</td>
         <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{detailStatus ../../serviceType/serviceType 2}}{{../../step2}}</td>
-        <td>{{../../contract/teacher/nickname}}</td>
+        <td>{{#each ../../serviceTeacher}}{{nickname}}{{/each}}</td>
         <td><a class="comment_edit" href="#{{id}}" data-type="app">Show Comments</a></td>
         <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a>{{#if ../../../displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>
         </tr> 
@@ -42,7 +42,7 @@
         <td data-attr="price" data-type="text" class="textbox" data-model="Service">{{price}}</td>
         <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{detailStatus serviceType/serviceType 1}}{{step1}}</td>
         <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{detailStatus serviceType/serviceType 2}}{{step2}}</td>
-        <td>{{contract/teacher/nickname}}</td>
+        <td>{{#each serviceTeacher}}{{nickname}}{{/each}}</td>
         <td><a class="comment_edit" href="#{{id}}" data-type="serv">Show Comments</a></td>
         <td>{{#ifCond serviceType/addApplication true}}<a class="add" href="#">Add</a>{{/ifCond}}</td>
         </tr> 
