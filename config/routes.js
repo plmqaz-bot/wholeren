@@ -109,7 +109,10 @@ module.exports.routes = {
     controller:'comission',
     action:'updateServiceComission'
   },
-
+  'GET /AssistantComission/':{
+    controller:'comission',
+    action:'getAssistantComission'
+  },
   'PATCH /user/:id':{
     controller:'user',
     action:'update'

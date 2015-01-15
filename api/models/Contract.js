@@ -80,7 +80,10 @@ module.exports = {
 
     comment:{collection:"Comment",via:'contract'},
 
-    assistant:{model:'User'},
+    assistant1:{model:'User'},
+    assistant2:{model:'User'},
+    assistant3:{model:'User'},
+    assistant4:{model:'User'},
 
     assisCont:{model:'User'},
 

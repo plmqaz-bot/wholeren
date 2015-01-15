@@ -167,19 +167,19 @@ module.exports = {
 	            console.log("client id is ",contract.client);
 	            return getUser(contract.assistant);
 	        }).then(function(assis){
-	            if(!assis&&contract.assistant[0].length>0) throw {reason:"unknown assistant",assistant:contract.assistant,line:linenum};
+	            if(_.contains(assis=assis||[],null)) throw {reason:"unknown assistant",assistant:contract.assistant,line:linenum};
 	            contract.assistant=assis;
 	            return getUser(contract.sales);
 	        }).then(function(sale){
-	        	if(!sale) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
+	        	_.contains(sale=sale||[],null) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
 	            contract.sales=sale;
 	            return getUser(contract.expert);
 	        }).then(function(exp){
-	            if(!exp&&contract.expert[0].length>0) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
+	            _.contains(exp=exp||[],null) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
 	            contract.expert=exp;
 	            return getUser(contract.teacher);
 	        }).then(function(tea){
-	            if(!tea&&contract.teacher[0].length>0) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
+	            _.contains(tea=tea||[],null) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
 	            contract.teacher=tea;
 	            // add this contract
 	            console.log("look for contract",contract.client,contract.contractCategory);
@@ -253,26 +253,36 @@ module.exports = {
 	            }
 	        });
 	    };
-	    function getUser(user,defaultUser){
-	    	user=user[0];
+	    function getUser(users,defaultUser){
+	    	user=users[0];
 	        if (user.length<1) {
 	        	if(defaultUser)
 	        		user="ting";
 	        	else
 	        		return Promise.resolve(null);
 	        }
-	        return User.findOne({ or:[{nickname: {'contains':user}},{firstname: {'contains':user}},{lastname: {'contains':user}}] }).then(function (data){
-                if (data) {
-                    return Promise.resolve(data.id);
-                } else { 
-                    return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
-                    	if(data)
-                    		return Promise.resolve(data.id);
-                    	else
-                    		return Promise.resolve(null);
-                    });
-                }
-	        });
+	        var allprom=_.map(users,function(user){
+				if (user.length<1) {
+		        	if(defaultUser)
+		        		user="ting";
+		        	else
+		        		return Promise.resolve(null);
+	        	}
+	        	return User.findOne({ or:[{nickname: {'contains':user}},{firstname: {'contains':user}},{lastname: {'contains':user}}] }).then(function (data){
+	                if (data) {
+	                    return Promise.resolve(data.id);
+	                } else { 
+	                    return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
+	                    	if(data)
+	                    		return Promise.resolve(data.id);
+	                    	else
+	                    		return Promise.resolve(null);
+	                    });
+	                }
+	        	});
+	        })
+	        return Promise.all(allprom);
+	        
 	    }
 	    function getService(service,contID){
 	        service=service.replace("，",",");

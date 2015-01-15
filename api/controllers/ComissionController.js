@@ -111,6 +111,21 @@ module.exports = {
 			return res.json(400,err);
 		});
 	},
+	'getAssistantComission':function(req,res){
+		var start=req.param('startdate');
+		var end=req.param('enddate');
+		var startdate=start?"'"+Utilfunctions.formatDate(start)+"'":"null";
+		var enddate=end?"'"+Utilfunctions.formatDate(end)+"'":"null";
+		console.log(startdate);
+		console.log(enddate);
+		var sql="call AssistantComission(0,0,"+startdate+","+enddate+",false);";
+		Utilfunctions.nativeQuery(sql).then(function(data){
+			return res.json(data[0]);
+		}).catch(function(err){
+			console.log(err);
+			return res.json(400,err);
+		});	
+	},
 	'getSalesRoles':function(req,res){
 		SalesRole.find().then(function(data){
 			return res.json(Utilfunctions.backgridHash(data,'salesRole'));

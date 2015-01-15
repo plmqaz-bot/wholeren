@@ -478,7 +478,7 @@ create PROCEDURE SalesComission (uid int,sid int, start date, end date,single bo
 COMMENT ''
 BEGIN
 select user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
-inner join contract on (contract.sales=user.id or contract.assistant=user.id or contract.assisCont=user.id or contract.expert=user.id)
+inner join contract on (contract.sales=user.id or contract.assisCont=user.id or contract.expert=user.id)
 inner join service on (service.contract=contract.id)
 left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
 left join salesrole on (contractcomission.salesRole=salesrole.id)
@@ -511,5 +511,27 @@ left join servcomissionlookup s1 on (((s1.serviceType=service.serviceType and s1
 left join servcomissionlookup s2 on (((s2.serviceType=service.serviceType and s2.servLevel=servicecomission.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s2.serviceType=0 and s2.servLevel=servicecomission.servLevel) or s2.serviceType=service.serviceType))) and s2.serviceStatus=servicecomission.endprogress and s2.servRole=servicecomission.servRole)
 where contract.contractsigned is not NULL and ((servicecomission.year=year and servicecomission.month=month) or (servicecomission.year is NULL and servicecomission.month is NULL))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
+END;;
+delimiter ;
+
+DROP PROCEDURE IF EXISTS AssistantComission;
+delimiter ;;
+create PROCEDURE AssistantComission (uid int,cid int, start date, end date,single bool)
+COMMENT ''
+BEGIN
+select A.*,client.chineseName,count(*) as "email", count(*)*10 as "comission" from 
+(select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant1=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
+union all
+select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant2=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
+union all
+select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant3=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
+union all
+select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant4=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))) A 
+inner join client on A.client=client.id
+group by A.contract,A.user;
 END;;
 delimiter ;
