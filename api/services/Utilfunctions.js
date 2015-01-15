@@ -171,15 +171,15 @@ module.exports = {
 	            contract.assistant=assis;
 	            return getUser(contract.sales);
 	        }).then(function(sale){
-	        	_.contains(sale=sale||[],null) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
+	        	if(_.contains(sale=sale||[],null)) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
 	            contract.sales=sale;
 	            return getUser(contract.expert);
 	        }).then(function(exp){
-	            _.contains(exp=exp||[],null) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
+	            if(_.contains(exp=exp||[],null)) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
 	            contract.expert=exp;
 	            return getUser(contract.teacher);
 	        }).then(function(tea){
-	            _.contains(tea=tea||[],null) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
+	            if(_.contains(tea=tea||[],null)) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
 	            contract.teacher=tea;
 	            // add this contract
 	            console.log("look for contract",contract.client,contract.contractCategory);
