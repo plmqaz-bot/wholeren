@@ -95,7 +95,9 @@ View for sales:
 
 sales comission select time --DONE
 
-redo how service comission get the select options. should be done in client
+redo how service comission get the select options. should be done in client-DONE
+
+
 edit init.sql to create the procedures
 
  

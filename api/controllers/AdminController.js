@@ -19,18 +19,25 @@ adminNavbar = {
         path: '/service/',
         display:true
     },
-    comission: {
+    salescomission: {
         name: 'Comission',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/comission/',
+        path: '/comission/sales/',
+        display:true
+    },
+    assiscomission: {
+        name: 'AssisComission',
+        navClass: 'contract',
+        key: 'admin.navbar.contract',
+        path: '/comission/assis/',
         display:true
     },
     servicecomission: {
         name: 'ServiceComission',
         navClass: 'contract',
         key: 'admin.navbar.contract',
-        path: '/servicecomission/',
+        path: '/comission/service/',
         display:true
     },
     market: {
@@ -62,7 +69,23 @@ function setSelected(list, name) {
     });
     return list;
 }
-
+function comission(req,res,template,selected,body){
+    body = typeof body !== 'undefined' ? body : 'contract';
+    res.render(template, {
+        bodyClass: body,
+        adminNav: setSelected(adminNavbar, selected),
+        currentUser:req.session.user
+    });
+}
+function handleRank(req){
+    if(req.session.manager){
+        adminNavbar.user.display=true;
+        adminNavbar.market.display=true;
+    }else{
+        adminNavbar.user.display=false;
+        adminNavbar.market.display=false;
+    }
+}
 module.exports={
 
     'index': function (req, res) {
@@ -78,95 +101,34 @@ module.exports={
         res.redirect('/admin/contract/');
     },
     'contract':function(req,res){
-        var allowedSections = ['', 'general', 'user', 'apps'],
-            section = req.url.replace(/(^\/admin\/contract[\/]*|\/$)/ig, '');
-
-        if (allowedSections.indexOf(section) < 0) {
-            return next();
-        }
-        if(req.session.manager){
-            adminNavbar.user.display=true;
-            adminNavbar.market.display=true;
-        }else{
-            adminNavbar.user.display=false;
-            adminNavbar.market.display=false;
-        }
-
-        res.render('contract', {
-            bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'contract'),
-            currentUser:req.session.user
-        });
+        handleRank(req);
+        comission(req,res,'contract','contract');
     },
     'service':function(req,res){
-        if(req.session.manager){
-            adminNavbar.user.display=true;
-            adminNavbar.market.display=true;
-        }else{
-            adminNavbar.user.display=false;
-            adminNavbar.market.display=false;
-        }
-        res.render('contract', {
-            bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'service'),
-            currentUser:req.session.user
-        });
+        handleRank(req);
+        comission(req,res,'contract','service');
     },
     'market':function(req,res){
-        if(req.session.manager){
-            adminNavbar.user.display=true;
-            adminNavbar.market.display=true;
-        }else{
-            adminNavbar.user.display=false;
-            adminNavbar.market.display=false;
-        }
-        res.render('settings', {
-            bodyClass: 'settings',
-            adminNav: setSelected(adminNavbar, 'market'),
-            currentUser:req.session.user
-        });
+        handleRank(req);
+        comission(req,res,'settings','market','settings');
+        // res.render('settings', {
+        //     bodyClass: 'settings',
+        //     adminNav: setSelected(adminNavbar, 'market'),
+        //     currentUser:req.session.user
+        // });
     },
     'comission':function(req,res){
-        if(req.session.manager){
-            adminNavbar.user.display=true;
-            adminNavbar.market.display=true;
-        }else{
-            adminNavbar.user.display=false;
-            adminNavbar.market.display=false;
+        console.log(req.params);
+        var pane=req.params.id;
+        if(!pane){
+            return res.redirect('/admin/comission/sales/');
         }
-        res.render('contract', {
-            bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'comission'),
-            currentUser:req.session.user
-        });
-    },
-    'servicecomission':function(req,res){
-        if(req.session.manager){
-            adminNavbar.user.display=true;
-            adminNavbar.market.display=true;
-        }else{
-            adminNavbar.user.display=false;
-            adminNavbar.market.display=false;
-        }
-        res.render('contract', {
-            bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'servicecomission'),
-            currentUser:req.session.user
-        });
+        handleRank(req);
+        comission(req,res,'contract',pane+'comission');
     },
     'user':function(req,res){
-        if(req.session.manager){
-            adminNavbar.user.display=true;
-            adminNavbar.market.display=true;
-        }else{
-            adminNavbar.user.display=false;
-            adminNavbar.market.display=false;
-        }
-        res.render('contract', {
-            bodyClass: 'contract',
-            adminNav: setSelected(adminNavbar, 'user'),
-            currentUser:req.session.user
-        });
+        handleRank(req);
+        comission(req,res,'contract','user');
     },
 
     'settings': function (req, res, next) {

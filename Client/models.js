@@ -49,25 +49,25 @@ Models={
     idAttribute: "id",
     urlRoot:'/Service/'
     }),
-    SalesComission: Backbone.Model.extend({
-        initialize: function () {
+    // SalesComission: Backbone.Model.extend({
+    //     initialize: function () {
+    //     Backbone.Model.prototype.initialize.apply(this, arguments);
+    //     this.on("change", function (model, options) {
+    //         if (options && options.save === false) return;
+    //         model.save();
+    //     });
+    //     },
+    //     urlRoot:'/SalesComission/'
+    // }),
+    Comission:Backbone.Model.extend({
+        initialize: function (options) {
         Backbone.Model.prototype.initialize.apply(this, arguments);
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
             model.save();
         });
-        },
-        urlRoot:'/SalesComission/'
-    }),
-    ServiceComission:Backbone.Model.extend({
-        initialize: function () {
-        Backbone.Model.prototype.initialize.apply(this, arguments);
-        this.on("change", function (model, options) {
-            if (options && options.save === false) return;
-            model.save();
-        });
-        },
-        urlRoot:'/ServiceComission/'
+        this.urlRoot=options.urlRoot;
+        },        
     }),
     User:Backbone.Model.extend({
         urlRoot:'/User/'
@@ -341,10 +341,10 @@ Collections={
             return "{}";
         }
     }),
-    SalesComission:sortableCollection.extend({
-        model:Models.SalesComission,
-        url: function(){
-            var toreturn='/SalesComission/?';
+    Comission:Backbone.Collection.extend({
+        model:Models.Comission,
+         url: function(){
+            var toreturn=this._url+'?';
             if(this.startDate)
                 toreturn+='startdate='+this.startDate;
             if(this.endDate)
@@ -352,18 +352,39 @@ Collections={
             return toreturn;
         },
         
-        initialize:function(){
+        initialize:function(options){
             this.startDate="9/1/2014";
             this.endDate="";
-            this.mode="";
+            this._url=options.url;
         },
         setdate:function(options){
             this.startDate=options.startDate;
             this.endDate=options.endDate;
         },
     }),
+    // SalesComission:sortableCollection.extend({
+    //     model:Models.Comission,
+    //     url: function(){
+    //         var toreturn='/SalesComission/?';
+    //         if(this.startDate)
+    //             toreturn+='startdate='+this.startDate;
+    //         if(this.endDate)
+    //             toreturn+="&enddate="+this.endDate;
+    //         return toreturn;
+    //     },
+        
+    //     initialize:function(){
+    //         this.startDate="9/1/2014";
+    //         this.endDate="";
+    //         this.mode="client";
+    //     },
+    //     setdate:function(options){
+    //         this.startDate=options.startDate;
+    //         this.endDate=options.endDate;
+    //     },
+    // }),
     ServiceComission:sortableCollection.extend({
-        model:Models.ServiceComission,
+        model:Models.Comission,
         url: function(){
             var toreturn='/ServiceComission/?';
             if(this.year)
@@ -376,7 +397,7 @@ Collections={
         initialize:function(){
             this.year=new Date().getFullYear();
             this.month=new Date().getMonth()+1;
-            this.mode="";
+            this.mode="client";
         },
         setdate:function(options){
             this.year=options.year;

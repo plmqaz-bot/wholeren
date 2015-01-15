@@ -1692,7 +1692,7 @@ var SalesComissionView=Wholeren.FormView.extend({
     initialize: function (options) {
         this.rank=$('#rank').text();
         this.el=options.el;
-        this.collection = new Obiwang.Collections['SalesComission']();
+        this.collection = new Obiwang.Collections['Comission']({url:'/SalesComission/'});
         this.render();
         var testroles;
         var self=this;
@@ -1812,8 +1812,9 @@ var ServiceComissionView=SalesComissionView.extend({
                 {name:'startprogress',label:'StartStatus',cell:statusselect},
                 {name:'endprogress',label:'EndStatus',cell:statusselect},
                 {name:'extra',label:'Extra',cell:'number'},
-                {name:'startComission',label:'ServiceComission1',editable: false,cell:'number'},
-                {name:'endComission',label:'ServiceComission2',editable: false,cell:'number'},
+                {name:'startComission',label:'BeginComission',editable: false,cell:'number'},
+                {name:'endComission',label:'EndComission',editable: false,cell:'number'},
+                {name:'monthlyComission',label:'This Month',editable:false,cell:'number'},
                 // {name:'final',label:'佣金',cell:'number'}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
@@ -1832,6 +1833,52 @@ var ServiceComissionView=SalesComissionView.extend({
         this.collection.fetch({reset:true});
     },  
 });
+var AssisComissionView=SalesComissionView.extend({
+    initialize: function (options) {
+        this.rank=$('#rank').text();
+        this.el=options.el;
+        this.collection = new Obiwang.Collections['Comission']({url:'/AssisComission/'});
+        this.render();
+        var testroles;
+        var self=this;
+        util.ajaxGET('/SalesComission/roles/').then(function(data){
+                testroles=[{name:"role",values:data}]; 
+                self.myselect=Backgrid.SelectCell.extend({
+                    optionValues:function(){
+                        return testroles
+                    },
+                    formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                        toRaw: function (formattedValue, model) {
+                          return formattedValue == null ? null: parseInt(formattedValue);
+                        }
+                    })
+                });
+                var columns=[
+                {name:'contract',label:'Contract',editable:false,cell:'string'},
+                {name:'nickname',label:'User',editable: false,cell:'string'},
+                {name:'serviceType',label:'Service',cell:'string'},
+                {name:'price',label:'Price',editable:false,cell:'number'},
+                {name:'salesRole',label:'Role',cell:self.myselect},
+                {name:'comissionPercent',label:'RoleComission',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
+                {name:'flatComission',label:'Flat',editable: false,cell:'number'},
+                {name:'comission',label:'ServiceComission',editable: false,cell:'number'},
+                {name:'extra',label:'Extra',cell:'number'},
+                {name:'final',label:'佣金',cell:'number'}
+                ];
+                var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+                $('.table-wrapper').append(grid.render().el);
+            }).error(function(err){
+                console.log(err);
+            });        
+    },
+});
+var Comission={
+    'sales':SalesComissionView,
+    'service':ServiceComissionView,
+    'assis':AssisComissionView
+};
+
+
 var ApplicationEdit=EditForm.extend({
     template: JST['serviceEdit'],
     events:{
@@ -2237,6 +2284,5 @@ module.exports={
         Setting:SettingView,
         User:UserView,
         Auth:Views,
-        SalesComission:SalesComissionView,
-        ServiceComission:ServiceComissionView
+        Comission:Comission,
 };

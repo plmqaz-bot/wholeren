@@ -13,8 +13,7 @@ var Router=Backbone.Router.extend({
         'market(/:pane)/':'market',
         'contract(/:option/)/':'contract',
         'service/(:option)':'service',
-        'comission/(:option)':'salescomission',
-        'servicecomission/(:option)':'servicecomission',
+        'comission(/:pane)/':'comission',
         'user/(:option)':'user',
         'register/'        : 'register',
         'signup/'          : 'signup',
@@ -78,16 +77,25 @@ var Router=Backbone.Router.extend({
             Wholeren.currentView=new  Wholeren.Views.Service({el:'.content-view-container',id:option});
         }
     },
-    salescomission:function(option){
+    comission:function(pane){
+        if(!pane){
+            this.navigate('/comission/sales/',{trigger:true,replace:true});
+            return;
+        }
         if(!Wholeren.currentView){
-            Wholeren.currentView=new  Wholeren.Views.SalesComission({el:'.content-view-container',id:option});
+            Wholeren.currentView=new  Wholeren.Views.Comission[pane]({el:'.content-view-container'});
         }
     },
-    servicecomission:function(option){
-        if(!Wholeren.currentView){
-            Wholeren.currentView=new  Wholeren.Views.ServiceComission({el:'.content-view-container',id:option});
-        }
-    },
+    // servicecomission:function(option){
+    //     if(!Wholeren.currentView){
+    //         Wholeren.currentView=new  Wholeren.Views.ServiceComission({el:'.content-view-container',id:option});
+    //     }
+    // },
+    // assiscomission:function(option){
+    //     if(!Wholeren.currentView){
+    //         Wholeren.currentView=new  Wholeren.Views.AssisComission({el:'.content-view-container',id:option});
+    //     }
+    // },
     user:function(option){
         if(!Wholeren.currentView){
             Wholeren.currentView=new  Wholeren.Views.User({el:'.content-view-container',id:option});

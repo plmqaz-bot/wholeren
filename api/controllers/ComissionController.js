@@ -135,15 +135,5 @@ module.exports = {
 			return res.json(404,err);
 		});
 	},
-	'getServiceStatus':function(req,res){
-		Utilfunctions.nativeQuery('select s.servRole, s.serviceType,s.serviceStatus, servicestatus.serviceStatus from servcomissionlookup s inner join servicestatus on s.serviceStatus=servicestatus.id;').then(function(data){
-			if(data.length<1) return res.json([["No Status",null]]);
-			//return res.json(Utilfunctions.backgridHash(data,'serviceStatus'));
-			return res.json(data);
-		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
-		});
-	}
 };
 
