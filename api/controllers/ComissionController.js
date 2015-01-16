@@ -62,7 +62,7 @@ module.exports = {
 		var id=165;
 		var year=parseInt(req.param('year'));
 		var month=parseInt(req.param('month'));
-		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});
+		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return json(400,{error:"invalid year and month"});
 		console.log(year);
 		console.log(month);
 		var sql="call ServiceComission(0,0,"+year+","+month+",false);";
