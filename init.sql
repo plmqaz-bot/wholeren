@@ -520,16 +520,16 @@ create PROCEDURE AssistantComission (uid int,cid int, start date, end date,singl
 COMMENT ''
 BEGIN
 select A.*,client.chineseName,count(*) as "email", count(*)*10 as "comission" from 
-(select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant1=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+(select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant1=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant2=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant2=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant3=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant3=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.id as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant4=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant4=user.id)where (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null)
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))) A 
 inner join client on A.client=client.id
 group by A.contract,A.user;

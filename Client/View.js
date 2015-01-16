@@ -1,7 +1,7 @@
 ﻿"use strict";
 var $ = require('./floatThead.js');
 //var Backbone = require('backbone');
-var Backgrid=require('./backgrid.js');
+var Backgrid=require('./backgrid-paginator.js');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
 Backbone.$=$;
@@ -1722,9 +1722,16 @@ var SalesComissionView=Wholeren.FormView.extend({
                 ];
                 var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
                 $('.table-wrapper').append(grid.render().el);
-            }).error(function(err){
-                console.log(err);
-            });        
+                var paginator = new Backgrid.Extension.Paginator({
+                windowSize: 20, // Default is 10
+                slideScale: 0.25, // Default is 0.5
+                goBackFirstOnSort: false, // Default is true
+                collection: self.collection
+                });
+                $('.table-wrapper').append(paginator.render().el);
+                }).error(function(err){
+                    console.log(err);
+                });        
     },
     events: {
     'click  button.button-alt': 'refetch',
@@ -1818,7 +1825,16 @@ var ServiceComissionView=SalesComissionView.extend({
                 // {name:'final',label:'佣金',cell:'number'}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+                
+            var paginator = new Backgrid.Extension.Paginator({
+                windowSize: 20, // Default is 10
+                slideScale: 0.25, // Default is 0.5
+                goBackFirstOnSort: false, // Default is true
+                collection: self.collection
+                });
+                $('.table-wrapper').append(paginator.render().el);
                 $('.table-wrapper').append(grid.render().el);
+                //$('.table-wrapper').append(html);
                 self.ready=true;
             }).error(function(err){
                 console.log(err);
@@ -1830,6 +1846,7 @@ var ServiceComissionView=SalesComissionView.extend({
         var month=$('#month').val();
         this.collection.setdate({year:year,month:month});
         this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
         this.collection.fetch({reset:true});
     },  
 });
@@ -1842,7 +1859,7 @@ var AssisComissionView=SalesComissionView.extend({
         var self=this;
         var columns=[
         {name:'contract',label:'Contract',editable:false,cell:'string'},
-        {name:'nickname',label:'User',editable: false,cell:'string'},
+        {name:'user',label:'User',editable: false,cell:'string'},
         {name:'createdAt',label:'咨询时间',editable:false,cell:'Date'},
         {name:'contractSigned',label:'签约时间',editable:false,cell:'Date'},
         {name:'chineseName',label:'客户名字',editable: false,cell:'string'},
@@ -1850,7 +1867,14 @@ var AssisComissionView=SalesComissionView.extend({
         {name:'comission',label:'佣金',editable: false,cell:'number'},
         ];
         var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-        $('.table-wrapper').append(grid.render().el);        
+        $('.table-wrapper').append(grid.render().el);      
+        var paginator = new Backgrid.Extension.Paginator({
+            windowSize: 20, // Default is 10
+            slideScale: 0.25, // Default is 0.5
+            goBackFirstOnSort: false, // Default is true
+            collection: self.collection
+            });
+        $('.table-wrapper').append(paginator.render().el);  
     },
     events: {
     'click  button.button-alt': 'refetch',

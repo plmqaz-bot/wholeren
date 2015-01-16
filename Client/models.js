@@ -341,7 +341,7 @@ Collections={
             return "{}";
         }
     }),
-    Comission:Backbone.Collection.extend({
+    Comission:Backbone.PageableCollection.extend({
         model:Models.Comission,
          url: function(){
             var toreturn=this._url+'?';
@@ -356,6 +356,8 @@ Collections={
             this.startDate="9/1/2014";
             this.endDate="";
             this._url=options.url;
+            this.mode="client";
+            this.state={pageSize:25};
         },
         setdate:function(options){
             this.startDate=options.startDate;
@@ -383,7 +385,7 @@ Collections={
     //         this.endDate=options.endDate;
     //     },
     // }),
-    ServiceComission:sortableCollection.extend({
+    ServiceComission:Backbone.PageableCollection.extend({
         model:Models.Comission,
         url: function(){
             var toreturn='/ServiceComission/?';
@@ -398,6 +400,7 @@ Collections={
             this.year=new Date().getFullYear();
             this.month=new Date().getMonth()+1;
             this.mode="client";
+            this.state={pageSize:25};
         },
         setdate:function(options){
             this.year=options.year;
