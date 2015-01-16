@@ -167,7 +167,7 @@ module.exports = {
 	            console.log("client id is ",contract.client);
 	            return getUser(contract.assistant);
 	        }).then(function(assis){
-	            if(_.contains(assis=assis||[],null)) throw {reason:"unknown assistant",assistant:contract.assistant,line:linenum};
+	            if(_.contains(assis=assis||[],null)) throw {reason:"unknown assistant",assistant:contract.assistant,ids:assis,line:linenum};
 	            var count=1;
 	            assis.forEach(function(e){
 	            	if(count>4)return;
@@ -271,13 +271,7 @@ module.exports = {
 	        });
 	    };
 	    function getUser(users,defaultUser){
-	    	user=users[0];
-	        if (user.length<1) {
-	        	if(defaultUser)
-	        		user="ting";
-	        	else
-	        		return Promise.resolve([]);
-	        }
+			users=_.reject(users,function(e){return e==''})
 	        var allprom=_.map(users,function(user){
 				if (user.length<1) {
 					console.log(users,"weird users");
