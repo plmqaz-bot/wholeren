@@ -1030,6 +1030,7 @@ var AttributeEdit=Backbone.Modal.extend({
     submit: function () {
         // get text and submit, and also refresh the collection. 
         var content = $('.reply-content').val();
+        if(this.type=="multiselectbox") content=content||[];
         var options={};
         options["id"]=this.updateId;
         options[this.attr]=content;
@@ -1525,7 +1526,7 @@ var ServiceView=Wholeren.FormView.extend({
         'click .add,.edit,.del':'editApplication',
         'click  button.button-alt': 'refetch',
         'change .filter':'renderCollection',
-        'click .textbox,.selectbox':'editAttr',
+        'click .textbox,.selectbox,.multiselectbox':'editAttr',
         'click .sortable':'sortCollection',
         'click .comment_edit':'showComments',
         'click a.page':'switchPage'

@@ -284,6 +284,7 @@ module.exports = {
 	                if (data) {
 	                    return Promise.resolve(data.id);
 	                } else { 
+	                	console.log("User not found use ting as default ",user);
 	                    return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
 	                    	if(data)
 	                    		return Promise.resolve(data.id);
@@ -305,7 +306,7 @@ module.exports = {
 	        var insertPs=[];
 	        var serviceIDs=[];
 	        teacher=teacher||[];
-	        teacher=teacher.length<1?teacher:null;
+	        teacher=teacher.length>0?teacher:null;
 			console.log("add services ",contID)
 	        //console.log(servs);
 	        _.forEach(servs,function(ele){
