@@ -345,20 +345,50 @@ module.exports = {
 	        if(!servs){
 	            return undefined;
 	        }
-	        var id;
-	        var keyword=servs.substring(0,2);
-	        //console.log("keyword is ",keyword);
-	        
-	        SERVICETYPE.forEach(function(ele){
-	            var eachone=ele['serviceType'];
-
-	            if(eachone.indexOf(keyword)>=0){
-	               // console.log("found servicetype ",ele.id);
-	                id=ele.id;
+	        servs=servs.toLowerCase();
+	        var start=servs.substring(0,1);
+	            var valid=false;
+	            switch(servs.substring(0,1)){
+	            	case 'd':
+	            	if(servs.indexOf('cc')>-1) start="d1";
+	            	else if(servs.indexOf('u')>-1) start="d3";
+	            	else if(servs.indexOf('高')>-1) start='d2';
+	            	else console.log("error servicetype",servs);
+	            	break;
+	            	case 'i':
+	            	if(servs.indexOf('cc')>-1) start="i1";
+	            	else if(servs.indexOf('u')>-1) start="i3";
+	            	else if(servs.indexOf('高')>-1) start='i2';
+	            	else if(servs.indexOf('国会')>-1) start='i4';
+	            	else console.log("error servicetype",servs);
+	            	break;
+	            	case 'f':
+	            	if(servs.indexOf('vip')>-1) start="f2";
+	            	else start="f1";
+	            	break;
+	            	case 'h':
+	            	if(servs.indexOf('学术')>-1) start="h1";
+	            	else if(servs.indexOf('早起')>-1) start="h2";
+	            	else if(servs.indexOf('单科')>-1) start="h3";
+	            	else if(servs.indexOf('托福')>-1) start="h4";
+	            	else if(servs.indexOf('1')>-1) start="h5";
+	            	else if(servs.indexOf('2')>-1) start="h6";
+	            	else if(servs.indexOf('选课')>-1) start="h7";
+	            	else console.log("error servicetype",servs);
+	            	break;
+	            }
+	        var theone=_.find(SERVICETYPE,function(ele){
+	            var eachone=ele['serviceType'].toLowerCase();
+	            if(eachone.indexOf(start)>=0){
+	                return true;
 	            }
 	        });
-
-	        return id;
+	        if(theone){
+	        	return theone.id;
+	        }else{
+	        	console.log("service not found ",servs);
+	        	return undefined;
+	        }
 	    }
     },
     'importUser':function(){
