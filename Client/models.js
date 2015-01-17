@@ -393,11 +393,7 @@ Collections={
     //         this.endDate=options.endDate;
     //     },
     // }),
-<<<<<<< HEAD
     ServiceComission:Backbone.PageableCollection.extend({
-=======
-    ServiceComission:Backbone.Collection.extend({
->>>>>>> aa07ca12ee4ab3ae911492b126920182593f8418
         model:Models.Comission,
         url: function(){
             var toreturn='/ServiceComission/?';

@@ -987,7 +987,22 @@ var AttributeEdit=Backbone.Modal.extend({
                 choices.forEach(function(item){
                     var choice=item.toJSON();
                     //var toAdd=$('<input>', { value : choice.id,type:"checkbox",name:"names[]" }).text(choice[self.optext]);
-                     var toAdd=$('<option>', { value : choice.id }).text(choice[self.optext]);
+                    var sel='';
+                    var found=_.find(self.curValue,function(e){
+                        e=e||{};
+                        var atr=e[self.optext];
+                        if(e.id==choice.id||atr.id==choice.id){
+                            return true;
+                        }
+                    });
+                    if(found){
+                        sel='selected=""';
+                    }
+                    var toAdd=$('<option value="'+choice.id+'"'+sel+'>'+choice[self.optext]+'</option>');
+                    if(found){
+                        toAdd.css('background-color','#b3d5f3');
+                    }
+                     //var toAdd=$('<option>', { value : choice.id,selected:sel }).text(choice[self.optext]);
                     if(self.filter){
                         var obfilter=JSON.parse(self.filter);
                         for(var key in obfilter){
