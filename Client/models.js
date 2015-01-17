@@ -49,6 +49,9 @@ Models={
     idAttribute: "id",
     urlRoot:'/Service/'
     }),
+    ServiceProgress:Backbone.Model.extend({
+        urlRoot:'/serviceProgress/'
+    }),
     // SalesComission: Backbone.Model.extend({
     //     initialize: function () {
     //     Backbone.Model.prototype.initialize.apply(this, arguments);
@@ -309,6 +312,11 @@ Collections={
         model:Models.ServiceType,
         url:'/ServiceType/'
     }),
+    ServiceProgress:Backbone.Collection.extend({
+        name:'serviceProgress',
+        model:Models.ServiceProgress,
+        url:'/ServiceProgress/'
+    }),
     Service:sortableCollection.extend({
         model: Models.Service,
         url: function(){return '/Service/?where='+this.whereclaus();},
@@ -383,7 +391,7 @@ Collections={
     //         this.endDate=options.endDate;
     //     },
     // }),
-    ServiceComission:sortableCollection.extend({
+    ServiceComission:Backbone.Collection.extend({
         model:Models.Comission,
         url: function(){
             var toreturn='/ServiceComission/?';

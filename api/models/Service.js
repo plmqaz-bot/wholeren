@@ -12,7 +12,7 @@ module.exports = {
 
   	serviceType:{model:'ServiceType'},
 
-  	progress:{model:'ServiceProgress',required:true,defaultsTo:1},
+  	serviceProgress:{model:'ServiceProgress',required:true,defaultsTo:1},
 
     serviceTeacher:{collection:'User'},
 
