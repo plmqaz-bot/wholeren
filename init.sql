@@ -426,8 +426,8 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,9,@sprogress1,0.3
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,9,@sprogress2,0.4,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,@slevel,0,9,@sprogress3,0.3,0,NULL,NOW(),NOW());
 
-select id from servicestatus where serviceStatus ='无' into @sprogress1;
-insert into servcomissionlookup values(0,0,0,0,9,@sprogress1,0,0,NULL,NOW(),NOW());
+#select id from servicestatus where serviceStatus ='无' into @sprogress1;
+#insert into servcomissionlookup values(0,0,0,0,9,@sprogress1,0,0,NULL,NOW(),NOW());
 
 
 #Now create some views for summary information

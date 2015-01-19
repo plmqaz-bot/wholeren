@@ -70,6 +70,7 @@ module.exports = {
 	    });
 	    var errorLine=[];
 	    var toReturn=Promise.defer();
+	    var problem_user=[];
 	    fs.readFile(filename,'utf8',function(err,data){
 	        if(err) throw err;
 	        parse(data,{comment:'#'},function(err,output){
@@ -99,6 +100,7 @@ module.exports = {
 	                });
 	                return Promise.all(allPromises);
 	            }).then(function(data){
+	            	console.log(problem_user,"unknown user names");
 	                	toReturn.resolve("done");
                 }).fail(function(err){
 	            	console.log('finished with errors',err);
@@ -167,7 +169,8 @@ module.exports = {
 	            console.log("client id is ",contract.client);
 	            return getUser(contract.assistant);
 	        }).then(function(assis){
-	            if(_.contains(assis=assis||[],null)) throw {reason:"unknown assistant",assistant:contract.assistant,ids:assis,line:linenum};
+	           // if(_.contains(assis=assis||[],null)) throw {reason:"unknown assistant",assistant:contract.assistant,ids:assis,line:linenum};
+	           	assis=_.reject(assis=assis||[],function(e){return e==null;})
 	            var count=1;
 	            assis.forEach(function(e){
 	            	if(count>4)return;
@@ -180,17 +183,20 @@ module.exports = {
 	            //contract.assistant=assis;
 	            return getUser(contract.sales);
 	        }).then(function(sale){
-	        	if(_.contains(sale=sale||[],null)) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
+	        	//if(_.contains(sale=sale||[],null)) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
+	        	sale=_.reject(sale=sale||[],function(e){return e==null;})
 	            contract.sales=sale[0];
 	            if(sale.length>1)console.log("weird sales",sale);
 	            return getUser(contract.expert);
 	        }).then(function(exp){
-	            if(_.contains(exp=exp||[],null)) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
+	            //if(_.contains(exp=exp||[],null)) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
+	            exp=_.reject(exp=exp||[],function(e){return e==null;})
 	            contract.expert=exp[0];
 	            if(exp.length>1)console.log("weird exp",exp);
 	            return getUser(contract.teacher);
 	        }).then(function(tea){
-	            if(_.contains(tea=tea||[],null)) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
+	            //if(_.contains(tea=tea||[],null)) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
+	            tea=_.reject(tea=tea||[],function(e){return e==null;})
 	            contract.teacher=tea[0];
 	            serviceTeachers=tea;
 	            if(tea.length>1)console.log("weird tea",tea);
@@ -284,13 +290,19 @@ module.exports = {
 	                if (data) {
 	                    return Promise.resolve(data.id);
 	                } else { 
-	                	console.log("User not found use ting as default ",user);
-	                    return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
+	                	
+	                	if(user=='na'){
+	                		return Promise.resolve(null);
+	                	}else{
+	                		console.log("User not found use ting as default ",user);
+	                		problem_user.push(user);
+	                		return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
 	                    	if(data)
 	                    		return Promise.resolve(data.id);
 	                    	else
 	                    		return Promise.resolve(null);
-	                    });
+	                    	});	
+	                	}
 	                }
 	        	});
 	        })
@@ -300,8 +312,9 @@ module.exports = {
 	    function getService(service,contID,teacher){
 	        service=service.replace("，",",");
 	        service=service.replace(String.fromCharCode(65292),",");
-	        service=service.replace(/\d/g,'');
+	        service=service.replace(/\d\//g,'');
 	        var servs=service.split(/[,+]/);
+	        servs=_.reject(servs,function(e){if(e==null||e=="")return true;})
 	        var p= Promise.defer();
 	        var insertPs=[];
 	        var serviceIDs=[];
