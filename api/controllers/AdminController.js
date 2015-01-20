@@ -59,7 +59,7 @@ adminNavbar = {
         navClass: 'settings',
         key: 'admin.navbar.settings',
         path: '/settings/',
-        display:false
+        display:true
     }
 };
 loginSecurity=[];
@@ -89,15 +89,6 @@ function handleRank(req){
 module.exports={
 
     'index': function (req, res) {
-        /*jslint unparam:true*/
-        // function renderIndex() {
-        //     res.render('contract', {
-        //         bodyClass: 'contract',
-        //         adminNav: setSelected(adminNavbar, 'contract')
-        //     });
-        // }
-
-        // renderIndex();
         res.redirect('/admin/contract/');
     },
     'contract':function(req,res){
@@ -133,17 +124,18 @@ module.exports={
 
     'settings': function (req, res, next) {
         // TODO: Centralise list/enumeration of settings panes, so we don't run into trouble in future.
-        var allowedSections = ['', 'general', 'user', 'apps'],
-            section = req.url.replace(/(^\/ghost\/settings[\/]*|\/$)/ig, '');
+        // var allowedSections = ['', 'general', 'user', 'apps'],
+        //     section = req.url.replace(/(^\/ghost\/settings[\/]*|\/$)/ig, '');
 
-        if (allowedSections.indexOf(section) < 0) {
-            return next();
-        }
-
-        return res.render('settings', {
-            bodyClass: 'settings',
-            adminNav: setSelected(adminNavbar, 'settings')
-        });
+        // if (allowedSections.indexOf(section) < 0) {
+        //     return next();
+        // }
+        handleRank(req);
+        return comission(req,res,'settings','settings','settings');
+        // return res.render('settings', {
+        //     bodyClass: 'settings',
+        //     adminNav: setSelected(adminNavbar, 'settings')
+        // });
     },
     'signout': function (req, res) {
         req.session.destroy();

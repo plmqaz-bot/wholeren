@@ -72,7 +72,8 @@ module.exports.policies = {
     'findOne':true,
   },
   UserController:{
-    '*':'managerAuth'
+   // '*':'managerAuth'
+   '*':true
   }
 
 };

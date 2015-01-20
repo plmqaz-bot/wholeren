@@ -4654,7 +4654,7 @@ body.zen {
       background: rgba(0, 0, 0, 0.5); }
   .settings .user-profile {
     position: relative;
-    top: -100px;
+    /*top: -100px;*/
     z-index: 1; }
     .settings .user-profile fieldset {
       padding: 0 40px; }

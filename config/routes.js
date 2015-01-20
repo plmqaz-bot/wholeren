@@ -117,6 +117,10 @@ module.exports.routes = {
     controller:'user',
     action:'update'
   },
+  'POST /user/changepw/':{
+    controller:'user',
+    action:'changepw'
+  },
   'PATCH /application/:id':{
     controller:'application',
     action:'update'

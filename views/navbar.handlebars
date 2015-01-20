@@ -1,6 +1,7 @@
 <header id="global-header" class="navbar">
     <a class="ghost-logo" href="{{admin_url absolute="true" frontend="true"}}" data-off-canvas="left" title="{{admin_url absolute="true" frontend="true"}}">
         <span class="hidden" id="rank">{{#if currentUser.rank}}{{currentUser.rank}}{{/if}} </span>
+        <span class="hidden" id="userid">{{#if currentUser.id}}{{currentUser.id}}{{/if}} </span>
     </a>
     <nav id="global-nav" role="navigation">
         <ul id="main-menu" >

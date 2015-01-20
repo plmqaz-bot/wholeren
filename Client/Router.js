@@ -46,10 +46,8 @@ var Router=Backbone.Router.extend({
             });
             return;
         }
+        Wholeren.currentView = new  Wholeren.Views.Setting({ el: '#main', pane: pane });            
         
-        if (!Wholeren.currentView){
-            Wholeren.currentView = new  Wholeren.Views.Setting({ el: '#main', pane: pane });            
-        }
 // only update the currentView if we don't already have a Settings view
 //        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
 //            Ghost.currentView = new Ghost.Views.Settings({ el: '#main', pane: pane });

@@ -7,28 +7,27 @@
 </header>
 
 <section class="content no-padding">
-
-    <header class="user-profile-header">
-        <img id="user-cover" class="cover-image" src="{{#if cover}}{{cover}}{{else}}{{asset "shared/img/user-cover.png"}}{{/if}}" title="{{name}}'s Cover Image"/>
-
+     <header class="user-profile-header">
         <a class="edit-cover-image js-modal-cover button" href="#">Change Cover</a>
     </header>
-
     <form class="user-profile" novalidate="novalidate">
 
         <fieldset class="user-details-top">
-
-            <figure class="user-image">
-                <div id="user-image" class="img" style="background-image: url({{#if image}}{{image}}{{else}}{{asset "shared/img/user-image.png"}}{{/if}});" href="#"><span class="hidden">{{name}}'s Picture</span></div>
-                <a href="#" class="edit-user-image js-modal-image">Edit Picture</a>
-            </figure>
-
             <div class="form-group">
-                <label for="user-name" class="hidden">Full Name</label>
-                <input type="url" value="{{name}}" id="user-name" placeholder="Full Name" autocorrect="off" />
+                <label for="user-firstname" >First Name</label>
+                <input type="url" value="{{firstname}}" id="user-firstname" placeholder="First Name" autocorrect="off" />
                 <p>Use your real name so people can recognise you</p>
             </div>
-
+            <div class="form-group">
+                <label for="user-lastname">Last Name</label>
+                <input type="url" value="{{lastname}}" id="user-lastname" placeholder="Last Name" autocorrect="off" />
+                <p>Use your real name so people can recognise you</p>
+            </div>
+             <div class="form-group">
+                <label for="user-name" >Nickname</label>
+                <input type="url" value="{{nickname}}" id="user-nickname" placeholder="Nickname" autocorrect="off" />
+                <p>Use your nickname for general use</p>
+            </div>
         </fieldset>
 
         <fieldset class="user-details-bottom">
@@ -38,19 +37,16 @@
                 <input type="email" value="{{email}}" id="user-email" placeholder="Email Address" autocapitalize="off" autocorrect="off" />
                 <p>Used for notifications</p>
             </div>
-
             <div class="form-group">
-                <label for="user-location">Location</label>
-                <input type="text" value="{{location}}" id="user-location" />
-                <p>Where in the world do you live?</p>
+                <label for"user-phone">Phone</label>
+                <input type="text" value="{{phone}}" id="user-phone" placeholder="Phone" autocapitalize="off" autocorrect="off" />
+                <p>Used for notifications</p>
             </div>
-
             <div class="form-group">
-                <label for="user-website">Website</label>
-                <input type="text" value="{{website}}" id="user-website" autocapitalize="off" autocorrect="off" />
-                <p>Have a website or blog other than this one? Link it!</p>
+                <label for"user-skype">Skype</label>
+                <input type="text" value="{{skype}}" id="user-skype" placeholder="Skype" autocapitalize="off" autocorrect="off" />
+                <p>Used for notifications</p>
             </div>
-
             <div class="form-group bio-container">
                 <label for="user-bio">Bio</label>
                 <textarea id="user-bio">{{bio}}</textarea>
