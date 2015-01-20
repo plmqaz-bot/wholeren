@@ -85,12 +85,12 @@ module.exports = {
     assistant3:{model:'User'},
     assistant4:{model:'User'},
 
-    assisCont:{model:'User'},
-
-    expert:{model:'User'},
-
-    sales:{model:'User'},
-
+    assisCont1:{model:'User'},
+    assisCont2:{model:'User'},
+    expert1:{model:'User'},
+    expert2:{model:'User'},
+    sales1:{model:'User'},
+    sales2:{model:'User'},
     teacher:{model:'User'},
     //transferService:{collection:'Service',via:'contract',dominate:true},
 

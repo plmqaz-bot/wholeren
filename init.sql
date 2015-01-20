@@ -65,7 +65,10 @@ insert into role values('申请',NULL,NOW(),NOW());
 insert into role values('市场',NULL,NOW(),NOW());
 insert into role values('文书',NULL,NOW(),NOW());
 insert into role values('专家',NULL,NOW(),NOW());
-
+insert into role values('人事',NULL,NOW(),NOW());
+insert into role values('加州',NULL,NOW(),NOW());
+insert into role values('学术',NULL,NOW(),NOW());
+	
 #服务 TODO: add the recommended price and also base comission
 insert into servicetype values('a.澄清','Emerg',false,0.9,NULL,NOW(),NOW());
 insert into servicetype values('b.申诉','Emerg',false,0.9,NULL,NOW(),NOW());

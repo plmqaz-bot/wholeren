@@ -2129,7 +2129,7 @@ Market.Pane = Wholeren.baseView.extend({
     }
 });
 
-Market.General=Market.Pane.extend({
+Market.general=Market.Pane.extend({
     templateName:'marketMessage',
     id:"general",
     events: {
@@ -2212,10 +2212,10 @@ Market.General=Market.Pane.extend({
 
 });
 
-Market.view1=Market.General.extend({
+Market.view1=Market.general.extend({
     requrestUrl:'contractOfSaleAndExpert'
 });
-Market.view2=Market.General.extend({
+Market.view2=Market.general.extend({
     requrestUrl:'MonthlyChange'
 });
 var MarketView=Wholeren.baseView.extend({

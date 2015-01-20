@@ -40,7 +40,7 @@ var Router=Backbone.Router.extend({
         if (!pane) {
         	
             // Redirect to settings/general if no pane supplied
-            this.navigate('/settings/general/', {
+            this.navigate('/settings/user/', {
                 trigger: true,
                 replace: true,
             });

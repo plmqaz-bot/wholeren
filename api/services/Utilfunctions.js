@@ -100,6 +100,7 @@ module.exports = {
 	                });
 	                return Promise.all(allPromises);
 	            }).then(function(data){
+	            	problem_user=_.uniq(problem_user);
 	            	console.log(problem_user,"unknown user names");
 	                	toReturn.resolve("done");
                 }).fail(function(err){
@@ -159,7 +160,7 @@ module.exports = {
 	        contract.endFee=line[40];
 	        contract.paymentOption=stripstring(line[41]); // later get payment id
 	        contract.endFeeDue=line[42]=='是'?true:false;
-	        contract.teacher=(line[43]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/);; // later get user id
+	        contract.teacher=(line[43]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id
 	        
 	        exchangeOptions(contract);
 	        //var p=Promise.defer();
@@ -167,7 +168,19 @@ module.exports = {
 	        return getClient(client).then(function(cid){
 	            contract.client=cid.id;
 	            console.log("client id is ",contract.client);
-	            return getUser(contract.assistant);
+	            var leadnames=(contract.leadName||"").replace("transfer","").replace(/\d/g,'').toLowerCase().split(/[\s,\/+]+/);
+	            return getUser(leadnames);
+	        }).then(function(assisCons){
+	        	assisCons=_.reject(assisCons=assisCons||[],function(e){return e==null;})
+	            var count=1;
+	            assisCons.forEach(function(e){
+	            	if(count>2)return;
+	            	if(e) {
+	            		contract['assisCont'+count]=parseInt(e);
+	            		count++;
+	            	}
+	            });
+	        	return getUser(contract.assistant);
 	        }).then(function(assis){
 	           // if(_.contains(assis=assis||[],null)) throw {reason:"unknown assistant",assistant:contract.assistant,ids:assis,line:linenum};
 	           	assis=_.reject(assis=assis||[],function(e){return e==null;})
@@ -184,15 +197,31 @@ module.exports = {
 	            return getUser(contract.sales);
 	        }).then(function(sale){
 	        	//if(_.contains(sale=sale||[],null)) throw {reason:"unknown sales",sales:contract.sales,line:linenum,O:contract.sales};
-	        	sale=_.reject(sale=sale||[],function(e){return e==null;})
-	            contract.sales=sale[0];
-	            if(sale.length>1)console.log("weird sales",sale);
+	        	sale=_.reject(sale=sale||[],function(e){return e==null;});
+	        	var count=1;
+	        	sale.forEach(function(e){
+	        		if(count>2) return;
+	        		if(e){
+	        			contract['sales'+count]=parseInt(e);
+	        		}
+	        	});
+	            //contract.sales=sale[0];
+	            //if(sale.length>1)console.log("weird sales",sale);
+	            delete contract['sales'];
 	            return getUser(contract.expert);
 	        }).then(function(exp){
 	            //if(_.contains(exp=exp||[],null)) throw {reason:"unknown expert",expert:contract.expert,line:linenum};
 	            exp=_.reject(exp=exp||[],function(e){return e==null;})
-	            contract.expert=exp[0];
-	            if(exp.length>1)console.log("weird exp",exp);
+	            var count=1;
+	        	exp.forEach(function(e){
+	        		if(count>2) return;
+	        		if(e){
+	        			contract['expert'+count]=parseInt(e);
+	        		}
+	        	});
+	        	delete contract['expert'];
+	            //contract.expert=exp[0];
+	            //if(exp.length>1)console.log("weird exp",exp);
 	            return getUser(contract.teacher);
 	        }).then(function(tea){
 	            //if(_.contains(tea=tea||[],null)) throw {reason:"unknown teacher",teacher:contract.teacher,line:linenum};
@@ -290,19 +319,21 @@ module.exports = {
 	                if (data) {
 	                    return Promise.resolve(data.id);
 	                } else { 
+	                	if(user!='na') problem_user.push(user);
+	                	return Promise.resolve(null);
 	                	
-	                	if(user=='na'){
-	                		return Promise.resolve(null);
-	                	}else{
-	                		console.log("User not found use ting as default ",user);
-	                		problem_user.push(user);
-	                		return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
-	                    	if(data)
-	                    		return Promise.resolve(data.id);
-	                    	else
-	                    		return Promise.resolve(null);
-	                    	});	
-	                	}
+	                	// if(user=='na'){
+	                	// 	return Promise.resolve(null);
+	                	// }else{
+	                	// 	console.log("User not found use ting as default ",user);
+	                	// 	problem_user.push(user);
+	                	// 	return User.findOne({ or:[{nickname: 'ting'},{firstname: 'ting'},{lastname: 'ting'}] }).then(function(data){
+	                 //    	if(data)
+	                 //    		return Promise.resolve(data.id);
+	                 //    	else
+	                 //    		return Promise.resolve(null);
+	                 //    	});	
+	                	// }
 	                }
 	        	});
 	        })
@@ -406,7 +437,7 @@ module.exports = {
 	    }
     },
     'importUser':function(){
-    	var filename='user.csv';
+    	var filename='user_1_19.csv';
     	var roleProm=Role.find();
     	var toReturn=Promise.defer();
     	fs.readFile(filename,'utf8',function(err,data){ 
@@ -449,20 +480,26 @@ module.exports = {
 		return toReturn.promise;
 	    function createUser(line, lineNumber,roleHash){
 	    	var input={
-		    	firstname:line[3],
-		    	lastname:line[2],
-		    	nickname:line[1].toLowerCase(),
+		    	firstname:line[1],
+		    	lastname:line[1],
+		    	nickname:line[0].toLowerCase(),
 		    	password:"123456",
 		    	role:parseInt(line[10]?roleHash[line[10]]:roleHash['销售']),
 		    	//boss:line[8],
-		    	rank:line[9],
-		    	email:stripstring(line[5]),
-		    	phone:line[4],
-		    	skype:line[7],
-		    	personalemail:stripstring(line[6])
+		    	//rank:line[9],
+		    	email:line[4],
+		    	phone:line[8],
+		    	wechat:line[9],
+		    	skype:line[6],
+		    	personalemail:line[5]
 	    	};
+	    	input.email=stripstring(input.email).split(/[,\/\s\n]/)[0];
+	    	input.personalemail=stripstring(input.personalemail).split(/[,\/\s\n]/)[0];
 	    	if(!input.email){
 	    		input.email=input.personalemail;
+	    	}
+	    	if(!input.personalemail){
+	    		input.personalemail=input.email;
 	    	}
 	    	//if(!input.email) throw {error:err,line:lineNumber};
 	    	return User.findOne({or:[{personalemail:input.email},{email:input.email}]}).then(function(data){
@@ -476,7 +513,7 @@ module.exports = {
 	    			console.log('creating user',input);
 	    			return User.create(input);
 	    		}
-	    	}).fail(function(err){
+	    	}).catch(function(err){
 	    		return Promise.reject({error:err,line:lineNumber});
 	    	});
 	    }
