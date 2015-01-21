@@ -80,9 +80,12 @@ module.exports = {
 	                var i=0;
 	                var allPromises=[];
 	                output.forEach(function (line) {
-	                    line.forEach(function (element) {
-	                        element = element.replace('\"', '');
-	                        element = element.replace('\'', '');
+	                    line=_.map(line,function (element) {
+	                        element = element.replace(/\"/g, '');
+	                        element = element.replace(/\'/g, '');
+	                        element=element.replace(new RegExp(String.fromCharCode(65292),'g'),",");
+	                        //if(element.indexOf('紧急二次购买')>-1) console.log(element);
+	                        return element;
 	                    });
 	                    if (firstline) {
 	                        firstline = false;
@@ -168,7 +171,7 @@ module.exports = {
 	        return getClient(client).then(function(cid){
 	            contract.client=cid.id;
 	            console.log("client id is ",contract.client);
-	            var leadnames=(contract.leadName||"").replace("transfer","").replace(/\d/g,'').toLowerCase().split(/[\s,\/+]+/);
+	            var leadnames=(contract.leadName||"").replace("transfer","").replace(/\d\"/g,'').toLowerCase().split(/[\s,\/+]+/);
 	            return getUser(leadnames);
 	        }).then(function(assisCons){
 	        	assisCons=_.reject(assisCons=assisCons||[],function(e){return e==null;})
@@ -315,6 +318,8 @@ module.exports = {
 		        	else
 		        		return Promise.resolve(null);
 	        	}
+	        	user=user.trim();
+	        	user=user.replace(/\"/g,'');
 	        	return User.findOne({ or:[{nickname: {'contains':user}},{firstname: {'contains':user}},{lastname: {'contains':user}}] }).then(function (data){
 	                if (data) {
 	                    return Promise.resolve(data.id);
@@ -343,6 +348,7 @@ module.exports = {
 	    function getService(service,contID,teacher){
 	        service=service.replace("，",",");
 	        service=service.replace(String.fromCharCode(65292),",");
+	        service=service.replace(String.fromCharCode(65295),"/");
 	        service=service.replace(/\d\//g,'');
 	        var servs=service.split(/[,+]/);
 	        servs=_.reject(servs,function(e){if(e==null||e=="")return true;})
@@ -452,8 +458,8 @@ module.exports = {
                 	var allPromises=[];
                 	output.forEach(function (line) {
 	                    line.forEach(function (element) {
-	                        element = element.replace('\"', '');
-	                        element = element.replace('\'', '');
+	                        element = element.replace(/\"/g, '');
+	                        element = element.replace(/\'/g, '');
 	                    });
 	                    if (firstline) {
 	                        firstline = false;
