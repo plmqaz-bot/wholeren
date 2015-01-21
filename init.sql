@@ -481,7 +481,7 @@ create PROCEDURE SalesComission (uid int,sid int, start date, end date,single bo
 COMMENT ''
 BEGIN
 select user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
-inner join contract on (contract.sales=user.id or contract.assisCont=user.id or contract.expert=user.id)
+inner join contract on (contract.sales1=user.id or contract.assisCont1=user.id or contract.expert1=user.id or contract.sales2=user.id or contract.assisCont2=user.id or contract.expert2=user.id)
 inner join service on (service.contract=contract.id)
 left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
 left join salesrole on (contractcomission.salesRole=salesrole.id)

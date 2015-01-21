@@ -93,7 +93,7 @@ module.exports = {
 			}).then(function(data){
 				console.log(data.length);
 				return res.json(data);
-			}).fail(function(err){return res.json(400,err)});	
+			}).catch(function(err){return res.json(400,err)});	
 		}else{
 			res.json(400,'not found');
 		}		

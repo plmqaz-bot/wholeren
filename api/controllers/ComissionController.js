@@ -27,6 +27,7 @@ module.exports = {
 		var attribs=req.body;
 		if(attribs==null) return res.json(400,'no attribs');
 		if(attribs.user==null||attribs.service==null){
+			console.log(attribs);
 			return res.json(404, 'not valid');
 		}
 		var toupdate={};
@@ -46,9 +47,10 @@ module.exports = {
 			}
 		}).then(function(data){
 			console.log('done');
-			var sql="call SalesComission("+toupdate.user+","+toupdate.service+",'2014-01-01','2015-01-01',true);"
+			var sql="call SalesComission("+toupdate.user+","+toupdate.service+",null,null,true);"
 			ContractComission.query(sql,function(err,data){
 				if(err) return res.json(400,err);
+				console.log(data);
 				if(data[0]) return res.json(data[0][0]);
 				return res.json({});
 				

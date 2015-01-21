@@ -95,23 +95,26 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 		promise.then(function(servIDs){
 
 			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"not found"});
-			console.log("native done");
+			
 			var idarray=servIDs.map(function(c){return c.id;});
+			console.log("native done",idarray.length);
 			var clientIDs=servIDs.map(function(c){return c.client});
 			return Promise.all([Service.find({id:idarray}).populateAll(),Client.find({id:clientIDs}),User.find()]);
 		}).then(function(data){
 			// manual populate client
+
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
 			var allService=data[0];
 			var allUser=Utilfunctions.makePopulateHash(data[2]);
 			//console.log(data);
 			//console.log(allService.length);
+			console.log("got all service process populate ",allService.length);
 			allService.forEach(function(ele){
 				var cid=ele.contract.client||0;
 				ele.contract.client=allClient[ele.contract.client];
-				if(ele.contract.teacher){
-					ele.contract.teacher=allUser[ele.contract.teacher];
-				}
+				// if(ele.contract.teacher){
+				// 	ele.contract.teacher=allUser[ele.contract.teacher];
+				// }
 				// populate application writer
 				ele.application=ele.application||[];
 				ele.application.forEach(function(app){
