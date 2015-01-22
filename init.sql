@@ -173,6 +173,11 @@ insert into servlevel values('D3',NULL,NOW(),NOW());
 insert into servlevel values('D4',NULL,NOW(),NOW());
 insert into servlevel values('DR',NULL,NOW(),NOW());
 
+#UserLevel
+insert into userlevel values('C1',1,NULL,NOW(),NOW());
+insert into userlevel values('C2',1,NULL,NOW(),NOW());
+insert into userlevel values('C3',1,NULL,NOW(),NOW());
+
 # Now hard part 服务佣金的lookup table
 select id from servicetype where serviceType like 'a%' into @stype;
 select id from servrole where servRole ='负责老师' into @srole;
@@ -480,12 +485,13 @@ delimiter ;;
 create PROCEDURE SalesComission (uid int,sid int, start date, end date,single bool)
 COMMENT ''
 BEGIN
-select user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
+select user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
 inner join contract on (contract.sales1=user.id or contract.assisCont1=user.id or contract.expert1=user.id or contract.sales2=user.id or contract.assisCont2=user.id or contract.expert2=user.id)
 inner join service on (service.contract=contract.id)
 left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
 left join salesrole on (contractcomission.salesRole=salesrole.id)
 left join servicetype on (service.serviceType=servicetype.id)
+left join userlevel on (user.userlevel=userlevel.id)
 where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
  and (contract.contractSigned>start or start is null) and (contract.contractSigned<end or end is null);
 END;;

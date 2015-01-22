@@ -1885,41 +1885,6 @@ var UserView=Wholeren.FormView.extend({
 
             return obj;
         },
-        
-        // renderCollectionCore:function(){
-        // // Remove all keywords
-        // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
-        // toRemove.remove();
-        // var headrow=$('#scrollableheader');
-        // var stableheadrow=$('#pinnedheader');
-        // var self=this;
-        // this.collection.forEach(function(item){
-        //     var obj=item.toJSON();
-        //     obj.application.forEach(function(ele){
-        //         var id=ele.writer;
-        //         if(id){
-        //             ele.writer=self.user.get(id).toJSON();
-        //         }
-        //     });
-        //     var id=obj.contract.client;
-        //     if(id){
-        //         obj.contract.client=self.client.get(id).toJSON();
-        //     }
-        //     var ele = self.singleTemplate(obj);
-        //     var toInsert = $('<div/>').html(ele).contents();
-        //     toInsert.insertAfter(headrow);
-        //     var headline='';
-        //     if(obj.contract.client){
-        //         headline=obj.contract.client.chineseName;
-                
-        //     }
-        //     if(!headline){
-        //             headline="NO NAME";
-        //     }
-        //     var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
-        //     headInsert.insertAfter(stableheadrow);
-        // });     
-        // },
 });
 var CommentView=Wholeren.baseView.extend({
     tagName:'li',

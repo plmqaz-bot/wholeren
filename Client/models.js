@@ -84,6 +84,9 @@ Models={
     Comment:Backbone.Model.extend({
         urlRoot:'/Comment/'
     }),
+    UserLevel:Backbone.Model.extend({
+        urlRoot:'/userLevel/'
+    }),
 
 };
 var sortableCollection=Backbone.PageableCollection.extend({
@@ -444,7 +447,11 @@ Collections={
             if(this.aid)
                 return '/Comment/?service='+this.aid;      
         }
-    })
+    }),
+    UserLevel:Backbone.Collection.extend({
+        model:Models.UserLevel,
+        url:'/userLevel/'
+    }),
 }
 
 

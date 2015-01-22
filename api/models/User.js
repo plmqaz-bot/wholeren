@@ -33,6 +33,8 @@ module.exports = {
     rank:{type:'int',required:true,defaultsTo:1,max:3},
 
     boss:{model:'User'},
+
+    userLevel:{model:'UserLevel',required:true}
   	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
 
   	//service:{collection:'Service',via:'serviceTeacher',dominant:true}

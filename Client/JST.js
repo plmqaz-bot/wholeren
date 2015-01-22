@@ -47,5 +47,6 @@ module.exports={
     'marketMessage':require('./template/market/marketgeneral.hbs'),
     'settingSidebar':require('./template/settings/sidebar.hbs'),
     'settingGeneral':require('./template/settings/general.hbs'),
-    'settingUser':require('./template/settings/user-profile.hbs')
+    'settingUser':require('./template/settings/user-profile.hbs'),
+    'default':require('./template/tableview.hbs')
 };
