@@ -97,6 +97,13 @@ sales comission select time --DONE
 
 redo how service comission get the select options. should be done in client-DONE
 
+
+market need a renewed view. 
+
+edit goal for sales and expert etc...
+
+sales comission should be per month. 
+
 service comission should be the services that is not done. but contract is signed before the currentmonth/21/currentyear. 
 edit init.sql to create the procedures
 
