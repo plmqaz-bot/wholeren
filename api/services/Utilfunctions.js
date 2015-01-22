@@ -11,6 +11,9 @@ var _=require('lodash');
         return hash;
 	};
 	function stripstring(str){
+		if(!str){
+			return "";
+		}
 		if(str.toLowerCase()=="na"){
 			return "";
 		}
@@ -100,19 +103,21 @@ module.exports = {
 	                            console.log(err);
 	                            errorLine.push(err);
 	                        });
-	                        allPromises.push(curP);
+	                        allPromises.push(Promise.resolve(curP));
 	                        i++;
 	                    }
 	                });
+					console.log("done loop");
 	                return Promise.all(allPromises);
-	            }).then(function(data){
-	            	problem_user=_.uniq(problem_user);
-	            	console.log(problem_user,"unknown user names");
-	                	toReturn.resolve("done");
-                }).fail(function(err){
-	            	console.log('finished with errors',err);
-	            	toReturn.reject("finished with errors");
-	            });
+	            })
+				 .then(function(data){
+	             	problem_user=_.uniq(problem_user);
+	             	console.log(problem_user,"unknown user names");
+	                 	toReturn.resolve("done");
+                 }).fail(function(err){
+	             	console.log('finished with errors',err);
+	             	toReturn.reject("finished with errors");
+	             });
 	        });
 	    });
 	     return toReturn.promise;
@@ -259,6 +264,10 @@ module.exports = {
 	               // p.resolve("current");
 	        }).then(function(data){
 	            return Promise.resolve(linenum);
+	        }).fail(function(err){
+	        	console.log(err);
+	        	console.log("error in line ",linenum);
+	        	return Promise.reject(err);
 	        });
 	    };
 	    function exchangeOptions(contract){

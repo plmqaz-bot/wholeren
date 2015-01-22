@@ -336,14 +336,14 @@ module.exports={
         Utilfunctions.importContract('TR_1_21.csv')
          .then(function(data){
              console.log('import done');
-         }).error(function(err){
+         }).catch(function(err){
             console.log('errors: ',err);
          });
     },
     'importUser':function(req,res){
         Utilfunctions.importUser().then(function(data){
              console.log('import done');
-         }).error(function(err){
+         }).catch(function(err){
             console.log('errors: ',err);
          });
     }
