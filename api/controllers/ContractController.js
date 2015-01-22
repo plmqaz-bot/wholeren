@@ -7,63 +7,43 @@
 var Promise=require('bluebird');
 module.exports = {
 	'getContract':function(req, res){
+		function constructsql(who){
+			return "select distinct(contract.id) from contract \
+			left join service on contract.id=service.contract \
+			left join service_serviceteacher__user_serviceteacher_user s on s.service_serviceTeacher=service.id \
+			inner join user on (user.id =s.user_serviceTeacher_user) where "+who+"\
+			union\
+			select distinct(contract.id) from contract \
+			inner join user on \
+			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) where "+who;
+		}
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
 		var id=req.session.user.id;
-		var contractpromise,servicepromise,promise;
+		var promise,who;
 		switch(req.session.user.rank){
 			case "3":
-			contractpromise=Contract.find().where(where).populate('client').populate('service');
-			servicepromise=Promise.resolve([]);
-			promise=Promise.all([contractpromise,servicepromise]);
+			promise=Contract.find();
 			break;
 			case "2":
-			promise=User.find({boss:id}).then(function(mypuppets){
-				var puppetIDs=mypuppets.map(function(puppet){return puppet.id;});
-				contractpromise= Contract.find({
-				or:[
-				{expert1:puppetIDs},
-				{expert2:puppetIDs},
-				{sales1:puppetIDs},
-				{sales2:puppetIDs},
-				{teacher:puppetIDs},
-				{assistant1:puppetIDs},
-				{assistant2:puppetIDs},
-				{assistant3:puppetIDs},
-				{assistant4:puppetIDs},
-				{assisCont1:puppetIDs},
-				{assisCont2:puppetIDs},
-				{assistant1:null,assisCont1:null,expert1:null,sales1:null}
-				]
-				}).where(where).populate('client').populate('service');
-				servicepromise=Utilfunctions.nativeQuery("select contract.id from contract inner join service on contract.id=service.contract inner join service_serviceteacher__user_serviceteacher_user s on s.service_serviceTeacher=service.id inner join user on s.user_serviceTeacher_user=user.id where boss="+id);
-				return Promise.all([contractpromise,servicepromise]);
+			var sql=constructsql("user.boss="+id);
+			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
+				var idarray=ids.map(function(c){return c.id;});
+				return Contract.find({id:idarray});
 			});
 			break;
 			default:
-			contractpromise=Contract.find({
-				or:[
-				{expert1:id},
-				{expert2:id},
-				{sales1:id},
-				{sales2:id},
-				{teacher:id},
-				{assistant1:id},
-				{assistant2:id},
-				{assistant3:id},
-				{assistant4:id},
-				{assisCont1:id},
-				{assisCont2:id},
-				{assistant1:null,assisCont1:null,expert1:null,sales1:null}
-				]
-			}).where(where).populate('client').populate('service');
-			servicepromise=Utilfunctions.nativeQuery("select contract.id from contract inner join service on contract.id=service.contract inner join service_serviceteacher__user_serviceteacher_user s on s.service_serviceTeacher=service.id inner join user on s.user_serviceTeacher_user=user.id where boss="+id);
-			promise= Promise.all([contractpromise,servicepromise]);
+			var sql=constructsql("user.id="+id);
+			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
+				var idarray=ids.map(function(c){return c.id;});
+				return Contract.find({id:idarray});
+			});
 		}
+		
 		if(promise){
 			var toReturn=[];
-			promise.spread(function(conts,servs){
+			promise.where(where).populate('client').populate('service').then(function(conts){
 				toReturn=conts;
 				console.log("found ", toReturn.length);
 				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find()]);

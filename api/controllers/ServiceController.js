@@ -48,6 +48,23 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 		});
 	},
 	'getService':function(req, res){
+		function constructsql(where,who){
+			return "select service.id ,client.id as client from contract \
+			inner join service on contract.id=service.contract \
+			inner join status on contract.status=status.id \
+			inner join client on contract.client=client.id \
+			left join service_serviceteacher__user_serviceteacher_user s on s.service_serviceTeacher=service.id \
+			inner join user on (user.id =s.user_serviceTeacher_user) where \
+			contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+"\
+			union\
+			select service.id, client.id as client from contract \
+			inner join status on contract.status=status.id \
+			inner join client on contract.client=client.id \
+			inner join service on contract.id=service.contract \
+			inner join user on \
+			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) where \
+			contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"
+		}
 		var id=req.session.user.id;
 		var where=req.param('where')||{};
 		console.log(where);
@@ -63,58 +80,42 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 				wherequery+="and contractsigned<'"+where.contractSigned['<']+"'";
 			}
 		}
-		//if(req.session.user.rank<3&&(req.session.user.role!=2&&req.session.user.role!=4)){
-		//	return res.json(404, {error:"not authorized"});
-		//}
-		var sql="select distinct(service.id),client.id as client \
-from service left join application on service.id=application.service \
-inner join contract on contract.id=service.contract \
-inner join status on contract.status=status.id \
-inner join client on contract.client=client.id \
-where contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+wherequery+" ";
 		switch (req.session.user.rank){
 			case "3":
-			sql+=";";
+			sql=constructsql(wherequery,"");
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			case "2":
-			sql+=";";
+			sql=constructsql(wherequery," and user.boss="+id);
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
-			// case "2":
-			// promise=User.find({boss:id}).then(function(mypuppets){
-			// 	var puppetIDs=mypuppets.map(function(puppet){return puppet.id});
-			// 	return Contract.find({contractSigned:{'!':null},teacher:puppetIDs}).where(where);
-			// });
-			// break;
 			default:
-			sql+="and (contract.teacher is null or contract.teacher="+id+"  or application.writer="+id+" );";
-			//promise=Contract.find({or:[{contractSigned:{'!':null}},{status:[3,4,5,6]}],or:[{teacher:id},{teacher:null}]}).where(where);
+			sql=constructsql(wherequery," and user.id="+id);
 			promise=Utilfunctions.nativeQuery(sql);
 		}
 		promise.then(function(servIDs){
 
-			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"not found"});
-			
+			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"no service found for user"});
 			var idarray=servIDs.map(function(c){return c.id;});
 			console.log("native done",idarray.length);
 			var clientIDs=servIDs.map(function(c){return c.client});
-			return Promise.all([Service.find({id:idarray}).populateAll(),Client.find({id:clientIDs}),User.find()]);
+			return Promise.all([Service.find({id:idarray}).populate('application').populate('contract'),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
 		}).then(function(data){
 			// manual populate client
-
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
 			var allService=data[0];
 			var allUser=Utilfunctions.makePopulateHash(data[2]);
-			//console.log(data);
-			//console.log(allService.length);
+			var allServiceProgress=Utilfunctions.makePopulateHash(data[3]);
+			var allServiceType=Utilfunctions.makePopulateHash(data[4]);
 			console.log("got all service process populate ",allService.length);
 			allService.forEach(function(ele){
 				var cid=ele.contract.client||0;
 				ele.contract.client=allClient[ele.contract.client];
-				// if(ele.contract.teacher){
-				// 	ele.contract.teacher=allUser[ele.contract.teacher];
-				// }
+				ele.serviceType=allServiceType[ele.serviceType];
+				ele.serviceProgress=allServiceProgress[ele.serviceProgress];
+				ele.serviceTeacher=ele.serviceTeacher.map(function(ele){
+					return allUser[ele];
+				});
 				// populate application writer
 				ele.application=ele.application||[];
 				ele.application.forEach(function(app){
@@ -151,6 +152,31 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			return res.json(404,"Error fetching filters");
 		});
 
+	},
+	'test':function(req,res){
+		var sql="select distinct(service.id),client.id as client,contractsigned  \
+from service left join application on service.id=application.service \
+inner join contract on contract.id=service.contract \
+inner join status on contract.status=status.id \
+inner join client on contract.client=client.id \
+where contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%');";
+	Utilfunctions.nativeQuery(sql).then(function(servIDs){
+
+			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"not found"});
+			
+			var idarray=servIDs.map(function(c){return c.id;});
+			
+			var clientIDs=servIDs.map(function(c){return c.client});
+			console.log("native done",clientIDs);
+			console.log("native done",idarray.length);
+			return Promise.all([Service.find(),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
+		}).then(function(data){
+			console.log("done");
+
+		}).catch(function(err){
+			console.log(err);
+			return res.json(404,err);
+		})
 	}
 };
 
