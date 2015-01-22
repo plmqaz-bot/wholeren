@@ -34,7 +34,7 @@ module.exports = {
 
     boss:{model:'User'},
 
-    userLevel:{model:'UserLevel',required:true}
+    userLevel:{model:'UserLevel',required:true,defaultsTo:1},
   	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
 
   	//service:{collection:'Service',via:'serviceTeacher',dominant:true}

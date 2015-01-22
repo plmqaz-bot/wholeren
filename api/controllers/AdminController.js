@@ -333,7 +333,7 @@ module.exports={
         });
     },
     'import':function(req,res){
-        Utilfunctions.importContract('EM_1_20.csv')
+        Utilfunctions.importContract('TR_1_21.csv')
          .then(function(data){
              console.log('import done');
          }).error(function(err){

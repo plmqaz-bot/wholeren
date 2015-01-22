@@ -11,12 +11,15 @@ var _=require('lodash');
         return hash;
 	};
 	function stripstring(str){
-	        if(str){
-	            return str.replace(/^\s+|\s+$/g, '');
-	        }else{
-	            return "";
-	        }
-	    };
+		if(str.toLowerCase()=="na"){
+			return "";
+		}
+        if(str){
+            return str.replace(/^\s+|\s+$/g, '');
+        }else{
+            return "";
+        }
+    };
 module.exports = {
 	'makePopulateHash':function(data){
 		hash={};
@@ -75,7 +78,7 @@ module.exports = {
 	        if(err) throw err;
 	        parse(data,{comment:'#'},function(err,output){
 	            options.then(function(data){
-	                    var firstline = true;
+	                    var firstline = false;
 	                var linepromises = [];
 	                var i=0;
 	                var allPromises=[];
@@ -443,7 +446,7 @@ module.exports = {
 	    }
     },
     'importUser':function(){
-    	var filename='user_1_19.csv';
+    	var filename='user.csv';
     	var roleProm=Role.find();
     	var toReturn=Promise.defer();
     	fs.readFile(filename,'utf8',function(err,data){ 
@@ -486,18 +489,18 @@ module.exports = {
 		return toReturn.promise;
 	    function createUser(line, lineNumber,roleHash){
 	    	var input={
-		    	firstname:line[1],
-		    	lastname:line[1],
-		    	nickname:line[0].toLowerCase(),
+		    	firstname:line[2],
+		    	lastname:line[3],
+		    	nickname:line[1].toLowerCase(),
 		    	password:"123456",
 		    	role:parseInt(line[10]?roleHash[line[10]]:roleHash['销售']),
 		    	//boss:line[8],
-		    	//rank:line[9],
-		    	email:line[4],
-		    	phone:line[8],
-		    	wechat:line[9],
-		    	skype:line[6],
-		    	personalemail:line[5]
+		    	rank:line[9],
+		    	email:line[5],
+		    	phone:line[4],
+		    	wechat:line[8],
+		    	skype:line[7],
+		    	personalemail:line[6]
 	    	};
 	    	input.email=stripstring(input.email).split(/[,\/\s\n]/)[0];
 	    	input.personalemail=stripstring(input.personalemail).split(/[,\/\s\n]/)[0];
