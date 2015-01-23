@@ -30,7 +30,7 @@ module.exports = {
 
     active:{type:'boolean',required:true,defaultsTo:false},
 
-    rank:{type:'int',required:true,defaultsTo:1,max:3},
+    rank:{type:'integer',required:true,defaultsTo:1,max:3},
 
     boss:{model:'User'},
 

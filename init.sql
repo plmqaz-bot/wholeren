@@ -437,6 +437,83 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,9,@sprogress3,0.3
 #select id from servicestatus where serviceStatus ='无' into @sprogress1;
 #insert into servcomissionlookup values(0,0,0,0,9,@sprogress1,0,0,NULL,NOW(),NOW());
 
+##############################################MARKET VIEWS #################################################
+# as Sales or Expert, percent if sign every month
+DROP PROCEDURE IF EXISTS PerUserSignRate;
+delimiter ;;
+create PROCEDURE PerUserSignRate (uid int, M int, Y int)
+COMMENT ''
+BEGIN
+select user.id ,user.nickname,紧急销售咨询量,紧急销售签约量,紧急销售签约额
+转学销售咨询量,转学销售签约量,转学销售签约额,
+紧急专家咨询量,紧急专家签约量,紧急专家签约额,
+转学专家咨询量,转学专家签约量,转学专家签约额, 
+紧急销售签约量+紧急专家签约量 as '紧急签约量',
+ 转学销售签约量+转学专家签约量 as '转学签约量',
+(紧急销售签约量+紧急专家签约量)/(紧急销售咨询量+紧急专家咨询量) as '紧急签约率',
+(转学销售签约量+转学专家签约量)/(转学销售咨询量+转学专家咨询量) as '转学签约率',
+(转学销售签约量+紧急销售签约量)/(转学销售咨询量+紧急销售咨询量) as '销售签约率',
+(转学专家签约量+紧急专家签约量)/(转学专家咨询量+紧急专家咨询量) as '专家签约率',
+紧急销售签约额+转学销售签约额 as '销售签约额',紧急专家签约量+转学专家签约量 as '专家签约额'
+from user left join
+(select user.id,sum(IF(contractCategory=8,1,0)) as '紧急销售咨询量',
+sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学销售咨询量'
+from user 
+left join contract c on user.id in (c.sales1,c.sales2) where (uid in (0,user.id)) and IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) =M and 
+IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) =Y group by user.id) as t1 on user.id=t1.id
+left join
+(select user.id,
+sum(IF(contractCategory=8,1,0)) as '紧急销售签约量',
+sum(IF(contractCategory=8,contractPrice,0)) as '紧急销售签约额',
+sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学销售签约量',
+sum(IF(contractCategory in (7,9,10,11),contractPrice,0)) as '转学销售签约额'
+ from user 
+left join contract c on user.id in (c.sales1,c.sales2) where (uid in (0,user.id)) and IF(DAY(c.contractSigned)>23,MONTH(c.contractSigned)%12+1,MONTH(c.contractSigned)) =M and 
+IF(DAY(c.contractSigned)>23,YEAR(c.contractSigned)+FLOOR(MONTH(c.contractSigned)/12),YEAR(c.contractSigned)) =Y group by user.id) as t2 on user.id=t2.id
+left join
+(select user.id,sum(IF(contractCategory=8,1,0)) as '紧急专家咨询量',
+sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学专家咨询量'
+from user 
+left join contract c on user.id in (c.expert1,c.expert2) where (uid in (0,user.id)) and IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) =M and 
+IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) =Y group by user.id) as t3 on user.id=t3.id
+left join
+(select user.id,
+sum(IF(contractCategory=8,1,0)) as '紧急专家签约量',
+sum(IF(contractCategory=8,contractPrice,0)) as '紧急专家签约额',
+sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学专家签约量',
+sum(IF(contractCategory in (7,9,10,11),contractPrice,0)) as '转学专家签约额'
+ from user 
+left join contract c on user.id in (c.expert1,c.expert2) where (uid in (0,user.id)) and IF(DAY(c.contractSigned)>23,MONTH(c.contractSigned)%12+1,MONTH(c.contractSigned)) =M and 
+IF(DAY(c.contractSigned)>23,YEAR(c.contractSigned)+FLOOR(MONTH(c.contractSigned)/12),YEAR(c.contractSigned)) =Y group by user.id) as t4 on user.id=t4.id
+where not(t1.id is null and t2.id is null and t3.id is null and t4.id is null);
+END;;
+delimiter ;
+
+# Sign rate for Lead
+DROP PROCEDURE IF EXISTS LeadSignRate;
+delimiter ;;
+create PROCEDURE LeadSignRate (M int, Y int)
+COMMENT ''
+BEGIN
+select *,紧急签约量/紧急咨询量 as '紧急签约率',
+转学签约量/转学咨询量 as '转学签约率'
+from
+(SELECT lead.id,lead.lead, sum(IF(contractCategory=8,1,0)) as '紧急咨询量',
+sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学咨询量'
+FROM contract c left join lead on c.lead=lead.id where 
+IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) =M and 
+IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) =Y group by lead.id) as t1
+left join
+(SELECT lead.id,
+sum(IF(contractCategory=8,1,0)) as '紧急签约量', 
+sum(IF(contractCategory=8 ,contractPrice,0)) as '紧急签约额',
+sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学签约量',
+sum(IF(contractCategory in (7,9,10,11),contractPrice,0)) as '转学签约额'
+FROM contract c left join lead on c.lead=lead.id where 
+IF(DAY(c.contractSigned)>23,MONTH(c.contractSigned)%12+1,MONTH(c.contractSigned)) =M and 
+IF(DAY(c.contractSigned)>23,YEAR(c.contractSigned)+FLOOR(MONTH(c.contractSigned)/12),YEAR(c.contractSigned)) =Y group by lead.id) as t2 on t1.id=t2.id;
+END;;
+delimiter ;
 
 #Now create some views for summary information
 # This is the monthly Information. 

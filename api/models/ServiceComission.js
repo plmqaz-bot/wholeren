@@ -14,8 +14,8 @@ module.exports = {
     servLevel:{model:'ServLevel'},
   	startprogress:{model:'ServiceStatus'},
   	endprogress:{model:'ServiceStatus'},
-  	year:{type:'int'},
-  	month:{type:'int'},
+  	year:{type:'integer'},
+  	month:{type:'integer'},
   	extra:{type:'float'}
   }
 };

@@ -128,6 +128,10 @@ module.exports.routes = {
   'GET /options/?':{
     controller:'contract',
     action:'getAllOptions'
+  },
+  'POST /market/MonthlyGoal/':{
+    controller:'market',
+    action:'updateMonthlyGoal'
   }
 
   /***************************************************************************

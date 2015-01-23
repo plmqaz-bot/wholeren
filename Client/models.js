@@ -452,6 +452,29 @@ Collections={
         model:Models.UserLevel,
         url:'/userLevel/'
     }),
+    General:Backbone.PageableCollection.extend({
+        model:Models.Comission,
+        url: function(){
+            var toreturn=this.baseurl+'?';
+            if(this.year)
+                toreturn+='year='+this.year;
+            if(this.month)
+                toreturn+="&month="+this.month;
+            return toreturn;
+        },
+        
+        initialize:function(options){
+            this.year=new Date().getFullYear();
+            this.month=new Date().getMonth()+1;
+            this.mode="client";
+            this.state={pageSize:25};
+            this.baseurl=options.url;
+        },
+        setdate:function(options){
+            this.year=options.year;
+            this.month=options.month;
+        },
+    })
 }
 
 

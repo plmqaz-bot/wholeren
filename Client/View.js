@@ -2102,27 +2102,14 @@ Market.general=Market.Pane.extend({
     },
     requrestUrl:'general',
     refetch:function(){
-        var startDate=$('#startDate').val();
-        var endDate=$('#endDate').val();
-        var where={};
-        where.createdAt={}
-        try{
-            if(startDate){
-                where.createdAt['>']=new Date(startDate);
-            }
-            if(endDate){
-                where.createdAt['<']=new Date(endDate);
-            }
-            if(where.createdAt){
-                where= JSON.stringify(where);
-            }
-        }catch(e){
-            where= "{}";
-        }
+        var month=$('#month').val()||'';
+        var year=$('#year').val()||'';
+        if(month.length<0||year.length<0) return;
+        var query="month="+month+"&year="+year;
         $('.content').html("");
         var self=this;
         $.ajax({
-                url: '/market/'+self.requrestUrl+'/?where='+where,
+                url: '/market/'+self.requrestUrl+'/?'+query,
                 type: 'GET',
                 headers: {
                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -2178,11 +2165,63 @@ Market.general=Market.Pane.extend({
 });
 
 Market.view1=Market.general.extend({
+    id:'view1',
     requrestUrl:'contractOfSaleAndExpert'
 });
 Market.view2=Market.general.extend({
+    id:'view2',
     requrestUrl:'MonthlyChange'
 });
+Market.view3=Market.Pane.extend({
+    id:'view3',
+    templateName:'default',
+    initialize:function(options){
+        this.rank=$('#rank').text();
+        this.el=options.el;
+        this.collection = new Obiwang.Collections['General']({url:'/Market/MonthlyGoal/'});
+        this.render();
+    },
+    events: {
+        'click .button-alt':'refetch'
+    },
+    render: function () {
+         var ml = this.template({title:"Montly Goal"});
+         if (ml[0] != '<') {
+             ml = ml.substring(1);
+         }
+        this.$el.html(ml);
+    },
+     afterRender:function(){
+        var self=this;
+        var columns=[
+        {name:'nickname',label:'nickname',editable:false,cell:'string'},
+        {name:'transferSaleGoal',label:'transSale',cell:'integer'},
+        {name:'transferExpGoal',label:'transExp',cell:'integer'},
+        {name:'emergSaleGoal',label:'emergSale',cell:'integer'},
+        {name:'emergExpGoal',label:'emergExp',cell:'integer'},
+        {name:'leadGoal',label:'lead',cell:'integer'},
+        ];
+        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(grid.render().el);      
+        var paginator = new Backgrid.Extension.Paginator({
+            windowSize: 20, // Default is 10
+            slideScale: 0.25, // Default is 0.5
+            goBackFirstOnSort: false, // Default is true
+            collection: self.collection
+            });
+        $('.content').append(paginator.render().el);  
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+     },
+    refetch:function(e){
+        var year=$('#year').val();
+        var month=$('#month').val();
+        this.collection.setdate({year:year,month:month});
+        this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
+        this.collection.fetch({reset:true});
+    },
+})
 var MarketView=Wholeren.baseView.extend({
     initialize: function (options) {
         $(".settings-content").removeClass('active');
