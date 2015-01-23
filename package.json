@@ -33,7 +33,8 @@
     "backbone":"*",
     "node-uuid":"*",
     "csv-parse":"*",
-    "backbone.paginator":"*"
+    "backbone.paginator":"*",
+    "later":"*"
   },
   "scripts": {
     "start": "node main.js",

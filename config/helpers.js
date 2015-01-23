@@ -1,5 +1,5 @@
 var handlebars=require('sails/node_modules/express-handlebars/node_modules/handlebars');
-	
+var later=require('later');
 	handlebars.registerHelper('link', function (text, options) {
         var attrs = [];
         for (var prop in options.hash) {
@@ -25,6 +25,17 @@ var handlebars=require('sails/node_modules/express-handlebars/node_modules/handl
     return "/admin";
     });
 
+
+/*************************also schedule *****************************************/
+
+later.date.localTime();
+var textSched = later.parse.text('at 00:01am every day');
+var everymin=later.parse.text('every minute');
+var t=later.setInterval(logtime,everymin);
+
+function logtime(){
+    console.log(new Date());
+}
 
 	
 
