@@ -455,9 +455,9 @@ Collections={
     General:Backbone.PageableCollection.extend({
         model:Models.Comission,
         url: function(){
-            var toreturn=this.baseurl+'?';
+            var toreturn=this.baseurl;
             if(this.year)
-                toreturn+='year='+this.year;
+                toreturn+='?year='+this.year;
             if(this.month)
                 toreturn+="&month="+this.month;
             return toreturn;

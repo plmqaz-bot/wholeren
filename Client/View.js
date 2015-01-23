@@ -2174,24 +2174,26 @@ Market.view2=Market.general.extend({
 });
 Market.view3=Market.Pane.extend({
     id:'view3',
+    title:'Monthly Goal',
+    url:'/Market/MonthlyGoal/',
     templateName:'default',
     initialize:function(options){
         this.rank=$('#rank').text();
         this.el=options.el;
-        this.collection = new Obiwang.Collections['General']({url:'/Market/MonthlyGoal/'});
+        this.collection = new Obiwang.Collections['General']({url:this.url});
         this.render();
     },
     events: {
         'click .button-alt':'refetch'
     },
     render: function () {
-         var ml = this.template({title:"Montly Goal"});
+         var ml = this.template({title:this.title});
          if (ml[0] != '<') {
              ml = ml.substring(1);
          }
         this.$el.html(ml);
     },
-     afterRender:function(){
+    afterRender:function(){
         var self=this;
         var columns=[
         {name:'nickname',label:'nickname',editable:false,cell:'string'},
@@ -2221,7 +2223,61 @@ Market.view3=Market.Pane.extend({
         if(this.collection.fullCollection)this.collection.fullCollection.reset();
         this.collection.fetch({reset:true});
     },
-})
+});
+Market.view4=Market.view3.extend({
+    id:'view4',
+    title:'Sales Role ',
+    url:'/SalesRole/',
+    afterRender:function(){
+        var self=this;
+        var columns=[
+        {name:'salesRole',label:'角色名称',editable:false,cell:'string'},
+        {name:'comissionPercent',label:'佣金百分比',cell:Backgrid.NumberCell.extend({decimals:3})},
+        {name:'flatComission',label:'非百分比佣金',cell:'number'}
+        ];
+        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(grid.render().el);      
+        var paginator = new Backgrid.Extension.Paginator({
+            windowSize: 20, // Default is 10
+            slideScale: 0.25, // Default is 0.5
+            goBackFirstOnSort: false, // Default is true
+            collection: self.collection
+            });
+        $('.content').append(paginator.render().el);  
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+     },
+     refetch:function(e){
+        this.collection.setdate({year:"",month:""});
+        this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
+        this.collection.fetch({reset:true});
+    },
+});
+Market.view5=Market.view4.extend({
+    id:'view5',
+    title:'Service Type Comission',
+    url:'/ServiceType/',
+    afterRender:function(){
+        var self=this;
+        var columns=[
+        {name:'serviceType',label:'服务名称',editable:false,cell:'string'},
+        {name:'category',label:'类型',editable:false,cell:'string'},
+        {name:'comission',label:'百分比佣金',cell:Backgrid.NumberCell.extend({decimals:3})}
+        ];
+        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(grid.render().el);      
+        var paginator = new Backgrid.Extension.Paginator({
+            windowSize: 20, // Default is 10
+            slideScale: 0.25, // Default is 0.5
+            goBackFirstOnSort: false, // Default is true
+            collection: self.collection
+            });
+        $('.content').append(paginator.render().el);  
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+     },
+});
 var MarketView=Wholeren.baseView.extend({
     initialize: function (options) {
         $(".settings-content").removeClass('active');

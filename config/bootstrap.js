@@ -9,7 +9,7 @@
  * http://sailsjs.org/#/documentation/reference/sails.config/sails.config.bootstrap.html
  */
 var later=require('later');
-var 
+var Promise=require('bluebird');
 module.exports.bootstrap = function(cb) {
 /*************************also schedule *****************************************/
 
