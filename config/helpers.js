@@ -1,5 +1,5 @@
 var handlebars=require('sails/node_modules/express-handlebars/node_modules/handlebars');
-	
+
 	handlebars.registerHelper('link', function (text, options) {
         var attrs = [];
         for (var prop in options.hash) {
@@ -24,6 +24,7 @@ var handlebars=require('sails/node_modules/express-handlebars/node_modules/handl
     //return config.urlFor(context, absolute);
     return "/admin";
     });
+
 
 
 	
