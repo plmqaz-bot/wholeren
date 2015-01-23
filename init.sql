@@ -178,6 +178,14 @@ insert into userlevel values('C1',1,NULL,NOW(),NOW());
 insert into userlevel values('C2',1,NULL,NOW(),NOW());
 insert into userlevel values('C3',1,NULL,NOW(),NOW());
 
+#Notification interval
+insert into notifyinterval values(1,'Day 1 ',NULL,NOW(),NOW());
+insert into notifyinterval values(3,'Day 3 ',NULL,NOW(),NOW());
+insert into notifyinterval values(6,'Day 6 ',NULL,NOW(),NOW());
+insert into notifyinterval values(9,'Day 9 ',NULL,NOW(),NOW());
+insert into notifyinterval values(15,'Day 15 ',NULL,NOW(),NOW());
+insert into notifyinterval values(30,'Day 30 ',NULL,NOW(),NOW());
+
 # Now hard part 服务佣金的lookup table
 select id from servicetype where serviceType like 'a%' into @stype;
 select id from servrole where servRole ='负责老师' into @srole;
