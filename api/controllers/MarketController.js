@@ -84,5 +84,8 @@
         console.log(err);
         res.json(404,{error:"failed to update",err:err});
       });
+    },
+    'Notifications':function(req,res){
+
     }
   }

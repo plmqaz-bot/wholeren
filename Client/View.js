@@ -333,6 +333,9 @@ Views.Forgotten=Wholeren.baseView.extend({
             }
         }
 });
+
+
+
 /*************************************************Views for Notifications *****************************/
 /**
      * This handles Notification groups
@@ -1554,7 +1557,40 @@ var ServiceView=Wholeren.FormView.extend({
         // });     
         // },
 });
+var ServicePopup=Backbone.Modal.extend({
+    modelName:'',
+    prefix:"small-bbm",
+    template: JST['editbox'],
+    cancelEl: '.cancel',
+    submitEl: '.ok',
+    initialize: function (options){
+        this.modelName=options.modelName;
+        _.bindAll(this,  'render', 'afterRender');
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        })
+    },     
+    afterRender:function(model){
+        switch(this.type){
+            case 'textbox':
+            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><textarea class="reply-content">'+this.curValue+'</textarea>').contents();        
+            this.$el.find('.bbm-modal__section').append(ele);
+            break;
+        }
+        return this;
+    },
+    submit: function () {
+        // get text and submit, and also refresh the collection. 
 
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
+});
 
 var SalesComissionView=Wholeren.FormView.extend({
     templateName:'salesComission',
@@ -2264,6 +2300,48 @@ Market.view5=Market.view4.extend({
         {name:'serviceType',label:'服务名称',editable:false,cell:'string'},
         {name:'category',label:'类型',editable:false,cell:'string'},
         {name:'comission',label:'百分比佣金',cell:Backgrid.NumberCell.extend({decimals:3})}
+        ];
+        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(grid.render().el);      
+        var paginator = new Backgrid.Extension.Paginator({
+            windowSize: 20, // Default is 10
+            slideScale: 0.25, // Default is 0.5
+            goBackFirstOnSort: false, // Default is true
+            collection: self.collection
+            });
+        $('.content').append(paginator.render().el);  
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+     },
+});
+Market.view6=Market.view4.extend({
+    id:'view6',
+    title:'Notifications',
+    url:'/Notifications/',
+    afterRender:function(){
+        var self=this;
+        var DeleteCell = Backgrid.Cell.extend({
+            template: _.template("<a>Delete</a>"),
+            events: {
+              "click": "deleteRow"
+            },
+            deleteRow: function (e) {
+              e.preventDefault();
+              this.model.destroy();
+              this.model.collection.remove(this.model);
+            },
+            render: function () {
+              this.$el.html(this.template());
+              this.delegateEvents();
+              return this;
+            }
+        });
+        var columns=[
+        {name:'chineseName',label:'客户名字',editable:false,cell:'string'},
+        {name:'days',label:'天数',editable:false,cell:'integer'},
+        {name:'nickname',label:'销售名字',editable:false,cell:'string'},
+        {name:'reason',label:'提醒理由',editable:false,cell:'string'},
+        {name:'',label:'Delete',cell:DeleteCell}
         ];
         var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
         $('.content').append(grid.render().el);      

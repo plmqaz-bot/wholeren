@@ -87,6 +87,19 @@ Models={
     UserLevel:Backbone.Model.extend({
         urlRoot:'/userLevel/'
     }),
+    Reminder:Backbone.Model.extend({
+        urlRoot:'/Notifications/',
+        initialize: function (options) {
+        Backbone.Model.prototype.initialize.apply(this, arguments);
+        this.on("change", function (model, options) {
+            if (options && options.save === false) return;
+            model.save();
+        });
+        this.contract=this.contract||{};
+        this.contract.client=this.contract.client||{};
+        this.clientName=this.contract.client.chineseName;
+        }, 
+    })    
 
 };
 var sortableCollection=Backbone.PageableCollection.extend({

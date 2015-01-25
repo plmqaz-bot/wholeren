@@ -81,11 +81,11 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			}
 		}
 		switch (req.session.user.rank){
-			case "3":
+			case 3:
 			sql=constructsql(wherequery,"");
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
-			case "2":
+			case 2:
 			sql=constructsql(wherequery," and user.boss="+id);
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
@@ -99,7 +99,7 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			var idarray=servIDs.map(function(c){return c.id;});
 			console.log("native done",idarray.length);
 			var clientIDs=servIDs.map(function(c){return c.client});
-			return Promise.all([Service.find({id:idarray}).populate('application').populate('contract'),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
+			return Promise.all([Service.find({id:idarray}).populate('application').populate('contract').populate('serviceTeacher'),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
 		}).then(function(data){
 			// manual populate client
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
@@ -153,30 +153,5 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 		});
 
 	},
-	'test':function(req,res){
-		var sql="select distinct(service.id),client.id as client,contractsigned  \
-from service left join application on service.id=application.service \
-inner join contract on contract.id=service.contract \
-inner join status on contract.status=status.id \
-inner join client on contract.client=client.id \
-where contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%');";
-	Utilfunctions.nativeQuery(sql).then(function(servIDs){
-
-			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"not found"});
-			
-			var idarray=servIDs.map(function(c){return c.id;});
-			
-			var clientIDs=servIDs.map(function(c){return c.client});
-			console.log("native done",clientIDs);
-			console.log("native done",idarray.length);
-			return Promise.all([Service.find(),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
-		}).then(function(data){
-			console.log("done");
-
-		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
-		})
-	}
 };
 

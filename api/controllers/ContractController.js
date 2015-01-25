@@ -22,28 +22,30 @@ module.exports = {
 		where=JSON.parse(where);
 		var id=req.session.user.id;
 		var promise,who;
+		console.log(req.session.user.rank);
 		switch(req.session.user.rank){
-			case "3":
-			promise=Contract.find();
+			case 3:
+			console.log("manager");
+			promise=Contract.find().where(where).populate('client').populate('service');
 			break;
-			case "2":
+			case 2:
 			var sql=constructsql("user.boss="+id);
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
-				return Contract.find({id:idarray});
+				return Contract.find({id:idarray}).where(where).populate('client').populate('service');
 			});
 			break;
 			default:
 			var sql=constructsql("user.id="+id);
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
-				return Contract.find({id:idarray});
+				return Contract.find({id:idarray}).where(where).populate('client').populate('service');
 			});
 		}
 		
 		if(promise){
 			var toReturn=[];
-			promise.where(where).populate('client').populate('service').then(function(conts){
+			promise.then(function(conts){
 				toReturn=conts;
 				console.log("found ", toReturn.length);
 				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find()]);
