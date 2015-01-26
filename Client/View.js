@@ -1398,10 +1398,20 @@ var ServiceView=Wholeren.FormView.extend({
         'click  button.button-alt': 'refetch',
         'change .filter':'renderCollection',
         'click .textbox,.selectbox,.multiselectbox':'editAttr',
-        'click .sortable':'sortCollection',
+        'click .sortablehead':'sortCollection',
         'click .comment_edit':'showComments',
-        'click a.page':'switchPage'
+        'click a.page':'switchPage',
+        'click .pop':'editTeacher'
         },    
+        editTeacher:function(e){
+            e.preventDefault();
+            var item =$(e.currentTarget);
+            var id = item.parent().attr('name');
+            var teacherview= new ServicePopup({id:id});
+
+            teacherview.render();
+            $('.app').html(teacherview.el);
+        },
         refetch:function(e){
             var startDate=$('#startDate').val();
             var endDate=$('#endDate').val();
@@ -1558,27 +1568,108 @@ var ServiceView=Wholeren.FormView.extend({
         // },
 });
 var ServicePopup=Backbone.Modal.extend({
-    modelName:'',
     prefix:"small-bbm",
     template: JST['editbox'],
-    cancelEl: '.cancel',
     submitEl: '.ok',
     initialize: function (options){
-        this.modelName=options.modelName;
         _.bindAll(this,  'render', 'afterRender');
+        this.cache=[];
         var self=this;
         this.render=_.wrap(this.render,function(render){
             render();
             self.afterRender();
-        })
+        });
+        this.serviceID=options.id;
+        this.collection=new Obiwang.Collections.ServiceDetail({sid:this.serviceID});
     },     
     afterRender:function(model){
-        switch(this.type){
-            case 'textbox':
-            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><textarea class="reply-content">'+this.curValue+'</textarea>').contents();        
-            this.$el.find('.bbm-modal__section').append(ele);
-            break;
-        }
+        var container=this.$el.find('.bbm-modal__section');
+        container.append('<button class="button-add">Add New</button>');
+        var self=this;
+        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/'),util.ajaxGET('/User/')]).spread(function(roles,data,users){
+            var roleselect=Backgrid.SelectCell.extend({
+                optionValues: [{name:10,values:roles}],
+            });
+            var userselect=Backgrid.SelectCell.extend({
+                optionValues:function(){
+                    var selection=_.map(users,function(e){return [e.nickname,e.id]});
+                    return [{name:"Users",values:selection}];
+                }
+            });
+            var levelselect=roleselect.extend({
+                optionValues:function(){
+                    var cell=this;
+                    var role=this.model.get('servRole')||0;
+                    var type=this.model.get('type')||0;
+                    self.cache[role]=self.cache[role]||[];
+                    self.cache[role][type]=self.cache[role][type]||[];
+                    self.cache[role][type]["level"]=self.cache[role][type]["level"]||[];
+                    if(self.cache[role][type]["level"].length<1){                     
+                        var shrunk=_.where(data,{servRole:role,serviceType:type});
+                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
+                            shrunk.push(e);
+                        });
+                        var unique=_.uniq(shrunk,false,function(e){return e.lid;});
+                        self.cache[role][type]["level"]=_.map(unique,function(e){return [e.servLevel,e.lid]});                         
+                    }
+                    var toadd=self.cache[role][type]["level"].slice(0);//clone it
+                    toadd.push(["No Level",null]);
+                    cell._optionValues=[{name:10,values:toadd}];
+                    return cell._optionValues;                    
+                }
+            });
+            var statusselect=roleselect.extend({
+                optionValues:function(){
+                    var cell=this;
+                    var role=this.model.get('servRole')||0;
+                    var type=this.model.get('type')||0;
+                    self.cache[role]=self.cache[role]||[];
+                    self.cache[role][type]=self.cache[role][type]||[];
+                    self.cache[role][type]["status"]=self.cache[role][type]["status"]||[];
+                    if(self.cache[role][type]["status"].length<1){
+                        var shrunk=_.where(data,{servRole:role,serviceType:type});
+                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
+                            shrunk.push(e);
+                        });
+                        var unique=_.uniq(shrunk,false,function(e){return e.sid;});
+                        self.cache[role][type]["status"]=_.map(unique,function(e){return [e.serviceStatus,e.sid]});
+                    }
+                    var toadd=self.cache[role][type]["status"].slice(0);//clone it
+                    toadd.push(["No Status",null]);
+                    cell._optionValues=[{name:10,values:toadd}];
+                    return cell._optionValues;
+                } 
+            });
+            var DeleteCell = Backgrid.Cell.extend({
+                template: _.template("<a>Delete</a>"),
+                events: {
+                  "click": "deleteRow"
+                },
+                deleteRow: function (e) {
+                  e.preventDefault();
+                  this.model.destroy();
+                  this.model.collection.remove(this.model);
+                },
+                render: function () {
+                  this.$el.html(this.template());
+                  this.delegateEvents();
+                  return this;
+                }
+            });
+            var columns=[
+                {name:'service',label:'Contract',editable:false,cell:'string'},
+                {name:'user',label:'User',cell:'string'},
+                {name:'servRole',label:'Role',cell:roleselect},
+                {name:'servLevel',label:'Level',cell:levelselect},
+                {name:'progress',label:'Current Status',cell:statusselect},
+                {name:'',label:'Delete Action',cell:DeleteCell}
+                ];
+            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+                container.append(grid.render().el);
+                self.collection.fetch({reset:true});
+            }).error(function(err){
+                console.log(err);
+            });  
         return this;
     },
     submit: function () {

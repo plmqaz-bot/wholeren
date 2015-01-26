@@ -105,6 +105,10 @@ module.exports.routes = {
     controller:'comission',
     action:'getServiceLevel'
   },
+  'GET /ServiceDetail/':{
+    controller:'ServiceDetail',
+    action:'find'
+  },
   'POST /ServiceComission/':{
     controller:'comission',
     action:'updateServiceComission'

@@ -18,7 +18,7 @@ module.exports = {
    ***************************************************************************/
 
    models: {
-     connection: 'devMysqlServer'
+     connection: 'rootserver'
    },
    //port:80
 

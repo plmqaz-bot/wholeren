@@ -99,7 +99,7 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			var idarray=servIDs.map(function(c){return c.id;});
 			console.log("native done",idarray.length);
 			var clientIDs=servIDs.map(function(c){return c.client});
-			return Promise.all([Service.find({id:idarray}).populate('application').populate('contract').populate('serviceTeacher'),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
+			return Promise.all([Service.find({id:idarray}).populate('application').populate('contract'),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
 		}).then(function(data){
 			// manual populate client
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
