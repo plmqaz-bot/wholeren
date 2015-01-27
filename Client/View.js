@@ -1568,9 +1568,12 @@ var ServiceView=Wholeren.FormView.extend({
         // },
 });
 var ServicePopup=Backbone.Modal.extend({
-    prefix:"small-bbm",
+    prefix:"bbm",
     template: JST['editbox'],
     submitEl: '.ok',
+    events:{
+        'click .button-add':'addnew'
+    },
     initialize: function (options){
         _.bindAll(this,  'render', 'afterRender');
         this.cache=[];
@@ -1579,18 +1582,31 @@ var ServicePopup=Backbone.Modal.extend({
             render();
             self.afterRender();
         });
-        this.serviceID=options.id;
-        this.collection=new Obiwang.Collections.ServiceDetail({sid:this.serviceID});
+        this.serviceID=parseInt(options.id);
+        this.collection=new Obiwang.Collections.ServiceDetail();
+        this.collection.setSID(this.serviceID);
     },     
+    addnew:function(e){
+        var toAdd=new Obiwang.Models.ServiceDetail();
+        toAdd.set('service',this.serviceID);
+        this.collection.add(toAdd);
+  
+    },
     afterRender:function(model){
         var container=this.$el.find('.bbm-modal__section');
         container.append('<button class="button-add">Add New</button>');
+        
         var self=this;
         Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/'),util.ajaxGET('/User/')]).spread(function(roles,data,users){
             var roleselect=Backgrid.SelectCell.extend({
                 optionValues: [{name:10,values:roles}],
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
             });
-            var userselect=Backgrid.SelectCell.extend({
+            var userselect=roleselect.extend({
                 optionValues:function(){
                     var selection=_.map(users,function(e){return [e.nickname,e.id]});
                     return [{name:"Users",values:selection}];
@@ -1656,12 +1672,32 @@ var ServicePopup=Backbone.Modal.extend({
                   return this;
                 }
             });
+            var UpdateCell=Backgrid.Cell.extend({
+                template: _.template("<a>Update</a>"),
+                events: {
+                  "click": "update"
+                },
+                update: function (e) {
+                  e.preventDefault();
+                  this.model.save({
+                    error:function(model,response){
+                        util.handleRequestError(response);
+                    }
+                  });
+                },
+                render: function () {
+                  this.$el.html(this.template());
+                  this.delegateEvents();
+                  return this;
+                }
+            });
             var columns=[
                 {name:'service',label:'Contract',editable:false,cell:'string'},
-                {name:'user',label:'User',cell:'string'},
+                {name:'user',label:'User',cell:userselect},
                 {name:'servRole',label:'Role',cell:roleselect},
                 {name:'servLevel',label:'Level',cell:levelselect},
                 {name:'progress',label:'Current Status',cell:statusselect},
+                {name:'',label:'Update',cell:UpdateCell},
                 {name:'',label:'Delete Action',cell:DeleteCell}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});

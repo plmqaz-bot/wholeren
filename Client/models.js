@@ -102,13 +102,6 @@ Models={
     }),
     ServiceDetail:Backbone.Model.extend({
         urlRoot:'/ServiceDetail/',
-        initialize: function (options) {
-        Backbone.Model.prototype.initialize.apply(this, arguments);
-        this.on("change", function (model, options) {
-            if (options && options.save === false) return;
-            model.save();
-        });
-        }, 
     })    
 
 };
@@ -481,9 +474,11 @@ Collections={
             return toReturn;
         },
         initialize:function(options){
-            this.sid=options.sid;
             this.mode="client";
             this.state={pageSize:25};
+        },
+        setSID:function(sid){
+            this.sid=sid;
         }
     }),
     General:Backbone.PageableCollection.extend({

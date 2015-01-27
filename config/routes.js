@@ -109,6 +109,10 @@ module.exports.routes = {
     controller:'ServiceDetail',
     action:'find'
   },
+  'POST /ServiceDetail/':{
+    controller:'ServiceDetail',
+    action:'createorupdate'
+  },
   'POST /ServiceComission/':{
     controller:'comission',
     action:'updateServiceComission'
