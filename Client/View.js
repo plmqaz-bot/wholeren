@@ -1572,6 +1572,7 @@ var ServicePopup=Backbone.Modal.extend({
     prefix:"bbm",
     template: JST['editbox'],
     submitEl: '.ok',
+    cancelEl:'.cancel',
     events:{
         'click .button-add':'addnew'
     },

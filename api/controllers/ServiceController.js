@@ -49,20 +49,21 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 	},
 	'getService':function(req, res){
 		function constructsql(where,who){
-			return "select service.id ,client.id as client from contract \
+			return "select contract.id as 'contract', service.id ,client.id as client,application.id as 'application' from contract \
 			inner join service on contract.id=service.contract \
 			inner join status on contract.status=status.id \
 			inner join client on contract.client=client.id \
 			left join service_serviceteacher__user_serviceteacher_user s on s.service_serviceTeacher=service.id \
-			inner join user on (user.id =s.user_serviceTeacher_user) where \
+			inner join user on (user.id =s.user_serviceTeacher_user) left join application on service.id=application.service where \
 			contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+"\
 			union\
-			select service.id, client.id as client from contract \
+			select contract.id as 'contract', service.id, client.id as client,application.id as 'application' from contract \
 			inner join status on contract.status=status.id \
 			inner join client on contract.client=client.id \
 			inner join service on contract.id=service.contract \
 			inner join user on \
-			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) where \
+			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) \
+			left join application on service.id=application.service where \
 			contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"
 		}
 		var id=req.session.user.id;
@@ -96,10 +97,11 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 		promise.then(function(servIDs){
 
 			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"no service found for user"});
-			var idarray=servIDs.map(function(c){return c.id;});
-			console.log("native done",idarray.length);
-			var clientIDs=servIDs.map(function(c){return c.client});
-			return Promise.all([Service.find({id:idarray}).populate('application').populate('contract'),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find()]);
+			var idarray=_.uniq(servIDs.map(function(c){return c.id;}));
+			var contractarray=_.uniq(servIDs.map(function(c){return c.contract;}));
+			var appliarray=_.uniq(servIDs.map(function(c){return c.application;}));
+			var clientIDs=_.uniq(servIDs.map(function(c){return c.client}));
+			return Promise.all([Service.find({id:idarray}),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find(),Contract.find({id:contractarray}),Application.find({id:appliarray})]);
 		}).then(function(data){
 			// manual populate client
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
@@ -107,21 +109,24 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			var allUser=Utilfunctions.makePopulateHash(data[2]);
 			var allServiceProgress=Utilfunctions.makePopulateHash(data[3]);
 			var allServiceType=Utilfunctions.makePopulateHash(data[4]);
+			var allContracts=Utilfunctions.makePopulateHash(data[5]);
+			var allApp=Utilfunctions.makePopulateHash(data[6]);
 			console.log("got all service process populate ",allService.length);
 			allService.forEach(function(ele){
-				var cid=ele.contract.client||0;
-				ele.contract.client=allClient[ele.contract.client];
+				ele.contract=allContracts[ele.contract];
+				ele.contract.client=ele.contract.client||0;
+				if(allClient[ele.contract.client]){
+					ele.contract.client=allClient[ele.contract.client];
+				}				
 				ele.serviceType=allServiceType[ele.serviceType];
 				ele.serviceProgress=allServiceProgress[ele.serviceProgress];
-				ele.serviceTeacher=ele.serviceTeacher.map(function(ele){
-					return allUser[ele];
-				});
-				// populate application writer
 				ele.application=ele.application||[];
-				ele.application.forEach(function(app){
-					if(app.writer){
-						app.writer=allUser[app.writer];
+				ele.application=ele.application.map(function(ele){
+					var cur=allApp[ele];
+					if(cur.writer){
+						cur.writer=allUser[cur.writer];
 					}
+					return cur;
 				});
 			});
 			console.log("sending");
