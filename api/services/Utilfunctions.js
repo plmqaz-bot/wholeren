@@ -308,9 +308,10 @@ module.exports = {
 	    function getClient(getC){
 	        var clientId=null;
 	            var p = Promise.defer();
-	        return Client.findOne({chineseName:getC.chineseName}).then(function(data){
-	            if(data){
-	                //console.log("found client",data);
+	        return Client.findOne({chineseName:getC.chineseName,firstName:getC.firstName,lastName:getC.lastName,primaryPhone:getC.primaryPhone}).then(function(data){
+	        	data=data||{};
+	            if(data.id){
+	                console.log("found client",data);
 	                return Promise.resolve(data);
 	            }else{
 	                var c=JSON.stringify(getC);
@@ -363,12 +364,13 @@ module.exports = {
 	        service=service.replace(String.fromCharCode(65295),"/");
 	        service=service.replace(/\d\//g,'');
 	        var servs=service.split(/[,+]/);
-	        servs=_.reject(servs,function(e){if(e==null||e=="")return true;})
+	        servs=_.reject(servs,function(e){if(e==null||e=="")return true;});
 	        var p= Promise.defer();
 	        var insertPs=[];
 	        var serviceIDs=[];
 	        teacher=teacher||[];
-	        teacher=teacher.length>0?teacher:null;
+	        teacher=_.reject(teacher,function(e){if(e==null||e=="")return true;});
+	        //teacher=teacher.length>0?teacher:null;
 			console.log("add services ",contID)
 	        //console.log(servs);
 	        _.forEach(servs,function(ele){
@@ -380,11 +382,27 @@ module.exports = {
 	                    if(data.id){
 	                    	console.log("found service ",data.id);
 	                        serviceIDs.push(data.id);
-	                        return Promise.resolve(data);
+	                        var detailPromise=_.map(teacher,function(e){
+	                            	console.log("create service detail ",data.id,e);
+	                        	return ServiceDetail.findOne({service:data.id,user:e}).then(function(s){
+	                        		s=s||{};
+	                        		if(!s.id) return ServiceDetail.create({service:data.id,user:e});
+	                        	});
+	                        });
+	                        return Promise.all(detailPromise);
 	                    }else{
-	                        console.log("create service",{contract:contID,serviceType:id,serviceTeacher:teacher});
-	                        return Service.create({contract:contID,serviceType:id,serviceTeacher:teacher}).then(function(s){
-	                            serviceIDs.push(s.id);
+	                        console.log("create service",{contract:contID,serviceType:id});
+	                        return Service.create({contract:contID,serviceType:id}).then(function(data){
+
+	                            serviceIDs.push(data.id);
+	                            var detailPromise=_.map(teacher,function(e){
+	                            	console.log("create service detail ",data.id,e);
+	                        		return ServiceDetail.findOne({service:data.id,user:e}).then(function(s){
+	                        			s=s||{};
+	                        			if(!s.id) return ServiceDetail.create({service:data.id,user:e});
+	                        		});
+	                        	});
+	                            return Promise.all(detailPromise);
 	                        });
 	                    }
 	                });

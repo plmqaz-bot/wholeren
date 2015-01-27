@@ -10,8 +10,8 @@ module.exports = {
 		function constructsql(who){
 			return "select distinct(contract.id) from contract \
 			left join service on contract.id=service.contract \
-			left join service_serviceteacher__user_serviceteacher_user s on s.service_serviceTeacher=service.id \
-			inner join user on (user.id =s.user_serviceTeacher_user) where "+who+"\
+			left join servicedetail s on s.service=service.id \
+			inner join user on (user.id =s.user) where "+who+"\
 			union\
 			select distinct(contract.id) from contract \
 			inner join user on \

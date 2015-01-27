@@ -53,8 +53,8 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			inner join service on contract.id=service.contract \
 			inner join status on contract.status=status.id \
 			inner join client on contract.client=client.id \
-			left join service_serviceteacher__user_serviceteacher_user s on s.service_serviceTeacher=service.id \
-			inner join user on (user.id =s.user_serviceTeacher_user) left join application on service.id=application.service where \
+			left join servicedetail s on s.service=service.id \
+			inner join user on (user.id =s.user) left join application on service.id=application.service where \
 			contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+"\
 			union\
 			select contract.id as 'contract', service.id, client.id as client,application.id as 'application' from contract \
@@ -101,7 +101,7 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			var contractarray=_.uniq(servIDs.map(function(c){return c.contract;}));
 			var appliarray=_.uniq(servIDs.map(function(c){return c.application;}));
 			var clientIDs=_.uniq(servIDs.map(function(c){return c.client}));
-			return Promise.all([Service.find({id:idarray}),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find(),Contract.find({id:contractarray}),Application.find({id:appliarray})]);
+			return Promise.all([Service.find({id:idarray}).populate('application'),Client.find({id:clientIDs}),User.find(),ServiceProgress.find(),ServiceType.find(),Contract.find({id:contractarray}),Application.find({id:appliarray})]);
 		}).then(function(data){
 			// manual populate client
 			var allClient=Utilfunctions.makePopulateHash(data[1]);
@@ -121,13 +121,13 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 				ele.serviceType=allServiceType[ele.serviceType];
 				ele.serviceProgress=allServiceProgress[ele.serviceProgress];
 				ele.application=ele.application||[];
-				ele.application=ele.application.map(function(ele){
-					var cur=allApp[ele];
-					if(cur.writer){
-						cur.writer=allUser[cur.writer];
-					}
-					return cur;
-				});
+				// ele.application=ele.application.map(function(ele){
+				// 	var cur=allApp[ele];
+				// 	if(cur.writer){
+				// 		cur.writer=allUser[cur.writer];
+				// 	}
+				// 	return cur;
+				// });
 			});
 			console.log("sending");
 			return res.json(allService);

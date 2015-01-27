@@ -1406,10 +1406,9 @@ var ServiceView=Wholeren.FormView.extend({
         editTeacher:function(e){
             e.preventDefault();
             var item =$(e.currentTarget);
-            var id = item.parent().attr('name');
+            var id = item.parent().parent().attr('name');
             var type=item.data('type');
             var teacherview= new ServicePopup({id:id,type:type});
-
             teacherview.render();
             $('.app').html(teacherview.el);
         },
@@ -2684,11 +2683,11 @@ Settings.user=Settings.Pane.extend({
                     headers: {
                         'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
                     },
-                    data: {
+                    data: JSON.stringify({
                         password: oldPassword,
                         newpassword: newPassword,
                         ne2password: ne2Password
-                    },
+                    }),
                     success: function (msg) {
                         Wholeren.notifications.addItem({
                             type: 'success',

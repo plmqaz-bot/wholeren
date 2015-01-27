@@ -30,8 +30,8 @@ module.exports = {
 	'changepw':function(req,res){
 		var bcrypt=require('bcrypt');
 		var attribs=req.body;
-		//var id=req.session.user.id;
-		var id=211;
+		var id=req.session.user.id;
+		//var id=211;
 		console.log(id,attribs);
 		if(attribs.newpassword==attribs.ne2password){
 			console.log("new password match ");        

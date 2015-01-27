@@ -14,8 +14,6 @@ module.exports = {
 
   	serviceProgress:{model:'ServiceProgress',required:true,defaultsTo:1},
 
-    serviceTeacher:{collection:'User'},
-
     application:{collection:'Application', via:'service'},
 
     comment:{collection:'Comment',via:'service'},

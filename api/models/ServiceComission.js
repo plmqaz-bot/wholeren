@@ -8,12 +8,7 @@
 module.exports = {
 
   attributes: {
-  	service:{model:'Service'},
-  	user:{model:'User'},
-    servRole:{model:'ServRole'},
-    servLevel:{model:'ServLevel'},
-  	startprogress:{model:'ServiceStatus'},
-  	endprogress:{model:'ServiceStatus'},
+    serviceDetail:{model:'ServiceDetail'},
   	year:{type:'integer'},
   	month:{type:'integer'},
   	extra:{type:'float'}
