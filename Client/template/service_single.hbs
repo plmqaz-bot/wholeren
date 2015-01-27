@@ -20,7 +20,7 @@
         <td data-attr="price" data-type="text" class="textbox" data-model="Service">{{../../price}}</td>
         <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{detailStatus ../../serviceType/serviceType 1}}{{../../step1}}</td>
         <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{detailStatus ../../serviceType/serviceType 2}}{{../../step2}}</td>
-        <td class="pop">{{#each ../../serviceTeacher}}{{nickname}},{{/each}}</td>
+        <td data-type="{{../../serviceType/id}}" class="pop">{{#each ../../serviceTeacher}}{{nickname}},{{/each}}</td>
         <td><a class="comment_edit" href="#{{id}}" data-type="app">Show Comments</a></td>
         
         </tr> 
@@ -44,7 +44,7 @@
         <td data-attr="price" data-type="text" class="textbox" data-model="Service">{{price}}</td>
         <td data-attr="step1" data-type="text" class="textbox" data-model="Service">{{detailStatus serviceType/serviceType 1}}{{step1}}</td>
         <td data-attr="step2" data-type="text" class="textbox" data-model="Service">{{detailStatus serviceType/serviceType 2}}{{step2}}</td>
-        <td data-attr="serviceTeacher"  data-coll="User" data-optext="nickname"  data-model="Service" class="pop">{{#each serviceTeacher}}{{nickname}},{{/each}}</td>
+        <td data-type="{{serviceType/id}}" class="pop">{{#each serviceTeacher}}{{nickname}},{{/each}}</td>
         <td><a class="comment_edit" href="#{{id}}" data-type="serv">Show Comments</a></td>
         
         </tr> 

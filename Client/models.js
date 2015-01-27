@@ -469,6 +469,7 @@ Collections={
         url:'/userLevel/'
     }),
     ServiceDetail:Backbone.PageableCollection.extend({
+        model:Models.ServiceDetail,
         url:function(){
             var toReturn='/ServiceDetail/?service='+this.sid;
             return toReturn;

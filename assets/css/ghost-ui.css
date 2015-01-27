@@ -727,6 +727,7 @@ ul ol, ol ul {
 
 a {
   color: #5ba4e5;
+  cursor:pointer;
   text-decoration: none;
   -webkit-transition: all 0.15s ease-in-out;
   -moz-transition: all 0.15s ease-in-out;

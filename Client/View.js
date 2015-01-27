@@ -1407,7 +1407,8 @@ var ServiceView=Wholeren.FormView.extend({
             e.preventDefault();
             var item =$(e.currentTarget);
             var id = item.parent().attr('name');
-            var teacherview= new ServicePopup({id:id});
+            var type=item.data('type');
+            var teacherview= new ServicePopup({id:id,type:type});
 
             teacherview.render();
             $('.app').html(teacherview.el);
@@ -1583,12 +1584,14 @@ var ServicePopup=Backbone.Modal.extend({
             self.afterRender();
         });
         this.serviceID=parseInt(options.id);
+        this.type=parseInt(options.type);
         this.collection=new Obiwang.Collections.ServiceDetail();
         this.collection.setSID(this.serviceID);
     },     
     addnew:function(e){
         var toAdd=new Obiwang.Models.ServiceDetail();
         toAdd.set('service',this.serviceID);
+        toAdd.set('type',this.type);
         this.collection.add(toAdd);
   
     },
@@ -1663,8 +1666,18 @@ var ServicePopup=Backbone.Modal.extend({
                 },
                 deleteRow: function (e) {
                   e.preventDefault();
-                  this.model.destroy();
-                  this.model.collection.remove(this.model);
+                  this.model.destroy({
+                    success:function(model){
+                        Wholeren.notifications.addItem({
+                            type: 'success',
+                            message: "Delete Successful",
+                            status: 'passive'
+                        });
+                    },
+                    error:function(response){
+                        util.handleRequestError(response);
+                    }
+                  });
                 },
                 render: function () {
                   this.$el.html(this.template());
@@ -1679,11 +1692,15 @@ var ServicePopup=Backbone.Modal.extend({
                 },
                 update: function (e) {
                   e.preventDefault();
-                  this.model.save({
-                    error:function(model,response){
+                  this.model.save().then(function(model){
+                        Wholeren.notifications.addItem({
+                            type: 'success',
+                            message: "Update Successful",
+                            status: 'passive'
+                        });
+                    }).fail(function(response){
                         util.handleRequestError(response);
-                    }
-                  });
+                    });
                 },
                 render: function () {
                   this.$el.html(this.template());
