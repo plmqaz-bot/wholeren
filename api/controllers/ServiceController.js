@@ -4,51 +4,7 @@
  * @description :: Server-side logic for managing Services
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-var Promise=require('bluebird');
-module.exports = {
-	'findOne':function(req,res){
-		if(!req.params.id){
-			return res.json(404,{error:"no service id "});
-		}
-		var userId=req.session.user.id;
-		var promise;
-		var sql="select distinct(service.id),client.id as client \
-from service left join application on service.id=application.service \
-inner join contract on contract.id=service.contract \
-inner join status on contract.status=status.id \
-inner join client on contract.client=client.id \
-where contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') and service.id="+req.params.id+" ";
-		if(req.session.user.rank>1){
-			sql+=";";
-			promise=Utilfunctions.nativeQuery(sql);
-		}else{
-			sql+="and (contract.teacher is null or contract.teacher="+userId+"  or application.writer="+userId+" );";
-			promise=Utilfunctions.nativeQuery(sql);
-		}
-		promise.then(function(serv){
-			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
-			var servid=serv[0].id;
-			var clientid=serv[0].client;
-			return Promise.all([Service.findOne({id:servid}).populateAll(), Client.findOne({id:clientid}),User.find()]);
-		}).then(function(data){
-			var toReturn=data[0];
-			toReturn.contract.client=data[1];
-			var allUser=Utilfunctions.makePopulateHash(data[2]);
-			toReturn.contract.teacher=allUser[toReturn.contract.teacher];
-			toReturn.application=toReturn.application||[];
-			toReturn.application.forEach(function(app){
-				if(app.writer){
-					app.writer=allUser[app.writer];
-				}
-			});
-			return res.json(toReturn);
-		}).catch(function(err){
-			console.log("error ",err);
-			return res.json(404,err);
-		});
-	},
-	'getService':function(req, res){
-		function constructsql(where,who){
+ function constructsql(where,who){
 			return "select contract.id as 'contract', service.id ,client.id as client,application.id as 'application' from contract \
 			inner join service on contract.id=service.contract \
 			inner join status on contract.status=status.id \
@@ -66,6 +22,51 @@ where contract.contractsigned is not NULL and (status.status like 'C%' or status
 			left join application on service.id=application.service where \
 			contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"
 		}
+var Promise=require('bluebird');
+module.exports = {
+	'findOne':function(req,res){
+		if(!req.params.id){
+			return res.json(404,{error:"no service id "});
+		}
+		var userId=req.session.user.id;
+		var promise;
+		switch(req.session.user.rank){
+			case 3:
+			promise=Service.find({id:req.params.id});
+			break;
+			case 2:
+			sql=constructsql("and boss="+userId, " and service.id="+req.params.id);
+			promise=Utilfunctions.nativeQuery(sql);
+			break;
+			default:
+			sql=constructsql("and user.id="+userId, " and service.id="+req.params.id);
+			promise=Utilfunctions.nativeQuery(sql);
+
+		}
+		if(req.session.user.rank>1){
+			sql=constructsql("and boss="+userId, " and service.id="+req.params.id);
+			promise=Utilfunctions.nativeQuery(sql);
+		}else{
+			
+		}
+		promise.then(function(serv){
+			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
+			var servid=serv[0].id;
+			var clientid=serv[0].client;
+			return Promise.all([Service.findOne({id:servid}).populateAll(), Client.findOne({id:clientid}),User.find()]);
+		}).then(function(data){
+			var toReturn=data[0];
+			toReturn.contract.client=data[1];
+			var allUser=Utilfunctions.makePopulateHash(data[2]);
+			toReturn.application=toReturn.application||[];
+			return res.json(toReturn);
+		}).catch(function(err){
+			console.log("error ",err);
+			return res.json(404,err);
+		});
+	},
+	'getService':function(req, res){
+		
 		var id=req.session.user.id;
 		var where=req.param('where')||{};
 		console.log(where);

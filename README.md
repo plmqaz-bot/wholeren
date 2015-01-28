@@ -90,7 +90,7 @@ Contract, service pagination --DONE
 
 View for sales:
 1. monthly sales contract comission --DONE
-2. monthly sales target/completion 
+2. monthly sales target/completion --DONE
 3. monthly sales record. --DONE
 
 sales comission select time --DONE
@@ -104,9 +104,9 @@ edit goal for sales and expert etc...-DONE
 
 sales comission should be per month. 
 
-Service and Contract findOne needs update;
+Service and Contract findOne needs update; --DONE
 
-reod sql for servicecomission;
+reod sql for servicecomission; --DONE
 
 service comission should be the services that is not done. but contract is signed before the currentmonth/21/currentyear. 
 edit init.sql to create the procedures --DONE

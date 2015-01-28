@@ -589,24 +589,26 @@ delimiter ;;
 create PROCEDURE ServiceComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-SELECT  service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", service.price, servicecomission.servRole,servicecomission.servLevel, servicecomission.startprogress,servicecomission.endprogress,servicecomission.extra,
+SELECT  service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", service.price, st.servRole,st.servLevel, p2.serviceProgress as 'startprogress', p1.serviceProgress as 'endprogress',
 IFNULL((select  ((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat from application where application.service=service.id),0) as "startComission",
-IFNULL((select  ((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat from application where application.service=service.id),0)+IFNULL(servicecomission.extra,0) as "endComission",
-(select IFNULL(((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat,0)-IFNULL(((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat,0) from application where application.service=service.id)+IFNULL(servicecomission.extra,0) as "monthlyComission",
-month as "month",
-year as "year"
+IFNULL((select  ((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat from application where application.service=service.id),0) as "endComission",
+(select IFNULL(((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat,0)-IFNULL(((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat,0) from application where application.service=service.id) as "monthlyComission"
 FROM service 
 inner join contract on service.contract=contract.id
-inner join service_serviceteacher__user_serviceteacher_user st on st.service_serviceTeacher=service.id
-inner join user on st.user_serviceTeacher_user=user.id
+inner join servicedetail st on st.service=service.id
+inner join user on st.user=user.id
 inner join servicetype on service.serviceType=servicetype.id
-left join servicecomission on (user.id=servicecomission.user and service.id=servicecomission.service)
-left join servcomissionlookup s1 on (((s1.serviceType=service.serviceType and s1.servLevel=servicecomission.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s1.serviceType=0 and s1.servLevel=servicecomission.servLevel) or s1.serviceType=service.serviceType))) and s1.serviceStatus=servicecomission.startprogress and s1.servRole=servicecomission.servRole)
-left join servcomissionlookup s2 on (((s2.serviceType=service.serviceType and s2.servLevel=servicecomission.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s2.serviceType=0 and s2.servLevel=servicecomission.servLevel) or s2.serviceType=service.serviceType))) and s2.serviceStatus=servicecomission.endprogress and s2.servRole=servicecomission.servRole)
-where contract.contractsigned is not NULL and ((servicecomission.year=year and servicecomission.month=month) or (servicecomission.year is NULL and servicecomission.month is NULL))
-and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
+left join serviceprogress on service.serviceProgress=serviceprogress.id
+left join (select serviceDetail,max(id) as 'curMonth' from serviceprogressupdate where createdAt <DATE_FORMAT(STR_TO_DATE('2014-02-','%Y-%m'),'%Y-%m-21')  group by serviceDetail) as x on x.serviceDetail=st.id
+left join (select serviceDetail,max(id) as 'lastMonth' from serviceprogressupdate where createdAt <SUBDATE(DATE_FORMAT(STR_TO_DATE('2014-02-','%Y-%m'),'%Y-%m-21'),INTERVAL 1 MONTH)  group by serviceDetail) as y on y.serviceDetail=st.id
+left join serviceprogressupdate p1 on x.curMonth=p1.id
+left join serviceprogressupdate p2 on y.lastMonth=p2.id
+left join servcomissionlookup s1 on (((s1.serviceType=service.serviceType and s1.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s1.serviceType=0 and s1.servLevel=st.servLevel) or s1.serviceType=service.serviceType))) and s1.serviceStatus=p2.serviceProgress and s1.servRole=st.servRole)
+left join servcomissionlookup s2 on (((s2.serviceType=service.serviceType and s2.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s2.serviceType=0 and s2.servLevel=st.servLevel) or s2.serviceType=service.serviceType))) and s2.serviceStatus=p1.serviceProgress and s2.servRole=st.servRole)
+where contract.contractsigned is not NULL and serviceprogress.serviceProgress not like 'D%' and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
 END;;
 delimiter ;
+
 
 DROP PROCEDURE IF EXISTS AssistantComission;
 delimiter ;;
