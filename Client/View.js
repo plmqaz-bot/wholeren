@@ -1709,7 +1709,6 @@ var ServicePopup=Backbone.Modal.extend({
                 }
             });
             var columns=[
-                {name:'service',label:'Contract',editable:false,cell:'string'},
                 {name:'user',label:'User',cell:userselect},
                 {name:'servRole',label:'Role',cell:roleselect},
                 {name:'servLevel',label:'Level',cell:levelselect},
@@ -1758,7 +1757,7 @@ var SalesComissionView=Wholeren.FormView.extend({
                     })
                 });
                 var columns=[
-                {name:'contract',label:'Contract',editable:false,cell:'string'},
+                {name:'chineseName',label:'Name',editable:false,cell:'string'},
                 {name:'nickname',label:'User',editable: false,cell:'string'},
                 {name:'serviceType',label:'Service',cell:'string'},
                 {name:'price',label:'Price',editable:false,cell:'number'},
@@ -1859,15 +1858,15 @@ var ServiceComissionView=SalesComissionView.extend({
                 } 
             });
             var columns=[
-                {name:'contract',label:'Contract',editable:false,cell:'string'},
+                {name:'chineseName',label:'Name',editable:false,cell:'string'},
                 {name:'nickname',label:'User',editable: false,cell:'string'},
                 {name:'serviceType',label:'Service',editable: false,cell:'string'},
                 {name:'price',label:'Price',editable:false,cell:'number'},
-                {name:'servRole',label:'Role',cell:roleselect},
-                {name:'servLevel',label:'Level',cell:levelselect},
-                {name:'startprogress',label:'StartStatus',cell:statusselect},
-                {name:'endprogress',label:'EndStatus',cell:statusselect},
-                {name:'extra',label:'Extra',cell:'number'},
+                {name:'servRole',label:'Role',editable:false,cell:roleselect},
+                {name:'servLevel',label:'Level',editable:false,cell:levelselect},
+                {name:'startprogress',label:'StartStatus',editable:false,cell:statusselect},
+                {name:'endprogress',label:'EndStatus',editable:false,cell:statusselect},
+               // {name:'extra',label:'Extra',cell:'number'},
                 {name:'startComission',label:'BeginComission',editable: false,cell:'number'},
                 {name:'endComission',label:'EndComission',editable: false,cell:'number'},
                 {name:'monthlyComission',label:'This Month',editable:false,cell:'number'},
@@ -1907,11 +1906,11 @@ var AssisComissionView=SalesComissionView.extend({
         this.render();
         var self=this;
         var columns=[
-        {name:'contract',label:'Contract',editable:false,cell:'string'},
+        {name:'chineseName',label:'客户名字',editable: false,cell:'string'},
+        //{name:'contract',label:'Contract',editable:false,cell:'string'},
         {name:'user',label:'User',editable: false,cell:'string'},
         {name:'createdAt',label:'咨询时间',editable:false,cell:'Date'},
         {name:'contractSigned',label:'签约时间',editable:false,cell:'Date'},
-        {name:'chineseName',label:'客户名字',editable: false,cell:'string'},
         {name:'email',label:'邮件数',editable: false,cell:'number'},
         {name:'comission',label:'佣金',editable: false,cell:'number'},
         ];
@@ -2159,6 +2158,9 @@ var CommentModalView=Backbone.Modal.extend({
       }
       if(this.sid){
         this.Todos.create({comment: this.$("#new-todo").val(),service:this.sid});
+      }
+      if(this.aid){
+        this.Todos.create({comment: this.$("#new-todo").val(),application:this.aid});
       }
       this.$("#new-todo").val("");
     },

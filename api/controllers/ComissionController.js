@@ -7,15 +7,17 @@
 var Promise=require('bluebird');
 module.exports = {
 	'getSalesComission':function(req,res){
-		//var id=req.session.user.id;
-		var id=165;
+		var id=req.session.user.id;
+		if(req.session.user.rank>2){
+			id=0;
+		}
 		var start=req.param('startdate');
 		var end=req.param('enddate');
 		var startdate=start?"'"+Utilfunctions.formatDate(start)+"'":"null";
 		var enddate=end?"'"+Utilfunctions.formatDate(end)+"'":"null";
 		console.log(startdate);
 		console.log(enddate);
-		var sql="call SalesComission(0,0,"+startdate+","+enddate+",false);";
+		var sql="call SalesComission("+id+",0,"+startdate+","+enddate+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){
@@ -61,13 +63,16 @@ module.exports = {
 		});
 	},
 	'getServiceComission':function(req,res){
-		var id=165;
+		var id=req.session.user.id;
+		if(req.session.user.rank>2){
+			id=0;
+		}
 		var year=parseInt(req.param('year'));
 		var month=parseInt(req.param('month'));
 		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});
 		console.log(year);
 		console.log(month);
-		var sql="call ServiceComission(0,0,"+year+","+month+",false);";
+		var sql="call ServiceComission("+id+",0,"+year+","+month+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){
@@ -118,9 +123,13 @@ module.exports = {
 		var end=req.param('enddate');
 		var startdate=start?"'"+Utilfunctions.formatDate(start)+"'":"null";
 		var enddate=end?"'"+Utilfunctions.formatDate(end)+"'":"null";
+		var id=req.session.user.id;
+		if(req.session.user.rank>2){
+			id=0;
+		}
 		console.log(startdate);
 		console.log(enddate);
-		var sql="call AssistantComission(0,0,"+startdate+","+enddate+",false);";
+		var sql="call AssistantComission("+id+",0,"+startdate+","+enddate+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){

@@ -29,30 +29,21 @@ module.exports = {
 			return res.json(404,{error:"no service id "});
 		}
 		var userId=req.session.user.id;
-		var promise;
 		switch(req.session.user.rank){
 			case 3:
-			promise=Service.find({id:req.params.id});
+			sql=constructsql("", " and service.id="+req.params.id);	
 			break;
 			case 2:
 			sql=constructsql("and boss="+userId, " and service.id="+req.params.id);
-			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			default:
 			sql=constructsql("and user.id="+userId, " and service.id="+req.params.id);
-			promise=Utilfunctions.nativeQuery(sql);
-
 		}
-		if(req.session.user.rank>1){
-			sql=constructsql("and boss="+userId, " and service.id="+req.params.id);
-			promise=Utilfunctions.nativeQuery(sql);
-		}else{
-			
-		}
-		promise.then(function(serv){
+		Utilfunctions.nativeQuery(sql).then(function(serv){
 			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
 			var servid=serv[0].id;
 			var clientid=serv[0].client;
+			console.log(servid,clientid);
 			return Promise.all([Service.findOne({id:servid}).populateAll(), Client.findOne({id:clientid}),User.find()]);
 		}).then(function(data){
 			var toReturn=data[0];

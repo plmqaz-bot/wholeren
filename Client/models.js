@@ -167,6 +167,22 @@ var sortableCollection=Backbone.PageableCollection.extend({
         complexFilter:function(filterElements){
             fs=filterElements;
             function match(v1,v2,ele){
+                if(v1==v2){
+                    return true;
+                }
+                if(!v1||!v2){
+                    return false;
+                }
+                try{
+                    v1=JSON.parse(v1);
+                }catch(e){
+                    v1=v1;
+                }
+                try{
+                    v2=JSON.parse(v2);
+                }catch(e){
+                    v2=v2;
+                }
                 if(v1.toString()==v2||v1==v2){
                     return true;
                 }else{
@@ -454,6 +470,7 @@ Collections={
         initialize:function(option){
             this.cid=option.cid;
             this.sid=option.sid;
+            this.aid=option.aid;
         },
         url:function(){
             if(this.cid)
@@ -461,7 +478,7 @@ Collections={
             if(this.sid)
                 return '/Comment/?service='+this.sid;
             if(this.aid)
-                return '/Comment/?service='+this.aid;      
+                return '/Comment/?application='+this.aid;      
         }
     }),
     UserLevel:Backbone.Collection.extend({
