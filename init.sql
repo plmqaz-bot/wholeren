@@ -570,7 +570,7 @@ delimiter ;;
 create PROCEDURE SalesComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-select client.chineseName, user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
+select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
 inner join contract on (contract.sales1=user.id or contract.assisCont1=user.id or contract.expert1=user.id or contract.sales2=user.id or contract.assisCont2=user.id or contract.expert2=user.id)
 inner join client on contract.client=client.id
 inner join service on (service.contract=contract.id)
@@ -579,7 +579,7 @@ left join salesrole on (contractcomission.salesRole=salesrole.id)
 left join servicetype on (service.serviceType=servicetype.id)
 left join userlevel on (user.userlevel=userlevel.id)
 where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
- and ((year is null or month is null) or (contract.contractSigned between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')));
+ and ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')));
 END;;
 delimiter ;
 
@@ -589,7 +589,7 @@ delimiter ;;
 create PROCEDURE ServiceComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-SELECT  client.chineseName,service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", service.price, st.servRole,st.servLevel, p2.serviceProgress as 'startprogress', p1.serviceProgress as 'endprogress',
+SELECT  client.chineseName,contract.contractPaid,service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", service.price, st.servRole,st.servLevel, p2.serviceProgress as 'startprogress', p1.serviceProgress as 'endprogress',
 IFNULL((select  ((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat from application where application.service=service.id),0) as "startComission",
 IFNULL((select  ((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat from application where application.service=service.id),0) as "endComission",
 (select IFNULL(((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat,0)-IFNULL(((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat,0) from application where application.service=service.id) as "monthlyComission"
@@ -606,7 +606,7 @@ left join serviceprogressupdate p1 on x.curMonth=p1.id
 left join serviceprogressupdate p2 on y.lastMonth=p2.id
 left join servcomissionlookup s1 on (((s1.serviceType=service.serviceType and s1.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s1.serviceType=0 and s1.servLevel=st.servLevel) or s1.serviceType=service.serviceType))) and s1.serviceStatus=p2.serviceProgress and s1.servRole=st.servRole)
 left join servcomissionlookup s2 on (((s2.serviceType=service.serviceType and s2.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s2.serviceType=0 and s2.servLevel=st.servLevel) or s2.serviceType=service.serviceType))) and s2.serviceStatus=p1.serviceProgress and s2.servRole=st.servRole)
-where contract.contractsigned is not NULL and serviceprogress.serviceProgress not like 'D%' and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
+where contract.contractPaid is not NULL and serviceprogress.serviceProgress not like 'D%' and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
 END;;
 delimiter ;
 
@@ -617,16 +617,16 @@ create PROCEDURE AssistantComission (uid int,cid int, year int, month int,single
 COMMENT ''
 BEGIN
 select A.*,client.chineseName,count(*) as "email", count(*)*10 as "comission" from 
-(select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant1=user.id)where ((year is null or month is null) or (contract.contractSigned between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+(select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant1=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant2=user.id)where ((year is null or month is null) or (contract.contractSigned between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant2=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant3=user.id)where ((year is null or month is null) or (contract.contractSigned between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant3=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractSigned from contract inner join user on (contract.assistant4=user.id)where ((year is null or month is null) or (contract.contractSigned between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant4=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))) A 
 inner join client on A.client=client.id
 group by A.contract,A.user;

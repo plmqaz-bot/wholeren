@@ -1759,16 +1759,17 @@ var SalesComissionView=Wholeren.FormView.extend({
                     })
                 });
                 var columns=[
-                {name:'chineseName',label:'Name',editable:false,cell:'string'},
-                {name:'nickname',label:'User',editable: false,cell:'string'},
-                {name:'serviceType',label:'Service',cell:'string'},
-                {name:'price',label:'Price',editable:false,cell:'number'},
-                {name:'salesRole',label:'Role',cell:myselect},
-                {name:'comissionPercent',label:'RoleComission',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
-                {name:'flatComission',label:'Flat',editable: false,cell:'number'},
-                {name:'comission',label:'ServiceComission',editable: false,cell:'number'},
-                {name:'extra',label:'Extra',cell:'number'},
-                {name:'final',label:'佣金',cell:'number'}
+                {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+                {name:'nickname',label:'销售名字',editable: false,cell:'string'},
+                {name:'serviceType',label:'服务类型',cell:'string'},
+                {name:'contractPaid',label:'付款时间',editable:false,cell:'date'},
+                {name:'price',label:'服务价格',editable:false,cell:'number'},
+                {name:'salesRole',label:'销售任务',cell:myselect},
+                {name:'comissionPercent',label:'佣金百分比',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
+                {name:'flatComission',label:'佣金非百分比',editable: false,cell:'number'},
+                {name:'comission',label:'服务佣金百分比',editable: false,cell:'number'},
+                {name:'extra',label:'其他',cell:'number'},
+                {name:'final',label:'总佣金',cell:'number'}
                 ];
                 var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
                 $('.table-wrapper').append(grid.render().el);
@@ -1862,18 +1863,18 @@ var ServiceComissionView=SalesComissionView.extend({
                 } 
             });
             var columns=[
-                {name:'chineseName',label:'Name',editable:false,cell:'string'},
-                {name:'nickname',label:'User',editable: false,cell:'string'},
-                {name:'serviceType',label:'Service',editable: false,cell:'string'},
-                {name:'price',label:'Price',editable:false,cell:'number'},
-                {name:'servRole',label:'Role',editable:false,cell:roleselect},
-                {name:'servLevel',label:'Level',editable:false,cell:levelselect},
-                {name:'startprogress',label:'StartStatus',editable:false,cell:statusselect},
-                {name:'endprogress',label:'EndStatus',editable:false,cell:statusselect},
+                {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+                {name:'nickname',label:'老师名字',editable: false,cell:'string'},
+                {name:'serviceType',label:'服务类型',editable: false,cell:'string'},
+                {name:'contractPaid',label:'付款时间',editable:false,cell:'Date'},
+                {name:'servRole',label:'老师任务',editable:false,cell:roleselect},
+                {name:'servLevel',label:'文书level',editable:false,cell:levelselect},
+                {name:'startprogress',label:'月初进度',editable:false,cell:statusselect},
+                {name:'endprogress',label:'月末进度',editable:false,cell:statusselect},
                // {name:'extra',label:'Extra',cell:'number'},
-                {name:'startComission',label:'BeginComission',editable: false,cell:'number'},
-                {name:'endComission',label:'EndComission',editable: false,cell:'number'},
-                {name:'monthlyComission',label:'This Month',editable:false,cell:'number'},
+                {name:'startComission',label:'月初佣金',editable: false,cell:'number'},
+                {name:'endComission',label:'月末佣金',editable: false,cell:'number'},
+                {name:'monthlyComission',label:'本月佣金',editable:false,cell:'number'},
                 // {name:'final',label:'佣金',cell:'number'}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
@@ -1905,7 +1906,7 @@ var AssisComissionView=SalesComissionView.extend({
         //{name:'contract',label:'Contract',editable:false,cell:'string'},
         {name:'user',label:'User',editable: false,cell:'string'},
         {name:'createdAt',label:'咨询时间',editable:false,cell:'Date'},
-        {name:'contractSigned',label:'签约时间',editable:false,cell:'Date'},
+        {name:'contractPaid',label:'付款时间',editable:false,cell:'Date'},
         {name:'email',label:'邮件数',editable: false,cell:'number'},
         {name:'comission',label:'佣金',editable: false,cell:'number'},
         ];

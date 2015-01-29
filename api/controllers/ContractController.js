@@ -26,20 +26,22 @@ module.exports = {
 		switch(req.session.user.rank){
 			case 3:
 			console.log("manager");
-			promise=Contract.find().where(where).populate('client').populate('service');
+			promise=Contract.find(where).populate('client').populate('service');
 			break;
 			case 2:
 			var sql=constructsql("user.boss="+id);
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
-				return Contract.find({id:idarray}).where(where).populate('client').populate('service');
+				where['id']=idarray;
+				return Contract.find(where).populate('client').populate('service');
 			});
 			break;
 			default:
 			var sql=constructsql("user.id="+id);
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
-				return Contract.find({id:idarray}).where(where).populate('client').populate('service');
+				where['id']=idarray;
+				return Contract.find(where).populate('client').populate('service');
 			});
 		}
 		

@@ -7,7 +7,7 @@
         <td>{{../../contract/client/chineseName}}</td>
         <td>{{../../contract/client/firstName}}</td>
         <td>{{../../contract/client/lastName}}</td>
-        <td>{{../../progress/serviceProgress}}</td>
+        <td data-attr="serviceProgress" data-coll="ServiceProgress" data-optext="serviceProgress" class="selectbox" data-model="Service">{{../../serviceProgress/serviceProgress}}</td>
         <td>{{../../serviceType/serviceType}}</td>
         <td>{{../../contract/contractSigned}}</td>
         <td><a class="add" href="#">Add</a><a class="edit" href="#{{id}}">Edit</a>{{#if ../../../displayDelete}}<a class="del" href="#{{id}}">Delete</a>{{/if}}</td>
@@ -31,7 +31,7 @@
         <td>{{contract/client/chineseName}}</td>
         <td>{{contract/client/firstName}}</td>
         <td>{{contract/client/lastName}}</td>
-        <td data-attr="serviceProgress" data-coll="ServiceProgress" data-optext="serviceProgress" class="selectbox" data-model="Service">{{progress/serviceProgress}}</td>
+        <td data-attr="serviceProgress" data-coll="ServiceProgress" data-optext="serviceProgress" class="selectbox" data-model="Service">{{serviceProgress/serviceProgress}}</td>
         <td>{{serviceType/serviceType}}</td>        
         <td>{{contract/contractSigned}}</td>
         <td>{{#ifCond serviceType/addApplication true}}<a class="add" href="#">Add</a>{{/ifCond}}</td>
