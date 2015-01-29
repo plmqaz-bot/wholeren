@@ -11,13 +11,10 @@ module.exports = {
 		if(req.session.user.rank>2){
 			id=0;
 		}
-		var start=req.param('startdate');
-		var end=req.param('enddate');
-		var startdate=start?"'"+Utilfunctions.formatDate(start)+"'":"null";
-		var enddate=end?"'"+Utilfunctions.formatDate(end)+"'":"null";
-		console.log(startdate);
-		console.log(enddate);
-		var sql="call SalesComission("+id+",0,"+startdate+","+enddate+",false);";
+		var year=parseInt(req.param('year'));
+		var month=parseInt(req.param('month'));
+		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});
+		var sql="call SalesComission("+id+",0,"+year+","+month+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){
@@ -83,12 +80,12 @@ module.exports = {
 	'updateServiceComission':function(req,res){
 		var attribs=req.body;
 		attribs.year=parseInt(attribs.year);
-		attribs.month=parseInt(attribs.month)
-		if(attribs==null) return res.json(404,{error:"not enough parameters"});
+		attribs.month=parseInt(attribs.month)		
+		if(isNaN(attribs.year)||isNaN(attribs.month)||attribs.year<1969||attribs.year>2100||attribs.month<1||attribs.month>12) return json(400,{error:"invalid year and month"});
+				if(attribs==null) return res.json(404,{error:"not enough parameters"});
 		if(attribs.user==null||attribs.service==null||attribs.year==null||attribs.month==null){
 			return res.json(404,{error:"not enough parameters"});
-		}		
-		if(isNaN(attribs.year)||isNaN(attribs.month)||attribs.year<1969||attribs.year>2100||attribs.month<1||attribs.month>12) return json(400,{error:"invalid year and month"});
+		}
 		var toupdate={service:attribs.service,user:attribs.user,year:attribs.year,month:attribs.month};
 		if(attribs.servRole!=null) toupdate.servRole=attribs.servRole;
 		 toupdate.servLevel=attribs.servLevel;
@@ -119,17 +116,14 @@ module.exports = {
 		});
 	},
 	'getAssistantComission':function(req,res){
-		var start=req.param('startdate');
-		var end=req.param('enddate');
-		var startdate=start?"'"+Utilfunctions.formatDate(start)+"'":"null";
-		var enddate=end?"'"+Utilfunctions.formatDate(end)+"'":"null";
 		var id=req.session.user.id;
 		if(req.session.user.rank>2){
 			id=0;
 		}
-		console.log(startdate);
-		console.log(enddate);
-		var sql="call AssistantComission("+id+",0,"+startdate+","+enddate+",false);";
+		var year=parseInt(req.param('year'));
+		var month=parseInt(req.param('month'));
+		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});
+		var sql="call AssistantComission("+id+",0,"+year+","+month+",false);";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){

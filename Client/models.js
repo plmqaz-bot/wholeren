@@ -183,15 +183,12 @@ var sortableCollection=Backbone.PageableCollection.extend({
                 }catch(e){
                     v2=v2;
                 }
-                if(v1.toString()==v2||v1==v2){
-                    return true;
-                }else{
-                    if(!v1.id){
-                    }else if(v1.id==v2||v1.id.toString()==v2){
-                        return true;
-                    }
+                if(typeof v1 =='object'){
+                    v1=v1.id;
+                    v2=parseInt(v2);
+                    if(v1==v2) return true;
                 }
-                if(ele.tagName.toLowerCase()=='input'){
+                if(typeof v1=='string'){
                     if(v1.indexOf(v2)!=-1){
                         return true;
                     }
@@ -388,23 +385,23 @@ Collections={
         model:Models.Comission,
          url: function(){
             var toreturn=this._url+'?';
-            if(this.startDate)
-                toreturn+='startdate='+this.startDate;
-            if(this.endDate)
-                toreturn+="&enddate="+this.endDate;
+            if(this.year)
+                toreturn+='year='+this.year;
+            if(this.month)
+                toreturn+="&month="+this.month;
             return toreturn;
         },
         
         initialize:function(options){
-            this.startDate="9/1/2014";
-            this.endDate="";
+            this.year=new Date().getFullYear();
+            this.month=new Date().getMonth()+1;
             this._url=options.url;
             this.mode="client";
             this.state={pageSize:25};
         },
         setdate:function(options){
-            this.startDate=options.startDate;
-            this.endDate=options.endDate;
+            this.year=options.year;
+            this.month=options.month;
         },
     }),
     // SalesComission:sortableCollection.extend({

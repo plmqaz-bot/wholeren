@@ -487,8 +487,8 @@ Notification.Collection = Wholeren.baseView.extend({
             this.filter=[];
             Wholeren.baseView.apply(this,arguments);
         },
-        render: function () {
-             var ml = this.template();
+        render: function (options) {
+             var ml = this.template(options);
              if (ml[0] != '<') {
                  ml = ml.substring(1);
              }
@@ -1736,17 +1736,19 @@ var ServicePopup=Backbone.Modal.extend({
 });
 
 var SalesComissionView=Wholeren.FormView.extend({
-    templateName:'salesComission',
+    templateName:'serviceComission',
+    ready:true,
     initialize: function (options) {
         this.rank=$('#rank').text();
         this.el=options.el;
         this.collection = new Obiwang.Collections['Comission']({url:'/SalesComission/'});
-        this.render();
+        this.render({title:"sales"});
         var testroles;
         var self=this;
+        this.ready=false;
         util.ajaxGET('/SalesComission/roles/').then(function(data){
                 testroles=[{name:"role",values:data}]; 
-                self.myselect=Backgrid.SelectCell.extend({
+                var myselect=Backgrid.SelectCell.extend({
                     optionValues:function(){
                         return testroles
                     },
@@ -1761,7 +1763,7 @@ var SalesComissionView=Wholeren.FormView.extend({
                 {name:'nickname',label:'User',editable: false,cell:'string'},
                 {name:'serviceType',label:'Service',cell:'string'},
                 {name:'price',label:'Price',editable:false,cell:'number'},
-                {name:'salesRole',label:'Role',cell:self.myselect},
+                {name:'salesRole',label:'Role',cell:myselect},
                 {name:'comissionPercent',label:'RoleComission',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
                 {name:'flatComission',label:'Flat',editable: false,cell:'number'},
                 {name:'comission',label:'ServiceComission',editable: false,cell:'number'},
@@ -1777,6 +1779,7 @@ var SalesComissionView=Wholeren.FormView.extend({
                 collection: self.collection
                 });
                 $('.table-wrapper').append(paginator.render().el);
+                self.ready=true;
                 }).error(function(err){
                     console.log(err);
                 });        
@@ -1786,13 +1789,14 @@ var SalesComissionView=Wholeren.FormView.extend({
     'click a.page':'switchPage'
     },    
     refetch:function(e){
-        if(!this.myselect) return;
-        var startDate=$('#startDate').val();
-        var endDate=$('#endDate').val();
-        this.collection.setdate({startDate:startDate,endDate:endDate});
+        if(!this.ready) return;
+        var year=$('#year').val();
+        var month=$('#month').val();
+        this.collection.setdate({year:year,month:month});
         this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
         this.collection.fetch({reset:true});
-    },    
+    },   
 });
 
 var ServiceComissionView=SalesComissionView.extend({
@@ -1802,8 +1806,8 @@ var ServiceComissionView=SalesComissionView.extend({
         this.el=options.el;
         this.cache=[];
         var self=this;
-        this.collection = new Obiwang.Collections['ServiceComission']();
-        this.render();
+        this.collection = new Obiwang.Collections['Comission']({url:'/ServiceComission/'});
+        this.render({title:"service"});
         Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(roles,data){
             var roleselect=Backgrid.SelectCell.extend({
                 optionValues: [{name:10,values:roles}],
@@ -1887,23 +1891,14 @@ var ServiceComissionView=SalesComissionView.extend({
             }).error(function(err){
                 console.log(err);
             });  
-    },  
-    refetch:function(e){
-        if(!this.ready) return;
-        var year=$('#year').val();
-        var month=$('#month').val();
-        this.collection.setdate({year:year,month:month});
-        this.collection.reset();
-        if(this.collection.fullCollection)this.collection.fullCollection.reset();
-        this.collection.fetch({reset:true});
-    },  
+    },    
 });
 var AssisComissionView=SalesComissionView.extend({
     initialize: function (options) {
         this.rank=$('#rank').text();
         this.el=options.el;
         this.collection = new Obiwang.Collections['Comission']({url:'/AssistantComission/'});
-        this.render();
+        this.render({title:"assisatnace"});
         var self=this;
         var columns=[
         {name:'chineseName',label:'客户名字',editable: false,cell:'string'},
@@ -1927,14 +1922,7 @@ var AssisComissionView=SalesComissionView.extend({
     events: {
     'click  button.button-alt': 'refetch',
     'click a.page':'switchPage'
-    },    
-    refetch:function(e){
-        var startDate=$('#startDate').val();
-        var endDate=$('#endDate').val();
-        this.collection.setdate({startDate:startDate,endDate:endDate});
-        this.collection.reset();
-        this.collection.fetch({reset:true});
-    }, 
+    }
 });
 var Comission={
     'sales':SalesComissionView,
