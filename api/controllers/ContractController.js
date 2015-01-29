@@ -140,11 +140,14 @@ module.exports = {
 					Client.query('START TRANSACTION',function(){
 						Client.create(attribs.client).then(function(client){
 							attribs.client=client.id;
+							console.log("client id is ",client.id);
+							console.log("creating contract");
 							return Contract.create(attribs);
 						}).then(function(data){
-							Client.query('COMMIT');
-							return res.json(data);
-						},function(err){
+							console.log("contract created");
+							 Client.query('COMMIT');
+							 return res.json(data);
+						}).fail(function(err){
 							console.log("error in creating contract");
 							Client.query('ROLLBACK');
 							return res.json(400,err);
@@ -233,11 +236,11 @@ module.exports = {
 				return privateUpdateService(attribs['service'],req.params.id,res);
 			}
 
-			generateComment(attribs,'sales');
-			generateComment(attribs,'assistant');
-			generateComment(attribs,'assisCont');
-			generateComment(attribs,'expert');
-			generateComment(attribs,'teacher');
+			//generateComment(attribs,'sales');
+			//generateComment(attribs,'assistant');
+			//generateComment(attribs,'assisCont');
+			//generateComment(attribs,'expert');
+			//generateComment(attribs,'teacher');
 			delete attribs["createAt"];
 			delete attribs["updateAt"];
 			Contract.update({id:req.params.id},attribs,function(err,data){

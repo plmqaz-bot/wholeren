@@ -7,7 +7,9 @@ Collections = {};
 Models={
     Contract : Backbone.Model.extend({
     idAttribute: "id",
-    
+    initialize:function(options){
+        this.set('createdAt',new Date(this.get('createdAt')));
+    },
     urlRoot:'/Contract/'
     }),
     Client:Backbone.Model.extend({

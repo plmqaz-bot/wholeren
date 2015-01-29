@@ -534,6 +534,7 @@ Notification.Collection = Wholeren.baseView.extend({
             }
             this.collection.selectedStrat({sortAttr:attr,direction:direction});
             this.collection.sort();
+            this.renderCollectionCore();
         },
         editAttr:function(e){
             var item=$(e.currentTarget);
@@ -559,6 +560,9 @@ Notification.Collection = Wholeren.baseView.extend({
                 self.collection.remove(self.collection.get(options.id));
                 self.renderCollection();
                 return;
+            }
+            if(!this.collection.get(options.id)){
+                this.collection.add(toRender);
             }
             this.collection.get(options.id).fetch({
                 reset:true,
@@ -1328,9 +1332,12 @@ var ContractEdit = EditForm.extend({
             patch:true,
             success:function(d){
                 // refresh parent view
+                try{
                     self.parentView.rerenderSingle({id:d.get('id')});
+                }catch(e){
                     return self.close();
-                  
+                }
+                return self.close();
             },
             error:function(model,response){
                 util.handleRequestError(response); 
