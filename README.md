@@ -108,9 +108,15 @@ Service and Contract findOne needs update; --DONE
 
 reod sql for servicecomission; --DONE
 
-service comission should be the services that is not done. but contract is signed before the currentmonth/21/currentyear. 
+service comission should be the services that is not done. --DONE
+
+. 
 edit init.sql to create the procedures --DONE
 
- 
+less templates.  
+
+
+Names in template
+
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

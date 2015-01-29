@@ -3009,3 +3009,5 @@ call PerUserSignRate(0,9,2014);
 call PerUserSignRate(0,9,2014); 
 call LeadSignRate(9,2014);
 call LeadSignRate(9,2014);
+Hello
+select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval);
