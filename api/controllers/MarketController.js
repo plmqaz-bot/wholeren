@@ -47,7 +47,7 @@
       var year=parseInt(req.param('year'));
       var month=parseInt(req.param('month'));
       if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});
-      var sql="select user.id as 'user',"+year+" as 'year', "+month+" as 'month', user.nickname,transferSaleGoal, transferExpGoal,emergSaleGoal,emergExpGoal,leadGoal from user left join goal on user.id=goal.user left join role on user.role=role.id\
+      var sql="select user.id as 'user',"+year+" as 'year', "+month+" as 'month', user.nickname,goal.* from user left join goal on user.id=goal.user left join role on user.role=role.id\
       where role.role ='销售' and (month is null or month="+month+") and (year is null or year="+year+");";
       Utilfunctions.nativeQuery(sql).then(function(data){
           return res.json(data);

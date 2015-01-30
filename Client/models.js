@@ -49,7 +49,15 @@ Models={
     }),
     Service : Backbone.Model.extend({
     idAttribute: "id",
-    urlRoot:'/Service/'
+    urlRoot:'/Service/',
+    initialize:function(options){
+        this.set('createdAt',new Date(this.get('createdAt')));
+        if((this.get('contract')||{})['contractSigned']){
+            var thiscontract=this.get('contract');
+            thiscontract['contractSigned']=new Date((this.get('contract')||{})['contractSigned'])||"";
+            this.set('contract',thiscontract);
+        }
+    }
     }),
     ServiceProgress:Backbone.Model.extend({
         urlRoot:'/serviceProgress/'
@@ -107,19 +115,14 @@ Models={
     })    
 
 };
-var sortableCollection=Backbone.PageableCollection.extend({
+var sortableCollection=Backbone.Collection.extend({
     sortAttr:{
             attribute:'client',
             nested:'firstName',
             asec:true
         },
-        mode:"",
         pagesize:100,
-        state:{
-            firstPage:0,
-            currentPage:0,
-            totalRecords:200
-        },
+
         comparator:function(A,B){
             var aAttr='';
             var bAttr='';
@@ -254,7 +257,7 @@ var sortableCollection=Backbone.PageableCollection.extend({
                 });
                 return !filteredout;
             });
-            var toReturn= new this.constructor(filteredArray,this.attributes);
+            var toReturn= new this.constructor(filteredArray,{sortAttr:this.sortAttr,startDate:this.startDate,endDate:this.endDate});
             return toReturn;
             
         }
@@ -265,11 +268,15 @@ Collections={
         
         //url: '/Contract/',
         url: function(){return '/Contract/?where='+this.whereclaus();},
-        initialize:function(){
-            this.selectedStrat({sortAttr:'client.firstName'});
-
-            this.startDate="09-01-2014";
-            this.endDate="";
+        initialize:function(models,options){
+            options=options||{};
+            if(options.sortAttr){
+                this.sortAttr=options.sortAttr;
+            }else{
+                this.selectedStrat({sortAttr:'client.firstName'});
+            }
+            this.startDate=options.startDate||"09-01-2014";
+            this.endDate=options.endDate||"";
         },
         setdate:function(options){
             this.startDate=options.startDate;
@@ -355,10 +362,15 @@ Collections={
         model: Models.Service,
         url: function(){return '/Service/?where='+this.whereclaus();},
         
-        initialize:function(){
-            this.selectedStrat({sortAttr:'contract.createdAt'});
-            this.startDate="9/1/2014";
-            this.endDate="";
+        initialize:function(models,options){
+            options=options||{};
+            if(options.sortAttr){
+                this.sortAttr=options.sortAttr;
+            }else{
+                this.selectedStrat({sortAttr:'contract.createdAt'});
+            }
+            this.startDate=options.startDate||"09-01-2014";
+            this.endDate=options.endDate||"";
         },
         setdate:function(options){
             this.startDate=options.startDate;

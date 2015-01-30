@@ -449,58 +449,85 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,9,@sprogress3,0.3
 # as Sales or Expert, percent if sign every month
 DROP PROCEDURE IF EXISTS PerUserSignRate;
 delimiter ;;
-create PROCEDURE PerUserSignRate (uid int, M int, Y int)
+create PROCEDURE PerUserSignRate (uid int, month int, year int)
 COMMENT ''
 BEGIN
-select user.id ,user.nickname,紧急销售咨询量,紧急销售签约量,紧急销售签约额
+select user.id ,user.nickname,
+紧急销售咨询量,紧急销售签约量,紧急销售签约额
 转学销售咨询量,转学销售签约量,转学销售签约额,
+高中销售咨询量,高中销售签约量,高中销售签约额,
+学术销售咨询量,学术销售签约量,学术销售签约额
 紧急专家咨询量,紧急专家签约量,紧急专家签约额,
 转学专家咨询量,转学专家签约量,转学专家签约额, 
-紧急销售签约量+紧急专家签约量 as '紧急签约量',
- 转学销售签约量+转学专家签约量 as '转学签约量',
-(紧急销售签约量+紧急专家签约量)/(紧急销售咨询量+紧急专家咨询量) as '紧急签约率',
-(转学销售签约量+转学专家签约量)/(转学销售咨询量+转学专家咨询量) as '转学签约率',
-(转学销售签约量+紧急销售签约量)/(转学销售咨询量+紧急销售咨询量) as '销售签约率',
-(转学专家签约量+紧急专家签约量)/(转学专家咨询量+紧急专家咨询量) as '专家签约率',
-紧急销售签约额+转学销售签约额 as '销售签约额',紧急专家签约量+转学专家签约量 as '专家签约额'
+高中专家咨询量,高中专家签约量,高中专家签约额,
+学术专家咨询量,学术专家签约量,学术专家签约额,
+IFNULL(紧急销售签约量,0)+IFNULL(紧急专家签约量,0) as '紧急签约量',
+IFNULL(转学销售签约量,0)+IFNULL(转学专家签约量,0) as '转学签约量',
+IFNULL(高中销售咨询量,0)+IFNULL(高中专家咨询量,0) as '高中签约量',
+IFNULL(学术销售咨询量,0)+IFNULL(学术专家咨询量,0) as '学术签约量',
+(IFNULL(紧急销售签约量,0)+IFNULL(紧急专家签约量,0))/(IFNULL(紧急销售咨询量,0)+IFNULL(紧急专家咨询量,0)) as '紧急签约率',
+(IFNULL(转学销售签约量,0+IFNULL(转学专家签约量,0))/(IFNULL(转学销售咨询量,0)+IFNULL(转学专家咨询量,0)) as '转学签约率',
+(转学销售签约量+紧急销售签约量+高中销售签约量+学术销售签约量)/(转学销售咨询量+紧急销售咨询量+高中销售咨询量+学术销售咨询量) as '销售签约率',
+(转学专家签约量+紧急专家签约量+高中专家签约量+学术专家签约量)/(转学专家咨询量+紧急专家咨询量+高中专家咨询量+学术销售咨询量) as '专家签约率',
+紧急销售签约额+转学销售签约额+高中销售签约额+学术销售签约额 as '销售签约额',
+紧急专家签约量+转学专家签约量+高中专家签约额+学术专家签约额 as '专家签约额'
 from user left join
-(select user.id,sum(IF(contractCategory=8,1,0)) as '紧急销售咨询量',
-sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学销售咨询量'
+(select user.id,sum(IF(cc.contractCategory like '%紧急%',1,0)) as '紧急销售咨询量',
+sum(IF(cc.contractCategory like '%转学%' and cc.contractCategory not like '%高中%',1,0)) as '转学销售咨询量',
+sum(IF(cc.contractCategory like '%高中%' ,1,0)) as '高中销售咨询量',
+sum(IF(cc.contractCategory like '%学术%' ,1,0)) as '学术销售咨询量'
 from user 
-left join contract c on user.id in (c.sales1,c.sales2) where (uid in (0,user.id)) and IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) =M and 
-IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) =Y group by user.id) as t1 on user.id=t1.id
+left join contract c on user.id in (c.sales1,c.sales2) 
+left join contractcategory cc on c.contractCategory=cc.id
+where (uid in (0,user.id)) and DateInRange(c.createdAt,year,month) group by user.id) as t1 on user.id=t1.id
 left join
 (select user.id,
-sum(IF(contractCategory=8,1,0)) as '紧急销售签约量',
-sum(IF(contractCategory=8,contractPrice,0)) as '紧急销售签约额',
-sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学销售签约量',
-sum(IF(contractCategory in (7,9,10,11),contractPrice,0)) as '转学销售签约额'
- from user 
-left join contract c on user.id in (c.sales1,c.sales2) where (uid in (0,user.id)) and IF(DAY(c.contractSigned)>23,MONTH(c.contractSigned)%12+1,MONTH(c.contractSigned)) =M and 
-IF(DAY(c.contractSigned)>23,YEAR(c.contractSigned)+FLOOR(MONTH(c.contractSigned)/12),YEAR(c.contractSigned)) =Y group by user.id) as t2 on user.id=t2.id
-left join
-(select user.id,sum(IF(contractCategory=8,1,0)) as '紧急专家咨询量',
-sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学专家咨询量'
+sum(IF(cc.contractCategory like '%紧急%',1,0)) as '紧急销售签约量',
+sum(IF(cc.contractCategory like '%紧急%',contractPrice,0)) as '紧急销售签约额',
+sum(IF(cc.contractCategory like '%转学%' and cc.contractCategory not like '%高中%',1,0)) as '转学销售签约量',
+sum(IF(cc.contractCategory like '%转学%' and cc.contractCategory not like '%高中%',contractPrice,0)) as '转学销售签约额',
+sum(IF(cc.contractCategory like '%高中%',1,0)) as '高中销售签约量',
+sum(IF(cc.contractCategory like '%高中%',contractPrice,0)) as '高中销售签约额',
+sum(IF(cc.contractCategory like '%学术%',1,0)) as '学术销售签约量',
+sum(IF(cc.contractCategory like '%学术%',contractPrice,0)) as '学术销售签约额'
 from user 
-left join contract c on user.id in (c.expert1,c.expert2) where (uid in (0,user.id)) and IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) =M and 
-IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) =Y group by user.id) as t3 on user.id=t3.id
+left join contract c on user.id in (c.sales1,c.sales2) 
+left join contractcategory cc on c.contractCategory=cc.id
+where (uid in (0,user.id)) and DateInRange(c.contractSigned,year,month) group by user.id) as t2 on user.id=t2.id
+left join
+(select user.id,sum(IF(cc.contractCategory like '%紧急%',1,0)) as '紧急专家咨询量',
+sum(IF(cc.contractCategory like '%转学%' and cc.contractCategory not like '%高中%',1,0)) as '转学专家咨询量',
+sum(IF(cc.contractCategory like '%高中%' ,1,0)) as '高中专家咨询量',
+sum(IF(cc.contractCategory like '%学术%' ,1,0)) as '学术专家咨询量'
+from user 
+left join contract c on user.id in (c.expert1,c.expert2) 
+left join contractcategory cc on c.contractCategory=cc.id
+where (uid in (0,user.id)) and DateInRange(c.createdAt,year,month) group by user.id) as t3 on user.id=t3.id
 left join
 (select user.id,
-sum(IF(contractCategory=8,1,0)) as '紧急专家签约量',
-sum(IF(contractCategory=8,contractPrice,0)) as '紧急专家签约额',
-sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学专家签约量',
-sum(IF(contractCategory in (7,9,10,11),contractPrice,0)) as '转学专家签约额'
- from user 
-left join contract c on user.id in (c.expert1,c.expert2) where (uid in (0,user.id)) and IF(DAY(c.contractSigned)>23,MONTH(c.contractSigned)%12+1,MONTH(c.contractSigned)) =M and 
-IF(DAY(c.contractSigned)>23,YEAR(c.contractSigned)+FLOOR(MONTH(c.contractSigned)/12),YEAR(c.contractSigned)) =Y group by user.id) as t4 on user.id=t4.id
+sum(IF(cc.contractCategory like '%紧急%',1,0)) as '紧急专家签约量',
+sum(IF(cc.contractCategory like '%紧急%',contractPrice,0)) as '紧急专家签约额',
+sum(IF(cc.contractCategory like '%转学%' and cc.contractCategory not like '%高中%',1,0)) as '转学专家签约量',
+sum(IF(cc.contractCategory like '%转学%' and cc.contractCategory not like '%高中%',contractPrice,0)) as '转学专家签约额',
+sum(IF(cc.contractCategory like '%高中%',1,0)) as '高中专家签约量',
+sum(IF(cc.contractCategory like '%高中%',contractPrice,0)) as '高中专家签约额',
+sum(IF(cc.contractCategory like '%学术%',1,0)) as '学术专家签约量',
+sum(IF(cc.contractCategory like '%学术%',contractPrice,0)) as '学术专家签约额'
+from user 
+left join contract c on user.id in (c.expert1,c.expert2) 
+left join contractcategory cc on c.contractCategory=cc.id
+where (uid in (0,user.id)) and DateInRange(c.contractSigned,year,month) group by user.id) as t4 on user.id=t4.id
 where not(t1.id is null and t2.id is null and t3.id is null and t4.id is null);
 END;;
 delimiter ;
 
+
+
+
 # Sign rate for Lead
 DROP PROCEDURE IF EXISTS LeadSignRate;
 delimiter ;;
-create PROCEDURE LeadSignRate (M int, Y int)
+create PROCEDURE LeadSignRate (month int, year int)
 COMMENT ''
 BEGIN
 select *,紧急签约量/紧急咨询量 as '紧急签约率',
@@ -509,8 +536,7 @@ from
 (SELECT lead.id,lead.lead, sum(IF(contractCategory=8,1,0)) as '紧急咨询量',
 sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学咨询量'
 FROM contract c left join lead on c.lead=lead.id where 
-IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) =M and 
-IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) =Y group by lead.id) as t1
+DateInRange(c.createdAt,year,month) group by lead.id) as t1
 left join
 (SELECT lead.id,
 sum(IF(contractCategory=8,1,0)) as '紧急签约量', 
@@ -518,8 +544,7 @@ sum(IF(contractCategory=8 ,contractPrice,0)) as '紧急签约额',
 sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学签约量',
 sum(IF(contractCategory in (7,9,10,11),contractPrice,0)) as '转学签约额'
 FROM contract c left join lead on c.lead=lead.id where 
-IF(DAY(c.contractSigned)>23,MONTH(c.contractSigned)%12+1,MONTH(c.contractSigned)) =M and 
-IF(DAY(c.contractSigned)>23,YEAR(c.contractSigned)+FLOOR(MONTH(c.contractSigned)/12),YEAR(c.contractSigned)) =Y group by lead.id) as t2 on t1.id=t2.id;
+DateInRange(c.contractSigned,year,month) group by lead.id) as t2 on t1.id=t2.id;
 END;;
 delimiter ;
 
@@ -563,7 +588,18 @@ m1.转学签约额,
 m1.转学签约量/m1.转学咨询量 as '转学签约率'
  from MonthlySummary m1 left join MonthlySummary m2 on m1.M=(m2.M%12+1) and m1.Y=m2.Y+FLOOR(m2.M/12);
 
- 
+DROP function IF EXISTS DateInRange;
+DELIMITER $$
+CREATE FUNCTION DateInRange (targetDate date,year int, month int) 
+RETURNS boolean
+DETERMINISTIC
+BEGIN 
+  DECLARE dist boolean;
+  SET dist = targetDate between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21');
+  RETURN dist;
+END$$
+DELIMITER ;
+
 # SALES COMISSION whole table or single 
 DROP PROCEDURE IF EXISTS SalesComission;
 delimiter ;;
@@ -579,7 +615,7 @@ left join salesrole on (contractcomission.salesRole=salesrole.id)
 left join servicetype on (service.serviceType=servicetype.id)
 left join userlevel on (user.userlevel=userlevel.id)
 where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
- and ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')));
+ and ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)));
 END;;
 delimiter ;
 
@@ -617,16 +653,16 @@ create PROCEDURE AssistantComission (uid int,cid int, year int, month int,single
 COMMENT ''
 BEGIN
 select A.*,client.chineseName,count(*) as "email", count(*)*10 as "comission" from 
-(select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant1=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+(select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant1=user.id)where ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant2=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant2=user.id)where ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant3=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant3=user.id)where ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))
 union all
-select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant4=user.id)where ((year is null or month is null) or (contract.contractPaid between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')))
+select contract.id as "contract", user.nickname as "user",contract.client,contract.createdAt,contract.contractPaid from contract inner join user on (contract.assistant4=user.id)where ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)))
 and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (contract.id=cid or cid=0)) or (single=true and user.id=uid and contract.id=cid))) A 
 inner join client on A.client=client.id
 group by A.contract,A.user;

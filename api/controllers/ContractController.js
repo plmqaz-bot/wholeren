@@ -15,7 +15,7 @@ module.exports = {
 			union\
 			select distinct(contract.id) from contract \
 			inner join user on \
-			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) where "+who;
+			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) where "+who;
 		}
 		var where=req.param('where')||"{}";
 		console.log(where);

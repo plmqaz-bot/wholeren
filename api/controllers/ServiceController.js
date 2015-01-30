@@ -18,7 +18,7 @@
 			inner join client on contract.client=client.id \
 			inner join service on contract.id=service.contract \
 			inner join user on \
-			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) \
+			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) \
 			left join application on service.id=application.service where \
 			contract.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"
 		}

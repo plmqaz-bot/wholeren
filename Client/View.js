@@ -534,7 +534,6 @@ Notification.Collection = Wholeren.baseView.extend({
             }
             this.collection.selectedStrat({sortAttr:attr,direction:direction});
             this.collection.sort();
-            this.renderCollectionCore();
         },
         editAttr:function(e){
             var item=$(e.currentTarget);
@@ -2379,6 +2378,10 @@ Market.view3=Market.Pane.extend({
         {name:'transferExpGoal',label:'transExp',cell:'integer'},
         {name:'emergSaleGoal',label:'emergSale',cell:'integer'},
         {name:'emergExpGoal',label:'emergExp',cell:'integer'},
+        {name:'highSaleGoal',label:'highSale',cell:'integer'},
+        {name:'highExpGoal',label:'highExp',cell:'integer'},
+        {name:'studySaleGoal',label:'studySale',cell:'integer'},
+        {name:'studyExpGoal',label:'studyExp',cell:'integer'},
         {name:'leadGoal',label:'lead',cell:'integer'},
         ];
         var grid=new Backgrid.Grid({columns:columns,collection:self.collection});

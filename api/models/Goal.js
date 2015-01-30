@@ -15,6 +15,10 @@ module.exports = {
   	transferExpGoal:{type:'integer'},
   	emergSaleGoal:{type:'integer'},
   	emergExpGoal:{type:'integer'},
+    highSaleGoal:{type:'integer'},
+    highExpGoal:{type:'integer'},
+    studySaleGoal:{type:'integer'},
+    studyExpGoal:{type:'integer'},
   	leadGoal:{type:'integer'},
 
   }

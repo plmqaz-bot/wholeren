@@ -82,7 +82,7 @@ module.exports = {
 		attribs.year=parseInt(attribs.year);
 		attribs.month=parseInt(attribs.month)		
 		if(isNaN(attribs.year)||isNaN(attribs.month)||attribs.year<1969||attribs.year>2100||attribs.month<1||attribs.month>12) return json(400,{error:"invalid year and month"});
-				if(attribs==null) return res.json(404,{error:"not enough parameters"});
+		if(attribs==null) return res.json(404,{error:"not enough parameters"});
 		if(attribs.user==null||attribs.service==null||attribs.year==null||attribs.month==null){
 			return res.json(404,{error:"not enough parameters"});
 		}
