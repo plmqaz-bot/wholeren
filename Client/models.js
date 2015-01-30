@@ -95,7 +95,15 @@ Models={
         urlRoot:'/Comment/'
     }),
     UserLevel:Backbone.Model.extend({
-        urlRoot:'/userLevel/'
+        urlRoot:'/userLevel/',
+        initialize: function (options) {
+        Backbone.Model.prototype.initialize.apply(this, arguments);
+        this.on("change", function (model, options) {
+            if (options && options.save === false) return;
+            model.save();
+        });
+        this.urlRoot=options.urlRoot;
+        },
     }),
     Reminder:Backbone.Model.extend({
         urlRoot:'/Notifications/',
@@ -522,10 +530,11 @@ Collections={
         },
         
         initialize:function(options){
-            this.year=new Date().getFullYear();
-            this.month=new Date().getMonth()+1;
-            this.mode="client";
-            this.state={pageSize:25};
+            options=options||{};
+            this.year=options.year||new Date().getFullYear();
+            this.month=options.month||new Date().getMonth()+1;
+            this.mode=options.mode||"client";
+            this.state=options.state||{pageSize:25};
             this.baseurl=options.url;
         },
         setdate:function(options){

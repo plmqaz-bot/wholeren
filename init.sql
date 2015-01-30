@@ -447,16 +447,17 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,9,@sprogress3,0.3
 
 ##############################################MARKET VIEWS #################################################
 # as Sales or Expert, percent if sign every month
+
 DROP PROCEDURE IF EXISTS PerUserSignRate;
 delimiter ;;
 create PROCEDURE PerUserSignRate (uid int, month int, year int)
 COMMENT ''
 BEGIN
 select user.id ,user.nickname,
-紧急销售咨询量,紧急销售签约量,紧急销售签约额
+紧急销售咨询量,紧急销售签约量,紧急销售签约额,
 转学销售咨询量,转学销售签约量,转学销售签约额,
 高中销售咨询量,高中销售签约量,高中销售签约额,
-学术销售咨询量,学术销售签约量,学术销售签约额
+学术销售咨询量,学术销售签约量,学术销售签约额,
 紧急专家咨询量,紧急专家签约量,紧急专家签约额,
 转学专家咨询量,转学专家签约量,转学专家签约额, 
 高中专家咨询量,高中专家签约量,高中专家签约额,
@@ -466,11 +467,11 @@ IFNULL(转学销售签约量,0)+IFNULL(转学专家签约量,0) as '转学签约
 IFNULL(高中销售咨询量,0)+IFNULL(高中专家咨询量,0) as '高中签约量',
 IFNULL(学术销售咨询量,0)+IFNULL(学术专家咨询量,0) as '学术签约量',
 (IFNULL(紧急销售签约量,0)+IFNULL(紧急专家签约量,0))/(IFNULL(紧急销售咨询量,0)+IFNULL(紧急专家咨询量,0)) as '紧急签约率',
-(IFNULL(转学销售签约量,0+IFNULL(转学专家签约量,0))/(IFNULL(转学销售咨询量,0)+IFNULL(转学专家咨询量,0)) as '转学签约率',
-(转学销售签约量+紧急销售签约量+高中销售签约量+学术销售签约量)/(转学销售咨询量+紧急销售咨询量+高中销售咨询量+学术销售咨询量) as '销售签约率',
-(转学专家签约量+紧急专家签约量+高中专家签约量+学术专家签约量)/(转学专家咨询量+紧急专家咨询量+高中专家咨询量+学术销售咨询量) as '专家签约率',
-紧急销售签约额+转学销售签约额+高中销售签约额+学术销售签约额 as '销售签约额',
-紧急专家签约量+转学专家签约量+高中专家签约额+学术专家签约额 as '专家签约额'
+(IFNULL(转学销售签约量,0)+IFNULL(转学专家签约量,0))/(IFNULL(转学销售咨询量,0)+IFNULL(转学专家咨询量,0)) as '转学签约率',
+(IFNULL(转学销售签约量,0)+IFNULL(紧急销售签约量,0)+IFNULL(高中销售签约量,0)+IFNULL(学术销售签约量,0))/(IFNULL(转学销售咨询量,0)+IFNULL(紧急销售咨询量,0)+IFNULL(高中销售咨询量,0)+IFNULL(学术销售咨询量,0)) as '销售签约率',
+(IFNULL(转学专家签约量,0)+IFNULL(紧急专家签约量,0)+IFNULL(高中专家签约量,0)+IFNULL(学术专家签约量,0))/(IFNULL(转学专家咨询量,0)+IFNULL(紧急专家咨询量,0)+IFNULL(高中专家咨询量,0)+IFNULL(学术销售咨询量,0)) as '专家签约率',
+IFNULL(紧急销售签约额,0)+IFNULL(转学销售签约额,0)+IFNULL(高中销售签约额,0)+IFNULL(学术销售签约额,0) as '销售签约额',
+IFNULL(紧急专家签约量,0)+IFNULL(转学专家签约量,0)+IFNULL(高中专家签约额,0)+IFNULL(学术专家签约额,0) as '专家签约额'
 from user left join
 (select user.id,sum(IF(cc.contractCategory like '%紧急%',1,0)) as '紧急销售咨询量',
 sum(IF(cc.contractCategory like '%转学%' and cc.contractCategory not like '%高中%',1,0)) as '转学销售咨询量',

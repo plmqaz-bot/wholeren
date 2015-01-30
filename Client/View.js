@@ -2455,6 +2455,11 @@ Market.view5=Market.view4.extend({
             collection: self.collection
             });
         $('.content').append(paginator.render().el);  
+        this.UL=new Obiwang.Collections['UserLevel']();
+        var grid2=new Backgrid.Grid({columns:[{name:'userLevel',label:'老师等级',editable:false,cell:'string'},
+        {name:'userComission',label:'等级佣金百分比',cell:'number'}],collection:self.UL});
+        $('.content').append(grid2.render().el);
+        this.UL.fetch();
         this.$el.attr('id', this.id);
         this.$el.addClass('active');
      },

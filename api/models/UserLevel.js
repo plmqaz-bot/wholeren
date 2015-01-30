@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
   	userLevel:{type:'string',unique:true},
 
-  	userComission:{type:'float',required:true}
+  	userComission:{type:'float',required:true,defaultsTo:1}
   }
 };
 
