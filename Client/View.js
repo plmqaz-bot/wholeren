@@ -2373,15 +2373,15 @@ Market.view3=Market.Pane.extend({
     afterRender:function(){
         var self=this;
         var columns=[
-        {name:'nickname',label:'nickname',editable:false,cell:'string'},
-        {name:'transferSaleGoal',label:'transSale',cell:'integer'},
-        {name:'transferExpGoal',label:'transExp',cell:'integer'},
-        {name:'emergSaleGoal',label:'emergSale',cell:'integer'},
-        {name:'emergExpGoal',label:'emergExp',cell:'integer'},
-        {name:'highSaleGoal',label:'highSale',cell:'integer'},
-        {name:'highExpGoal',label:'highExp',cell:'integer'},
-        {name:'studySaleGoal',label:'studySale',cell:'integer'},
-        {name:'studyExpGoal',label:'studyExp',cell:'integer'},
+        {name:'nickname',label:'老师名字',editable:false,cell:'string'},
+        {name:'transferSaleGoal',label:'转学销售目标',cell:'integer'},
+        {name:'transferExpGoal',label:'转学专家目标',cell:'integer'},
+        {name:'emergSaleGoal',label:'紧急销售目标',cell:'integer'},
+        {name:'emergExpGoal',label:'紧急专家目标',cell:'integer'},
+        {name:'highSaleGoal',label:'高中销售目标',cell:'integer'},
+        {name:'highExpGoal',label:'高中专家目标',cell:'integer'},
+        {name:'studySaleGoal',label:'学术销售目标',cell:'integer'},
+        {name:'studyExpGoal',label:'学术专家目标',cell:'integer'},
         {name:'leadGoal',label:'lead',cell:'integer'},
         ];
         var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
