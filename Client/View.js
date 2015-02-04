@@ -1207,6 +1207,142 @@ var ContractView=Wholeren.FormView.extend({
         }  
 });
 
+
+var ContractInvoiceView=Backbone.Modal.extend({
+    prefix:"bbm",
+    template: JST['editbox'],
+    submitEl: '.ok',
+    cancelEl:'.cancel',
+    events:{
+        'click .button-add':'addnew'
+    },
+    initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.contractID=parseInt(options.id);
+        this.collection=new Obiwang.Collections.Invoice({contract:this.contractID});
+    },     
+    addnew:function(e){
+        var toAdd=new Obiwang.Models.Invoice({contract:this.contractID});
+        var self=this;
+        toAdd.save({
+            success:function(model){
+                self.collection.add(model);
+            },
+            error:function(response,model){
+                util.handleRequestError(response);
+            }
+        });  
+    },
+    afterRender:function(model){
+        var container=this.$el.find('.bbm-modal__section');
+        container.append('<button class="button-add">Add New</button>');
+        var DeleteCell = Backgrid.Cell.extend({
+            template: _.template("<a>Delete</a>"),
+            events: {
+              "click": "deleteRow"
+            },
+            deleteRow: function (e) {
+              e.preventDefault();
+              this.model.destroy({
+                success:function(model){
+                    Wholeren.notifications.addItem({
+                        type: 'success',
+                        message: "Delete Successful",
+                        status: 'passive'
+                    });
+                },
+                error:function(response){
+                    util.handleRequestError(response);
+                }
+              });
+            },
+            render: function () {
+              this.$el.html(this.template());
+              this.delegateEvents();
+              return this;
+            }
+        });
+        var ServiceInvoiceCell=Backgrid.Cell.extend({
+            template: _.template("<a>Details</a>"),
+            events: {
+              "click": "showDetails"
+            },
+            showDetails: function (e) {
+              e.preventDefault();
+              var childview=new ServiceInvoiceView(this.model);
+              childview.render();
+              $('.app').append(teacherview.el);
+            },
+            render: function () {
+              this.$el.html(this.template());
+              this.delegateEvents();
+              return this;
+            }
+        });
+        var columns=[
+            {name:'nontaxable',label:'InAndOut',cell:'number'},
+            {name:'other',label:'Other',cell:'number'},
+            {name:'total',label:'Total',cell:'number'},
+            {name:'',label:'Delete Action',cell:DeleteCell}
+            ];
+        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            container.append(grid.render().el);
+            self.collection.fetch({reset:true});
+        return this;
+    },
+    submit: function () {
+        // get text and submit, and also refresh the collection. 
+
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
+});
+
+ServiceInvoiceView=Backbone.Modal.extend({
+    prefix:"bbm",
+    template: JST['editbox'],
+    submitEl: '.ok',
+    cancelEl:'.cancel',
+    initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.invoice=options.invoice;
+        this.invoiceID=parseInt(this.invoice.id);
+        this.collection=new Obiwang.Collections.Invoice({contract:this.invoiceID});
+    },
+    afterRender:function(model){
+        var columns=[
+            {name:'serviceType',label:'服务',editable:false,cell:'string'},
+            {name:'price',label:'应付',editable:false,cell:'number'},
+            {name:'paidAmount',label:'付款数',cell:'number'}
+            ];
+        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            container.append(grid.render().el);
+            self.collection.fetch({reset:true});
+        return this;
+    },
+    submit: function () {
+        // get text and submit, and also refresh the collection. 
+        this.model.fetch();
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
+});
 /**
 
 TODO: refresh view after submit--done

@@ -113,10 +113,21 @@ service comission should be the services that is not done. --DONE
 . 
 edit init.sql to create the procedures --DONE
 
-less templates.  
+less templates.  --DONE
 
 
-Names in template
+Names in template-- DONE
+
+
+Invoice View: add new, delete, view to split invoice to multiple service
+
+Service invoice View: 
+
+Invoice controller: get invoices of one contract, update/delete invoice, 
+
+Service Invoice, get service invoices of one Invoice, 
+
+
 
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

@@ -120,7 +120,35 @@ Models={
     }),
     ServiceDetail:Backbone.Model.extend({
         urlRoot:'/ServiceDetail/',
-    })    
+    }),
+    Invoice:Backbone.Model.extend({
+        urlRoot:'/Invoice/',
+        initialize: function (options) {
+            this.set('total',(this.get('nontaxable')||0)+(this.get('other')||0));
+            Backbone.Model.prototype.initialize.apply(this, arguments);
+            this.on("change", function (model, options) {
+                if (options && options.save === false) return;
+                model.save({silent:true});
+            });
+        }, 
+        setContract:function(options){
+            this.contract=options.contract;
+        },
+        validate:function(attribute,options){
+            this.set('total',(attribute['nontaxable']||0)+(attribute['other']||0),{silent:true});
+        }
+    }) ,
+    ServiceInvoice:Backbone.Model.extend({
+        urlRoot:'/ServiceInvoice/',
+        initialize: function (options) {
+            Backbone.Model.prototype.initialize.apply(this, arguments);
+            this.on("change", function (model, options) {
+                if (options && options.save === false) return;
+                model.save({silent:true});
+            });
+        }, 
+        
+    })  
 
 };
 var sortableCollection=Backbone.Collection.extend({
@@ -541,6 +569,24 @@ Collections={
             this.year=options.year;
             this.month=options.month;
         },
+    }),
+    Invoice:Backbone.Collections.extend({
+        model:Models.Invoice,
+        url:function(){
+            return '/Invoice/?contract='+this.contract;
+        },
+        initialize:function(options){
+            this.contract=options.contract;
+        }
+    }),
+    ServiceInvoice:Backbone.Collections.extend({
+        model:Models.ServiceInvoice,
+        url:function(){
+            return '/ServiceInvoice/?invoice='+this.invoice;
+        },
+        initialize:function(options){
+            this.invoice=options.invoice;
+        }
     })
 }
 
