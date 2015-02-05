@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
   	serviceDetail:{model:'ServiceDetail'},
-  	serviceProgress:{model:'ServiceProgress'}
+  	serviceProgress:{model:'ServiceStatus'}
   }
 };
 
