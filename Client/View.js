@@ -1123,11 +1123,12 @@ var ContractView=Wholeren.FormView.extend({
         events: {
         'click  button.button-add': 'editView',
         'click  button.button-alt': 'refetch',
+        'click  a.payment':'showPayment',
         'change .filter':'renderCollection',
         'click .clickablecell':'editContract2',
         'click .edit,.del':'editContract',
         'click .textbox,.selectbox,.multiselectbox,.singletextbox,.boolbox':'editAttr',
-        'click .sortable':'sortCollection',
+        'click th.sortable':'sortCollection',
         'click .comment_edit':'showComments',
         'click a.page':'switchPage'
         },     
@@ -1204,7 +1205,14 @@ var ContractView=Wholeren.FormView.extend({
             var id = item.attr('href').substring(1);
             var m=new CommentModalView({cid:id});
             $('.app').html(m.renderAll().el);
-        }  
+        } ,
+        showPayment:function(e){
+            var item=$(e.currentTarget);
+            var id = item.parent().parent().attr('name');
+            var ci= new ContractInvoiceView({id:id});
+            ci.render();
+            $('.app').html(ci.el);
+        }
 });
 
 
@@ -1214,7 +1222,7 @@ var ContractInvoiceView=Backbone.Modal.extend({
     submitEl: '.ok',
     cancelEl:'.cancel',
     events:{
-        'click .button-add':'addnew'
+        'click .button-add-invoice':'addnew'
     },
     initialize: function (options){
         _.bindAll(this,  'render', 'afterRender');
@@ -1227,20 +1235,22 @@ var ContractInvoiceView=Backbone.Modal.extend({
         this.collection=new Obiwang.Collections.Invoice({contract:this.contractID});
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.Invoice({contract:this.contractID});
+        e.preventDefault();
+        var toAdd=new Obiwang.Models.Invoice({contract:this.contractID,save:false});
         var self=this;
-        toAdd.save({
+        toAdd.save(null,{
             success:function(model){
                 self.collection.add(model);
             },
             error:function(response,model){
                 util.handleRequestError(response);
-            }
+            },
+            save:false
         });  
     },
     afterRender:function(model){
         var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add">Add New</button>');
+        container.append('<button class="button-add-invoice">Add New</button>');
         var DeleteCell = Backgrid.Cell.extend({
             template: _.template("<a>Delete</a>"),
             events: {
@@ -1268,15 +1278,16 @@ var ContractInvoiceView=Backbone.Modal.extend({
             }
         });
         var ServiceInvoiceCell=Backgrid.Cell.extend({
-            template: _.template("<a>Details</a>"),
+            template: _.template("<a href='#'>Details</a>"),
             events: {
-              "click": "showDetails"
+              "click a": "showDetails"
             },
             showDetails: function (e) {
               e.preventDefault();
-              var childview=new ServiceInvoiceView(this.model);
+              e.stopPropagation();
+              var childview=new ServiceInvoiceView({invoice:this.model});
               childview.render();
-              $('.app').append(teacherview.el);
+              $('.app').append(childview.el);
             },
             render: function () {
               this.$el.html(this.template());
@@ -1285,18 +1296,22 @@ var ContractInvoiceView=Backbone.Modal.extend({
             }
         });
         var columns=[
-            {name:'nontaxable',label:'InAndOut',cell:'number'},
-            {name:'other',label:'Other',cell:'number'},
-            {name:'total',label:'Total',cell:'number'},
+            {name:'nontaxable',label:'代理收费',cell:'number'},
+            {name:'other',label:'其他费用',cell:'number'},
+            {name:'service',label:'服务收费',editable:false,cell:'number'},
+            {name:'total',label:'Total',editable:false,cell:'number'},
+            {name:'',label:'具体服务收费',cell:ServiceInvoiceCell},
             {name:'',label:'Delete Action',cell:DeleteCell}
             ];
-        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-            container.append(grid.render().el);
-            self.collection.fetch({reset:true});
+        this.grid=new Backgrid.Grid({columns:columns,collection:this.collection});
+            container.append(this.grid.render().el);
+            this.collection.fetch({reset:true});
         return this;
     },
     submit: function () {
         // get text and submit, and also refresh the collection. 
+        this.grid.remove();
+        this.close();
 
     },
     checkKey:function(e){
@@ -1305,8 +1320,7 @@ var ContractInvoiceView=Backbone.Modal.extend({
         }
     }
 });
-
-ServiceInvoiceView=Backbone.Modal.extend({
+var ServiceInvoiceView=Backbone.Modal.extend({
     prefix:"bbm",
     template: JST['editbox'],
     submitEl: '.ok',
@@ -1320,22 +1334,27 @@ ServiceInvoiceView=Backbone.Modal.extend({
         });
         this.invoice=options.invoice;
         this.invoiceID=parseInt(this.invoice.id);
-        this.collection=new Obiwang.Collections.Invoice({contract:this.invoiceID});
+        this.collection=new Obiwang.Collections.ServiceInvoice({invoice:this.invoiceID});
     },
     afterRender:function(model){
+        var container=this.$el.find('.bbm-modal__section');
         var columns=[
             {name:'serviceType',label:'服务',editable:false,cell:'string'},
-            {name:'price',label:'应付',editable:false,cell:'number'},
-            {name:'paidAmount',label:'付款数',cell:'number'}
+            {name:'price',label:'服务价格',editable:false,cell:'number'},
+            {name:'paid',label:'已付',editable:false,cell:'number'},
+            {name:'paidAmount',label:'付款',cell:'number'}
             ];
-        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        var grid=new Backgrid.Grid({columns:columns,collection:this.collection});
             container.append(grid.render().el);
-            self.collection.fetch({reset:true});
+            this.collection.fetch({reset:true});
         return this;
     },
     submit: function () {
         // get text and submit, and also refresh the collection. 
-        this.model.fetch();
+        this.invoice.fetch();
+    },
+    cancel:function(){
+        this.invoice.fetch();
     },
     checkKey:function(e){
         if (this.active) {

@@ -100,7 +100,7 @@ Models={
         Backbone.Model.prototype.initialize.apply(this, arguments);
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
-            model.save();
+            model.save(null,{save:false});
         });
         this.urlRoot=options.urlRoot;
         },
@@ -111,7 +111,7 @@ Models={
         Backbone.Model.prototype.initialize.apply(this, arguments);
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
-            model.save();
+            model.save(null,{save:false});
         });
         this.contract=this.contract||{};
         this.contract.client=this.contract.client||{};
@@ -123,19 +123,15 @@ Models={
     }),
     Invoice:Backbone.Model.extend({
         urlRoot:'/Invoice/',
-        initialize: function (options) {
-            this.set('total',(this.get('nontaxable')||0)+(this.get('other')||0));
+        initialize: function (option) {
             Backbone.Model.prototype.initialize.apply(this, arguments);
             this.on("change", function (model, options) {
                 if (options && options.save === false) return;
-                model.save({silent:true});
+                model.save(null,{save:false});
             });
         }, 
         setContract:function(options){
             this.contract=options.contract;
-        },
-        validate:function(attribute,options){
-            this.set('total',(attribute['nontaxable']||0)+(attribute['other']||0),{silent:true});
         }
     }) ,
     ServiceInvoice:Backbone.Model.extend({
@@ -144,7 +140,7 @@ Models={
             Backbone.Model.prototype.initialize.apply(this, arguments);
             this.on("change", function (model, options) {
                 if (options && options.save === false) return;
-                model.save({silent:true});
+                model.save(null,{save:false});
             });
         }, 
         
@@ -570,7 +566,7 @@ Collections={
             this.month=options.month;
         },
     }),
-    Invoice:Backbone.Collections.extend({
+    Invoice:Backbone.Collection.extend({
         model:Models.Invoice,
         url:function(){
             return '/Invoice/?contract='+this.contract;
@@ -579,7 +575,7 @@ Collections={
             this.contract=options.contract;
         }
     }),
-    ServiceInvoice:Backbone.Collections.extend({
+    ServiceInvoice:Backbone.Collection.extend({
         model:Models.ServiceInvoice,
         url:function(){
             return '/ServiceInvoice/?invoice='+this.invoice;

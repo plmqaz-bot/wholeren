@@ -46,7 +46,8 @@
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Study"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
         <td data-attr="service"  data-coll="ServiceType" data-optext="serviceType" class="multiselectbox" data-model="Contract">{{#each service}}{{#ifCond serviceType/category "Visa"}}<a href="/admin/service/{{id}}">{{serviceType/serviceType}}</a>{{/ifCond}}{{/each}}</td>
         <td data-attr="contractPrice"  class="singletextbox" data-model="Contract">{{contractPrice}}</td>
-        <td data-attr="contractDetail"  class="textbox" data-model="Contract">{{shortText contractDetail}}</td> 
+       <!-- <td data-attr="contractDetail"  class="textbox" data-model="Contract">{{shortText contractDetail}}</td> -->
+       <td><a class="payment">Show Payments</a></td>
         <td>{{displayBool applicationFeePaid}}</td>
         <td data-attr="paymentOption" data-coll="PaymentOption" data-optext="paymentOption" class="selectbox" data-model="Contract">{{paymentOption/paymentOption}}</td>
         <td data-attr="endFeeDue"  class="boolbox" data-model="Contract">{{displayBool endFeeDue}}</td>
