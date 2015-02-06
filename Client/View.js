@@ -1254,7 +1254,7 @@ var ContractInvoiceView=Backbone.Modal.extend({
         var DeleteCell = Backgrid.Cell.extend({
             template: _.template("<a>Delete</a>"),
             events: {
-              "click": "deleteRow"
+              "click a": "deleteRow"
             },
             deleteRow: function (e) {
               e.preventDefault();
@@ -1296,7 +1296,8 @@ var ContractInvoiceView=Backbone.Modal.extend({
             }
         });
         var columns=[
-            {name:'nontaxable',label:'代理收费',cell:'number'},
+            {name:'nontaxable',label:'申请费',cell:'number'},
+            {name:'remittances',label:'shouxu',cell:'number'},
             {name:'other',label:'其他费用',cell:'number'},
             {name:'service',label:'服务收费',editable:false,cell:'number'},
             {name:'total',label:'Total',editable:false,cell:'number'},
@@ -1340,7 +1341,7 @@ var ServiceInvoiceView=Backbone.Modal.extend({
         var container=this.$el.find('.bbm-modal__section');
         var columns=[
             {name:'serviceType',label:'服务',editable:false,cell:'string'},
-            {name:'price',label:'服务价格',editable:false,cell:'number'},
+            {name:'price',label:'服务价格',cell:'number'},
             {name:'paid',label:'已付',editable:false,cell:'number'},
             {name:'paidAmount',label:'付款',cell:'number'}
             ];

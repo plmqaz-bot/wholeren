@@ -12,6 +12,8 @@ module.exports = {
 
   	nontaxable:{type:'float',defaultsTo:0},
 
+  	remittances:{type:'float',defaultsTo:0},
+
   	other:{type:'float',defaultsTo:0},
 
   	receivedTotal:{type:'float',defaultsTo:0},
