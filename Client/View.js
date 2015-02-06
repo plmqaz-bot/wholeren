@@ -2355,15 +2355,18 @@ var Accounting=Wholeren.FormView.extend({
         this.render({title:"Accounting"});
         var columns=[
         {name:'createdAt',label:'收款日期',editable:false,cell:'date'},
-        {name:'servicepay',label:'服务收款',editable:false,cell:'number'}
+        {name:'servicepay',label:'服务收款',editable:false,cell:'number'},
+        {name:'nontaxable',label:'时进时出',editable:false,cell:'number'},
+        {name:'remittances',label:'银行费用',editable:false,cell:'number'},
+        {name:'other',label:'其他',editable:false,cell:'number'},
         {name:'totalpay',label:'收款金额',editable: false,cell:'number'},
         {name:'account',label:'收款账户',editable: false,cell:'number'},
         {name:'receiveDate',label:'实际收款日期',cell:myselect},
-        {name:'receivedTotal',label:'实收金额',cell:'number'},
         {name:'receivedServicepay',label:'实收服务金额',editable:false,cell:'number'},
-        {name:'receivedNontaxable',label:'时进时出',cell:'number'},
-        {name:'receivedRemittances',label:'银行费用',cell:'number'},
-        {name:'receivedOther',label:'其他',cell:'number'}
+        {name:'receivedNontaxable',label:'实收时进时出',cell:'number'},
+        {name:'receivedRemittances',label:'实收银行费用',cell:'number'},
+        {name:'receivedOther',label:'实收其他',cell:'number'},
+        {name:'receivedTotal',label:'实收金额',cell:'number'}
         ];
         var grid=new Backgrid.Grid({columns:columns,collection:this.collection});
         $('.table-wrapper').append(grid.render().el);

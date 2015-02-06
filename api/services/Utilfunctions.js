@@ -39,6 +39,13 @@ module.exports = {
     		return [ele[name],ele['id']];
     	});
     },
+    prepareUpdate:function(attribs,fields){
+    	var toReturn={};
+    	fields.forEach(function(e){
+    		if(attribs[e]!=null) toReturn[e]=attribs[e];
+    	});
+    	return toReturn;
+    }
     formatDate:function(date){
     	var d=new Date(date);
     	console.log(d);

@@ -29,11 +29,7 @@ module.exports = {
 			console.log(attribs);
 			return res.json(404, 'not valid');
 		}
-		var toupdate={};
-		if(attribs.salesRole!=null) toupdate.salesRole=attribs.salesRole;
-		if(attribs.extra!=null) toupdate.extra=attribs.extra;
-		toupdate.user=attribs.user;
-		toupdate.service=attribs.service;
+		var toupdate=.receivedRemittances(attribs,['salesRole','extra','user','service']);
 		console.log(toupdate);
 		ContractComission.findOne({user:attribs.user,service:attribs.service}).then(function(data){
 			if(data){
@@ -86,6 +82,7 @@ module.exports = {
 		if(attribs.user==null||attribs.service==null||attribs.year==null||attribs.month==null){
 			return res.json(404,{error:"not enough parameters"});
 		}
+		var field=['service','user','year','month','servRole','servLevel','startprogress','endprogress','extra'];
 		var toupdate={service:attribs.service,user:attribs.user,year:attribs.year,month:attribs.month};
 		if(attribs.servRole!=null) toupdate.servRole=attribs.servRole;
 		 toupdate.servLevel=attribs.servLevel;
