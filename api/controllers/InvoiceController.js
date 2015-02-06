@@ -5,7 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 function constructsql(where){
-	var sql="select invoice.*,sum(serviceinvoice.paidAmount) as service,IFNULL(sum(serviceinvoice.paidAmount),0)+nontaxable+other as total from contract \
+	var sql="select invoice.*,sum(IFNULL(serviceinvoice.paidAmount,0)) as service,IFNULL(sum(serviceinvoice.paidAmount),0)+nontaxable+other as total from contract \
 left join invoice on contract.id=invoice.contract \
 left join service on contract.id=service.contract \
 left join serviceinvoice on invoice.id=serviceinvoice.invoice and service.id=serviceinvoice.service \

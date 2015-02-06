@@ -566,6 +566,23 @@ Collections={
             this.month=options.month;
         },
     }),
+    TimeRangeGeneral:Backbone.Collection.extend({
+       model:Models.Comission,
+       url: function(){
+            var toreturn=baseurl+'?where='+{start:this.startDate,end:this.endDate};
+            return toreturn;
+        },
+        initialize:function(){
+            var cur=new Date();
+            this.startDate=cur.setMonth(cur.getMonth()-1);
+            this.endDate=cur;
+            this.baseurl=(options||{}).url;
+        },
+        setdate:function(options){
+            this.startDate=options.startDate;
+            this.endDate=options.endDate;
+        },
+    }),
     Invoice:Backbone.Collection.extend({
         model:Models.Invoice,
         url:function(){

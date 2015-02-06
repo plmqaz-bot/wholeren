@@ -1295,18 +1295,38 @@ var ContractInvoiceView=Backbone.Modal.extend({
               return this;
             }
         });
-        var columns=[
+        var self=this;
+        Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
+            var selection=_.map(account,function(e){return [e.account,e.id]});
+            var ps=_.map(payment,function(e){return [e.paymentOption,e.id]})
+            var accountSelect=Backgrid.SelectCell.extend({
+                optionValues:  [{name:"Users",values:selection}],
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
+            });
+            var paymentSelect=accountSelect.extend({
+                optionValues:[{name:"Users",values:ps}],
+            });
+            var columns=[
             {name:'nontaxable',label:'申请费',cell:'number'},
             {name:'remittances',label:'shouxu',cell:'number'},
             {name:'other',label:'其他费用',cell:'number'},
             {name:'service',label:'服务收费',editable:false,cell:'number'},
             {name:'total',label:'Total',editable:false,cell:'number'},
+            {name:'depositAccount',label:'收款账户',cell:accountSelect},
+            {name:'paymentOption',label:'收款方式',cell:paymentSelect},
             {name:'',label:'具体服务收费',cell:ServiceInvoiceCell},
             {name:'',label:'Delete Action',cell:DeleteCell}
             ];
-        this.grid=new Backgrid.Grid({columns:columns,collection:this.collection});
-            container.append(this.grid.render().el);
-            this.collection.fetch({reset:true});
+
+            self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            container.append(self.grid.render().el);
+            self.collection.fetch({reset:true});
+        });
+
         return this;
     },
     submit: function () {
@@ -2323,6 +2343,51 @@ var CommentModalView=Backbone.Modal.extend({
             if (e.keyCode==27) return this.triggerCancel();
         }
     }
+});
+/**************************************************** Accounting ******************************************************/
+var Accounting=Wholeren.FormView.extend({
+    templateName:'dateTableView',
+    ready:true,
+    initialize: function (options) {
+        this.rank=$('#rank').text();
+        this.el=options.el;
+        this.collection = new Obiwang.Collections['TimeRangeGeneral']({url:'/Accounting/'});
+        this.render({title:"Accounting"});
+        var columns=[
+        {name:'createdAt',label:'收款日期',editable:false,cell:'date'},
+        {name:'servicepay',label:'服务收款',editable:false,cell:'number'}
+        {name:'totalpay',label:'收款金额',editable: false,cell:'number'},
+        {name:'account',label:'收款账户',editable: false,cell:'number'},
+        {name:'receiveDate',label:'实际收款日期',cell:myselect},
+        {name:'receivedTotal',label:'实收金额',cell:'number'},
+        {name:'receivedServicepay',label:'实收服务金额',editable:false,cell:'number'},
+        {name:'receivedNontaxable',label:'时进时出',cell:'number'},
+        {name:'receivedRemittances',label:'银行费用',cell:'number'},
+        {name:'receivedOther',label:'其他',cell:'number'}
+        ];
+        var grid=new Backgrid.Grid({columns:columns,collection:this.collection});
+        $('.table-wrapper').append(grid.render().el);
+        var paginator = new Backgrid.Extension.Paginator({
+        windowSize: 20, // Default is 10
+        slideScale: 0.25, // Default is 0.5
+        goBackFirstOnSort: false, // Default is true
+        collection: this.collection
+        });
+        $('.table-wrapper').append(paginator.render().el);        
+    },
+    events: {
+    'click  button.button-alt': 'refetch',
+    'click a.page':'switchPage'
+    },    
+    refetch:function(e){
+        if(!this.ready) return;
+        var year=$('#year').val();
+        var month=$('#month').val();
+        this.collection.setdate({year:year,month:month});
+        this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
+        this.collection.fetch({reset:true});
+    }, 
 });
 /************************************************ Market VIEW *****************************************************/
 

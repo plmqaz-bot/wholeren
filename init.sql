@@ -59,6 +59,10 @@ insert into paymentoption values('美国汇款',NULL,NOW(),NOW());
 insert into paymentoption values('BrainTree',NULL,NOW(),NOW());
 insert into paymentoption values('Paypal',NULL,NOW(),NOW());
 
+#收款账户
+insert into depositaccount values('北京BEIJING',NULL,NOW(),NOW());
+insert into depositaccount values('美国US',NULL,NOW(),NOW());
+
 #人员角色
 insert into role values('销售',NULL,NOW(),NOW());
 insert into role values('申请',NULL,NOW(),NOW());

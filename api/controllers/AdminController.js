@@ -40,6 +40,13 @@ adminNavbar = {
         path: '/comission/service/',
         display:true
     },
+    accounting:{
+        name: 'Accounting',
+        navClass: 'contract',
+        key: 'admin.navbar.contract',
+        path: '/accounting/',
+        display:true
+    },
     market: {
         name: 'Market',
         navClass: 'contract',
@@ -116,6 +123,10 @@ module.exports={
         }
         handleRank(req);
         comission(req,res,'contract',pane+'comission');
+    },
+    'accounting':function(req,res){
+        handleRank(req);
+        comission(req,res,'contract','accounting');
     },
     'user':function(req,res){
         handleRank(req);

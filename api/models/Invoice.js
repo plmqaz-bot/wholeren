@@ -22,7 +22,13 @@ module.exports = {
 
   	receivedOther:{type:'float',defaultsTo:0},
 
+    receivedRemittances:{type:'float',defaultsTo:0},
+
   	receivedDate:{type:'Date'},
+
+    depositAccount:{model:'DepositAccount'},
+
+    paymentOption:{model:'PaymentOption'}
 
   }
 };
