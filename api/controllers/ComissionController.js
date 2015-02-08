@@ -29,7 +29,7 @@ module.exports = {
 			console.log(attribs);
 			return res.json(404, 'not valid');
 		}
-		var toupdate=.receivedRemittances(attribs,['salesRole','extra','user','service']);
+		var toupdate=Utilfunctions.prepareUpdate(attribs,['salesRole','extra','user','service']);
 		console.log(toupdate);
 		ContractComission.findOne({user:attribs.user,service:attribs.service}).then(function(data){
 			if(data){

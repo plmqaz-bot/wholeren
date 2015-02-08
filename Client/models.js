@@ -77,9 +77,19 @@ Models={
         Backbone.Model.prototype.initialize.apply(this, arguments);
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
-            model.save();
+            model.save(null,{save:false});
         });
         this.urlRoot=options.urlRoot;
+        },        
+    }),
+    Accounting:Backbone.Model.extend({
+        urlRoot:'/Accounting/',
+        initialize: function (options) {
+        Backbone.Model.prototype.initialize.apply(this, arguments);
+        this.on("change", function (model, options) {
+            if (options && options.save === false) return;
+            model.save(null,{save:false});
+        });
         },        
     }),
     User:Backbone.Model.extend({
@@ -566,17 +576,23 @@ Collections={
             this.month=options.month;
         },
     }),
-    TimeRangeGeneral:Backbone.Collection.extend({
-       model:Models.Comission,
+    TimeRangeGeneral:Backbone.PageableCollection.extend({
+       model:Models.Accounting,
        url: function(){
-            var toreturn=baseurl+'?where='+{start:this.startDate,end:this.endDate};
+            var toreturn=this._url+"?";
+            if(this.startDate)
+                toreturn+='startDate='+this.startDate;
+            if(this.endDate)
+                toreturn+="&sendDate="+this.endDate;
             return toreturn;
         },
-        initialize:function(){
+        initialize:function(options){
             var cur=new Date();
             this.startDate=cur.setMonth(cur.getMonth()-1);
             this.endDate=cur;
-            this.baseurl=(options||{}).url;
+            this._url=(options||{}).url;
+            this.mode=options.mode||"client";
+            this.state=options.state||{pageSize:25};
         },
         setdate:function(options){
             this.startDate=options.startDate;

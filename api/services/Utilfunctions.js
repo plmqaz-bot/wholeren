@@ -45,7 +45,7 @@ module.exports = {
     		if(attribs[e]!=null) toReturn[e]=attribs[e];
     	});
     	return toReturn;
-    }
+    },
     formatDate:function(date){
     	var d=new Date(date);
     	console.log(d);

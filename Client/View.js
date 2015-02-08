@@ -2360,8 +2360,8 @@ var Accounting=Wholeren.FormView.extend({
         {name:'remittances',label:'银行费用',editable:false,cell:'number'},
         {name:'other',label:'其他',editable:false,cell:'number'},
         {name:'totalpay',label:'收款金额',editable: false,cell:'number'},
-        {name:'account',label:'收款账户',editable: false,cell:'number'},
-        {name:'receiveDate',label:'实际收款日期',cell:myselect},
+        {name:'account',label:'收款账户',editable: false,cell:'string'},
+        {name:'receiveDate',label:'实际收款日期',cell:'date'},
         {name:'receivedServicepay',label:'实收服务金额',editable:false,cell:'number'},
         {name:'receivedNontaxable',label:'实收时进时出',cell:'number'},
         {name:'receivedRemittances',label:'实收银行费用',cell:'number'},
@@ -2384,9 +2384,9 @@ var Accounting=Wholeren.FormView.extend({
     },    
     refetch:function(e){
         if(!this.ready) return;
-        var year=$('#year').val();
-        var month=$('#month').val();
-        this.collection.setdate({year:year,month:month});
+        var startDate=$('#startDate').val();
+        var endDate=$('#endDate').val();
+        this.collection.setdate({startDate:startDate,endDate:endDate});
         this.collection.reset();
         if(this.collection.fullCollection)this.collection.fullCollection.reset();
         this.collection.fetch({reset:true});
@@ -2978,4 +2978,5 @@ module.exports={
         User:UserView,
         Auth:Views,
         Comission:Comission,
+        Accounting:Accounting
 };

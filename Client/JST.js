@@ -48,6 +48,6 @@ module.exports={
     'settingSidebar':require('./template/settings/sidebar.hbs'),
     'settingGeneral':require('./template/settings/general.hbs'),
     'settingUser':require('./template/settings/user-profile.hbs'),
-    'dateTableView':required('./template/content_dateview.hbs'),
+    'dateTableView':require('./template/content_dateview.hbs'),
     'default':require('./template/tableview.hbs')
 };

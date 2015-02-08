@@ -76,7 +76,7 @@ var Router=Backbone.Router.extend({
             Wholeren.currentView=new  Wholeren.Views.Service({el:'.content-view-container',id:option});
         }
     },
-    accounting:function(Option){
+    accounting:function(option){
         if(!Wholeren.currentView){
             Wholeren.currentView=new  Wholeren.Views.Accounting({el:'.content-view-container',id:option});
         }

@@ -121,6 +121,18 @@ module.exports.routes = {
     controller:'comission',
     action:'getAssistantComission'
   },
+  'GET /Accounting/':{
+    controller:'accounting',
+    action:'find'
+  },
+  'GET /Accounting/:id':{
+    controller:'accounting',
+    action:'findOne'
+  },
+  'PUT /Accounting/:id':{
+    controller:'accounting',
+    action:'update'
+  },
   'PATCH /user/:id':{
     controller:'user',
     action:'update'

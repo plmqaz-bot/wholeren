@@ -68,6 +68,8 @@ module.exports = {
 		if(attribs.receivedTotal!=null) toupdate.receivedTotal=attribs.receivedTotal;
 		if(attribs.receivedOther!=null) toupdate.receivedOther=attribs.receivedOther;
 		if(attribs.receivedDate!=null) toupdate.receivedDate=attribs.receivedDate;
+		if(attribs.paymentOption!=null)toupdate.paymentOption=attribs.paymentOption;
+		if(attribs.depositAccount!=null)toupdate.depositAccount=attribs.depositAccount;
 		Invoice.update({id:id},toupdate).then(function(data){
 			var sql=constructsql(" where invoice.id="+id);
 			return Utilfunctions.nativeQuery(sql);

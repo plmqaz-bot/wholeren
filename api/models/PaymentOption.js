@@ -9,10 +9,6 @@ module.exports = {
 
   attributes: {
     paymentOption:{type:'string',required:true,unique:true },
-    contracts:{
-    	collection:'Contract',
-    	via:'paymentOption'
-    }
   }
 };
 
