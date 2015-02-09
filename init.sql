@@ -611,7 +611,7 @@ delimiter ;;
 create PROCEDURE SalesComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
+select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,r.realPaid,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
 inner join contract on (contract.sales1=user.id or contract.assisCont1=user.id or contract.expert1=user.id or contract.sales2=user.id or contract.assisCont2=user.id or contract.expert2=user.id)
 inner join client on contract.client=client.id
 inner join service on (service.contract=contract.id)
@@ -619,6 +619,14 @@ left join contractcomission on (user.id=contractcomission.user and service.id=co
 left join salesrole on (contractcomission.salesRole=salesrole.id)
 left join servicetype on (service.serviceType=servicetype.id)
 left join userlevel on (user.userlevel=userlevel.id)
+left join 
+(select serviceinvoice.service, IFNULL(paidAmount,0)/totalpay*(IFNULL(invoice.receivedTotal,0)-IFNULL(invoice.receivedNontaxable,0)-IFNULL(invoice.receivedOther,0)-IFNULL(invoice.receivedRemittances,0)) as realPaid from serviceinvoice 
+left join
+(select invoice.id,sum(IFNULL(paidAmount,0)) as totalpay from invoice
+left join serviceinvoice on serviceinvoice.invoice=invoice.id
+group by invoice.id) as t on serviceinvoice.invoice=t.id
+left join invoice on serviceinvoice.invoice=invoice.id
+group by serviceinvoice.service) as r on r.service=service.id
 where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
  and ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)));
 END;;
@@ -630,7 +638,7 @@ delimiter ;;
 create PROCEDURE ServiceComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-SELECT  client.chineseName,contract.contractPaid,service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", service.price, st.servRole,st.servLevel, p2.serviceProgress as 'startprogress', p1.serviceProgress as 'endprogress',
+SELECT  client.chineseName,contract.contractPaid,service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", st.servRole,st.servLevel, p2.serviceProgress as 'startprogress', p1.serviceProgress as 'endprogress',
 IFNULL((select  ((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat from application where application.service=service.id),0) as "startComission",
 IFNULL((select  ((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat from application where application.service=service.id),0) as "endComission",
 (select IFNULL(((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat,0)-IFNULL(((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat,0) from application where application.service=service.id) as "monthlyComission"

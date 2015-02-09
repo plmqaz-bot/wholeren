@@ -12,7 +12,9 @@ module.exports = {
 
   	invoice:{model:'Invoice'},
 
-  	paidAmount:{type:'float'}
+  	paidAmount:{type:'float'},
+
+  	acceptedPaidAmount:{type:'float'}
   }
 };
 

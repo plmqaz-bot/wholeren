@@ -1946,6 +1946,7 @@ var SalesComissionView=Wholeren.FormView.extend({
                 {name:'serviceType',label:'服务类型',cell:'string'},
                 {name:'contractPaid',label:'付款时间',editable:false,cell:'date'},
                 {name:'price',label:'服务价格',editable:false,cell:'number'},
+                {name:'realPaid',label:'实际收入',editable:false,cell:'number'},
                 {name:'salesRole',label:'销售任务',cell:myselect},
                 {name:'comissionPercent',label:'佣金百分比',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
                 {name:'flatComission',label:'佣金非百分比',editable: false,cell:'number'},
