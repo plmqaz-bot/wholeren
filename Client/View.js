@@ -1268,7 +1268,8 @@ var ContractInvoiceView=Backbone.Modal.extend({
                 },
                 error:function(response){
                     util.handleRequestError(response);
-                }
+                },
+                wait:true
               });
             },
             render: function () {
@@ -2723,8 +2724,19 @@ Market.view6=Market.view4.extend({
             },
             deleteRow: function (e) {
               e.preventDefault();
-              this.model.destroy();
-              this.model.collection.remove(this.model);
+              var self=this;
+              this.model.destroy({
+                    success:function(model){
+                        Wholeren.notifications.addItem({
+                            type: 'success',
+                            message: "Delete Successful",
+                            status: 'passive'
+                        });
+                    },
+                    error:function(response){
+                        util.handleRequestError(response);
+                    }
+              });
             },
             render: function () {
               this.$el.html(this.template());

@@ -581,9 +581,9 @@ Collections={
        url: function(){
             var toreturn=this._url+"?";
             if(this.startDate)
-                toreturn+='startDate='+this.startDate;
+                toreturn+='startDate='+encodeURI(this.startDate);
             if(this.endDate)
-                toreturn+="&sendDate="+this.endDate;
+                toreturn+="&sendDate="+encodeURI(this.endDate);
             return toreturn;
         },
         initialize:function(options){

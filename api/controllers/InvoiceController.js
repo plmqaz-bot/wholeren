@@ -85,24 +85,31 @@ module.exports = {
 	destroy:function(req,res){
 		var id=req.params.id;
 		if(!id) return res.json(404,{error:"no id"});
-		Utilfunctions.nativeQuery("BEGIN").then(function(){
-			return ServiceInvoice.destroy({invoice:id});
-		}).then(function(){
+		// Utilfunctions.nativeQuery("START TRANSACTION").then(function(){
+		// 	return ServiceInvoice.destroy({invoice:id});
+		// }).then(function(){
+		// 	return Invoice.destroy({id:id});
+		// }).then(function(data){
+		// 	return Utilfunctions.nativeQuery("COMMIT");
+		// }).then(function(data){
+		// 	return res.json({});
+		// }).catch(function(err){
+		// 	Utilfunctions.nativeQuery("ROLLBACK");
+		// 	console.log(err);
+		// 	return res.json(404,{error:"failed to delete ",errObj:err});
+		// }).error(function(err){
+		// 	Utilfunctions.nativeQuery("ROLLBACK");
+		// 	console.log(err);
+		// 	return res.json(404,{error:"failed to delete ",errObj:err});
+		// })
+		ServiceInvoice.destroy({invoice:id}).then(function(){
 			return Invoice.destroy({id:id});
-		}).then(function(data){
-			return Utilfunctions.nativeQuery("COMMIT");
 		}).then(function(data){
 			return res.json({});
 		}).catch(function(err){
-			Utilfunctions.nativeQuery("ROLLBACK");
-			console.log(err);
-			return res.json(404,{error:"failed to delete ",errObj:err});
-		}).error(function(err){
-			Utilfunctions.nativeQuery("ROLLBACK");
 			console.log(err);
 			return res.json(404,{error:"failed to delete ",errObj:err});
 		})
-		
 	}
 };
 

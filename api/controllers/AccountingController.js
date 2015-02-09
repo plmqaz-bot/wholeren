@@ -17,12 +17,13 @@ function constructsql(where){
 }
 module.exports = {
 	find:function(req,res){
-		var startDate=parseInt(req.param('startDate'));
-		var endDate=parseInt(req.param('endDate'));
+		var startDate=req.param('startDate');
+		var endDate=req.param('endDate');
 		var w=" invoice.createdAt>"+startDate;
 		if(endDate){
 			w+=" and invoice.createdAt<"+endDate;
 		}
+		console.log(startDate);
 		var sql=constructsql(w);
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data);
