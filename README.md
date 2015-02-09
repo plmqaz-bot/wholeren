@@ -119,13 +119,16 @@ less templates.  --DONE
 Names in template-- DONE
 
 
-Invoice View: add new, delete, view to split invoice to multiple service
+Invoice View: add new, delete, view to split invoice to multiple service -DONE
 
-Service invoice View: 
+Service invoice View:  --DONE
 
-Invoice controller: get invoices of one contract, update/delete invoice, 
+Invoice controller: get invoices of one contract, update/delete invoice,  --DONE
 
-Service Invoice, get service invoices of one Invoice, 
+Service Invoice, get service invoices of one Invoice, --DONE
+
+
+rollback problem
 
 
 

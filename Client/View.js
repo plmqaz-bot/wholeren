@@ -2354,6 +2354,26 @@ var Accounting=Wholeren.FormView.extend({
         this.el=options.el;
         this.collection = new Obiwang.Collections['TimeRangeGeneral']({url:'/Accounting/'});
         this.render({title:"Accounting"});
+        var matchCell=Backgrid.Cell.extend({
+            template: _.template("<a>Match</a>"),
+            events: {
+              "click a": "match"
+            },
+            match: function (e) {
+              e.preventDefault();
+              var toupdate={};
+              toupdate.receivedNontaxable=this.model.get('nontaxable');
+              toupdate.receivedRemittances=this.model.get('remittances');
+              toupdate.receivedOther=this.model.get('other');
+              toupdate.receivedTotal=this.model.get('totalpay');
+              this.model.save(toupdate,{save:false});
+            },
+            render: function () {
+              this.$el.html(this.template());
+              this.delegateEvents();
+              return this;
+            }
+        });
         var columns=[
         {name:'createdAt',label:'收款日期',editable:false,cell:'date'},
         {name:'servicepay',label:'服务收款',editable:false,cell:'number'},
@@ -2362,6 +2382,7 @@ var Accounting=Wholeren.FormView.extend({
         {name:'other',label:'其他',editable:false,cell:'number'},
         {name:'totalpay',label:'收款金额',editable: false,cell:'number'},
         {name:'account',label:'收款账户',editable: false,cell:'string'},
+        {name:'',label:'Match',cell:matchCell},
         {name:'receiveDate',label:'实际收款日期',cell:'date'},
         {name:'receivedServicepay',label:'实收服务金额',editable:false,cell:'number'},
         {name:'receivedNontaxable',label:'实收时进时出',cell:'number'},

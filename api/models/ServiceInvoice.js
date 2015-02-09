@@ -13,8 +13,6 @@ module.exports = {
   	invoice:{model:'Invoice'},
 
   	paidAmount:{type:'float'},
-
-  	acceptedPaidAmount:{type:'float'}
   }
 };
 

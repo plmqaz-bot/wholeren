@@ -97,7 +97,11 @@ module.exports = {
 			Utilfunctions.nativeQuery("ROLLBACK");
 			console.log(err);
 			return res.json(404,{error:"failed to delete ",errObj:err});
-		});
+		}).error(function(err){
+			Utilfunctions.nativeQuery("ROLLBACK");
+			console.log(err);
+			return res.json(404,{error:"failed to delete ",errObj:err});
+		})
 		
 	}
 };

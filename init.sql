@@ -611,7 +611,7 @@ delimiter ;;
 create PROCEDURE SalesComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,r.realPaid,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,service.price*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
+select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,r.realPaid,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,IFNULL(r.realPaid,0)*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
 inner join contract on (contract.sales1=user.id or contract.assisCont1=user.id or contract.expert1=user.id or contract.sales2=user.id or contract.assisCont2=user.id or contract.expert2=user.id)
 inner join client on contract.client=client.id
 inner join service on (service.contract=contract.id)
