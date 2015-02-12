@@ -1956,8 +1956,9 @@ var SalesComissionView=Wholeren.FormView.extend({
                 {name:'extra',label:'其他',cell:'number'},
                 {name:'final',label:'总佣金',cell:'number'}
                 ];
-                var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                $('.table-wrapper').append(grid.render().el);
+                self.columns=columns;
+                self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+                $('.table-wrapper').append(self.grid.render().el);
                 var paginator = new Backgrid.Extension.Paginator({
                 windowSize: 20, // Default is 10
                 slideScale: 0.25, // Default is 0.5
@@ -1972,6 +1973,7 @@ var SalesComissionView=Wholeren.FormView.extend({
     },
     events: {
     'click  button.button-alt': 'refetch',
+    'click  button.button-save': 'save',
     'click a.page':'switchPage'
     },    
     refetch:function(e){
@@ -1983,6 +1985,9 @@ var SalesComissionView=Wholeren.FormView.extend({
         if(this.collection.fullCollection)this.collection.fullCollection.reset();
         this.collection.fetch({reset:true});
     },   
+    save:function(e){
+        util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
+    }
 });
 
 var ServiceComissionView=SalesComissionView.extend({
@@ -2062,7 +2067,9 @@ var ServiceComissionView=SalesComissionView.extend({
                 {name:'monthlyComission',label:'本月佣金',editable:false,cell:'number'},
                 // {name:'final',label:'佣金',cell:'number'}
                 ];
-            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+
+            self.columns=columns;
+            self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
                 
             var paginator = new Backgrid.Extension.Paginator({
                 windowSize: 20, // Default is 10
@@ -2071,7 +2078,7 @@ var ServiceComissionView=SalesComissionView.extend({
                 collection: self.collection
                 });
                 $('.table-wrapper').append(paginator.render().el);
-                $('.table-wrapper').append(grid.render().el);
+                $('.table-wrapper').append(self.grid.render().el);
                 //$('.table-wrapper').append(html);
                 self.ready=true;
             }).error(function(err){
@@ -2095,8 +2102,10 @@ var AssisComissionView=SalesComissionView.extend({
         {name:'email',label:'邮件数',editable: false,cell:'number'},
         {name:'comission',label:'佣金',editable: false,cell:'number'},
         ];
-        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-        $('.table-wrapper').append(grid.render().el);      
+
+        self.columns=columns;
+        this.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.table-wrapper').append(this.grid.render().el);      
         var paginator = new Backgrid.Extension.Paginator({
             windowSize: 20, // Default is 10
             slideScale: 0.25, // Default is 0.5
@@ -2105,10 +2114,6 @@ var AssisComissionView=SalesComissionView.extend({
             });
         $('.table-wrapper').append(paginator.render().el);  
     },
-    events: {
-    'click  button.button-alt': 'refetch',
-    'click a.page':'switchPage'
-    }
 });
 var Comission={
     'sales':SalesComissionView,
@@ -2521,10 +2526,11 @@ Market.Pane = Wholeren.baseView.extend({
 });
 
 Market.general=Market.Pane.extend({
-    templateName:'marketMessage',
+    templateName:'default',
     id:"general",
     events: {
-        'click .button-alt':'refetch'
+        'click .button-alt':'refetch',
+        'click .button-save':'save'
     },
     requrestUrl:'general',
     refetch:function(){
@@ -2553,6 +2559,10 @@ Market.general=Market.Pane.extend({
                     });
                 }
             });
+    },
+    save:function(e){
+        var col=new Backbone.Collection(this.result);
+        util.saveCSV(col);
     },
     render: function () {
          var ml = this.template();
@@ -2610,7 +2620,11 @@ Market.view3=Market.Pane.extend({
         this.render();
     },
     events: {
-        'click .button-alt':'refetch'
+        'click .button-alt':'refetch',
+        'click .button-save':'save'
+    },
+    save:function(e){
+        util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
     },
     render: function () {
          var ml = this.template({title:this.title});
@@ -2633,8 +2647,10 @@ Market.view3=Market.Pane.extend({
         {name:'studyExpGoal',label:'学术专家目标',cell:'integer'},
         {name:'leadGoal',label:'lead',cell:'integer'},
         ];
-        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-        $('.content').append(grid.render().el);      
+
+        this.columns=columns;
+        this.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(this.grid.render().el);      
         var paginator = new Backgrid.Extension.Paginator({
             windowSize: 20, // Default is 10
             slideScale: 0.25, // Default is 0.5
@@ -2665,8 +2681,9 @@ Market.view4=Market.view3.extend({
         {name:'comissionPercent',label:'佣金百分比',cell:Backgrid.NumberCell.extend({decimals:3})},
         {name:'flatComission',label:'非百分比佣金',cell:'number'}
         ];
-        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-        $('.content').append(grid.render().el);      
+        this.columns=columns;
+        this.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(this.grid.render().el);      
         var paginator = new Backgrid.Extension.Paginator({
             windowSize: 20, // Default is 10
             slideScale: 0.25, // Default is 0.5
@@ -2695,8 +2712,9 @@ Market.view5=Market.view4.extend({
         {name:'category',label:'类型',editable:false,cell:'string'},
         {name:'comission',label:'百分比佣金',cell:Backgrid.NumberCell.extend({decimals:3})}
         ];
-        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-        $('.content').append(grid.render().el);      
+        this.columns=columns;
+        this.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(this.grid.render().el);      
         var paginator = new Backgrid.Extension.Paginator({
             windowSize: 20, // Default is 10
             slideScale: 0.25, // Default is 0.5
@@ -2753,8 +2771,9 @@ Market.view6=Market.view4.extend({
         {name:'reason',label:'提醒理由',editable:false,cell:'string'},
         {name:'',label:'Delete',cell:DeleteCell}
         ];
-        var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-        $('.content').append(grid.render().el);      
+        this.columns=columns;
+        this.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+        $('.content').append(this.grid.render().el);      
         var paginator = new Backgrid.Extension.Paginator({
             windowSize: 20, // Default is 10
             slideScale: 0.25, // Default is 0.5

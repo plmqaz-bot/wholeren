@@ -96,6 +96,37 @@ module.exports={
             }
         });
         return defer.promise;
+    },
+    saveCSV:function(collection,colnames){
+
+        var downloadName = 'CSV data '+(new Date()).toString('yyyy-MM-dd hhmmss');
+        var keys = _.chain(collection.first().attributes).keys().sort().value();
+        var csvContent = "data:text/csv;charset=utf-8,";
+        if(!colnames){
+            csvContent += keys.join(',')+'\n';
+        }else{
+            csvContent += keys.map(function(e){
+                var header=_.find(colnames,function(f){
+                    return f.name==e;
+                });
+                if((header||{}).label){
+                    return header.label;
+                }else{
+                    return e;
+                }
+            }).join(',')+'\n';
+        }
+        csvContent += collection.map(function(item) { 
+            var cols = []
+            _.each(keys, function(key) { cols.push(item.get(key)) }); 
+            return cols.join(',') ;
+        }).join('\n');
+
+        var encodedUri = encodeURI(csvContent);
+        var link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", downloadName+".csv");
+        link.click();
     }
  
 

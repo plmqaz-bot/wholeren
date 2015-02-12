@@ -97,6 +97,7 @@ module.exports = {
 	                        element = element.replace(/\"/g, '');
 	                        element = element.replace(/\'/g, '');
 	                        element=element.replace(new RegExp(String.fromCharCode(65292),'g'),",");
+	                        element=element.replace(new RegExp(String.fromCharCode(65295),'g'),"/");
 	                        //if(element.indexOf('紧急二次购买')>-1) console.log(element);
 	                        return element;
 	                    });
@@ -367,8 +368,6 @@ module.exports = {
 	    }
 	    function getService(service,contID,teacher){
 	        service=service.replace("，",",");
-	        service=service.replace(String.fromCharCode(65292),",");
-	        service=service.replace(String.fromCharCode(65295),"/");
 	        service=service.replace(/\d\//g,'');
 	        var servs=service.split(/[,+]/);
 	        servs=_.reject(servs,function(e){if(e==null||e=="")return true;});
