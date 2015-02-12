@@ -587,10 +587,11 @@ Collections={
             return toreturn;
         },
         initialize:function(options){
+            options=options||{};
             var cur=new Date();
             this.startDate=cur.setMonth(cur.getMonth()-1);
             this.endDate=cur;
-            this._url=(options||{}).url;
+            this._url=options.url;
             this.mode=options.mode||"client";
             this.state=options.state||{pageSize:25};
         },
@@ -598,6 +599,9 @@ Collections={
             this.startDate=options.startDate;
             this.endDate=options.endDate;
         },
+        setUrl:function(url){
+            this._url=url;
+        }
     }),
     Invoice:Backbone.Collection.extend({
         model:Models.Invoice,
@@ -605,7 +609,7 @@ Collections={
             return '/Invoice/?contract='+this.contract;
         },
         initialize:function(options){
-            this.contract=options.contract;
+            this.contract=(options||{}).contract;
         }
     }),
     ServiceInvoice:Backbone.Collection.extend({
@@ -614,7 +618,7 @@ Collections={
             return '/ServiceInvoice/?invoice='+this.invoice;
         },
         initialize:function(options){
-            this.invoice=options.invoice;
+            this.invoice=(options||{}).invoice;
         }
     })
 }

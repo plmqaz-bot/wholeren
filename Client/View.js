@@ -1232,7 +1232,8 @@ var ContractInvoiceView=Backbone.Modal.extend({
             self.afterRender();
         });
         this.contractID=parseInt(options.id);
-        this.collection=new Obiwang.Collections.Invoice({contract:this.contractID});
+        this.collection=new Obiwang.Collections.Invoice();
+        this.collection.contract=this.contractID;
     },     
     addnew:function(e){
         e.preventDefault();
@@ -2353,7 +2354,8 @@ var Accounting=Wholeren.FormView.extend({
     initialize: function (options) {
         this.rank=$('#rank').text();
         this.el=options.el;
-        this.collection = new Obiwang.Collections['TimeRangeGeneral']({url:'/Accounting/'});
+        this.collection = new Obiwang.Collections['TimeRangeGeneral']();
+        this.collection.setUrl('/Accounting/');
         this.render({title:"Accounting"});
         var matchCell=Backgrid.Cell.extend({
             template: _.template("<a>Match</a>"),
