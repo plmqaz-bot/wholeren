@@ -344,7 +344,7 @@ module.exports={
         });
     },
     'import':function(req,res){
-        Utilfunctions.importContract('TR_1_21.csv')
+        Utilfunctions.importContract('EM_2_13.csv')
          .then(function(data){
              console.log('import done');
          }).catch(function(err){

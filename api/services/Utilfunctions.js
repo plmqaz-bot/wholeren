@@ -98,6 +98,7 @@ module.exports = {
 	                        element = element.replace(/\'/g, '');
 	                        element=element.replace(new RegExp(String.fromCharCode(65292),'g'),",");
 	                        element=element.replace(new RegExp(String.fromCharCode(65295),'g'),"/");
+	                        element=element.replace(new RegExp(String.fromCharCode(65291),'g'),"+");
 	                        //if(element.indexOf('紧急二次购买')>-1) console.log(element);
 	                        return element;
 	                    });
