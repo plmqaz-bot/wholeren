@@ -152,6 +152,10 @@ module.exports.routes = {
   'POST /market/MonthlyGoal/':{
     controller:'market',
     action:'updateMonthlyGoal'
+  },
+  'PUT /market/MonthlyGoal/:id':{
+    controller:'market',
+    action:'updateMonthlyGoal'
   }
 
   /***************************************************************************

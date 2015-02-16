@@ -2616,7 +2616,7 @@ Market.view3=Market.Pane.extend({
     initialize:function(options){
         this.rank=$('#rank').text();
         this.el=options.el;
-        this.collection = new Obiwang.Collections['General']({url:this.url});
+        this.collection = new Obiwang.Collections['General']({url:this.url,model:Backbone.Model.extend({url:'/MonthlyGoal/'})});
         this.render();
     },
     events: {

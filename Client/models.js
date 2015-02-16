@@ -73,13 +73,18 @@ Models={
     //     urlRoot:'/SalesComission/'
     // }),
     Comission:Backbone.Model.extend({
+        urlRoot:function(){
+            var base=_.result(this.collection,'url')||urlError();
+            base=base.substring(0,base.indexOf('?'));
+            return base;
+        },
         initialize: function (options) {
         Backbone.Model.prototype.initialize.apply(this, arguments);
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
             model.save(null,{save:false});
         });
-        this.urlRoot=options.urlRoot;
+        
         },        
     }),
     Accounting:Backbone.Model.extend({

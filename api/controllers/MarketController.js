@@ -67,15 +67,18 @@
       if(isNaN(attribs.user)){
         return res.json(404,{error:"not enough parameters"});
       }
+      var toupdate=Utilfunctions.prepareUpdate(attribs,['transferSaleGoal','transferExpGoal','emergSaleGoal','emergExpGoal','highSaleGoal','highExpGoal','studySaleGoal','studyExpGoal','leadGoal'])
       Goal.findOne({user:attribs.user,year:attribs.year,month:attribs.month}).then(function(data){
         data=data||{};
         if(data.id){
-          return Goal.update({id:data.id},{transferSaleGoal:attribs.transferSaleGoal,transferExpGoal:attribs.transferExpGoal,emergSaleGoal:attribs.emergSaleGoal,emergExpGoal:attribs.emergExpGoal,leadGoal:attribs.leadGoal});
+          console.log("found ",data);
+          return Goal.update({id:data.id},toupdate);
         }else{
+          console.log("not found creating");
           return Goal.create(attribs);
         }
       }).then(function(data){
-        var sql="select user.id as 'user',"+year+" as 'year', "+month+" as 'month', user.nickname,transferSaleGoal, transferExpGoal,emergSaleGoal,emergExpGoal,leadGoal from user left join goal on user.id=goal.user left join role on user.role=role.id\
+        var sql="select user.id as 'user',"+year+" as 'year', "+month+" as 'month', user.nickname,goal.* from user left join goal on user.id=goal.user left join role on user.role=role.id\
         where role.role ='销售' and (month is null or month="+attribs.month+") and (year is null or year="+attribs.year+") and user.id="+attribs.user+";";
         return Utilfunctions.nativeQuery(sql);
       }).then(function(data){
