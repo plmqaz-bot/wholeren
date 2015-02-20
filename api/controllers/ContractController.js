@@ -20,6 +20,7 @@ module.exports = {
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
+		if(!where['>']&&!where['<']) where={};
 		var id=req.session.user.id;
 		var promise,who;
 		console.log(req.session.user.rank);
