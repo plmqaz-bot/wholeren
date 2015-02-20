@@ -17,6 +17,7 @@ module.exports = {
 			inner join user on \
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) where "+who;
 		}
+		req.session.user={id:1,rank:3};
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
@@ -27,14 +28,14 @@ module.exports = {
 		switch(req.session.user.rank){
 			case 3:
 			console.log("manager");
-			promise=Contract.find(where).populate('client').populate('service');
+			promise=Contract.find(where);
 			break;
 			case 2:
 			var sql=constructsql("user.boss="+id);
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
 				where['id']=idarray;
-				return Contract.find(where).populate('client').populate('service');
+				return Contract.find(where);
 			});
 			break;
 			default:
@@ -42,7 +43,7 @@ module.exports = {
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
 				where['id']=idarray;
-				return Contract.find(where).populate('client').populate('service');
+				return Contract.find(where);
 			});
 		}
 		
@@ -51,34 +52,49 @@ module.exports = {
 			promise.then(function(conts){
 				toReturn=conts;
 				console.log("found ", toReturn.length);
-				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find()]);
+				var cId=conts.map(function(e){return e.id;});
+				var clientId=conts.map(function(e){return e.client;});
+				console.log("got IDs ");
+				console.log(cId,clientId);
+				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find(),Client.find({id:clientId}),Service.find({contract:cId})]);
 			}).then(function(data){
 				// manually populate
 				var Hashs=[];
-				data.forEach(function(ele){
-					Hashs.push(Utilfunctions.makePopulateHash(ele));
+				for(var i=0;i<data.length-1;i++){
+					Hashs.push(Utilfunctions.makePopulateHash(data[i]));
+				}
+				// Last hash the service
+				Hashs.push(Utilfunctions.makeO2MHash(data[data.length-1],'contract'));
+				console.log("manuall hashing",Hashs.length);
+				toReturn=toReturn.map(function(ele){
+					var r=_.clone(ele);
+					if(r.contractCategory) r.contractCategory=Hashs[0][r.contractCategory];
+					if(r.country) r.country=Hashs[1][r.country];
+					if(r.degree) r.degree=Hashs[2][r.degree];
+					if(r.lead) r.lead=Hashs[3][r.lead];
+					if(r.leadLevel) r.leadLevel=Hashs[4][r.leadLevel];
+					if(r.paymentOption) r.paymentOption=Hashs[5][r.paymentOption];
+					if(r.status) r.status=Hashs[6][r.status];
+					if(r.assistant) r.assistant=Hashs[7][r.assistant];
+					if(r.assisCont1) r.assisCont1=Hashs[7][r.assisCont1];
+					if(r.assisCont2) r.assisCont2=Hashs[7][r.assisCont2];
+					if(r.expert1) r.expert1=Hashs[7][r.expert1];
+					if(r.expert2) r.expert2=Hashs[7][r.expert2];
+					if(r.sales1) r.sales1=Hashs[7][r.sales1];
+					if(r.sales2) r.sales2=Hashs[7][r.sales2];
+					if(r.teacher) r.teacher=Hashs[7][r.teacher];
+					if(r.client) r.client=Hashs[8][r.client];
+					r.service=Hashs[9][r.id]||[];
+					return r;
 				});
-				console.log(Hashs);
-				toReturn.forEach(function(ele){
-					if(ele.contractCategory) ele.contractCategory=Hashs[0][ele.contractCategory];
-					if(ele.country) ele.country=Hashs[1][ele.country];
-					if(ele.degree) ele.degree=Hashs[2][ele.degree];
-					if(ele.lead) ele.lead=Hashs[3][ele.lead];
-					if(ele.leadLevel) ele.leadLevel=Hashs[4][ele.leadLevel];
-					if(ele.paymentOption) ele.paymentOption=Hashs[5][ele.paymentOption];
-					if(ele.status) ele.status=Hashs[6][ele.status];
-					if(ele.assistant) ele.assistant=Hashs[7][ele.assistant];
-					if(ele.assisCont) ele.assisCont=Hashs[7][ele.assisCont];
-					if(ele.expert) ele.expert=Hashs[7][ele.expert];
-					if(ele.sales) ele.sales=Hashs[7][ele.sales];
-					if(ele.teacher) ele.teacher=Hashs[7][ele.teacher];
-				});
-				
 				return Promise.resolve(toReturn);
 			}).then(function(data){
 				console.log(data.length);
 				return res.json(data);
-			}).catch(function(err){return res.json(400,err)});	
+			}).catch(function(err){
+				console.log(err);
+				return res.json(400,err)
+			});	
 		}else{
 			res.json(400,'not found');
 		}		

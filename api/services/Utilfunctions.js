@@ -31,6 +31,17 @@ module.exports = {
 		});
         return hash;
     },
+    'makeO2MHash':function(data,field){
+    	hash={};
+    	data.forEach(function(ele){
+    		if(!hash[ele[field]]){
+    			hash[ele[field]]=[ele];
+    		}else{
+    			hash[ele[field]].push(ele);
+    		}
+    	});
+    	return hash;
+    },
     makeHash:function(data,name){
     	makeHash(data,name);
     },

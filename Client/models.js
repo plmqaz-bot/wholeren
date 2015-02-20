@@ -4,52 +4,86 @@ $ = require('jquery');
 Backbone.$ = $;
 Models = {};
 Collections = {};
-Models={
-    Contract : Backbone.Model.extend({
-    idAttribute: "id",
+var simpleModel=Backbone.Model.extend({
+        urlRoot:function(){
+            var base=this._url||_.result(this.collection,'_url')||_.result(this.collection,'url')||urlError();
+            if(base.indexOf('?')>0){
+                return base.substring(0,base.indexOf('?'));
+            }else{
+                return base;
+            }
+        },
+        initialize:function(options){
+            this._url=(options||{})._url;
+            if(!isNaN(new Date(this.get('createdAt')).getTime())){
+                this.set('createdAt',new Date(this.get('createdAt')));
+            }else{
+                this.set('createdAt','');
+            }
+        }
+    });
+var syncModel=simpleModel.extend({
     initialize:function(options){
-        this.set('createdAt',new Date(this.get('createdAt')));
-    },
-    urlRoot:'/Contract/'
+        Backbone.Model.prototype.initialize.apply(this, arguments);
+        this.on("change", function (model, options) {
+            if (options && options.save === false) return;
+            model.save(null,{save:false});
+        });
+    }
+});
+var simpleCollection=Backbone.Collection.extend({
+        model: simpleModel,
+        initialize:function(options){
+            this.name=(options||{}).name;
+            this.url=(options||{}).url;
+        },
     }),
-    Client:Backbone.Model.extend({
-        idAttribute:"id",
-    urlRoot:'/Client/'
-    }),
-    ContractCategory:Backbone.Model.extend({
-        urlRoot:'/ContractCategory/'
 
-    }),
-    Country:Backbone.Model.extend({
-        urlRoot:'/Country/'
+Models={
+    simpleModel: simpleModel,
+    syncModel:syncModel,
+    // Contract : Backbone.Model.extend({
+    // idAttribute: "id",
+    // initialize:function(options){
+    //     this.set('createdAt',new Date(this.get('createdAt')));
+    // },
+    //     urlRoot:'/Contract/'
+    // }),
+    // Client:Backbone.Model.extend({
+    //     urlRoot:'/Client/'
+    // }),
+    // ContractCategory:Backbone.Model.extend({
+    //     urlRoot:'/ContractCategory/'
 
-    }),
-    Degree:Backbone.Model.extend({
-        urlRoot:'/Degree/'
+    // }),
+    // Country:Backbone.Model.extend({
+    //     urlRoot:'/Country/'
 
-    }),
-    Lead:Backbone.Model.extend({
-        urlRoot:'/Lead/'
+    // }),
+    // Degree:Backbone.Model.extend({
+    //     urlRoot:'/Degree/'
 
-    }),
-    LeadLevel:Backbone.Model.extend({
-        urlRoot:'/LeadLevel/'
+    // }),
+    // Lead:Backbone.Model.extend({
+    //     urlRoot:'/Lead/'
 
-    }),
-    PaymentOption:Backbone.Model.extend({
-        urlRoot:'/PaymentOption/'
+    // }),
+    // LeadLevel:Backbone.Model.extend({
+    //     urlRoot:'/LeadLevel/'
 
-    }),
-    Status:Backbone.Model.extend({
-        urlRoot:'/Status/'
+    // }),
+    // PaymentOption:Backbone.Model.extend({
+    //     urlRoot:'/PaymentOption/'
 
-    }),
-    ServiceType:Backbone.Model.extend({
-        urlRoot:'/ServiceType/'
-    }),
-    Service : Backbone.Model.extend({
-    idAttribute: "id",
-    urlRoot:'/Service/',
+    // }),
+    // Status:Backbone.Model.extend({
+    //     urlRoot:'/Status/'
+
+    // }),
+    // ServiceType:Backbone.Model.extend({
+    //     urlRoot:'/ServiceType/'
+    // }),
+    Service : simpleModel.extend({
     initialize:function(options){
         this.set('createdAt',new Date(this.get('createdAt')));
         if((this.get('contract')||{})['contractSigned']){
@@ -59,9 +93,9 @@ Models={
         }
     }
     }),
-    ServiceProgress:Backbone.Model.extend({
-        urlRoot:'/serviceProgress/'
-    }),
+    // ServiceProgress:Backbone.Model.extend({
+    //     urlRoot:'/serviceProgress/'
+    // }),
     // SalesComission: Backbone.Model.extend({
     //     initialize: function () {
     //     Backbone.Model.prototype.initialize.apply(this, arguments);
@@ -75,8 +109,11 @@ Models={
     Comission:Backbone.Model.extend({
         urlRoot:function(){
             var base=_.result(this.collection,'url')||urlError();
-            base=base.substring(0,base.indexOf('?'));
-            return base;
+            if(base.indexOf('?')>0){
+                return base.substring(0,base.indexOf('?'));
+            }else{
+                return base;
+            }
         },
         initialize: function (options) {
         Backbone.Model.prototype.initialize.apply(this, arguments);
@@ -97,18 +134,18 @@ Models={
         });
         },        
     }),
-    User:Backbone.Model.extend({
-        urlRoot:'/User/'
-    }),
-    Application:Backbone.Model.extend({
-        urlRoot:'/Application/'
-    }),
-    Role:Backbone.Model.extend({
-        urlRoot:'/Role/'
-    }),
-    Comment:Backbone.Model.extend({
-        urlRoot:'/Comment/'
-    }),
+    // User:Backbone.Model.extend({
+    //     urlRoot:'/User/'
+    // }),
+    // Application:Backbone.Model.extend({
+    //     urlRoot:'/Application/'
+    // }),
+    // Role:Backbone.Model.extend({
+    //     urlRoot:'/Role/'
+    // }),
+    // Comment:Backbone.Model.extend({
+    //     urlRoot:'/Comment/'
+    // }),
     UserLevel:Backbone.Model.extend({
         urlRoot:'/userLevel/',
         initialize: function (options) {
@@ -133,33 +170,25 @@ Models={
         this.clientName=this.contract.client.chineseName;
         }, 
     }),
-    ServiceDetail:Backbone.Model.extend({
-        urlRoot:'/ServiceDetail/',
-    }),
-    Invoice:Backbone.Model.extend({
-        urlRoot:'/Invoice/',
-        initialize: function (option) {
-            Backbone.Model.prototype.initialize.apply(this, arguments);
-            this.on("change", function (model, options) {
-                if (options && options.save === false) return;
-                model.save(null,{save:false});
-            });
-        }, 
+    // ServiceDetail:Backbone.Model.extend({
+    //     urlRoot:'/ServiceDetail/',
+    // }),
+    Invoice:syncModel.extend({
         setContract:function(options){
             this.contract=options.contract;
         }
     }) ,
-    ServiceInvoice:Backbone.Model.extend({
-        urlRoot:'/ServiceInvoice/',
-        initialize: function (options) {
-            Backbone.Model.prototype.initialize.apply(this, arguments);
-            this.on("change", function (model, options) {
-                if (options && options.save === false) return;
-                model.save(null,{save:false});
-            });
-        }, 
+    // ServiceInvoice:Backbone.Model.extend({
+    //     urlRoot:'/ServiceInvoice/',
+    //     initialize: function (options) {
+    //         Backbone.Model.prototype.initialize.apply(this, arguments);
+    //         this.on("change", function (model, options) {
+    //             if (options && options.save === false) return;
+    //             model.save(null,{save:false});
+    //         });
+    //     }, 
         
-    })  
+    // })  
 
 };
 var sortableCollection=Backbone.Collection.extend({
@@ -311,7 +340,7 @@ var sortableCollection=Backbone.Collection.extend({
 });
 Collections={
     Contract :sortableCollection.extend({
-        model: Models.Contract,
+        model: Models.simpleModel,
         
         //url: '/Contract/',
         url: function(){return '/Contract/?where='+this.whereclaus();},
@@ -350,59 +379,59 @@ Collections={
 
     }),
     Client : Backbone.Collection.extend({
-        model: Models.Client,
+        model: Models.simpleModel,
         name:'client',
         url: '/Client/'
     }),
     ContractCategory:Backbone.Collection.extend({
+        model: Models.simpleModel,
         name:'contractCategory',
-        model:Models.ContractCategory,
         url:'/ContractCategory/'
 
     }),
     Country:Backbone.Collection.extend({
         name:'country',
-        model:Models.Country,
+        model:Models.simpleModel,
         url:'/Country/'
 
     }),
     Degree:Backbone.Collection.extend({
         name:'degree',
-        model:Models.Degree,
+        model:Models.simpleModel,
         url:'/Degree/'
 
     }),
     Lead:Backbone.Collection.extend({
         name:'lead',
-        model:Models.Lead,
+        model:Models.simpleModel,
         url:'/Lead/'
 
     }),
     LeadLevel:Backbone.Collection.extend({
         name:'leadLevel',
-        model:Models.LeadLevel,
+        model:Models.simpleModel,
         url:'/LeadLevel/'
 
     }),
     PaymentOption:Backbone.Collection.extend({
         name:'paymentOption',
-        model:Models.PaymentOption,
+        model:Models.simpleModel,
         url:'/PaymentOption/'
 
     }),
     Status:Backbone.Collection.extend({
         name:'status',
-        model:Models.Status,
+        model:Models.simpleModel,
         url:'/Status/'
     }),
     ServiceType:Backbone.Collection.extend({
         name:'serviceType',
-        model:Models.ServiceType,
+        model:Models.simpleModel,
         url:'/ServiceType/'
     }),
     ServiceProgress:Backbone.Collection.extend({
         name:'serviceProgress',
-        model:Models.ServiceProgress,
+        model:Models.simpleModel,
         url:'/ServiceProgress/'
     }),
     Service:sortableCollection.extend({
@@ -443,7 +472,7 @@ Collections={
         }
     }),
     Comission:Backbone.PageableCollection.extend({
-        model:Models.Comission,
+        model:Models.syncModel,
          url: function(){
             var toreturn=this._url+'?';
             if(this.year)
@@ -487,7 +516,7 @@ Collections={
     //     },
     // }),
     ServiceComission:Backbone.PageableCollection.extend({
-        model:Models.Comission,
+        model:Models.syncModel,
         url: function(){
             var toreturn='/ServiceComission/?';
             if(this.year)
@@ -509,22 +538,22 @@ Collections={
         },
     }),
     User:sortableCollection.extend({
-        model: Models.User,
+        model: Models.simpleModel,
         url: '/User/',
         initialize:function(){
             this.selectedStrat({sortAttr:'nickname'});
         }
     }),
     Application:Backbone.Collection.extend({
-        model:Models.Application,
+        model:Models.simpleModel,
         url:'/Application/'
     }),
     Role:Backbone.Collection.extend({
-        model:Models.Role,
+        model:Models.simpleModel,
         url:'/Role/'
     }),
     Comment:Backbone.Collection.extend({
-        model:Models.Comment,
+        model:Models.simpleModel,
         initialize:function(option){
             this.cid=option.cid;
             this.sid=option.sid;
@@ -540,11 +569,11 @@ Collections={
         }
     }),
     UserLevel:Backbone.Collection.extend({
-        model:Models.UserLevel,
+        model:Models.simpleModel,
         url:'/userLevel/'
     }),
     ServiceDetail:Backbone.PageableCollection.extend({
-        model:Models.ServiceDetail,
+        model:Models.simpleModel,
         url:function(){
             var toReturn='/ServiceDetail/?service='+this.sid;
             return toReturn;
@@ -558,13 +587,11 @@ Collections={
         }
     }),
     General:Backbone.PageableCollection.extend({
-        model:Models.Comission,
+        model:Models.syncModel,
         url: function(){
-            var toreturn=this.baseurl;
-            if(this.year)
-                toreturn+='?year='+this.year;
-            if(this.month)
-                toreturn+="&month="+this.month;
+            var toreturn=this._url;
+            if(this.year&&this.month)
+                toreturn+='?year='+this.year+"&month="+this.month;
             return toreturn;
         },
         
@@ -574,7 +601,7 @@ Collections={
             this.month=options.month||new Date().getMonth()+1;
             this.mode=options.mode||"client";
             this.state=options.state||{pageSize:25};
-            this.baseurl=options.url;
+            this._url=options.url;
         },
         setdate:function(options){
             this.year=options.year;
@@ -582,7 +609,7 @@ Collections={
         },
     }),
     TimeRangeGeneral:Backbone.PageableCollection.extend({
-       model:Models.Accounting,
+       model:Models.syncModel,
        url: function(){
             var toreturn=this._url+"?";
             if(this.startDate)
@@ -609,18 +636,20 @@ Collections={
         }
     }),
     Invoice:Backbone.Collection.extend({
-        model:Models.Invoice,
+        model:Models.syncModel,
+        _url:'/Invoice/',
         url:function(){
-            return '/Invoice/?contract='+this.contract;
+            return this._url+'?contract='+this.contract;
         },
         initialize:function(options){
             this.contract=(options||{}).contract;
         }
     }),
     ServiceInvoice:Backbone.Collection.extend({
-        model:Models.ServiceInvoice,
+        model:Models.syncModel,
+        _url:'/ServiceInvoice',
         url:function(){
-            return '/ServiceInvoice/?invoice='+this.invoice;
+            return this._url+'?invoice='+this.invoice;
         },
         initialize:function(options){
             this.invoice=(options||{}).invoice;

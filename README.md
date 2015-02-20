@@ -133,6 +133,6 @@ rollback problem --DONE
 
 generate csv --DONE 
 
-
+Save attribute should roll back
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

@@ -2877,7 +2877,7 @@ Settings.user=Settings.Pane.extend({
     },
     initialize:function(option){
         var id=parseInt($('#userid').text())||null;
-        this.model=new Obiwang.Models.User({id:id});
+        this.model=new Obiwang.Models.simpleModel({id:id,_url:'/User/'});
         var self=this;
         this.model.fetch().then(function(data){
             self.render();
