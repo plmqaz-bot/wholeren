@@ -60,7 +60,7 @@ module.exports = {
 	},
 	update:function(req,res){
 		var id=req.params.id;
-		return res.json(404,{error:'error'});
+		
 		if(!id) return res.json(404,{error:"no id"});
 		var attribs=req.body;
 		var toupdate={};
