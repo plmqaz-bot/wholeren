@@ -60,10 +60,12 @@ module.exports = {
 	},
 	update:function(req,res){
 		var id=req.params.id;
+		return res.json(404,{error:'error'});
 		if(!id) return res.json(404,{error:"no id"});
 		var attribs=req.body;
 		var toupdate={};
 		if(attribs.nontaxable!=null) toupdate.nontaxable=attribs.nontaxable;
+		if(attribs.remittances!=null) toupdate.remittances=attribs.remittances;
 		if(attribs.other!=null) toupdate.other=attribs.other;
 		if(attribs.receivedTotal!=null) toupdate.receivedTotal=attribs.receivedTotal;
 		if(attribs.receivedOther!=null) toupdate.receivedOther=attribs.receivedOther;

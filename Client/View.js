@@ -554,7 +554,7 @@ Notification.Collection = Wholeren.baseView.extend({
         rerenderSingle:function(options){
             var self=this;
             var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
-            var toRender=new Obiwang.Models[modelName]({id:options.id});
+            var toRender=new Obiwang.Models.simpleModel({_url:'/'+modelName+'/',id:options.id});
             if(options.del){
                 self.collection.remove(self.collection.get(options.id));
                 self.renderCollection();
@@ -908,7 +908,8 @@ var AttributeEdit=Backbone.Modal.extend({
         var options={};
         options["id"]=this.updateId;
         options[this.attr]=content;
-        var toupdate = new Obiwang.Models[this.modelName](options);
+        options._url='/'+this.modelName+'/';
+        var toupdate = new Obiwang.Models.simpleModel(options);
         var self=this;
         toupdate.save(options,{
             patch:true,
@@ -950,7 +951,7 @@ var EditForm=Backbone.Modal.extend({
             this.modelChanges.client=this.model.get('client');
             this.modelChanges.id=this.model.get('id');
         }else{
-            this.model=new Obiwang.Models.Contract();
+            this.model=new Obiwang.Models.simpleModel({_url:'/Contract/'});
         }
         _.bindAll(this,'renderSelect');
        _.bindAll(this,'render', 'afterRender'); 
@@ -1181,7 +1182,7 @@ var ContractView=Wholeren.FormView.extend({
             var self=this;
             switch(action){
                 case 'del':
-                    var newApp=new Obiwang.Models['Contract']({id:id});
+                    var newApp=new Obiwang.Models.simpleModel({_url:'/Contract/',id:id});
                     newApp.destroy({
                         success:function(d){
                             self.rerenderSingle({id:id,del:true});            
@@ -1237,11 +1238,12 @@ var ContractInvoiceView=Backbone.Modal.extend({
     },     
     addnew:function(e){
         e.preventDefault();
-        var toAdd=new Obiwang.Models.Invoice({contract:this.contractID,save:false});
+        var toAdd=new Obiwang.Models.Invoice({_url:'/Invoice/'});
+        toAdd.setContract({contract:this.contractID});
         var self=this;
         toAdd.save(null,{
             success:function(model){
-                self.collection.add(model);
+                self.collection.add(toAdd);
             },
             error:function(response,model){
                 util.handleRequestError(response);
@@ -1409,7 +1411,7 @@ var ContractEdit = EditForm.extend({
             this.modelChanges.client=this.model.get('client');
             this.modelChanges.id=this.model.get('id');
         }else{
-            this.model=new Obiwang.Models.Contract();
+            this.model=new Obiwang.Models.simpleModel({_url:'/Contract/'});
         }
         _.bindAll(this,'renderSelect');
        _.bindAll(this,'render', 'afterRender'); 
@@ -1480,7 +1482,7 @@ var ContractEdit = EditForm.extend({
        if(!selected){
             return;
        }
-        var client=new Obiwang.Models['Client']({id:selected});
+        var client=new Obiwang.Models.simpleModel({_url:'/Client/',id:selected});
         var self=this;
         client.fetch({
             reset: true,
@@ -1536,13 +1538,12 @@ var ServiceView=Wholeren.FormView.extend({
             _.bindAll(this,'renderCollection');
             _.bindAll(this,'renderCollectionCore');
             this.el=options.el;
-            var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
             this.user=new Obiwang.Collections.User();
             var self=this;
-            this.collection = new Obiwang.Collections[modelName]();
+            this.collection = new Obiwang.Collections.Service();
             this.render();
             if(options.id){
-                var model=new Obiwang.Models[modelName]({id:options.id});
+                var model=new Obiwang.Models.simpleModel({_url:'/Service/',id:options.id});
                 model.fetch().then(function(){
                     if(model)
                         self.collection.add(model);
@@ -1665,7 +1666,7 @@ var ServiceView=Wholeren.FormView.extend({
             var self=this;
             switch(action){
                 case 'add':
-                    var newApp=new Obiwang.Models['Application']({service:id});
+                    var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',service:id});
                     newApp.save({},{
                         success:function(d){
                             self.rerenderSingle({id:id});            
@@ -1676,7 +1677,7 @@ var ServiceView=Wholeren.FormView.extend({
                     });
                     break;
                 case 'del':
-                    var newApp=new Obiwang.Models['Application']({id:appid});
+                    var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',id:appid});
                     newApp.destroy({
                         success:function(d){
                             self.rerenderSingle({id:id});            
@@ -1773,7 +1774,7 @@ var ServicePopup=Backbone.Modal.extend({
         this.collection.setSID(this.serviceID);
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.ServiceDetail();
+        var toAdd=new Obiwang.Models.simpleModel({_url:'/ServiceDetail/'});
         toAdd.set('service',this.serviceID);
         toAdd.set('type',this.type);
         this.collection.add(toAdd);
@@ -2137,7 +2138,8 @@ var ApplicationEdit=EditForm.extend({
             return;
         }
         this.serviceId=options.service.id;
-        this.model=new Obiwang.Models['Application'](options.curApp);
+        this.model=new Obiwang.Models.simpleModel(options.curApp);
+        this.model._url='/Application/';
         this.model.set('service',options.service.toJSON());
         this.modelChanges.id=this.model.get('id');
         _.bindAll(this,'renderSelect');

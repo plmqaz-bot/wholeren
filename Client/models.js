@@ -24,10 +24,15 @@ var simpleModel=Backbone.Model.extend({
     });
 var syncModel=simpleModel.extend({
     initialize:function(options){
+        this._url=(options||{})._url;
         Backbone.Model.prototype.initialize.apply(this, arguments);
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
-            model.save(null,{save:false});
+            var prevAttr=model._previousAttributes;
+            model.save(null,{error:function(model,response){
+                model.set(prevAttr,{save:false});
+                util.handleRequestError(response);
+            },save:false});
         });
     }
 });
@@ -106,34 +111,34 @@ Models={
     //     },
     //     urlRoot:'/SalesComission/'
     // }),
-    Comission:Backbone.Model.extend({
-        urlRoot:function(){
-            var base=_.result(this.collection,'url')||urlError();
-            if(base.indexOf('?')>0){
-                return base.substring(0,base.indexOf('?'));
-            }else{
-                return base;
-            }
-        },
-        initialize: function (options) {
-        Backbone.Model.prototype.initialize.apply(this, arguments);
-        this.on("change", function (model, options) {
-            if (options && options.save === false) return;
-            model.save(null,{save:false});
-        });
+    // Comission:Backbone.Model.extend({
+    //     urlRoot:function(){
+    //         var base=_.result(this.collection,'url')||urlError();
+    //         if(base.indexOf('?')>0){
+    //             return base.substring(0,base.indexOf('?'));
+    //         }else{
+    //             return base;
+    //         }
+    //     },
+    //     initialize: function (options) {
+    //     Backbone.Model.prototype.initialize.apply(this, arguments);
+    //     this.on("change", function (model, options) {
+    //         if (options && options.save === false) return;
+    //         model.save(null,{save:false});
+    //     });
         
-        },        
-    }),
-    Accounting:Backbone.Model.extend({
-        urlRoot:'/Accounting/',
-        initialize: function (options) {
-        Backbone.Model.prototype.initialize.apply(this, arguments);
-        this.on("change", function (model, options) {
-            if (options && options.save === false) return;
-            model.save(null,{save:false});
-        });
-        },        
-    }),
+    //     },        
+    // }),
+    // Accounting:Backbone.Model.extend({
+    //     urlRoot:'/Accounting/',
+    //     initialize: function (options) {
+    //     Backbone.Model.prototype.initialize.apply(this, arguments);
+    //     this.on("change", function (model, options) {
+    //         if (options && options.save === false) return;
+    //         model.save(null,{save:false});
+    //     });
+    //     },        
+    // }),
     // User:Backbone.Model.extend({
     //     urlRoot:'/User/'
     // }),
@@ -146,36 +151,35 @@ Models={
     // Comment:Backbone.Model.extend({
     //     urlRoot:'/Comment/'
     // }),
-    UserLevel:Backbone.Model.extend({
-        urlRoot:'/userLevel/',
-        initialize: function (options) {
-        Backbone.Model.prototype.initialize.apply(this, arguments);
-        this.on("change", function (model, options) {
-            if (options && options.save === false) return;
-            model.save(null,{save:false});
-        });
-        this.urlRoot=options.urlRoot;
-        },
-    }),
-    Reminder:Backbone.Model.extend({
-        urlRoot:'/Notifications/',
-        initialize: function (options) {
-        Backbone.Model.prototype.initialize.apply(this, arguments);
-        this.on("change", function (model, options) {
-            if (options && options.save === false) return;
-            model.save(null,{save:false});
-        });
-        this.contract=this.contract||{};
-        this.contract.client=this.contract.client||{};
-        this.clientName=this.contract.client.chineseName;
-        }, 
-    }),
+    // UserLevel:Backbone.Model.extend({
+    //     urlRoot:'/userLevel/',
+    //     initialize: function (options) {
+    //     Backbone.Model.prototype.initialize.apply(this, arguments);
+    //     this.on("change", function (model, options) {
+    //         if (options && options.save === false) return;
+    //         model.save(null,{save:false});
+    //     });
+    //     },
+    // }),
+    // Reminder:Backbone.Model.extend({
+    //     urlRoot:'/Notifications/',
+    //     initialize: function (options) {
+    //     Backbone.Model.prototype.initialize.apply(this, arguments);
+    //     this.on("change", function (model, options) {
+    //         if (options && options.save === false) return;
+    //         model.save(null,{save:false});
+    //     });
+    //     this.contract=this.contract||{};
+    //     this.contract.client=this.contract.client||{};
+    //     this.clientName=this.contract.client.chineseName;
+    //     }, 
+    // }),
     // ServiceDetail:Backbone.Model.extend({
     //     urlRoot:'/ServiceDetail/',
     // }),
     Invoice:syncModel.extend({
         setContract:function(options){
-            this.contract=options.contract;
+            this.set('contract',options.contract,{save:false});
         }
     }) ,
     // ServiceInvoice:Backbone.Model.extend({
@@ -434,6 +438,21 @@ Collections={
         model:Models.simpleModel,
         url:'/ServiceProgress/'
     }),
+    User:sortableCollection.extend({
+        model: Models.simpleModel,
+        url: '/User/',
+        initialize:function(){
+            this.selectedStrat({sortAttr:'nickname'});
+        }
+    }),
+    Application:Backbone.Collection.extend({
+        model:Models.simpleModel,
+        url:'/Application/'
+    }),
+    Role:Backbone.Collection.extend({
+        model:Models.simpleModel,
+        url:'/Role/'
+    }),
     Service:sortableCollection.extend({
         model: Models.Service,
         url: function(){return '/Service/?where='+this.whereclaus();},
@@ -537,21 +556,7 @@ Collections={
             this.month=options.month;
         },
     }),
-    User:sortableCollection.extend({
-        model: Models.simpleModel,
-        url: '/User/',
-        initialize:function(){
-            this.selectedStrat({sortAttr:'nickname'});
-        }
-    }),
-    Application:Backbone.Collection.extend({
-        model:Models.simpleModel,
-        url:'/Application/'
-    }),
-    Role:Backbone.Collection.extend({
-        model:Models.simpleModel,
-        url:'/Role/'
-    }),
+
     Comment:Backbone.Collection.extend({
         model:Models.simpleModel,
         initialize:function(option){
@@ -573,7 +578,7 @@ Collections={
         url:'/userLevel/'
     }),
     ServiceDetail:Backbone.PageableCollection.extend({
-        model:Models.simpleModel,
+        model:Models.syncModel,
         url:function(){
             var toReturn='/ServiceDetail/?service='+this.sid;
             return toReturn;
