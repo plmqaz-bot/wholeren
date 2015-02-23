@@ -626,8 +626,12 @@ Notification.Collection = Wholeren.baseView.extend({
             obj=self.modifyRow(obj);
             var ele = self.singleTemplate(obj);
             var toInsert = $('<div/>').html(ele).contents();
-            
             var headline=self.headline(obj);
+            if(previousRow.length==0||previousPinnedRow.length==0){
+                previousRow=$('#scrollerfirst');
+                previousPinnedRow=$('#pinnedfirst');
+                append=false;
+            }
 
             var headInsert=$('<div/>').html('<tr name="'+obj.id+'" class="pin"><td data-id="'+obj.id+'" class="clickablecell">'+headline+'</td></tr>').contents();
             if(append==true){
