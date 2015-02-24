@@ -1,0 +1,1 @@
+forever --watch start  main.js
