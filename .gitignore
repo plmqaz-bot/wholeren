@@ -48,6 +48,7 @@ node_modules/
 assets/js/bundle.js
 assets/js/all.js
 config/connections.js
+config/local.js
 # Elastic Beanstalk Files
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
