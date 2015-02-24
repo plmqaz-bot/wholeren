@@ -271,7 +271,15 @@ Views.Login=Wholeren.baseView.extend({
                         role:role
                     },
                     success: function (msg) {
-                        window.location.href = msg.redirect;
+                        Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'success',
+                            message: "success, please wait for your account to be activated",
+                            status: 'passive'
+                        }); 
+                        Wholeren.router.navigate('/admin/signin/');   
+                                            
+                        //window.location.href = '/admin/signin/';
                     },
                     error: function (xhr) {
                         self.submitted = "no";

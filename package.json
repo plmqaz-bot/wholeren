@@ -34,7 +34,8 @@
     "node-uuid":"*",
     "csv-parse":"*",
     "backbone.paginator":"*",
-    "later":"*"
+    "later":"*",
+    "nodemailer":"*",
   },
   "scripts": {
     "start": "node main.js",

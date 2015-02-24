@@ -263,7 +263,7 @@ module.exports={
                 //         res.json(401,{error:err});
                 //     }
                 // });
-                res.json(200, {redirect: '/admin/signin/'});
+                res.json(200,{});
                 console.log("User created");
         }).fail(function (error) {
             console.log("Create failed");
