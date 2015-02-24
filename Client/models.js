@@ -364,12 +364,13 @@ Collections={
         },
         whereclaus:function(){
             var where={};
-            where.createdAt={};
             try{
                 if(this.startDate){
+                    where.createdAt=where.createdAt||{};
                     where.createdAt['>']=new Date(this.startDate);
                 }
                 if(this.endDate){
+                    where.createdAt=where.createdAt||{};
                     where.createdAt['<']=new Date(this.endDate);
                 }
                 if(where.createdAt){

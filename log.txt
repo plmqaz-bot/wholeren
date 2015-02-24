@@ -24115,3 +24115,5 @@ select s.servRole, s.serviceType,s.servLevel as "lid",s.serviceStatus as "sid", 
 2014
 12
 call ServiceComission(0,0,2014,12,false);
+Hello
+select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval);

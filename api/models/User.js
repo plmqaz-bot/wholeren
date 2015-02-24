@@ -10,9 +10,9 @@ module.exports = {
   attributes: {
   	password:{type:'string',required:true,minLength:6},
 
-  	email:{type:'email'},
+  	email:{type:'email',required:true,unique:true},
 
-    personalemail:{type:'email',required:true,unique:true},
+    personalemail:{type:'email'},
 
   	nickname:{type:'string',required:true,unique:true},
 

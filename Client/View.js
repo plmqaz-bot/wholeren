@@ -1101,13 +1101,14 @@ var ContractView=Wholeren.FormView.extend({
                 
             } else if (!this.collection || this.collection.length < 1) {
                 this.collection = new Obiwang.Collections.Contract();
-                $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
+                self.collection.on("sort", self.renderCollection, self);
+                self.collection.on("reset", self.renderCollection, self);
                     
-                    self.collection.on("sort", self.renderCollection, self);
-                    self.collection.on("reset", self.renderCollection, self);
-                    self.ready=true;
-                    self.renderCollection();
-                });
+                // $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
+                    
+                //     self.ready=true;
+                //     self.renderCollection();
+                // });
             }    
             // Now get filters
             $.ajax({

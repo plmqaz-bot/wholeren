@@ -252,17 +252,18 @@ module.exports={
                 //     );
                 // });
                 EmailService.send();
-                req.session.regenerate(function (err) {
-                    if (!err) {
-                        if (req.session.user === undefined) {
-                            req.session.user = user;
-                            req.session.authenticated=true;
-                        }
-                        res.json(200, {redirect: '/admin/contract/'});
-                    }else{
-                        res.json(401,{error:err});
-                    }
-                });
+                // req.session.regenerate(function (err) {
+                //     if (!err) {
+                //         if (req.session.user === undefined) {
+                //             req.session.user = user;
+                //             req.session.authenticated=true;
+                //         }
+                //         res.json(200, {redirect: '/admin/contract/'});
+                //     }else{
+                //         res.json(401,{error:err});
+                //     }
+                // });
+                res.json(200, {redirect: '/admin/signin/'});
                 console.log("User created");
         }).fail(function (error) {
             console.log("Create failed");

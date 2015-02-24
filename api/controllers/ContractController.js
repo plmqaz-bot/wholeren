@@ -17,14 +17,14 @@ module.exports = {
 			inner join user on \
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) where "+who;
 		}
-		req.session.user={id:1,rank:3};
+		//req.session.user={id:1,rank:3};
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
-		if(!where['>']&&!where['<']) where={};
+		if(!(where.createdAt||{})['>']&&!(where.createdAt||{})['<']) where={};
 		var id=req.session.user.id;
 		var promise,who;
-		console.log(req.session.user.rank);
+		console.log(where);
 		switch(req.session.user.rank){
 			case 3:
 			console.log("manager");
@@ -54,8 +54,6 @@ module.exports = {
 				console.log("found ", toReturn.length);
 				var cId=conts.map(function(e){return e.id;});
 				var clientId=conts.map(function(e){return e.client;});
-				console.log("got IDs ");
-				console.log(cId,clientId);
 				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find(),Client.find({id:clientId}),Service.find({contract:cId})]);
 			}).then(function(data){
 				// manually populate
