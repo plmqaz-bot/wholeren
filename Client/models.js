@@ -15,11 +15,14 @@ var simpleModel=Backbone.Model.extend({
         },
         initialize:function(options){
             this._url=(options||{})._url;
-            if(!isNaN(new Date(this.get('createdAt')).getTime())){
-                this.set('createdAt',new Date(this.get('createdAt')));
-            }else{
-                this.set('createdAt','');
+        },
+        parse:function(response){
+            if(response.createdAt){
+                if(!isNaN(new Date(response.createdAt).getTime())){
+                    response.createdAt=new Date(response.createdAt);
+                }
             }
+            return response;
         }
     });
 var syncModel=simpleModel.extend({
@@ -34,6 +37,9 @@ var syncModel=simpleModel.extend({
                 util.handleRequestError(response);
             },save:false});
         });
+    },
+    parse:function(response){
+        return response;
     }
 });
 var simpleCollection=Backbone.Collection.extend({

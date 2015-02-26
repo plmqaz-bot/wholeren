@@ -101,15 +101,17 @@ module.exports = {
 		var saleid=req.session.user.id; // change it to the user's id
 		var attribs=req.body;
 		attribs['sales1']=saleid;
+		delete attribs["_url"];
 		if(attribs.client){
 			var promise;
 			if(attribs.client.id){
 				// Update the client
-				delete attribs.client["createAt"];
-				delete attribs.client["updateAt"];
+				delete attribs.client["createdAt"];
+				delete attribs.client["updatedAt"];
 				delete attribs.client["contract"];
+				delete attribs.client["_url"];
 				console.log("update client",attribs.client);
-				promise=Client.update({"id":attribs.client.id},attribs.client);
+				promise=Client.update({id:attribs.client.id},attribs.client);
 				// Client.update({"id":attribs.client.id},attribs.client,function(err,cc){
 				// 	if(err){
 				// 		return res.json(400,err);
@@ -131,11 +133,14 @@ module.exports = {
 				promise=Client.create(attribs.client);
 			}	
 			promise.then(function(data){
-				if((data||{}).id){
+				data=(data||{});
+				data=(data[0]||data);
+				if(data.id){
 					console.log("got client",data);
 					attribs.client=data.id;
 					return Contract.create(attribs);
 				}else{
+					console.log("data is ",data);
 					return Promise.reject({error:"failed to create the client"});
 				}
 			}).then(function(cont){
