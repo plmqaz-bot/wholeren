@@ -127,7 +127,7 @@ module.exports = {
 				promise=Client.findOne({id:attribs.client});
 			}else{
 				console.log("create client");
-				promise=Client.create(attribs);
+				promise=Client.create(attribs.client);
 			}	
 			promise.then(function(data){
 				if((data||{}).id){
