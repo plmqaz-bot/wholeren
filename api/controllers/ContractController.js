@@ -108,6 +108,7 @@ module.exports = {
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
 				delete attribs.client["contract"];
+				console.log("update client",attribs.client);
 				promise=Client.update({"id":attribs.client.id},attribs.client);
 				// Client.update({"id":attribs.client.id},attribs.client,function(err,cc){
 				// 	if(err){
