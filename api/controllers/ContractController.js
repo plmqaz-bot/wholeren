@@ -100,7 +100,7 @@ module.exports = {
 	'createContract':function(req,res){
 		var saleid=req.session.user.id; // change it to the user's id
 		var attribs=req.body;
-		attribs['sales']=saleid;
+		attribs['sales1']=saleid;
 		if(attribs.client){
 			if(attribs.client.id){
 				// Update the client
