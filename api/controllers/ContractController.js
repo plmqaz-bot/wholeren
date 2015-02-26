@@ -160,12 +160,14 @@ module.exports = {
 							return Contract.create(attribs);
 						}).then(function(data){
 							console.log("contract created");
-							 Client.query('COMMIT');
-							 return res.json(data);
+							return Client.query('COMMIT',function(){
+								return res.json(data);	
+							});							 
 						}).fail(function(err){
 							console.log("error in creating contract");
-							Client.query('ROLLBACK');
-							return res.json(400,err);
+							return Client.query('ROLLBACK',function(){
+								return res.json(400,err);
+							});
 						});
 					});
 					
