@@ -1517,25 +1517,50 @@ var ContractEdit = EditForm.extend({
             }
         });
    },
-   Submit:function(){
-        if(this.formError) return;
-        var self=this;
-        this.model.save(this.modelChanges,{
-            patch:true,
-            success:function(d){
-                // refresh parent view
-                try{
-                    self.parentView.rerenderSingle({id:d.get('id')});
-                }catch(e){
+   Submit:function(event){
+        event.preventDefault();
+        var firstname = this.$('#client\\.firstName').val(),
+            lastname = this.$('#client\\.lastName').val(),
+            chinesename = this.$('#client\\.chineseName').val(),
+            email = this.$('#client\\.primaryEmail').val(),
+            validationErrors = [],
+            self = this;
+
+        if (!validator.isLength(chinesename, 1)) {
+            validationErrors.push("Please enter a chinesename.");
+        }
+        if (!validator.isLength(firstname, 1)) {
+            validationErrors.push("Please enter a firstname.");
+        }
+        if (!validator.isLength(lastname, 1)) {
+            validationErrors.push("Please enter a lastname.");
+        }
+
+        if (!validator.isEmail(email)) {
+            validationErrors.push("Please enter a correct email address.");
+        }
+
+        if (validationErrors.length) {
+            validator.handleErrors(validationErrors);
+        }else{
+            var self=this;
+            this.model.save(this.modelChanges,{
+                patch:true,
+                success:function(d){
+                    // refresh parent view
+                    try{
+                        self.parentView.rerenderSingle({id:d.get('id')});
+                    }catch(e){
+                        return self.close();
+                    }
                     return self.close();
+                },
+                error:function(model,response){
+                    util.handleRequestError(response); 
+                    self.refreshClientID();                      
                 }
-                return self.close();
-            },
-            error:function(model,response){
-                util.handleRequestError(response); 
-                self.refreshClientID();                      
-            }
-        });
+            });
+        }        
     },
 });
 /*************************************************Views for Services *****************************/
