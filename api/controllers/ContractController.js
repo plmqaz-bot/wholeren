@@ -102,92 +102,78 @@ module.exports = {
 		var attribs=req.body;
 		attribs['sales1']=saleid;
 		if(attribs.client){
+			var promise;
 			if(attribs.client.id){
 				// Update the client
 				delete attribs.client["createAt"];
 				delete attribs.client["updateAt"];
 				delete attribs.client["contract"];
-				Client.update({"id":attribs.client.id},attribs.client,function(err,cc){
-					if(err){
-						return res.json(400,err);
-					}
-					attribs.client=attribs.client.id;
-					console.log("client updated");
-					Contract.create(attribs).exec(function(err,data){
-						if(err){
-							return res.json(400,err);
-						}
-						console.log("contract created");
-						return res.json(data);
-					});			
-				});
+				promise=Client.update({"id":attribs.client.id},attribs.client);
+				// Client.update({"id":attribs.client.id},attribs.client,function(err,cc){
+				// 	if(err){
+				// 		return res.json(400,err);
+				// 	}
+				// 	attribs.client=attribs.client.id;
+				// 	console.log("client updated");
+				// 	Contract.create(attribs).exec(function(err,data){
+				// 		if(err){
+				// 			return res.json(400,err);
+				// 		}
+				// 		console.log("contract created");
+				// 		return res.json(data);
+				// 	});			
+				// });
+			}else if(typeof attribs.client ==="number"){
+				promise=Client.findOne({id:attribs.client});
 			}else{
-				// If client is just number
-				if(typeof attribs.client ==="number"){
-					Contract.create(attribs).exec(function(err,data){
-						if(err){
-							return res.json(400,err);
-						}
-						console.log("contract created");
-						return res.json(data);
-					});	
+				console.log("create client");
+				promise=Client.create(attribs);
+			}	
+			promise.then(function(data){
+				if((data||{}).id){
+					console.log("got client",data);
+					attribs.client=data.id;
+					return Contract.create(attribs);
 				}else{
-					console.log('creating client');
-					// Client.transaction().create(attribs.client).done(function(err,client){
-					// 	if(err){
-					// 		return client.rollback(function(err){
-					// 			console.log('create client failed');
-					// 			res.json(400,err);
-					// 		})							 
-					// 	}
-					// 	attribs.client=client.id;
-					// 	Contract.create(attribs).exec(function(err,data){
-					// 	if(err){
-					// 		return client.rollback(function(){
-					// 			console.log('create contract failed');
-					// 			return res.json(400,err);
-					// 		});							
-					// 	}
-					// 	console.log("contract created");
-					// 	return res.json(data);
-					// });
-					// })
-					Client.query('START TRANSACTION',function(){
-						Client.create(attribs.client).then(function(client){
-							attribs.client=client.id;
-							console.log("client id is ",client.id);
-							console.log("creating contract");
-							return Contract.create(attribs);
-						}).then(function(data){
-							console.log("contract created");
-							return Client.query('COMMIT',function(){
-								return res.json(data);	
-							});							 
-						}).fail(function(err){
-							console.log("error in creating contract");
-							return Client.query('ROLLBACK',function(){
-								return res.json(400,err);
-							});
-						});
-					});
-					
-					// Client.create(attribs.client).exec(function(err,client){
-					// if(err){
-					// 	return res.json(400,err);
-					// }
-					// console.log("client created: ");
-					// attribs.client=client.id;
-					// Contract.create(attribs).exec(function(err,data){
-					// 	if(err){
-					// 		return res.json(400,err);
-					// 	}
-					// 	console.log("contract created");
-					// 	return res.json(data);
-					// });		
-					
-					// });
-			}
-			}
+					return Promise.reject({error:"failed to create the client"});
+				}
+			}).then(function(cont){
+				console.log("got contract",cont);
+				return res.json(cont);	
+			}).fail(function(err){
+				return res.json(400,err);
+			});
+				// If client is just number
+				// if(typeof attribs.client ==="number"){
+				// 	Contract.create(attribs).exec(function(err,data){
+				// 		if(err){
+				// 			return res.json(400,err);
+				// 		}
+				// 		console.log("contract created");
+				// 		return res.json(data);
+				// 	});	
+				// }else{
+				// 	console.log('creating client');
+				// 	Client.query('START TRANSACTION',function(){
+				// 		Client.create(attribs.client).then(function(client){
+				// 			attribs.client=client.id;
+				// 			console.log("client id is ",client.id);
+				// 			console.log("creating contract");
+				// 			return Contract.create(attribs);
+				// 		}).then(function(data){
+				// 			console.log("contract created");
+				// 			return Client.query('COMMIT',function(){
+				// 				return res.json(data);	
+				// 			});							 
+				// 		}).fail(function(err){
+				// 			console.log("error in creating contract");
+				// 			return Client.query('ROLLBACK',function(){
+				// 				return res.json(400,err);
+				// 			});
+				// 		});
+				// 	});
+				// }
+			//}
 		}else{
 			return res.json(400,{"error":"client is necessary to create a contract"});
 		}
