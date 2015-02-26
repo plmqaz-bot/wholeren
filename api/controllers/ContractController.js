@@ -17,7 +17,7 @@ module.exports = {
 			inner join user on \
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) where "+who;
 		}
-		//req.session.user={id:1,rank:3};
+		//git preq.session.user={id:1,rank:3};
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
