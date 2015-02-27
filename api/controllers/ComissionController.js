@@ -18,8 +18,7 @@ module.exports = {
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Getting SailesComission failed");
 		});		
 	},
 	'updateSalesComission':function(req,res){
@@ -51,8 +50,7 @@ module.exports = {
 				
 			});
 		}).catch(function(err){
-			console.log(err);
-			return res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Update SailesComission failed user: "+attribs.user+" service: "+attribs.service);
 		});
 	},
 	'getServiceComission':function(req,res){
@@ -69,8 +67,7 @@ module.exports = {
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Get ServiceComission Failed.");
 		});	
 	},
 	'updateServiceComission':function(req,res){
@@ -108,8 +105,7 @@ module.exports = {
 				if(data[0]) return res.json(data[0][0]);
 				return res.json({});				
 		}).catch(function(err){
-			console.log(err);
-			return res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Update ServiceComission Failed.");
 		});
 	},
 	'getAssistantComission':function(req,res){
@@ -124,22 +120,21 @@ module.exports = {
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Get AssistantComission Failed");
 		});	
 	},
 	'getSalesRoles':function(req,res){
 		SalesRole.find().then(function(data){
 			return res.json(Utilfunctions.backgridHash(data,'salesRole'));
 		}).catch(function(err){
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Sales Role Failed");
 		});
 	},
 	'getServiceRoles':function(req,res){
 		ServRole.find().then(function(data){
 			return res.json(Utilfunctions.backgridHash(data,'servRole'));
 		}).catch(function(err){
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Service Role Failed");
 		})
 	},
 	'getServiceLevel':function(req,res){
@@ -148,8 +143,7 @@ module.exports = {
 			//return res.json(Utilfunctions.backgridHash(data,'servLevel'));
 			return res.json(data);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Service Level Failed");
 		});
 	},
 };

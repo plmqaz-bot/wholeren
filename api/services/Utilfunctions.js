@@ -581,4 +581,9 @@ module.exports = {
     	});
     	return promise.promise;
     },
+    'errorHandler':function(err,res,txt){
+    	console.log(txt);
+    	console.log(err.toJSON());
+    	return res.json(400,err.toJSON());
+    }
 }

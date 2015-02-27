@@ -209,10 +209,10 @@ module.exports={
                     return res.json(200,{redirect:redirect});
                 })
             }).fail(function(err){
-                return res.json(400,err);
+                Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
             });
         } else {
-            res.json(401, {error: 'Slow down, there are way too many login attempts!'});
+            Utilfunctions.errorHandler({error: 'Slow down, there are way too many login attempts!'},res,"Get Accounting");
         }
     },
     'doSignup': function (req, res) {
@@ -251,7 +251,7 @@ module.exports={
                 //         "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
                 //     );
                 // });
-                EmailService.send();
+                EmailService.sendWelcomeEmail({nickname:nickname});
                 // req.session.regenerate(function (err) {
                 //     if (!err) {
                 //         if (req.session.user === undefined) {
@@ -265,10 +265,8 @@ module.exports={
                 // });
                 res.json(200,{});
                 console.log("User created");
-        }).fail(function (error) {
-            console.log("Create failed");
-            console.log(error);
-            res.json(401, {error: error.message});
+        }).fail(function (err) {
+            Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
         });
     },
     'forgotten': function (req, res) {
@@ -345,18 +343,19 @@ module.exports={
         });
     },
     'import':function(req,res){
-        Utilfunctions.importContract('EM_2_13.csv')
+        var filename='EM_2_13.csv';
+        Utilfunctions.importContract(filename)
          .then(function(data){
              console.log('import done');
          }).catch(function(err){
-            console.log('errors: ',err);
+            Utilfunctions.errorHandler(err,res,"Import failed! file: "+filename+);
          });
     },
     'importUser':function(req,res){
         Utilfunctions.importUser().then(function(data){
              console.log('import done');
          }).catch(function(err){
-            console.log('errors: ',err);
+            Utilfunctions.errorHandler(err,res,"Import User failed");
          });
     }
 }

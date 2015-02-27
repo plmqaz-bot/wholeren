@@ -28,8 +28,7 @@ module.exports = {
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+			Utilfunctions.errorHandler(err,res,"Get Accounting");
 		});
 	},
 	findOne:function(req,res){
@@ -41,8 +40,7 @@ module.exports = {
 			if(data.length<1)return res.json({});
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+			Utilfunctions.errorHandler(err,res,"Get Accounting id: "+id);
 		});
 	},
 	update:function(req,res){
@@ -59,8 +57,7 @@ module.exports = {
 			if(data.length<1)return res.json({});
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+			Utilfunctions.errorHandler(err,res,"Update Accounting id: "+id);
 		});
 	},
 };
