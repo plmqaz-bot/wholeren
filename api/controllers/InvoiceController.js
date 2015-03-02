@@ -22,8 +22,7 @@ module.exports = {
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Get Invoice Failed");
 		});
 	},
 	findOne:function(req,res){
@@ -35,8 +34,7 @@ module.exports = {
 			if(data.length<1)return res.json({});
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Get Invoice Failed id: "+id);
 		});
 	},
 	create:function(req,res){
@@ -45,7 +43,6 @@ module.exports = {
 		var tocreate={};
 		tocreate['contract']=attribs.contract;
 		Invoice.create(tocreate).then(function(data){
-			if(!data) return res.json(404, {error: "fail on create invoice"});
 			var sql=constructsql(" where invoice.id="+data.id);
 			return Utilfunctions.nativeQuery(sql);
 		}).then(function(data){
@@ -53,8 +50,7 @@ module.exports = {
 			if(data.length<1)return res.json({});
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Create Invoice Failed");
 		});
 
 	},
@@ -80,8 +76,7 @@ module.exports = {
 			if(data.length<1)return res.json({});
 			return res.json(data[0]);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Update Invoice Failed id: "+id);
 		});
 	},
 	destroy:function(req,res){
@@ -109,8 +104,7 @@ module.exports = {
 		}).then(function(data){
 			return res.json({});
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,{error:"failed to delete ",errObj:err});
+            Utilfunctions.errorHandler(err,res,"Destroy Invoice Failed id: "+id);
 		})
 	}
 };

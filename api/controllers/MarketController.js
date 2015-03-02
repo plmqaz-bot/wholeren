@@ -13,8 +13,7 @@
         else
           return res.json(data);
       }).catch(function(err){
-        console.log(err);
-        res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Market General View Failed");
       });
   	},
     'contractOfSaleAndExpert':function(req,res){
@@ -30,8 +29,7 @@
         else
           return res.json(data);
       }).catch(function(err){
-        console.log(err);
-        res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Sales Expert Summary View Failed.");
       });
     },
     'MonthlyChange':function(req,res){
@@ -39,8 +37,7 @@
       Utilfunctions.nativeQuery(sql).then(function(data){
           return res.json(data);
       }).catch(function(err){
-        console.log(err);
-        res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Income Change View Failed");
       });
     },
     'MonthlyGoal':function(req,res){
@@ -52,8 +49,7 @@
       Utilfunctions.nativeQuery(sql).then(function(data){
           return res.json(data);
       }).catch(function(err){
-        console.log(err);
-        return res.json(400,err);
+            Utilfunctions.errorHandler(err,res,"Sales Goal View Failed");
       });
     },
     'updateMonthlyGoal':function(req,res){
@@ -74,21 +70,16 @@
           console.log("found ",data);
           return Goal.update({id:data.id},toupdate);
         }else{
-          console.log("not found creating");
-          return Goal.create(attribs);
+            return Utilfunctions.errorHandler(err,res,"Generate Comment failed");
         }
       }).then(function(data){
         var sql="select user.id as 'user',"+year+" as 'year', "+month+" as 'month', user.nickname,goal.* from user left join goal on user.id=goal.user left join role on user.role=role.id\
         where role.role ='销售' and (month is null or month="+attribs.month+") and (year is null or year="+attribs.year+") and user.id="+attribs.user+";";
         return Utilfunctions.nativeQuery(sql);
       }).then(function(data){
-        res.json(data);
+        return res.json(data);
       }).fail(function(err){
-        console.log(err);
-        res.json(404,{error:"failed to update",err:err});
+          return Utilfunctions.errorHandler(err,res,"Update Goal failed");
       });
     },
-    'Notifications':function(req,res){
-
-    }
   }

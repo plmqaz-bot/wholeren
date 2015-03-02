@@ -818,7 +818,7 @@ var AttributeEdit=Backbone.Modal.extend({
             this.$el.find('.bbm-modal__section').append(ele);
             break;
             case 'singletextbox':
-            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><input type="text" class="reply-content" value="'+this.curValue+'"/>>').contents();        
+            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><input type="text" class="reply-content" value="'+this.curValue+'"/>').contents();        
             this.$el.find('.bbm-modal__section').append(ele);
             break;
             case 'selectbox':
@@ -2262,7 +2262,7 @@ var UserView=Wholeren.FormView.extend({
             
         },
         events: {
-        'click .textbox,.selectbox,.multiselectbox,.boolbox':'editAttr',
+        'click .singletextbox,.textbox,.selectbox,.multiselectbox,.boolbox':'editAttr',
         'click .sortable':'sortCollection',
         },        
         renderCollection: function (){

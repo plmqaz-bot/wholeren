@@ -348,7 +348,7 @@ module.exports={
          .then(function(data){
              console.log('import done');
          }).catch(function(err){
-            Utilfunctions.errorHandler(err,res,"Import failed! file: "+filename+);
+            Utilfunctions.errorHandler(err,res,"Import failed! file: "+filename);
          });
     },
     'importUser':function(req,res){

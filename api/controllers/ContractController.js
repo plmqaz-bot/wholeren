@@ -90,8 +90,7 @@ module.exports = {
 				console.log(data.length);
 				return res.json(data);
 			}).catch(function(err){
-				console.log(err);
-				return res.json(400,err)
+            	Utilfunctions.errorHandler(err,res,"Find Contract failed");
 			});	
 		}else{
 			res.json(400,'not found');
@@ -147,7 +146,7 @@ module.exports = {
 				console.log("got contract",cont);
 				return res.json(cont);	
 			}).fail(function(err){
-				return res.json(400,err);
+            	Utilfunctions.errorHandler(err,res,"Import User failed");
 			});
 				// If client is just number
 				// if(typeof attribs.client ==="number"){
@@ -259,6 +258,7 @@ module.exports = {
 				return res.json(data);
 			});	
 		}
+		/**Disabled**/
 	function generateComment(attrs,field){
 		if(!attrs[field])return;
 		var updateValue=attrs[field];
@@ -271,7 +271,9 @@ module.exports = {
 		}).then(function(data){
 			newValue=data.nickname;
 			return Comment.create({comment:req.session.user.nickname+" has changed "+field+" from "+oldValue+" to "+newValue, contract:req.params.id});
-		}).fail(function(err){console.log(err);});
+		}).fail(function(err){
+            Utilfunctions.errorHandler(err,res,"Generate Comment failed");
+		});
 	};
 	function privateUpdateService(attrs,id,res){
 		 // update service separatly

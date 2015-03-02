@@ -29,6 +29,7 @@ insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
 insert into leadlevel values('L1：有互动，且信息完整',NULL,NOW(),NOW());
 insert into leadlevel values('L2：有互动，但信息不完整',NULL,NOW(),NOW());
 insert into leadlevel values('L0：老客户、二次签约、关系户',NULL,NOW(),NOW());
+insert into leadlevel values('L3：无回复',NULL,NOW(),NOW());
 
 #签约状态
 insert into status values('A. 未签约',NULL,NOW(),NOW());

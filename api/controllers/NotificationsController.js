@@ -11,7 +11,7 @@ module.exports = {
 	    Utilfunctions.nativeQuery(sql).then(function(data){
 	        return res.json(data);
 	    }).catch(function(err){
-	        return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Get Notifications failed");
 	    });
 	}	
 };
