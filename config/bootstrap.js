@@ -21,7 +21,7 @@ module.exports.bootstrap = function(cb) {
 // function logtime(){
 //     console.log(new Date());
 // }
-setInterval(function () {
+var loo=function () {
 	console.log("Hello");
 	var sql="select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval);";
 	Utilfunctions.nativeQuery(sql).then(function(data){
@@ -44,7 +44,9 @@ setInterval(function () {
 	}).fail(function(err){
 		console.log(err);
 	});
-}, 1000*60*60*24);
+};
+loo();
+setInterval(loo, 1000*60*60*24);
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();

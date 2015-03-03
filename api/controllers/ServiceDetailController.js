@@ -26,8 +26,7 @@ module.exports = {
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data);
 		}).catch(function(err){
-			console.log(err);
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Find ServiceDetail failed");
 		});
 	},
 	update:function(req,res){
@@ -55,8 +54,7 @@ module.exports = {
 		}).then(function(data){
 			return res.json(data);
 		}).catch(function(err){
-			console.log(err);
-			res.json(400,{error:err});
+            Utilfunctions.errorHandler(err,res,"Update Service failed id:"+id);
 		});
 	},
 	createorupdate:function(req,res){
@@ -93,8 +91,7 @@ module.exports = {
 		}).then(function(data){
 			return res.json(data);
 		}).catch(function(err){
-			console.log(err);
-			res.json(400,{error:err});
+            Utilfunctions.errorHandler(err,res,"Create ServiceDetail failed");
 		});
 	},
 	destroy:function(req,res){
@@ -104,7 +101,7 @@ module.exports = {
 		ServiceDetail.destroy({id:id}).then(function(data){
 			return res.json({});
 		}).fail(function(err){
-			return res.json(400,{error:err});
+            Utilfunctions.errorHandler(err,res,"Destroy Service failed");
 		});
 	}
 	

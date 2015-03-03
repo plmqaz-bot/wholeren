@@ -15,13 +15,13 @@ module.exports = {
 	'updateUser':function(req,res){
 		var attribs=req.body;
 		var r=attribs['rank'];
-		if(r>=req.session.usr.rank){
+		if(r&&r>=req.session.user.rank){
 			return res.json(404,"cann not set rank higher than yourself");
 		}
 		delete attribs['password'];
 		User.update({id:req.params.id},attribs,function(err,data){
 			if(err){
-				return res.json(400,err);
+				return Utilfunctions.errorHandler(err,res,"Update user failed. id:"+req.params.id);
 			}
 			console.log("User updated: ",data);
 			return res.json(data);
@@ -43,20 +43,16 @@ module.exports = {
                 	if(err) return res.json(400,'cannot compare password');
                     if(!valid) return res.json(400,'password incorrect');
                     console.log("update",attribs.newpassword);
-					User.update({id:id},{password:attribs.newpassword}).then(function(data){
+					return User.update({id:id},{password:attribs.newpassword}).then(function(data){
 						if(data){
 							return res.json(data);
 						}else{
 							return res.json(400,{error:"update failed"});
 						}
-					}).fail(function(err){
-						console.log("failed",err);
-						return res.json(400,err);
-					});	
+					})	
 				});		
 			}).fail(function(err){
-				console.log("failed",err);
-				return res.json(400,err);
+            	return Utilfunctions.errorHandler(err,res,"Change User password failed id:"+id);
 			});
 		}else{
 			return res.json(400,{error:"new passwords don't match"});

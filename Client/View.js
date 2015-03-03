@@ -1152,7 +1152,9 @@ var ContractView=Wholeren.FormView.extend({
             this.collection.setdate({startDate:startDate,endDate:endDate});
             this.collection.endDate=endDate;
             this.removeAll();
-            this.collection.fetch({reset:true});
+            this.collection.fetch({reset:true}).fail(function(err){
+                    util.handleRequestError(err); 
+                });;;
         },
         renderCollection: function (){
             var self=this;

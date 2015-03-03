@@ -52,8 +52,7 @@ module.exports = {
 			toReturn.application=toReturn.application||[];
 			return res.json(toReturn);
 		}).catch(function(err){
-			console.log("error ",err);
-			return res.json(404,err);
+            Utilfunctions.errorHandler(err,res,"Find Service failed id:"+req.params.id);
 		});
 	},
 	'getService':function(req, res){
@@ -124,8 +123,7 @@ module.exports = {
 			console.log("sending");
 			return res.json(allService);
 		}).catch(function(err){
-			console.log("error occurred text: ",err,";");
-			return res.json(404,{error:err});
+            Utilfunctions.errorHandler(err,res,"Find Service failed");
 		});	
 		//var sql="select * from service left join contract on service.contract=contract.id left join application on application.service=service.id";
 	},
@@ -145,8 +143,7 @@ module.exports = {
 			};
 			return res.json(200,filter);
 		}).fail(function(err){
-			console.log(err);
-			return res.json(404,"Error fetching filters");
+            Utilfunctions.errorHandler(err,res,"Get Service filters failed");
 		});
 
 	},
