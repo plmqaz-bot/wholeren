@@ -263,7 +263,7 @@ module.exports={
                 //         res.json(401,{error:err});
                 //     }
                 // });
-                res.json(200,{});
+                res.json(200, {redirect: '/admin/signin/'});
                 console.log("User created");
         }).fail(function (err) {
             Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
