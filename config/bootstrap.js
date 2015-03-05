@@ -41,7 +41,7 @@ var loo=function () {
 		return Promise.all(promises);
 	}).then(function(data){
 		console.log("notification done");
-	}).fail(function(err){
+	}).catch(function(err){
 		console.log(err);
 	});
 };

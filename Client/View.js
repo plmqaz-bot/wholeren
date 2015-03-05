@@ -1098,25 +1098,21 @@ var ContractView=Wholeren.FormView.extend({
             var self=this;
             this.render();
           // $('.Contracts.responsive').floatThead();
-            if (options.collection) {
-                this.collection = options.collection;
-                this.serviceTypes.fetch().done(function(data){
-                    self.collection.on("sort", self.renderCollection, self);
-                    self.ready=true;
+          this.collection = new Obiwang.Collections.Contract();
+          if(options.id){
+                var model=new Obiwang.Models.simpleModel({_url:'/Contract/',id:options.id});
+                model.fetch().then(function(){
+                    if(model)
+                        self.collection.add(model);
                     self.renderCollection();
-                    
+                    self.collection.on("sort", self.renderCollection, self);
+                }).fail(function(err){
+                    util.handleRequestError(err); 
                 });
+            }else if (!this.collection || this.collection.length < 1) {
                 
-            } else if (!this.collection || this.collection.length < 1) {
-                this.collection = new Obiwang.Collections.Contract();
                 self.collection.on("sort", self.renderCollection, self);
                 self.collection.on("reset", self.renderCollection, self);
-                    
-                // $.when(this.collection.fetch(),this.serviceTypes.fetch()).done(function(data){
-                    
-                //     self.ready=true;
-                //     self.renderCollection();
-                // });
             }    
             // Now get filters
             $.ajax({
