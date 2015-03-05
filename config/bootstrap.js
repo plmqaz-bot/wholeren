@@ -29,11 +29,11 @@ var loo=function () {
 		if(data){
 			data.forEach(function(ele){
 				if(ele.sales1){
-					var p=Notifications.create({contract:ele.id,days:ele.dayInterval,user:ele.sales1,reason:ele.textNotification});
+					var p=Notifications.findOrCreate({contract:ele.id,days:ele.dayInterval,user:ele.sales1},{contract:ele.id,days:ele.dayInterval,user:ele.sales1,reason:ele.textNotification});
 					promises.push(p);
 				}
 				if(ele.sales2){
-					var p=Notifications.create({contract:ele.id,days:ele.dayInterval,user:ele.sales1,reason:ele.textNotification});
+					var p=Notifications.findOrCreate({contract:ele.id,days:ele.dayInterval,user:ele.sales2},{contract:ele.id,days:ele.dayInterval,user:ele.sales2,reason:ele.textNotification});
 					promises.push(p);
 				}
 			});	

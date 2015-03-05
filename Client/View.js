@@ -2802,11 +2802,21 @@ Market.view6=Market.view4.extend({
               return this;
             }
         });
+        var RedirectCell=Backgrid.Cell.extend({
+            render: function () {
+              var id=this.model.get('contract');
+              this.$el.html('<a href="/admin/contract/'+id+'">Link</a>');
+              this.delegateEvents();
+              return this;
+            }
+        });
         var columns=[
         {name:'chineseName',label:'客户名字',editable:false,cell:'string'},
         {name:'days',label:'天数',editable:false,cell:'integer'},
         {name:'nickname',label:'销售名字',editable:false,cell:'string'},
         {name:'reason',label:'提醒理由',editable:false,cell:'string'},
+        {name:'createdAt',label:'生成日期',editable:false,cell:'date'},
+        {name:'',label:'跳转',cell:RedirectCell},
         {name:'',label:'Delete',cell:DeleteCell}
         ];
         this.columns=columns;
