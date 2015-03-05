@@ -2816,8 +2816,8 @@ Market.view6=Market.view4.extend({
         {name:'nickname',label:'销售名字',editable:false,cell:'string'},
         {name:'reason',label:'提醒理由',editable:false,cell:'string'},
         {name:'createdAt',label:'生成日期',editable:false,cell:'date'},
-        {name:'',label:'跳转',cell:RedirectCell},
-        {name:'',label:'Delete',cell:DeleteCell}
+        {name:'',label:'跳转',editable:false,cell:RedirectCell},
+        {name:'',label:'Delete',editable:false,cell:DeleteCell}
         ];
         this.columns=columns;
         this.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
