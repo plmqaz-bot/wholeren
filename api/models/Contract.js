@@ -42,7 +42,7 @@ module.exports = {
   	
   	validI20:{type:"boolean",required:true,defaultsTo: 'true'},
   	
-  	gpa:{type:"float"},
+  	gpa:{type:"float",defaultsTo:null},
 
   	toefl:{type:"float"},
 

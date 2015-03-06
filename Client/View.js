@@ -1537,7 +1537,18 @@ var ContractEdit = EditForm.extend({
         if (!validator.isEmail(email)) {
             validationErrors.push("Please enter a correct email address.");
         }
-
+        if((this.modelChanges.gpa||"").length<1){
+             this.modelChanges.gpa=null;
+        }
+        if((this.modelChanges.toefl||"").length<1){
+            this.modelChanges.toefl=null;
+        }
+        if((this.modelChanges.contractSigned||"").length<1){
+            this.modelChanges.contractSigned=null;
+        }
+        if((this.modelChanges.contractPrice||"").length<1){
+            this.modelChanges.contractPrice=null;
+        }
         if (validationErrors.length) {
             validator.handleErrors(validationErrors);
         }else{
@@ -1554,6 +1565,7 @@ var ContractEdit = EditForm.extend({
                     return self.close();
                 },
                 error:function(model,response){
+                    model.attributes=model._previousAttributes;
                     util.handleRequestError(response); 
                     self.refreshClientID();                      
                 }
