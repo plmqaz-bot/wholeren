@@ -31,28 +31,45 @@ module.exports={
     },
     handleRequestError:function(response){
         Wholeren.notifications.clearEverything();
-            var errors=response.responseJSON||{};
-            var errortext=response.responseText||"";
-            if(errors.invalidAttributes){
-                for(var key in errors.invalidAttributes){
-                    if(errors.invalidAttributes.hasOwnProperty(key)){
-                        var a=errors.invalidAttributes[key];
-                        a.forEach(function(item){
-                            Wholeren.notifications.addItem({
-                            type: 'error',
-                            message: JSON.stringify(item),
-                            status: 'passive'
-                            });
+        var errors=response.responseJSON||{};
+        var errortext=response.responseText||"";
+        if(errors.invalidAttributes){
+            for(var key in errors.invalidAttributes){
+                if(errors.invalidAttributes.hasOwnProperty(key)){
+                    var a=errors.invalidAttributes[key];
+                    a.forEach(function(item){
+                        Wholeren.notifications.addItem({
+                        type: 'error',
+                        message: JSON.stringify(item),
+                        status: 'passive'
                         });
-                    }
-                }                     
-            }else{
-                Wholeren.notifications.addItem({
-                            type: 'error',
-                            message: errortext,
-                            status: 'passive'
-                            });
-            }
+                    });
+                }
+            }                     
+        }else{
+            Wholeren.notifications.addItem({
+                        type: 'error',
+                        message: errortext,
+                        status: 'passive'
+                        });
+        }
+    },
+    handleRequestSuccess:function(response){
+        Wholeren.notifications.clearEverything();
+        var text=response.responseText||"";
+        var redirect=response.redirect;
+        var delay=response.delay||5;
+         Wholeren.notifications.addItem({
+                        type: 'success',
+                        message: text,
+                        status: 'passive'
+                        });
+        if(redirect){
+            setTimeout(function(){
+                //Wholeren.router.navigate(redirect,{trigger:true});  
+                window.location.href = redirect;
+            },delay*1000);
+        }
     },
     showError:function(text){
         Wholeren.notifications.clearEverything();

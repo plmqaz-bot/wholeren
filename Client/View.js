@@ -165,7 +165,10 @@ Views.Login=Wholeren.baseView.extend({
                     redirect: redirect
                 },
                 success: function (msg) {
-                    window.location.href = msg.redirect;
+                    var sucessMsg={responseText:"success, please wait to be redirected",redirect:'/admin/contract/',delay:1};
+                    util.handleRequestSuccess(sucessMsg);
+                    //util.handleRequestSuccess(msg);
+                    //window.location.href = msg.redirect;
                 },
                 error: function (xhr) {
                     Wholeren.notifications.clearEverything();
@@ -271,14 +274,8 @@ Views.Login=Wholeren.baseView.extend({
                         role:role
                     },
                     success: function (msg) {
-                        Wholeren.notifications.clearEverything();
-                        Wholeren.notifications.addItem({
-                            type: 'success',
-                            message: "success, please wait for your account to be activated",
-                            status: 'passive'
-                        }); 
-                        Wholeren.router.navigate('/admin/signin/');   
-                                            
+                        var sucessMsg={responseText:"success, please wait for your account to be activated",redirect:'/admin/signin/'};
+                        util.handleRequestSuccess(sucessMsg);
                         //window.location.href = '/admin/signin/';
                     },
                     error: function (xhr) {
