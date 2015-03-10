@@ -251,7 +251,7 @@ module.exports={
                 //         "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
                 //     );
                 // });
-                EmailService.sendWelcomeEmail({nickname:nickname});
+                EmailService.sendWelcomeEmail({nickname:nickname,email:email});
                 // req.session.regenerate(function (err) {
                 //     if (!err) {
                 //         if (req.session.user === undefined) {

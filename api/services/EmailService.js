@@ -18,7 +18,7 @@ module.exports={
 		auth:sails.config.emailAuth
 		});
 		sendMail(email,{
-		to : "han.lai321@gmail.com",
+		to : options.email,
 		from : "obama@whitehouse.gov",
 		subject : "Thanks for registering",
 		html:"Dear "+options.nickname+"<br> Thank you for registering, please wait for a manager to activate your account."
