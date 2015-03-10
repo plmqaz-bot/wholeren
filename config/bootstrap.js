@@ -10,17 +10,10 @@
  */
 var later=require('later');
 var Promise=require('bluebird');
+
 module.exports.bootstrap = function(cb) {
 /*************************also schedule *****************************************/
 
-// later.date.localTime();
-// var textSched = later.parse.text('at 00:01am every day');
-// var everymin=later.parse.text('every minute');
-// var t=later.setInterval(logtime,everymin);
-// console.log("start");s
-// function logtime(){
-//     console.log(new Date());
-// }
 var loo=function () {
 	console.log("Hello");
 	var sql="select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval);";
