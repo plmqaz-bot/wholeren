@@ -2717,7 +2717,8 @@ var Footer = Backgrid.Footer = Backbone.View.extend({
    - Backgrid.Footer
 */
 var Grid = Backgrid.Grid = Backbone.View.extend({
-
+  removeHeader:false,
+  removeBody:false,
   /** @property */
   tagName: "table",
 
@@ -2732,7 +2733,16 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 
   /** @property */
   footer: null,
-
+  removeBodyAction: function() {
+   if( this.removeBody ) {
+      this.$el.addClass('remove_body');
+   }
+ },
+ fixedHeaderAction: function() {
+   if( this.removeHeader ) {
+      this.$el.addClass('remove_header');
+   }
+ },
   /**
      Initializes a Grid instance.
 
@@ -2745,6 +2755,13 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
      @param {Backgrid.Footer} [options.footer=Backgrid.Footer] An optional Footer class.
    */
   initialize: function (options) {
+    if( options.removeHeader ) {
+      this.removeHeader = options.removeHeader;
+    }
+
+    if( options.removeBody ) {
+      this.removeBody = options.removeBody;
+    }
     // Convert the list of column objects here first so the subviews don't have
     // to.
     if (!(options.columns instanceof Backbone.Collection)) {

@@ -1,5 +1,5 @@
 ﻿"use strict";
-var $ = require('./floatThead.js');
+var $ = require('./backgrid.fixedheader.js');
 //var Backbone = require('backbone');
 var Backgrid=require('./backgrid-paginator.js');
 var Backbone= require('./backbone.modal.js');
@@ -2004,7 +2004,11 @@ var SalesComissionView=Wholeren.FormView.extend({
                 ];
                 self.columns=columns;
                 self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                $('.table-wrapper').append(self.grid.render().el);
+                //$('.table-wrapper').append(self.grid.render().el);
+                $.backgridFixedHeader({
+                    grid:self.grid,
+                    container:$('.table-wrapper')
+                });
                 var paginator = new Backgrid.Extension.Paginator({
                 windowSize: 20, // Default is 10
                 slideScale: 0.25, // Default is 0.5
