@@ -35,7 +35,8 @@
     "csv-parse":"*",
     "backbone.paginator":"*",
     "later":"*",
-    "nodemailer":"*"
+    "nodemailer":"*",
+    "lunr":"*"
   },
   "scripts": {
     "start": "node main.js",
