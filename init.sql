@@ -41,6 +41,31 @@ insert into lead values('合作：Moonbbs北美微论坛',NULL,NOW(),NOW());
 insert into lead values('合作：洛杉矶华人资讯网',NULL,NOW(),NOW());
 insert into lead values('合作：Gesoo',NULL,NOW(),NOW());
 insert into lead values('合作：其他机构',NULL,NOW(),NOW());
+=======
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+>>>>>>> origin/master
 
 #LeadLevel
 insert into leadlevel values('L1：有互动，且信息完整',NULL,NOW(),NOW());
