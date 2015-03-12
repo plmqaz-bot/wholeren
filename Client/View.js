@@ -1,7 +1,8 @@
 ﻿"use strict";
 var $ = require('./backgrid.fixedheader.js');
 //var Backbone = require('backbone');
-var Backgrid=require('./backgrid-paginator.js');
+//var Backgrid=require('./backgrid-paginator.js');
+var Backgrid=require('./backgrid-filter.js');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
 Backbone.$=$;
@@ -14,6 +15,7 @@ var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
 var BackgridCells=require('./backgrid.cell.js');
+
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 == v2) {
@@ -1774,7 +1776,7 @@ var ContractEdit = EditForm.extend({
 // });
 
 var ServiceView=Wholeren.FormView.extend({
-    templateName:'serviceComission',
+    templateName:'dateTableView',
     ready:true,
     initialize: function (options) {
         this.rank=$('#rank').text();
@@ -1792,6 +1794,16 @@ var ServiceView=Wholeren.FormView.extend({
                 $('.app').html(teacherview.el);
             },
         });
+        var appPopup=BackgridCells.Cell.extend({
+            cellText:'Applications',
+            action:function(e){
+                e.preventDefault();
+                var id=this.model.get('id');
+                var appview= new ApplicationPopup({id:id});
+                appview.render();
+                $('.app').html(appview.el);  
+            }
+        });
         var comment=BackgridCells.Cell.extend({
             cellText:'Comments',
             action:function(e){
@@ -1802,35 +1814,61 @@ var ServiceView=Wholeren.FormView.extend({
                 $('.app').html(m.renderAll().el);   
             }
         });
-
-        var columns=[
-        {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
-        {name:'nickname',label:'销售名字',editable: false,cell:'string'},
-        {name:'serviceType',label:'服务类型',cell:'string'},
-        {name:'contractPaid',label:'付款时间',editable:false,cell:'date'},
-        {name:'price',label:'服务价格',editable:false,cell:'number'},
-        {name:'realPaid',label:'实际收入',editable:false,cell:'number'},
-        {name:'salesRole',label:'销售任务',cell:myselect},
-        {name:'comissionPercent',label:'佣金百分比',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
-        {name:'flatComission',label:'佣金非百分比',editable: false,cell:'number'},
-        {name:'comission',label:'服务佣金百分比',editable: false,cell:'number'},
-        {name:'extra',label:'其他',cell:'number'},
-        {name:'final',label:'总佣金',cell:'number'}
-        ];
-        this.columns=columns;
-        this.grid=new Backgrid.Grid({columns:columns,collection:this.collection});
-        //$('.table-wrapper').append(self.grid.render().el);
-        $.backgridFixedHeader({
-            grid:this.grid,
-            container:$('.table-wrapper')
+        var self=this;
+        util.ajaxGET('/ServiceProgress/').then(function(progress){
+            var progressselect=Backgrid.SelectCell.extend({
+                optionValues:function(){
+                    var selection=_.map(progress,function(e){return [e.serviceProgress,e.id]});
+                    return [{name:"Progress",values:selection}];
+                },
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
+            });
+            var columns=[
+            {name:'serviceProgress',label:'状态',cell:progressselect},
+            {name:'nickname',label:'负责老师',editable: false,cell:'string'},
+            {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+            {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
+            {name:'type',label:'服务类型',editable:false,cell:'string'},
+            {name:'gpa',label:'GPA',editable:false,cell:'number'},
+            {name:'toefl',label:'托福',editable:false,cell:'number'},
+            {name:'gre',label:'GRE',editable:false,cell:'number'},
+            {name:'sat',label:'SAT',editable:false,cell:'number'},
+            {name:'otherScore',label:'服务类型',editable:false,cell:'string'},
+            {name:'degree',label:'原学校类型',editable:false,cell:'string'},
+            {name:'previousSchool',label:'原学校',editable:false,cell:'string'},
+            {name:'major',label:'原专业',editable:false,cell:'number'},
+            {name:'step1',label:'step1',editable:false,cell:'number'},
+            {name:'step2',label:'step2',cell:'string'},
+            {name:'studentDestination',label:'学生去向',cell:'string'},
+            {name:'',label:'Show Applications',cell:appPopup},
+            {name:'',label:'Comment',cell:comment},
+            {name:'',label:'Show Details',cell:popup},
+            ];
+            self.columns=columns;
+            self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            $('.table-wrapper').append(self.grid.render().el);
+             var paginator = new Backgrid.Extension.Paginator({
+                    windowSize: 20, // Default is 10
+                    slideScale: 0.25, // Default is 0.5
+                    goBackFirstOnSort: false, // Default is true
+                    collection: self.collection
+                    });
+            $('.table-wrapper').append(paginator.render().el);  
+            var clientSideFilter = new Backgrid.Extension.ClientSideFilter({
+                collection: self.collection,
+                placeholder: "Search in the browser",
+                // The model fields to search for matches
+                fields: ['chineseName','type','degree','previousSchool','major','studentDestination','nickname'],
+                // How long to wait after typing has stopped before searching can start
+                wait: 150
+            });
+            $('.table-wrapper').prepend(clientSideFilter.render().el);               
         });
-        var paginator = new Backgrid.Extension.Paginator({
-        windowSize: 20, // Default is 10
-        slideScale: 0.25, // Default is 0.5
-        goBackFirstOnSort: false, // Default is true
-        collection: this.collection
-        });
-        $('.table-wrapper').append(paginator.render().el);       
+        
     },
     events: {
     'click  button.button-alt': 'refetch',
@@ -1838,9 +1876,9 @@ var ServiceView=Wholeren.FormView.extend({
     },    
     refetch:function(e){
         if(!this.ready) return;
-        var year=$('#year').val();
-        var month=$('#month').val();
-        this.collection.setdate({year:year,month:month});
+        var startDate=$('#startDate').val();
+        var endDate=$('#endDate').val();
+        this.collection.setdate({startDate:startDate,endDate:endDate});
         this.collection.reset();
         if(this.collection.fullCollection)this.collection.fullCollection.reset();
         this.collection.fetch({reset:true});
@@ -1849,6 +1887,7 @@ var ServiceView=Wholeren.FormView.extend({
         util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
     }
     });
+
 var ServicePopup=Backbone.Modal.extend({
     prefix:"bbm",
     template: JST['editbox'],
@@ -1942,29 +1981,7 @@ var ServicePopup=Backbone.Modal.extend({
                 } 
             });
             var DeleteCell = BackgridCells.DeleteCell;
-            var UpdateCell=Backgrid.Cell.extend({
-                template: _.template("<a>Update</a>"),
-                events: {
-                  "click": "update"
-                },
-                update: function (e) {
-                  e.preventDefault();
-                  this.model.save().then(function(model){
-                        Wholeren.notifications.addItem({
-                            type: 'success',
-                            message: "Update Successful",
-                            status: 'passive'
-                        });
-                    }).fail(function(response){
-                        util.handleRequestError(response);
-                    });
-                },
-                render: function () {
-                  this.$el.html(this.template());
-                  this.delegateEvents();
-                  return this;
-                }
-            });
+            var UpdateCell=BackgridCells.UpdateCell;
             var columns=[
                 {name:'user',label:'User',cell:userselect},
                 {name:'servRole',label:'Role',cell:roleselect},
@@ -1991,7 +2008,81 @@ var ServicePopup=Backbone.Modal.extend({
         }
     }
 });
-
+var ApplicationPopup=ServicePopup.extend({
+     initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
+        this.cache=[];
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.serviceID=parseInt(options.id);
+        this.collection=new Obiwang.Collections.Application();
+        this.collection.setSID(this.serviceID);
+    },     
+    addnew:function(e){
+        var toAdd=new Obiwang.Models.simpleModel({_url:'/Application/'});
+        toAdd.set('service',this.serviceID);
+        var self=this;
+        toAdd.save(null,{
+            success:function(d){
+                self.collection.add(toAdd);
+            },
+            error:function(model,response){
+                util.handleRequestError(response);                       
+            }
+        });
+    },
+    afterRender:function(model){
+        var container=this.$el.find('.bbm-modal__section');
+        container.append('<button class="button-add">Add New</button>');
+        
+        var self=this;
+        util.ajaxGET('/User/').then(function(users){
+            var userselect=Backgrid.SelectCell.extend({
+                optionValues:function(){
+                    var selection=_.map(users,function(e){return [e.nickname,e.id]});
+                    return [{name:"Users",values:selection}];
+                },
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
+            });
+            var comment=BackgridCells.Cell.extend({
+                cellText:'Comments',
+                action:function(e){
+                    var item=$(e.currentTarget);
+                    var id = this.model.get('id');
+                    var m=new CommentModalView({aid:id});
+                    $('.app').append(m.renderAll().el);   
+                }
+            });
+            var DeleteCell = BackgridCells.DeleteCell;
+            var UpdateCell=BackgridCells.UpdateCell;
+            var columns=[
+                {name:'user',label:'文书负责人',cell:userselect},
+                {name:'collageName',label:'所申学校',cell:'string'},
+                {name:'appliedMajor',label:'申请专业',cell:'string'},
+                {name:'succeed',label:'录取',cell:'boolean'},
+                {name:'newDev',label:'新开发？',cell:'boolean'},
+                {name:'appliedSemester',label:'申请入读学期',cell:'string'},
+                //{name:'studentCondition',label:'Condition',cell:'string'},
+                {name:'',label:'Comments',cell:comment},
+                //{name:'',label:'Update',cell:UpdateCell},
+                {name:'',label:'Delete Action',cell:DeleteCell}
+                ];
+            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+                container.append(grid.render().el);
+                self.collection.fetch({reset:true});
+            }).error(function(err){
+                console.log(err);
+            });  
+        return this;
+    }, 
+});
 var SalesComissionView=Wholeren.FormView.extend({
     templateName:'serviceComission',
     ready:true,

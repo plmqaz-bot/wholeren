@@ -10,6 +10,8 @@ module.exports = {
   attributes: {
 	collageName:{type:'string'},
 
+	appliedMajor:{type:'string'},
+
 	writer:{model:'User'},
 
 	service:{model:'Service'},

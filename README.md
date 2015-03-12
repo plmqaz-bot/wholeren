@@ -139,4 +139,6 @@ Insert into contract has problem. --DONE
 
 use colgroup for fix columns
 
+add gre and sat in contract
+
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

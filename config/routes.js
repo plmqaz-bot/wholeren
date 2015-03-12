@@ -73,10 +73,10 @@ module.exports.routes = {
     controller:'service',
     action:'update'
   },
-  'GET /service/':{
-    controller:'service',
-    action:'getService'
-  },
+  // 'GET /service/':{
+  //   controller:'service',
+  //   action:'getService'
+  // },
   'GET /user/':{
     controller:'user',
     action:'getAllUser',

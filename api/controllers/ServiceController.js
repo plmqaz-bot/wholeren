@@ -5,7 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
  function constructsql(where,who){
-			return "select client.chineseName,c.teacher,service.*,c.contractSigned, serviceprogress.serviceProgress as 'progress', servicetype.serviceType as 'type', c.gpa,c.toefl,c.otherScore, c.degree,c.major, c.previousSchool \
+			return "select client.chineseName,c.teacher,service.*,c.contractSigned, servicetype.serviceType as 'type', c.gpa,c.toefl,c.sat,c.gre,c.otherScore, degree.degree,c.major, c.previousSchool \
 			from contract c \
 			inner join status on c.status=status.id \
 			inner join client on c.client=client.id \
@@ -13,6 +13,7 @@
 			left join serviceprogress on service.serviceProgress=serviceprogress.id \
 			left join servicetype on service.serviceType=servicetype.id \
 			left join servicedetail s on s.service=service.id \
+			left join degree on c.degree=degree.id \
 			inner join user on \
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher, s.user))  where \
 			c.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"
@@ -37,22 +38,11 @@ module.exports = {
 		Utilfunctions.nativeQuery(sql).then(function(serv){
 			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
 			return res.json(serv[0]);
-			//var servid=serv[0].id;
-			//var clientid=serv[0].client;
-			//console.log(servid,clientid);
-			//return Promise.all([Service.findOne({id:servid}).populateAll(), Client.findOne({id:clientid}),User.find()]);
-		// }).then(function(data){
-		// 	var toReturn=data[0];
-		// 	toReturn.contract.client=data[1];
-		// 	var allUser=Utilfunctions.makePopulateHash(data[2]);
-		// 	toReturn.application=toReturn.application||[];
-		// 	return res.json(toReturn);
-		 }).catch(function(err){
+		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Find Service failed id:"+req.params.id);
 		});
 	},
-	'getService':function(req, res){
-		
+	'find':function(req, res){
 		var id=req.session.user.id;
 		var where=req.param('where')||{};
 		console.log(where);
@@ -83,7 +73,7 @@ module.exports = {
 		}
 		promise.then(function(servIDs){
 			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"no service found for user"});
-			return res.json(serv);
+			return res.json(servIDs);
 		//	var idarray=_.uniq(servIDs.map(function(c){return c.id;}));
 		//	var contractarray=_.uniq(servIDs.map(function(c){return c.contract;}));
 		//	var appliarray=_.uniq(servIDs.map(function(c){return c.application;}));
@@ -122,6 +112,21 @@ module.exports = {
             Utilfunctions.errorHandler(err,res,"Find Service failed");
 		});	
 		//var sql="select * from service left join contract on service.contract=contract.id left join application on application.service=service.id";
+	},
+	'update':function(req,res){
+		var attribs=req.body;
+		var id=req.params.id;
+		delete attribs["createAt"];
+		delete attribs["updateAt"];
+		Service.update({id:id},attribs).then(function(data){
+			var sql=constructsql("", " and service.id="+req.params.id);
+			return Utilfunctions.nativeQuery(sql);
+		}).then(function(serv){
+			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
+			return res.json(serv[0]);
+		}).catch(function(err){
+            Utilfunctions.errorHandler(err,res,"Find Service failed id:"+req.params.id);
+		});
 	},
 	'getFilters':function(req,res){
 		

@@ -1,9 +1,11 @@
 ﻿var Backbone = require('./backbone.paginator.js');
 //var PageableCollection=require('backbone.paginator');
 $ = require('jquery');
+var util=require('./util.js');
 Backbone.$ = $;
 Models = {};
 Collections = {};
+var _=require('lodash');
 var simpleModel=Backbone.Model.extend({
         urlRoot:function(){
             var base=this._url||_.result(this.collection,'_url')||_.result(this.collection,'url')||urlError();
@@ -32,7 +34,7 @@ var syncModel=simpleModel.extend({
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
             var prevAttr=model._previousAttributes;
-            model.save(null,{error:function(model,response){
+            model.save(model.changed,{patch:true,error:function(model,response){
                 model.set(prevAttr,{save:false});
                 util.handleRequestError(response);
             },save:false});
@@ -453,26 +455,30 @@ Collections={
         }
     }),
     Application:Backbone.Collection.extend({
-        model:Models.simpleModel,
-        url:'/Application/'
+        model:Models.syncModel,
+        _url:'/Application/',
+        url:function(){
+            var toReturn='/Application/?service='+this.sid;
+            return toReturn;
+        },
+        setSID:function(sid){
+            this.sid=sid;
+        }
     }),
     Role:Backbone.Collection.extend({
         model:Models.simpleModel,
         url:'/Role/'
     }),
-    Service:sortableCollection.extend({
-        model: Models.Service,
+    Service:Backbone.PageableCollection.extend({
+        model: Models.syncModel,
         url: function(){return '/Service/?where='+this.whereclaus();},
         
         initialize:function(models,options){
             options=options||{};
-            if(options.sortAttr){
-                this.sortAttr=options.sortAttr;
-            }else{
-                this.selectedStrat({sortAttr:'contract.createdAt'});
-            }
             this.startDate=options.startDate||"09-01-2014";
             this.endDate=options.endDate||"";
+            this.mode="client";
+            this.state={pageSize:25};
         },
         setdate:function(options){
             this.startDate=options.startDate;
@@ -586,6 +592,7 @@ Collections={
     }),
     ServiceDetail:Backbone.PageableCollection.extend({
         model:Models.syncModel,
+        _url:'/ServiceDetail/',
         url:function(){
             var toReturn='/ServiceDetail/?service='+this.sid;
             return toReturn;
