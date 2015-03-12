@@ -135,6 +135,8 @@ generate csv --DONE
 
 Save attribute should roll back --DONE
 
-Insert into contract has problem.
+Insert into contract has problem. --DONE
+
+use colgroup for fix columns
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

@@ -46,6 +46,10 @@ module.exports = {
 
   	toefl:{type:"float"},
 
+    sat:{type:"float"},
+
+    gre:{type:"float"},
+
   	age:{type:"string"},
 
     otherScore:{type:"string"},

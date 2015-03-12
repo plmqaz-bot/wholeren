@@ -13,6 +13,7 @@ var validator=require('./validator.js');
 var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
+var BackgridCells=require('./backgrid.cell.js');
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 == v2) {
@@ -1262,33 +1263,7 @@ var ContractInvoiceView=Backbone.Modal.extend({
     afterRender:function(model){
         var container=this.$el.find('.bbm-modal__section');
         container.append('<button class="button-add-invoice">Add New</button>');
-        var DeleteCell = Backgrid.Cell.extend({
-            template: _.template("<a>Delete</a>"),
-            events: {
-              "click a": "deleteRow"
-            },
-            deleteRow: function (e) {
-              e.preventDefault();
-              this.model.destroy({
-                success:function(model){
-                    Wholeren.notifications.addItem({
-                        type: 'success',
-                        message: "Delete Successful",
-                        status: 'passive'
-                    });
-                },
-                error:function(response){
-                    util.handleRequestError(response);
-                },
-                wait:true
-              });
-            },
-            render: function () {
-              this.$el.html(this.template());
-              this.delegateEvents();
-              return this;
-            }
-        });
+        var DeleteCell = BackgridCells.DeleteCell;
         var ServiceInvoiceCell=Backgrid.Cell.extend({
             template: _.template("<a href='#'>Details</a>"),
             events: {
@@ -1571,232 +1546,309 @@ var ContractEdit = EditForm.extend({
     },
 });
 /*************************************************Views for Services *****************************/
-var ServiceView=Wholeren.FormView.extend({
-    filter:[],
-    singleTemplate:JST['serviceSingle'],
-    user:{},
-    ready:false,
-    templateName:'service',
-        initialize: function (options) {
-            this.rank=$('#rank').text();
-            _.bindAll(this,'rerenderSingle');
-            _.bindAll(this,'renderCollection');
-            _.bindAll(this,'renderCollectionCore');
-            this.el=options.el;
-            this.user=new Obiwang.Collections.User();
-            var self=this;
-            this.collection = new Obiwang.Collections.Service();
-            this.render();
-            if(options.id){
-                var model=new Obiwang.Models.simpleModel({_url:'/Service/',id:options.id});
-                model.fetch().then(function(){
-                    if(model)
-                        self.collection.add(model);
-                    self.ready=true;
-                    self.renderCollectionCore();
-                    self.collection.on("sort", self.renderCollection, self);
-                }).fail(function(err){
-                    util.handleRequestError(err); 
-                });
-            }else {
-                this.collection.fetch().then(function(){
-                    self.ready=true;
-                    self.renderCollectionCore();
-                    self.collection.on("sort", self.renderCollection, self);
-                }).fail(function(err){
-                    util.handleRequestError(err); 
-                });;
-            }
-            self.collection.on("reset",self.renderCollection,self);
-             // Now get filters
-            $.ajax({
-                url: '/service/getFilters/',
-                type: 'GET',
-                headers: {
-                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
-                },
-                success: function (data) {
-                    self.renderFilterButtons(data);                
-                },
-                error: function (xhr) {
-                    console.log('error');
-                }
-            });
-        },
-        events: {
-        'click .add,.edit,.del':'editApplication',
-        'click  button.button-alt': 'refetch',
-        'change .filter':'renderCollection',
-        'click .textbox,.selectbox,.multiselectbox':'editAttr',
-        'click .sortablehead':'sortCollection',
-        'click .comment_edit':'showComments',
-        'click a.page':'switchPage',
-        'click .pop':'editTeacher'
-        },    
-        editTeacher:function(e){
-            e.preventDefault();
-            var item =$(e.currentTarget);
-            var id = item.parent().parent().attr('name');
-            var type=item.data('type');
-            var teacherview= new ServicePopup({id:id,type:type});
-            teacherview.render();
-            $('.app').html(teacherview.el);
-        },
-        refetch:function(e){
-            var startDate=$('#startDate').val();
-            var endDate=$('#endDate').val();
-            this.collection.setdate({startDate:startDate,endDate:endDate});
-            this.collection.endDate=endDate;
-            this.removeAll();
-            this.collection.fetch({reset:true});
-        },    
-        renderCollection: function (){
-            // if(this.ready){
-                this.resetCollection();
-                this.renderCollectionCore();       
-            // }else{
-            //      var self=this;
-            //     this.user=new Obiwang.Collections.User();
-            //     this.user.fetch().done(function(data){
-            //         self.ready=true;
-            //         self.resetCollection();
-            //         self.renderCollectionCore();
-            //     }); 
-            // }            
-        },
-        resetCollection:function(){
-            this.collection.forEach(function(serv){
-                var apps=serv.get('application');
-                if(apps){
-                    apps.forEach(function(app){
-                        app.display=true;
-                    });
-                }
-                serv.set('application',apps);
-            });
-        },
-        headline:function(obj){
-            if(obj.contract.client){
-                return obj.contract.client.chineseName;                
-            }else{
-                return "NO NAME";
-            }
-        },
-        modifyRow:function(obj){
-            var self=this;
-            if(obj.application){
-                obj.application.forEach(function(ele){
-                    var id=parseInt(ele.writer);
-                    if(id){
-                        ele.writer=self.user.get(id).toJSON();
-                    }
-                });   
-            }
-            // var id=obj.contract.client;
-            // if(id){
-            //     obj.contract.client=self.client.get(id).toJSON();
-            // }
-            if(this.rank>1){
-                obj.displayDelete=1;
-            }
-            return obj;
-        },
-        editApplication:function(e){
-            // Service id
-            var item=$(e.currentTarget);
-            var id = item.parent().parent().attr('name');
-            var action=item.attr('class');
-            var appid=item.attr('href').substring(1);
-            var curService = this.collection.get(id);
-            var self=this;
-            switch(action){
-                case 'add':
-                    var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',service:id});
-                    newApp.save({},{
-                        success:function(d){
-                            self.rerenderSingle({id:id});            
-                        },
-                        error:function(model,response){
-                            util.handleRequestError(response);                       
-                        }
-                    });
-                    break;
-                case 'del':
-                    var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',id:appid});
-                    newApp.destroy({
-                        success:function(d){
-                            self.rerenderSingle({id:id});            
-                        },
-                        error:function(model,response){
-                            util.handleRequestError(response);                       
-                        }
-                    });
-                    break;
-                case 'edit':
-                    var apps=curService.get('application')||[];
-                    var curApp;
-                    apps.forEach(function(ele){
-                        if(ele.id==appid){
-                            curApp=ele;
-                            return;
-                        }
-                    });
-                    if(!curApp){
-                        return;
-                    }
+// var ServiceView=Wholeren.FormView.extend({
+//     filter:[],
+//     singleTemplate:JST['serviceSingle'],
+//     user:{},
+//     ready:false,
+//     templateName:'service',
+//         initialize: function (options) {
+//             this.rank=$('#rank').text();
+//             _.bindAll(this,'rerenderSingle');
+//             _.bindAll(this,'renderCollection');
+//             _.bindAll(this,'renderCollectionCore');
+//             this.el=options.el;
+//             this.user=new Obiwang.Collections.User();
+//             var self=this;
+//             this.collection = new Obiwang.Collections.Service();
+//             this.render();
+//             if(options.id){
+//                 var model=new Obiwang.Models.simpleModel({_url:'/Service/',id:options.id});
+//                 model.fetch().then(function(){
+//                     if(model)
+//                         self.collection.add(model);
+//                     self.ready=true;
+//                     self.renderCollectionCore();
+//                     self.collection.on("sort", self.renderCollection, self);
+//                 }).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });
+//             }else {
+//                 this.collection.fetch().then(function(){
+//                     self.ready=true;
+//                     self.renderCollectionCore();
+//                     self.collection.on("sort", self.renderCollection, self);
+//                 }).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });;
+//             }
+//             self.collection.on("reset",self.renderCollection,self);
+//              // Now get filters
+//             $.ajax({
+//                 url: '/service/getFilters/',
+//                 type: 'GET',
+//                 headers: {
+//                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+//                 },
+//                 success: function (data) {
+//                     self.renderFilterButtons(data);                
+//                 },
+//                 error: function (xhr) {
+//                     console.log('error');
+//                 }
+//             });
+//         },
+//         events: {
+//         'click .add,.edit,.del':'editApplication',
+//         'click  button.button-alt': 'refetch',
+//         'change .filter':'renderCollection',
+//         'click .textbox,.selectbox,.multiselectbox':'editAttr',
+//         'click .sortablehead':'sortCollection',
+//         'click .comment_edit':'showComments',
+//         'click a.page':'switchPage',
+//         'click .pop':'editTeacher'
+//         },    
+//         editTeacher:function(e){
+//             e.preventDefault();
+//             var item =$(e.currentTarget);
+//             var id = item.parent().parent().attr('name');
+//             var type=item.data('type');
+//             var teacherview= new ServicePopup({id:id,type:type});
+//             teacherview.render();
+//             $('.app').html(teacherview.el);
+//         },
+//         refetch:function(e){
+//             var startDate=$('#startDate').val();
+//             var endDate=$('#endDate').val();
+//             this.collection.setdate({startDate:startDate,endDate:endDate});
+//             this.collection.endDate=endDate;
+//             this.removeAll();
+//             this.collection.fetch({reset:true});
+//         },    
+//         renderCollection: function (){
+//             // if(this.ready){
+//                 this.resetCollection();
+//                 this.renderCollectionCore();       
+//             // }else{
+//             //      var self=this;
+//             //     this.user=new Obiwang.Collections.User();
+//             //     this.user.fetch().done(function(data){
+//             //         self.ready=true;
+//             //         self.resetCollection();
+//             //         self.renderCollectionCore();
+//             //     }); 
+//             // }            
+//         },
+//         resetCollection:function(){
+//             this.collection.forEach(function(serv){
+//                 var apps=serv.get('application');
+//                 if(apps){
+//                     apps.forEach(function(app){
+//                         app.display=true;
+//                     });
+//                 }
+//                 serv.set('application',apps);
+//             });
+//         },
+//         headline:function(obj){
+//             if(obj.contract.client){
+//                 return obj.contract.client.chineseName;                
+//             }else{
+//                 return "NO NAME";
+//             }
+//         },
+//         modifyRow:function(obj){
+//             var self=this;
+//             if(obj.application){
+//                 obj.application.forEach(function(ele){
+//                     var id=parseInt(ele.writer);
+//                     if(id){
+//                         ele.writer=self.user.get(id).toJSON();
+//                     }
+//                 });   
+//             }
+//             // var id=obj.contract.client;
+//             // if(id){
+//             //     obj.contract.client=self.client.get(id).toJSON();
+//             // }
+//             if(this.rank>1){
+//                 obj.displayDelete=1;
+//             }
+//             return obj;
+//         },
+//         editApplication:function(e){
+//             // Service id
+//             var item=$(e.currentTarget);
+//             var id = item.parent().parent().attr('name');
+//             var action=item.attr('class');
+//             var appid=item.attr('href').substring(1);
+//             var curService = this.collection.get(id);
+//             var self=this;
+//             switch(action){
+//                 case 'add':
+//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',service:id});
+//                     newApp.save({},{
+//                         success:function(d){
+//                             self.rerenderSingle({id:id});            
+//                         },
+//                         error:function(model,response){
+//                             util.handleRequestError(response);                       
+//                         }
+//                     });
+//                     break;
+//                 case 'del':
+//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',id:appid});
+//                     newApp.destroy({
+//                         success:function(d){
+//                             self.rerenderSingle({id:id});            
+//                         },
+//                         error:function(model,response){
+//                             util.handleRequestError(response);                       
+//                         }
+//                     });
+//                     break;
+//                 case 'edit':
+//                     var apps=curService.get('application')||[];
+//                     var curApp;
+//                     apps.forEach(function(ele){
+//                         if(ele.id==appid){
+//                             curApp=ele;
+//                             return;
+//                         }
+//                     });
+//                     if(!curApp){
+//                         return;
+//                     }
 
-                    var popUpView = new ApplicationEdit({view:this,service:curService,curApp:curApp});
-                    $('.app').html(popUpView.render().el);
-            }             
-        },
-        showComments:function(e){
-            var item=$(e.currentTarget);
-            var id = item.attr('href').substring(1);
-            var type=item.data('type');
-            if(type=='app'){
-                var m=new CommentModalView({aid:id});
-                $('.app').html(m.renderAll().el); 
-            }else{
-                var m=new CommentModalView({sid:id});
-                $('.app').html(m.renderAll().el); 
-            }
+//                     var popUpView = new ApplicationEdit({view:this,service:curService,curApp:curApp});
+//                     $('.app').html(popUpView.render().el);
+//             }             
+//         },
+//         showComments:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var type=item.data('type');
+//             if(type=='app'){
+//                 var m=new CommentModalView({aid:id});
+//                 $('.app').html(m.renderAll().el); 
+//             }else{
+//                 var m=new CommentModalView({sid:id});
+//                 $('.app').html(m.renderAll().el); 
+//             }
             
-        }  
-        // renderCollectionCore:function(){
-        // // Remove all keywords
-        // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
-        // toRemove.remove();
-        // var headrow=$('#scrollableheader');
-        // var stableheadrow=$('#pinnedheader');
-        // var self=this;
-        // this.collection.forEach(function(item){
-        //     var obj=item.toJSON();
-        //     obj.application.forEach(function(ele){
-        //         var id=ele.writer;
-        //         if(id){
-        //             ele.writer=self.user.get(id).toJSON();
-        //         }
-        //     });
-        //     var id=obj.contract.client;
-        //     if(id){
-        //         obj.contract.client=self.client.get(id).toJSON();
-        //     }
-        //     var ele = self.singleTemplate(obj);
-        //     var toInsert = $('<div/>').html(ele).contents();
-        //     toInsert.insertAfter(headrow);
-        //     var headline='';
-        //     if(obj.contract.client){
-        //         headline=obj.contract.client.chineseName;
+//         }  
+//         // renderCollectionCore:function(){
+//         // // Remove all keywords
+//         // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
+//         // toRemove.remove();
+//         // var headrow=$('#scrollableheader');
+//         // var stableheadrow=$('#pinnedheader');
+//         // var self=this;
+//         // this.collection.forEach(function(item){
+//         //     var obj=item.toJSON();
+//         //     obj.application.forEach(function(ele){
+//         //         var id=ele.writer;
+//         //         if(id){
+//         //             ele.writer=self.user.get(id).toJSON();
+//         //         }
+//         //     });
+//         //     var id=obj.contract.client;
+//         //     if(id){
+//         //         obj.contract.client=self.client.get(id).toJSON();
+//         //     }
+//         //     var ele = self.singleTemplate(obj);
+//         //     var toInsert = $('<div/>').html(ele).contents();
+//         //     toInsert.insertAfter(headrow);
+//         //     var headline='';
+//         //     if(obj.contract.client){
+//         //         headline=obj.contract.client.chineseName;
                 
-        //     }
-        //     if(!headline){
-        //             headline="NO NAME";
-        //     }
-        //     var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
-        //     headInsert.insertAfter(stableheadrow);
-        // });     
-        // },
-});
+//         //     }
+//         //     if(!headline){
+//         //             headline="NO NAME";
+//         //     }
+//         //     var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
+//         //     headInsert.insertAfter(stableheadrow);
+//         // });     
+//         // },
+// });
+
+var ServiceView=Wholeren.FormView.extend({
+    templateName:'serviceComission',
+    ready:true,
+    initialize: function (options) {
+        this.rank=$('#rank').text();
+        this.el=options.el;
+        this.collection = new Obiwang.Collections['Service']();
+        this.render({title:"Services"});
+        var popup=BackgridCells.Cell.extend({
+            cellText:'Details',
+            action:function(e){
+                e.preventDefault();
+                var id=this.model.get('id');
+                var type=this.model.get('serviceType');
+                var teacherview= new ServicePopup({id:id,type:type});
+                teacherview.render();
+                $('.app').html(teacherview.el);
+            },
+        });
+        var comment=BackgridCells.Cell.extend({
+            cellText:'Comments',
+            action:function(e){
+                var item=$(e.currentTarget);
+                var id = this.model.get('id');
+                var type='serv';
+                var m=new CommentModalView({sid:id});
+                $('.app').html(m.renderAll().el);   
+            }
+        });
+
+        var columns=[
+        {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+        {name:'nickname',label:'销售名字',editable: false,cell:'string'},
+        {name:'serviceType',label:'服务类型',cell:'string'},
+        {name:'contractPaid',label:'付款时间',editable:false,cell:'date'},
+        {name:'price',label:'服务价格',editable:false,cell:'number'},
+        {name:'realPaid',label:'实际收入',editable:false,cell:'number'},
+        {name:'salesRole',label:'销售任务',cell:myselect},
+        {name:'comissionPercent',label:'佣金百分比',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
+        {name:'flatComission',label:'佣金非百分比',editable: false,cell:'number'},
+        {name:'comission',label:'服务佣金百分比',editable: false,cell:'number'},
+        {name:'extra',label:'其他',cell:'number'},
+        {name:'final',label:'总佣金',cell:'number'}
+        ];
+        this.columns=columns;
+        this.grid=new Backgrid.Grid({columns:columns,collection:this.collection});
+        //$('.table-wrapper').append(self.grid.render().el);
+        $.backgridFixedHeader({
+            grid:this.grid,
+            container:$('.table-wrapper')
+        });
+        var paginator = new Backgrid.Extension.Paginator({
+        windowSize: 20, // Default is 10
+        slideScale: 0.25, // Default is 0.5
+        goBackFirstOnSort: false, // Default is true
+        collection: this.collection
+        });
+        $('.table-wrapper').append(paginator.render().el);       
+    },
+    events: {
+    'click  button.button-alt': 'refetch',
+    'click  button.button-save': 'save'
+    },    
+    refetch:function(e){
+        if(!this.ready) return;
+        var year=$('#year').val();
+        var month=$('#month').val();
+        this.collection.setdate({year:year,month:month});
+        this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
+        this.collection.fetch({reset:true});
+    },   
+    save:function(e){
+        util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
+    }
+    });
 var ServicePopup=Backbone.Modal.extend({
     prefix:"bbm",
     template: JST['editbox'],
@@ -1889,32 +1941,7 @@ var ServicePopup=Backbone.Modal.extend({
                     return cell._optionValues;
                 } 
             });
-            var DeleteCell = Backgrid.Cell.extend({
-                template: _.template("<a>Delete</a>"),
-                events: {
-                  "click": "deleteRow"
-                },
-                deleteRow: function (e) {
-                  e.preventDefault();
-                  this.model.destroy({
-                    success:function(model){
-                        Wholeren.notifications.addItem({
-                            type: 'success',
-                            message: "Delete Successful",
-                            status: 'passive'
-                        });
-                    },
-                    error:function(response){
-                        util.handleRequestError(response);
-                    }
-                  });
-                },
-                render: function () {
-                  this.$el.html(this.template());
-                  this.delegateEvents();
-                  return this;
-                }
-            });
+            var DeleteCell = BackgridCells.DeleteCell;
             var UpdateCell=Backgrid.Cell.extend({
                 template: _.template("<a>Update</a>"),
                 events: {
@@ -2004,11 +2031,11 @@ var SalesComissionView=Wholeren.FormView.extend({
                 ];
                 self.columns=columns;
                 self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                //$('.table-wrapper').append(self.grid.render().el);
-                $.backgridFixedHeader({
-                    grid:self.grid,
-                    container:$('.table-wrapper')
-                });
+                $('.table-wrapper').append(self.grid.render().el);
+                // $.backgridFixedHeader({
+                //     grid:self.grid,
+                //     container:$('.table-wrapper')
+                // });
                 var paginator = new Backgrid.Extension.Paginator({
                 windowSize: 20, // Default is 10
                 slideScale: 0.25, // Default is 0.5
@@ -2788,33 +2815,7 @@ Market.view6=Market.view4.extend({
     url:'/Notifications/',
     afterRender:function(){
         var self=this;
-        var DeleteCell = Backgrid.Cell.extend({
-            template: _.template("<a>Delete</a>"),
-            events: {
-              "click": "deleteRow"
-            },
-            deleteRow: function (e) {
-              e.preventDefault();
-              var self=this;
-              this.model.destroy({
-                    success:function(model){
-                        Wholeren.notifications.addItem({
-                            type: 'success',
-                            message: "Delete Successful",
-                            status: 'passive'
-                        });
-                    },
-                    error:function(response){
-                        util.handleRequestError(response);
-                    }
-              });
-            },
-            render: function () {
-              this.$el.html(this.template());
-              this.delegateEvents();
-              return this;
-            }
-        });
+        var DeleteCell = BackgridCells.DeleteCell;
         var RedirectCell=Backgrid.Cell.extend({
             render: function () {
               var id=this.model.get('contract');

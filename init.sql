@@ -24,6 +24,23 @@ insert into lead values('Sec二次签约',NULL,NOW(),NOW());
 insert into lead values('PreSale',NULL,NOW(),NOW());
 insert into lead values('CA',NULL,NOW(),NOW());
 insert into lead values('Partner合作推荐',NULL,NOW(),NOW());
+insert into lead values('官网在线咨询',NULL,NOW(),NOW());
+insert into lead values('官方博客，微博',NULL,NOW(),NOW());
+insert into lead values('陈航老师博客，微博',NULL,NOW(),NOW());
+insert into lead values('搜索：谷歌',NULL,NOW(),NOW());
+insert into lead values('搜索：百度',NULL,NOW(),NOW());
+insert into lead values('搜索：Bing',NULL,NOW(),NOW());
+insert into lead values('官方微信（厚仁教育科技）',NULL,NOW(),NOW());
+insert into lead values('微信：厚仁学术哥 wholerenguru',NULL,NOW(),NOW());
+insert into lead values('微信：美国转学 UStransfer',NULL,NOW(),NOW());
+insert into lead values('微信：留美导师 USmentor',NULL,NOW(),NOW());
+insert into lead values('邮件收到的Newsletter',NULL,NOW(),NOW());
+insert into lead values('熟人，朋友推荐',NULL,NOW(),NOW());
+insert into lead values('北美校园大使推荐',NULL,NOW(),NOW());
+insert into lead values('合作：Moonbbs北美微论坛',NULL,NOW(),NOW());
+insert into lead values('合作：洛杉矶华人资讯网',NULL,NOW(),NOW());
+insert into lead values('合作：Gesoo',NULL,NOW(),NOW());
+insert into lead values('合作：其他机构',NULL,NOW(),NOW());
 
 #LeadLevel
 insert into leadlevel values('L1：有互动，且信息完整',NULL,NOW(),NOW());
