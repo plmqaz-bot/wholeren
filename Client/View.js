@@ -15,6 +15,7 @@ var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
 var BackgridCells=require('./backgrid.cell.js');
+var ResposiveGrid=require('./backgrid-responsiveGrid.js');
 
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
@@ -1828,8 +1829,8 @@ var ServiceView=Wholeren.FormView.extend({
                 })
             });
             var columns=[
-            {name:'serviceProgress',label:'状态',cell:progressselect},
             {name:'nickname',label:'负责老师',editable: false,cell:'string'},
+            {name:'serviceProgress',label:'状态',cell:progressselect},            
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
@@ -1849,7 +1850,9 @@ var ServiceView=Wholeren.FormView.extend({
             {name:'',label:'Show Details',cell:popup},
             ];
             self.columns=columns;
-            self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            self.grid=new ResposiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
+            //ResposiveGrid
+            //self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
             $('.table-wrapper').append(self.grid.render().el);
              var paginator = new Backgrid.Extension.Paginator({
                     windowSize: 20, // Default is 10

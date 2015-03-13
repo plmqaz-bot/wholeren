@@ -55,13 +55,13 @@ module.exports={
 	Cell:Backgrid.Cell.extend({
 		cellText:'',
 		events:{
-			"click button":"action",
+			"click a":"action",
 		},
 		action:function(e){
 
 		},
 		render: function () {
-              this.$el.html('<button>'+this.cellText+'</button>');
+              this.$el.html('<a>'+this.cellText+'</a>');
               this.delegateEvents();
               return this;
         }
