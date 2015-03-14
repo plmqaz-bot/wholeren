@@ -14,7 +14,7 @@
     });
   } else if (typeof exports === "object") {
     // CommonJS
-    module.exports = factory(require("jquery"), require("lodash"), require("backbone"), require("backgrid"));
+    module.exports = factory(require("jquery"), require("lodash"), require("backbone"), require("./backgrid-filter.js"));
   } else {
     // Browser
     root.Backgrid.Extension.ResponsiveGrid = factory(root.$, root._, root.Backbone, root.Backgrid);
@@ -113,16 +113,16 @@
      */
     unpinColumns : function( )
     {
-      var $originalTable = this.$el,
-          $gridWrapper = this.$el.parents('.grid-responsive-wrapper');
+      // var $originalTable = this.$el,
+      //     $gridWrapper = this.$el.parents('.grid-responsive-wrapper');
 
-      $originalTable.unwrap();
-      $gridWrapper.find('.grid-pinned').remove();
-      $originalTable.unwrap();
+      // $originalTable.unwrap();
+      // $gridWrapper.find('.grid-pinned').remove();
+      // $originalTable.unwrap();
 
-      this.isPinned = false;
+      // this.isPinned = false;
 
-      return true;
+      // return true;
     },
 
     /**
@@ -152,5 +152,6 @@
 
     }
   });
-  return ResponsiveGrid;
+Backgrid.Extension.ResponsiveGrid=ResponsiveGrid;
+  return Backgrid;
 }));

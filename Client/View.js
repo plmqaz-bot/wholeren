@@ -2,7 +2,8 @@
 var $ = require('./backgrid.fixedheader.js');
 //var Backbone = require('backbone');
 //var Backgrid=require('./backgrid-paginator.js');
-var Backgrid=require('./backgrid-filter.js');
+//var Backgrid=require('./backgrid-filter.js');
+var Backgrid=require('./backgrid-responsiveGrid.js');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
 Backbone.$=$;
@@ -15,7 +16,6 @@ var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
 var BackgridCells=require('./backgrid.cell.js');
-var ResposiveGrid=require('./backgrid-responsiveGrid.js');
 
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
@@ -1829,16 +1829,16 @@ var ServiceView=Wholeren.FormView.extend({
                 })
             });
             var columns=[
-            {name:'nickname',label:'负责老师',editable: false,cell:'string'},
-            {name:'serviceProgress',label:'状态',cell:progressselect},            
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+            {name:'nickname',label:'负责老师',editable: false,cell:'string'},
+            {name:'serviceProgress',label:'状态',cell:progressselect},                    
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
             {name:'gpa',label:'GPA',editable:false,cell:'number'},
             {name:'toefl',label:'托福',editable:false,cell:'number'},
             {name:'gre',label:'GRE',editable:false,cell:'number'},
             {name:'sat',label:'SAT',editable:false,cell:'number'},
-            {name:'otherScore',label:'服务类型',editable:false,cell:'string'},
+            {name:'otherScore',label:'其他分数',editable:false,cell:'string'},
             {name:'degree',label:'原学校类型',editable:false,cell:'string'},
             {name:'previousSchool',label:'原学校',editable:false,cell:'string'},
             {name:'major',label:'原专业',editable:false,cell:'number'},
@@ -1850,7 +1850,7 @@ var ServiceView=Wholeren.FormView.extend({
             {name:'',label:'Show Details',cell:popup},
             ];
             self.columns=columns;
-            self.grid=new ResposiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
+            self.grid=new Backgrid.Extension.ResponsiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
             //ResposiveGrid
             //self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
             $('.table-wrapper').append(self.grid.render().el);

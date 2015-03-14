@@ -478,7 +478,7 @@ Collections={
             this.startDate=options.startDate||"09-01-2014";
             this.endDate=options.endDate||"";
             this.mode="client";
-            this.state={pageSize:25};
+            this.state={pageSize:20};
         },
         setdate:function(options){
             this.startDate=options.startDate;
