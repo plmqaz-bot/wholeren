@@ -5,7 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
  function constructsql(where,who){
-			return "select client.chineseName,c.teacher,service.*,c.contractSigned, servicetype.serviceType as 'type', c.gpa,c.toefl,c.sat,c.gre,c.otherScore, degree.degree,c.major, c.previousSchool \
+			return "select client.chineseName,c.teacher,service.*,c.contractSigned, servicetype.serviceType as 'type', c.gpa,c.toefl,c.sat,c.gre,c.otherScore, degree.degree, d.degree as 'targetDegree', c.major, c.previousSchool \
 			from contract c \
 			inner join status on c.status=status.id \
 			inner join client on c.client=client.id \
@@ -14,6 +14,7 @@
 			left join servicetype on service.serviceType=servicetype.id \
 			left join servicedetail s on s.service=service.id \
 			left join degree on c.degree=degree.id \
+			left join degree d on c.targetSchoolDegree=d.id \
 			inner join user on \
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher, s.user))  where \
 			c.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"

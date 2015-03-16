@@ -72,6 +72,8 @@ module.exports = {
 
     targetSchool:{type:"string"}, 
 
+    targetSchoolDegree:{model:"Degree"},
+
   	applicationFeePaid:{type:"boolean",required:true,defaultsTo:'false'},
 
   	paymentOption:{model:"PaymentOption"},

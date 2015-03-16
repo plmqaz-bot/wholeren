@@ -126,11 +126,23 @@ insert into servicetype values('紧急助理','Study',false,0.9,NULL,NOW(),NOW()
 insert into servicetype values('选课指导','Study',false,0.9,NULL,NOW(),NOW());
 
 #Service Progress	
-insert into serviceprogress values('W.等待启动',NULL,NOW(),NOW());
-insert into serviceprogress values('A.紧急处理中',NULL,NOW(),NOW());
-insert into serviceprogress values('B.提交进行中',NULL,NOW(),NOW());
-insert into serviceprogress values('C.已交等结果',NULL,NOW(),NOW());
-insert into serviceprogress values('D.服务结束',NULL,NOW(),NOW());
+#insert into serviceprogress values('W.等待启动',NULL,NOW(),NOW());
+#insert into serviceprogress values('A.紧急处理中',NULL,NOW(),NOW());
+#insert into serviceprogress values('B.提交进行中',NULL,NOW(),NOW());
+#insert into serviceprogress values('C.已交等结果',NULL,NOW(),NOW());
+#insert into serviceprogress values('D.服务结束',NULL,NOW(),NOW());
+insert into serviceprogress values('0等待启动',NULL,NOW(),NOW());
+insert into serviceprogress values('1选校中',NULL,NOW(),NOW());
+insert into serviceprogress values('2申请中',NULL,NOW(),NOW());
+insert into serviceprogress values('3全部提交',NULL,NOW(),NOW());
+insert into serviceprogress values('4完成服务',NULL,NOW(),NOW());
+insert into serviceprogress values('X自我放弃X',NULL,NOW(),NOW());
+insert into serviceprogress values('**找到我**',NULL,NOW(),NOW());
+insert into serviceprogress values('**勿忘我**',NULL,NOW(),NOW());
+insert into serviceprogress values('SOS紧急处理中',NULL,NOW(),NOW());
+insert into serviceprogress values('交接出去了',NULL,NOW(),NOW());
+
+
 
 #服务进度
 insert into servicestatus values('无',NULL,NOW(),NOW());

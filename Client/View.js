@@ -1842,6 +1842,7 @@ var ServiceView=Wholeren.FormView.extend({
             {name:'degree',label:'原学校类型',editable:false,cell:'string'},
             {name:'previousSchool',label:'原学校',editable:false,cell:'string'},
             {name:'major',label:'原专业',editable:false,cell:'number'},
+            {name:'targetDegree',label:'申请学校类型',editable:false,cell:'string'},
             {name:'step1',label:'step1',cell:'date'},
             {name:'step2',label:'step2',cell:'date'},
             {name:'studentDestination',label:'学生去向',cell:'string'},
