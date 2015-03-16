@@ -1776,7 +1776,7 @@ var ContractEdit = EditForm.extend({
 //         // },
 // });
 
-var ServiceView=Wholeren.FormView.extend({
+var ServiceView=Wholeren.baseView.extend({
     templateName:'dateTableView',
     ready:true,
     initialize: function (options) {
@@ -2087,7 +2087,7 @@ var ApplicationPopup=ServicePopup.extend({
         return this;
     }, 
 });
-var SalesComissionView=Wholeren.FormView.extend({
+var SalesComissionView=Wholeren.baseView.extend({
     templateName:'serviceComission',
     ready:true,
     initialize: function (options) {
@@ -2526,7 +2526,7 @@ var CommentModalView=Backbone.Modal.extend({
     }
 });
 /**************************************************** Accounting ******************************************************/
-var Accounting=Wholeren.FormView.extend({
+var Accounting=Wholeren.baseView.extend({
     templateName:'dateTableView',
     ready:true,
     initialize: function (options) {
