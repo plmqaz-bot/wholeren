@@ -93,6 +93,7 @@ insert into role values('加州',NULL,NOW(),NOW());
 insert into role values('学术',NULL,NOW(),NOW());
 	
 #服务 TODO: add the recommended price and also base comission
+truncate servicetype;
 insert into servicetype values('a.澄清','a','Emerg',false,0.9,NULL,NOW(),NOW());
 insert into servicetype values('b.申诉','b','Emerg',false,0.9,NULL,NOW(),NOW());
 insert into servicetype values('c1.找律师','c1','Emerg',false,0.5,NULL,NOW(),NOW());
@@ -131,6 +132,7 @@ insert into servicetype values('选课指导','选课','Study',false,0.9,NULL,NO
 #insert into serviceprogress values('B.提交进行中',NULL,NOW(),NOW());
 #insert into serviceprogress values('C.已交等结果',NULL,NOW(),NOW());
 #insert into serviceprogress values('D.服务结束',NULL,NOW(),NOW());
+truncate serviceprogress;
 insert into serviceprogress values('0等待启动',NULL,NOW(),NOW());
 insert into serviceprogress values('1选校中',NULL,NOW(),NOW());
 insert into serviceprogress values('2申请中',NULL,NOW(),NOW());

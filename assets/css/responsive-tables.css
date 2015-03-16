@@ -27,7 +27,7 @@ table td, table th { padding: 9px 10px; text-align: left; }
 	.pinned table th, .pinned table td { white-space: nowrap; }
 	.pinned td:last-child { border-bottom: 0; }
 	
-	div.table-wrapper { position: relative; margin-bottom: 20px; overflow: auto;/*overflow-y:scroll;*/ border-right: 1px solid #ccc; height:80vh;}
+	div.table-wrapper { position: relative; margin-bottom: 20px; overflow: auto;/*overflow-y:scroll;*/ border-right: 1px solid #ccc; height:85vh;}
 	div.table-wrapper div.scrollable {  }
 	div.table-wrapper div.scrollable { overflow-x: scroll; overflow-y: auto; }	
 	
