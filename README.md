@@ -137,8 +137,10 @@ Save attribute should roll back --DONE
 
 Insert into contract has problem. --DONE
 
-use colgroup for fix columns
+use colgroup for fix columns --DONE
 
-add gre and sat in contract
+add gre and sat in contract --DONE
+
+problem with sorting of pageable collection
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

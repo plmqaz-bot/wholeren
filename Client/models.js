@@ -471,7 +471,10 @@ Collections={
     }),
     Service:Backbone.PageableCollection.extend({
         model: Models.syncModel,
-        url: function(){return '/Service/?where='+this.whereclaus();},
+        _url:'/Service/',
+        url: function(){
+            return '/Service/?where='+this.whereclaus();
+        },
         
         initialize:function(models,options){
             options=options||{};
