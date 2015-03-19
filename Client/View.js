@@ -1083,6 +1083,90 @@ var EditForm=Backbone.Modal.extend({
 });
 /*************************************************Views for Contract *****************************/
 
+var ContractView=Wholeren.baseView.extend({
+    templateName:'dateTableView',
+    initialize: function (options) {
+        this.rank=$('#rank').text();
+        this.el=options.el;
+        this.collection = new Obiwang.Collections['Contract']();
+        this.render({title:"Contracts"});
+        var comment=BackgridCells.Cell.extend({
+            cellText:'Comments',
+            action:function(e){
+                var item=$(e.currentTarget);
+                var id = this.model.get('id');
+                var type='serv';
+                var m=new CommentModalView({sid:id});
+                $('.app').html(m.renderAll().el);   
+            }
+        });
+        var self=this;
+        util.ajaxGET('/ServiceProgress/').then(function(progress){
+            var progressselect=BackgridCells.SelectCell({name:"Progress",values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+
+            var columns=[
+            {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+            {name:'nickname',label:'负责老师',editable: false,cell:'string'},
+            {name:'serviceProgress',label:'状态',cell:progressselect},                    
+            {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
+            {name:'type',label:'服务类型',editable:false,cell:'string'},
+            {name:'gpa',label:'GPA',editable:false,cell:'number'},
+            {name:'toefl',label:'托福',editable:false,cell:'number'},
+            {name:'gre',label:'GRE',editable:false,cell:'number'},
+            {name:'sat',label:'SAT',editable:false,cell:'number'},
+            {name:'otherScore',label:'其他分数',editable:false,cell:'string'},
+            {name:'degree',label:'原学校类型',editable:false,cell:'string'},
+            {name:'previousSchool',label:'原学校',editable:false,cell:'string'},
+            {name:'major',label:'原专业',editable:false,cell:'number'},
+            {name:'targetDegree',label:'申请学校类型',editable:false,cell:'string'},
+            {name:'step1',label:'step1',cell:'date'},
+            {name:'step2',label:'step2',cell:'date'},
+            {name:'studentDestination',label:'学生去向',cell:'string'},
+            {name:'',label:'Show Applications',cell:appPopup},
+            {name:'',label:'Comment',cell:comment},
+            {name:'',label:'Show Details',cell:popup},
+            ];
+            self.columns=columns;
+            self.grid=new Backgrid.Extension.ResponsiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
+            //ResposiveGrid
+            //self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            $('.table-wrapper').append(self.grid.render().el);
+             var paginator = new Backgrid.Extension.Paginator({
+                    windowSize: 20, // Default is 10
+                    slideScale: 0.25, // Default is 0.5
+                    goBackFirstOnSort: false, // Default is true
+                    collection: self.collection
+                    });
+            $('.table-wrapper').append(paginator.render().el);  
+            var clientSideFilter = new Backgrid.Extension.ClientSideFilter({
+                collection: self.collection,
+                placeholder: "Search in the browser",
+                // The model fields to search for matches
+                fields: ['chineseName','type','degree','previousSchool','major','studentDestination','nickname'],
+                // How long to wait after typing has stopped before searching can start
+                wait: 150
+            });
+            $('.table-wrapper').prepend(clientSideFilter.render().el);               
+        });
+        
+    },
+    events: {
+    'click  button.button-alt': 'refetch',
+    'click  button.button-save': 'save'
+    },    
+    refetch:function(e){
+        if(!this.ready) return;
+        var startDate=$('#startDate').val();
+        var endDate=$('#endDate').val();
+        this.collection.setdate({startDate:startDate,endDate:endDate});
+        this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
+        this.collection.fetch({reset:true});
+    },   
+    save:function(e){
+        util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
+    }
+});
 var ContractView=Wholeren.FormView.extend({
     serviceTypes:{},
     ready:false,
