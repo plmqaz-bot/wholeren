@@ -1049,7 +1049,7 @@ legend {
   line-height: 2.0em;
   color: #aaa9a2; }
 
-input, textarea, select {
+input:not([type="checkbox"]), textarea, select {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
@@ -1129,7 +1129,7 @@ float:left;}
    Checkboxes
    ============================================================================= */
 input[type="checkbox"] {
-  display: none; }
+  /*display: none;*/ }
 
 .checkbox {
   -webkit-box-sizing: border-box;

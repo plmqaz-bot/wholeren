@@ -2294,129 +2294,209 @@ var Comission={
 };
 
 
-var ApplicationEdit=EditForm.extend({
-    template: JST['serviceEdit'],
-    events:{
-        "click .ok":"Submit",
-        "change select:not([id^='client.'])":"selectionChanged",
-        "change input":"inputChanged",
-    },
-    initialize: function (options){
-        this.parentView = options.view;
-        if(!options.service||!options.curApp){
-            util.showError("No service or application selected!");
-            this.close();
-            return;
-        }
-        this.serviceId=options.service.id;
-        this.model=new Obiwang.Models.simpleModel(options.curApp);
-        this.model._url='/Application/';
-        this.model.set('service',options.service.toJSON());
-        this.modelChanges.id=this.model.get('id');
-        _.bindAll(this,'renderSelect');
-        _.bindAll(this,'render', 'afterRender'); 
-        var _this = this;
-        this.render = _.wrap(this.render, function(render) {
-          render();
-          _this.afterRender();
-          return _this;
-        }); 
-    }, 
-    Submit:function(option){
-        if(this.formError) return;
-        var self=this;
-        var changes=JSON.parse(JSON.stringify(this.modelChanges));
-        this.model.save(changes,{
-            patch:true,
-            success:function(d){
-                // refresh parent view
-                self.parentView.rerenderSingle({id:self.serviceId});
-                return self.close();
+// var ApplicationEdit=EditForm.extend({
+//     template: JST['serviceEdit'],
+//     events:{
+//         "click .ok":"Submit",
+//         "change select:not([id^='client.'])":"selectionChanged",
+//         "change input":"inputChanged",
+//     },
+//     initialize: function (options){
+//         this.parentView = options.view;
+//         if(!options.service||!options.curApp){
+//             util.showError("No service or application selected!");
+//             this.close();
+//             return;
+//         }
+//         this.serviceId=options.service.id;
+//         this.model=new Obiwang.Models.simpleModel(options.curApp);
+//         this.model._url='/Application/';
+//         this.model.set('service',options.service.toJSON());
+//         this.modelChanges.id=this.model.get('id');
+//         _.bindAll(this,'renderSelect');
+//         _.bindAll(this,'render', 'afterRender'); 
+//         var _this = this;
+//         this.render = _.wrap(this.render, function(render) {
+//           render();
+//           _this.afterRender();
+//           return _this;
+//         }); 
+//     }, 
+//     Submit:function(option){
+//         if(this.formError) return;
+//         var self=this;
+//         var changes=JSON.parse(JSON.stringify(this.modelChanges));
+//         this.model.save(changes,{
+//             patch:true,
+//             success:function(d){
+//                 // refresh parent view
+//                 self.parentView.rerenderSingle({id:self.serviceId});
+//                 return self.close();
                   
-            },
-            error:function(model,response){
-                util.handleRequestError(response);                       
-            }
-        });
-    },
-    afterRender:function(){
-         var self=this;
-        $.ajax({
-            url: '/User/?role=4',
-            type: 'GET',
-            headers: {
-                'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
-            },
-            success: function (data) {
-                    self.renderSelect({name:'writer',content:data});
+//             },
+//             error:function(model,response){
+//                 util.handleRequestError(response);                       
+//             }
+//         });
+//     },
+//     afterRender:function(){
+//          var self=this;
+//         $.ajax({
+//             url: '/User/?role=4',
+//             type: 'GET',
+//             headers: {
+//                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+//             },
+//             success: function (data) {
+//                     self.renderSelect({name:'writer',content:data});
                                 
-            },
-            error: function (xhr) {
-                console.log('error');
-            }
+//             },
+//             error: function (xhr) {
+//                 console.log('error');
+//             }
+//         });
+//     },
+//     renderSelect:function(collection){
+//         var col=collection.content;
+//         var tableName=collection.name;   
+//         tableName=tableName.charAt(0).toLowerCase() + tableName.slice(1);
+//         var self=this; 
+//         var theSel=$('#'+tableName).find('option').remove().end();
+//         theSel.append('<option></option>');
+//         col.forEach(function(item){
+//             var ele=item;
+//             var toAdd=$('<option>', { value : ele.id }).text(ele['nickname']);
+//             if(self.model.get(tableName)&&((self.model.get(tableName).id&&self.model.get(tableName).id==ele.id)||self.model.get(tableName)==ele.id)){
+//                 toAdd.attr('selected','selected');
+//             }
+//             theSel.append(toAdd); 
+//         });  
+//     },
+// });
+var UserView=Wholeren.baseView.extend({
+    templateName:'dateTableView',
+    initialize: function (options) {
+        this.rank=$('#rank').text();
+        this.el=options.el;
+        this.collection = new Obiwang.Collections['User']();
+        this.render({title:"Services"});
+        var self=this;
+        this.collection.fetch().done(function(){
+            return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/')]).spread(function(role,user,level){
+            var roleselect=Backgrid.SelectCell.extend({
+                optionValues:function(){
+                    var selection=_.map(role,function(e){return [e.role,e.id]});
+                    return [{name:"Role",values:selection}];
+                },
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
+            });
+            var userselect=Backgrid.SelectCell.extend({
+                optionValues:function(){
+                    var selection=_.map(user,function(e){return [e.nickname,e.id]});
+                    return [{name:"User",values:selection}];
+                },
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
+            });
+            var levelselect=Backgrid.SelectCell.extend({
+                optionValues:function(){
+                    var selection=_.map(level,function(e){return [e.userLevel,e.id]});
+                    return [{name:"UserLevel",values:selection}];
+                },
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
+            });
+            var booleanCell=Backgrid.BooleanCell.extend({
+                formatter:{
+                    fromRaw:function(modelValue){
+                        if(modelValue==true) return true;
+                        return false;
+                    },
+                    toRaw:function(formattedValue,model){
+                        return formattedValue =="true" ?true:false;
+                    }
+                }
+            });
+            var columns=[
+            {name:'nickname',label:'称呼',editable: false,cell:'string'},
+            {name:'firstname',label:'姓',editable:false,cell:'string'},                    
+            {name:'lastname',label:'名',editable:false,cell:'string'},
+            {name:'email',label:'邮箱',editable:false,cell:'string'},
+            {name:'role',label:'职位',cell:roleselect},
+            {name:'userLevel',label:'佣金等级',cell:levelselect},
+            {name:'rank',label:'职位等级',cell:'number'},
+            {name:'boss',label:'主管',cell:userselect},
+            {name:'active',label:'在职',cell:'boolean'}
+            ];
+            self.columns=columns;
+            self.grid=new Backgrid.Extension.ResponsiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
+            //ResposiveGrid
+            //self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            $('.table-wrapper').append(self.grid.render().el);             
         });
-    },
-    renderSelect:function(collection){
-        var col=collection.content;
-        var tableName=collection.name;   
-        tableName=tableName.charAt(0).toLowerCase() + tableName.slice(1);
-        var self=this; 
-        var theSel=$('#'+tableName).find('option').remove().end();
-        theSel.append('<option></option>');
-        col.forEach(function(item){
-            var ele=item;
-            var toAdd=$('<option>', { value : ele.id }).text(ele['nickname']);
-            if(self.model.get(tableName)&&((self.model.get(tableName).id&&self.model.get(tableName).id==ele.id)||self.model.get(tableName)==ele.id)){
-                toAdd.attr('selected','selected');
-            }
-            theSel.append(toAdd); 
-        });  
-    },
-});
-var UserView=Wholeren.FormView.extend({
-    filter:[],
-    singleTemplate:JST['userSingle'],
-    ready:false,
-    templateName:'user',
-        initialize: function (options) {
-            _.bindAll(this,'rerenderSingle');
-            _.bindAll(this,'renderCollection');
-            _.bindAll(this,'renderCollectionCore');
-            this.el=options.el;
-            var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
-            var self=this;
-            this.collection = new Obiwang.Collections[modelName]();
-            this.render();
-            this.collection.fetch().done(function(){
-                self.ready=true;
-                self.renderCollectionCore();
-                self.collection.on("sort", self.renderCollection, self);
-            });
+        }).fail(function(err){
+            console.log(err);
+        });
+        
+    },   
+    save:function(e){
+        util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
+    }
+    });
+// var UserView=Wholeren.FormView.extend({
+//     filter:[],
+//     singleTemplate:JST['userSingle'],
+//     ready:false,
+//     templateName:'user',
+//         initialize: function (options) {
+//             _.bindAll(this,'rerenderSingle');
+//             _.bindAll(this,'renderCollection');
+//             _.bindAll(this,'renderCollectionCore');
+//             this.el=options.el;
+//             var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
+//             var self=this;
+//             this.collection = new Obiwang.Collections[modelName]();
+//             this.render();
+//             this.collection.fetch().done(function(){
+//                 self.ready=true;
+//                 self.renderCollectionCore();
+//                 self.collection.on("sort", self.renderCollection, self);
+//             });
             
-        },
-        events: {
-        'click .singletextbox,.textbox,.selectbox,.multiselectbox,.boolbox':'editAttr',
-        'click .sortable':'sortCollection',
-        },        
-        renderCollection: function (){
-            if(this.ready){
-                this.renderCollectionCore();       
-            }else{
-                 var self=this;
-                this.collection.fetch().done(function(){
-                self.ready=true;
-                self.renderCollectionCore();
-            });
-            }            
-        },
-        headline:function(obj){
-                return "NO NAME";
-        },
-        modifyRow:function(obj){
+//         },
+//         events: {
+//         'click .singletextbox,.textbox,.selectbox,.multiselectbox,.boolbox':'editAttr',
+//         'click .sortable':'sortCollection',
+//         },        
+//         renderCollection: function (){
+//             if(this.ready){
+//                 this.renderCollectionCore();       
+//             }else{
+//                  var self=this;
+//                 this.collection.fetch().done(function(){
+//                 self.ready=true;
+//                 self.renderCollectionCore();
+//             });
+//             }            
+//         },
+//         headline:function(obj){
+//                 return "NO NAME";
+//         },
+//         modifyRow:function(obj){
 
-            return obj;
-        },
-});
+//             return obj;
+//         },
+// });
 var CommentView=Wholeren.baseView.extend({
     tagName:'li',
     template: JST['commentSingle'],

@@ -447,12 +447,9 @@ Collections={
         model:Models.simpleModel,
         url:'/ServiceProgress/'
     }),
-    User:sortableCollection.extend({
-        model: Models.simpleModel,
+    User:Backbone.Collection.extend({
+        model: Models.syncModel,
         url: '/User/',
-        initialize:function(){
-            this.selectedStrat({sortAttr:'nickname'});
-        }
     }),
     Application:Backbone.Collection.extend({
         model:Models.syncModel,

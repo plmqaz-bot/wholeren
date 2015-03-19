@@ -129,7 +129,7 @@ Service Invoice, get service invoices of one Invoice, --DONE
 
 
 rollback problem --DONE
-
+ni s
 
 generate csv --DONE 
 
@@ -141,6 +141,6 @@ use colgroup for fix columns --DONE
 
 add gre and sat in contract --DONE
 
-problem with sorting of pageable collection
+problem with sorting of pageable collection --DONE
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

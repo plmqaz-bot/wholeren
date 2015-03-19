@@ -8,9 +8,15 @@
 module.exports = {
 	'getAllUser':function(req,res){
 		// calculate count
-		User.find().populateAll().then(function(data){
+		User.find().then(function(data){
 			return res.json(data);
 		});
+	},
+	'findOne':function(req,res){
+		var id=req.params.id;
+		User.findOne({id:id}).then(function(data){
+			return res.json(data);
+		})
 	},
 	'updateUser':function(req,res){
 		var attribs=req.body;
@@ -19,12 +25,13 @@ module.exports = {
 			return res.json(404,"cann not set rank higher than yourself");
 		}
 		delete attribs['password'];
-		User.update({id:req.params.id},attribs,function(err,data){
-			if(err){
-				return Utilfunctions.errorHandler(err,res,"Update user failed. id:"+req.params.id);
-			}
+		User.update({id:req.params.id},attribs).then(function(data){
 			console.log("User updated: ",data);
+			return User.findOne({id:req.params.id});
+		}).then(function(data){
 			return res.json(data);
+		}).fail(function(err){
+			return Utilfunctions.errorHandler(err,res,"Update user failed. id:"+req.params.id);
 		});					
 	},
 	'changepw':function(req,res){
