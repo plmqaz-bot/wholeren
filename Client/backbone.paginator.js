@@ -6,6 +6,8 @@
   Licensed under the MIT @license.
 */
   // CommonJS
+  //var ArraySort=require('node-sort');
+ // var arraysort=new ArraySort();
   module.exports = factory(require("lodash"), require("backbone"));
   
   function factory(_, Backbone) {
@@ -39,6 +41,26 @@
     return val;
   }
 
+    Backbone.Collection.prototype.sort= function(options) {
+      if (!this.comparator) throw new Error('Cannot sort a set without a comparator');
+      options || (options = {});
+
+      // Run sort based on type of `comparator`.
+      if (_.isString(this.comparator) || this.comparator.length === 1) {
+        this.models = this.sortBy(this.comparator, this);
+      } else {
+        //this.models=arraysort.quickSort(this.models,_.bind(this.comparator, this));
+        var tempColl=this.models[0].collection;
+        this.models.sort(_.bind(this.comparator, this));
+        this.models.forEach(function(e){
+          e.collection=tempColl;
+          return e;
+        })
+      }
+
+      if (!options.silent) this.trigger('sort', this, options);
+      return this;
+    }
   function queryStringToParams (qs) {
     var kvp, k, v, ls, params = {}, decode = decodeURIComponent;
     var kvps = qs.split('&');
@@ -1277,7 +1299,8 @@
       if (delFullComp && fullCollection) fullCollection.comparator = null;
 
       return this;
-    }
+    },
+
 
   });
 
