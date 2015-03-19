@@ -77,10 +77,10 @@ module.exports.routes = {
   //   controller:'service',
   //   action:'getService'
   // },
-  'GET /user/':{
-    controller:'user',
-    action:'getAllUser',
-  },
+  // 'GET /user/':{
+  //   controller:'user',
+  //   action:'getAllUser',
+  // },
   'GET /SalesComission/':{
     controller:'comission',
     action:'getSalesComission'

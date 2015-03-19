@@ -6,18 +6,6 @@
  */
 
 module.exports = {
-	'getAllUser':function(req,res){
-		// calculate count
-		User.find().then(function(data){
-			return res.json(data);
-		});
-	},
-	'findOne':function(req,res){
-		var id=req.params.id;
-		User.findOne({id:id}).then(function(data){
-			return res.json(data);
-		})
-	},
 	'updateUser':function(req,res){
 		var attribs=req.body;
 		var r=attribs['rank'];
@@ -27,8 +15,6 @@ module.exports = {
 		delete attribs['password'];
 		User.update({id:req.params.id},attribs).then(function(data){
 			console.log("User updated: ",data);
-			return User.findOne({id:req.params.id});
-		}).then(function(data){
 			return res.json(data);
 		}).fail(function(err){
 			return Utilfunctions.errorHandler(err,res,"Update user failed. id:"+req.params.id);
