@@ -63,9 +63,9 @@ module.exports = {
 				}
 				// Last hash the service
 				Hashs.push(Utilfunctions.makeO2MHash(data[data.length-1],'contract'));
-				console.log("manuall hashing",Hashs.length);
-				// toReturn=toReturn.map(function(ele){
-				// 	var r=_.clone(ele);
+				//console.log("manuall hashing",Hashs.length);
+				 toReturn=toReturn.map(function(ele){
+				 	var r=_.clone(ele);
 				// 	if(r.contractCategory) r.contractCategory=Hashs[0][r.contractCategory];
 				// 	if(r.country) r.country=Hashs[1][r.country];
 				// 	if(r.degree) r.degree=Hashs[2][r.degree];
@@ -81,10 +81,10 @@ module.exports = {
 				// 	if(r.sales1) r.sales1=Hashs[7][r.sales1];
 				// 	if(r.sales2) r.sales2=Hashs[7][r.sales2];
 				// 	if(r.teacher) r.teacher=Hashs[7][r.teacher];
-				// 	if(r.client) r.client=Hashs[8][r.client];
+				 	if(r.client) r.clientName=Hashs[8][r.client]['chineseName'];
 				// 	r.service=Hashs[9][r.id]||[];
-				// 	return r;
-				// });
+				 	return r;
+				 });
 				return Promise.resolve(toReturn);
 			}).then(function(data){
 				console.log(data.length);

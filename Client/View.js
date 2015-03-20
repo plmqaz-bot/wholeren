@@ -6,7 +6,7 @@ var $ = require('./backgrid.fixedheader.js');
 var Backgrid=require('./backgrid-text-cell.js');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
-Backbone.$=$;
+
 var Handlebars = require('hbsfy/runtime');
 var Obiwang = require('./models');
 var Settings = {};
@@ -16,8 +16,9 @@ var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
 var BackgridCells=require('./backgrid.cell.js');
-var Bootstrap=require('./bootstrap.js');
-
+var BackboneForms=require('backbone-forms');
+$=require('./bootstrap-modal.js')($);
+Backbone.$=$;
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 == v2) {
@@ -1109,12 +1110,23 @@ var ContractView=Wholeren.baseView.extend({
             var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
             var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
             var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
+            var sign=BackgridCells.Cell.extend({
+                cellText:'Status',
+                action:function(e){
+                    var item=$(e.currentTarget);
+                    var ci= new ContractSignView({model:this.model});
+                    ci.render();
+                    $('.app').html(ci.el);
+                }
+            });
             var columns=[
+            {name:'clientName',label:'Name',cell:'string'},
             {name:'contractCategory',label:'咨询服务类别',cell:category},
             {name:'lead',label:'Lead种类',cell:lead},
             {name:'leadName',label:'Lead介绍人',cell:'string'},
             {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
-            {name:'status',label:'签约状态',cell:status},
+            {name:'createdAt',label:'咨询日期',editable:false,cell:'date'},
+            {name:'status',label:'签约状态',cell:sign},
             {name:'salesFollowup',label:'销售跟进记录',cell:'text'},
             {name:'salesRecord',label:'销售跟进摘要',cell:'text'},
             {name:'expertContactDate',label:'专家咨询日期',cell:'date'},
@@ -1177,6 +1189,44 @@ var ContractView=Wholeren.baseView.extend({
     },   
     save:function(e){
         util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
+    }
+});
+var ContractSignView=Backbone.Modal.extend({
+    prefix:"bbm",
+    template: JST['editbox'],
+    submitEl: '.ok',
+    cancelEl:'.cancel',
+    initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.model=options.model;
+    },
+    afterRender:function(){
+        BackboneForms
+        var container=this.$el.find('.bbm-modal__section');
+        var self=this;
+        this.form=new Backbone.Form({
+            model:self.model,
+            schema:{
+                status:{type:'Select',options:new Obiwang.Collections.Status()},
+                contractSigned:'Date',
+                contractPaid:'Date'
+            }
+        }).render();
+        container.append(this.form.el);
+        return this;
+    },
+    Submit:function(e){
+        this.form.commit();
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
     }
 });
 // var ContractView=Wholeren.FormView.extend({

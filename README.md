@@ -143,4 +143,12 @@ add gre and sat in contract --DONE
 
 problem with sorting of pageable collection --DONE
 
+click name show client edit form
+
+click sign show contract sign form -- DONE  need the date to be nullable
+
+click user show sales, experts 
+
+click service show selected services
+
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.

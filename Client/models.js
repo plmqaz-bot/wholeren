@@ -25,6 +25,15 @@ var simpleModel=Backbone.Model.extend({
                 }
             }
             return response;
+        },
+        toString:function(){
+            var toReturn='';
+            for (var i in this.attributes){
+                if(i!='id'&&i!='createdAt'&&i!='updatedAt'){
+                    toReturn+=this.attributes[i];
+                }
+            }
+            return toReturn;
         }
     });
 var syncModel=simpleModel.extend({
