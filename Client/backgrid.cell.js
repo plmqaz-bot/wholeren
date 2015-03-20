@@ -67,8 +67,9 @@ module.exports={
   }
 }),
   SelectCell:function(options){
+    options=options||{};
     return Backgrid.SelectCell.extend({
-      options=options||{};
+      
       optionValues:function(){
         return [options];
       },

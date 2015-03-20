@@ -64,27 +64,27 @@ module.exports = {
 				// Last hash the service
 				Hashs.push(Utilfunctions.makeO2MHash(data[data.length-1],'contract'));
 				console.log("manuall hashing",Hashs.length);
-				toReturn=toReturn.map(function(ele){
-					var r=_.clone(ele);
-					if(r.contractCategory) r.contractCategory=Hashs[0][r.contractCategory];
-					if(r.country) r.country=Hashs[1][r.country];
-					if(r.degree) r.degree=Hashs[2][r.degree];
-					if(r.lead) r.lead=Hashs[3][r.lead];
-					if(r.leadLevel) r.leadLevel=Hashs[4][r.leadLevel];
-					if(r.paymentOption) r.paymentOption=Hashs[5][r.paymentOption];
-					if(r.status) r.status=Hashs[6][r.status];
-					if(r.assistant) r.assistant=Hashs[7][r.assistant];
-					if(r.assisCont1) r.assisCont1=Hashs[7][r.assisCont1];
-					if(r.assisCont2) r.assisCont2=Hashs[7][r.assisCont2];
-					if(r.expert1) r.expert1=Hashs[7][r.expert1];
-					if(r.expert2) r.expert2=Hashs[7][r.expert2];
-					if(r.sales1) r.sales1=Hashs[7][r.sales1];
-					if(r.sales2) r.sales2=Hashs[7][r.sales2];
-					if(r.teacher) r.teacher=Hashs[7][r.teacher];
-					if(r.client) r.client=Hashs[8][r.client];
-					r.service=Hashs[9][r.id]||[];
-					return r;
-				});
+				// toReturn=toReturn.map(function(ele){
+				// 	var r=_.clone(ele);
+				// 	if(r.contractCategory) r.contractCategory=Hashs[0][r.contractCategory];
+				// 	if(r.country) r.country=Hashs[1][r.country];
+				// 	if(r.degree) r.degree=Hashs[2][r.degree];
+				// 	if(r.lead) r.lead=Hashs[3][r.lead];
+				// 	if(r.leadLevel) r.leadLevel=Hashs[4][r.leadLevel];
+				// 	if(r.paymentOption) r.paymentOption=Hashs[5][r.paymentOption];
+				// 	if(r.status) r.status=Hashs[6][r.status];
+				// 	if(r.assistant) r.assistant=Hashs[7][r.assistant];
+				// 	if(r.assisCont1) r.assisCont1=Hashs[7][r.assisCont1];
+				// 	if(r.assisCont2) r.assisCont2=Hashs[7][r.assisCont2];
+				// 	if(r.expert1) r.expert1=Hashs[7][r.expert1];
+				// 	if(r.expert2) r.expert2=Hashs[7][r.expert2];
+				// 	if(r.sales1) r.sales1=Hashs[7][r.sales1];
+				// 	if(r.sales2) r.sales2=Hashs[7][r.sales2];
+				// 	if(r.teacher) r.teacher=Hashs[7][r.teacher];
+				// 	if(r.client) r.client=Hashs[8][r.client];
+				// 	r.service=Hashs[9][r.id]||[];
+				// 	return r;
+				// });
 				return Promise.resolve(toReturn);
 			}).then(function(data){
 				console.log(data.length);

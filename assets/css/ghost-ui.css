@@ -2317,6 +2317,7 @@ nav li a {
   -webkit-box-sizing: border-box;
   -moz-box-sizing: border-box;
   box-sizing: border-box;
+  position:fixed;
   left: 50%;
   right: auto;
   width: 450px;
@@ -2347,7 +2348,7 @@ nav li a {
     .modal-action {
       padding: 30px 0; } }
 
-.modal-content {
+/*.modal-content {
   -webkit-box-sizing: padding-box;
   -moz-box-sizing: padding-box;
   box-sizing: padding-box;
@@ -2356,8 +2357,8 @@ nav li a {
   background-clip: padding-box;
   background-color: #FFFFFF;
   border-radius: 2px;
-  box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 6px; }
-  .modal-content .close {
+  box-shadow: rgba(0, 0, 0, 0.2) 0 0 0 6px; }*/
+/*  .modal-content .close {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
@@ -2372,8 +2373,8 @@ nav li a {
     z-index: 9999;
     -webkit-transition: opacity 0.3s linear;
     -moz-transition: opacity 0.3s linear;
-    transition: opacity 0.3s linear; }
-    .modal-content .close:before {
+    transition: opacity 0.3s linear; }*/
+/*    .modal-content .close:before {
       font-family: "Icons";
       font-weight: normal;
       font-style: normal;
@@ -2384,13 +2385,13 @@ nav li a {
       -webkit-font-smoothing: antialiased;
       content: "\e034";
       font-size: 1em;
-      color: #7d878a; }
-    .modal-content .close:hover {
+      color: #7d878a; }*/
+/*    .modal-content .close:hover {
       text-decoration: none; }
     .modal-content .close:hover {
-      color: #242628; }
+      color: #242628; }*/
 
-.modal-header {
+/*.modal-header {
   position: relative;
   padding: 20px;
   border-bottom: 1px solid #edece4; }
@@ -2415,7 +2416,7 @@ nav li a {
       width: 100%; } }
 
 .modal-style-centered {
-  text-align: center; }
+  text-align: center; }*/
 
 .image-uploader {
   -webkit-box-sizing: border-box;

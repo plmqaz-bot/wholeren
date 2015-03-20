@@ -3,7 +3,7 @@ var $ = require('./backgrid.fixedheader.js');
 //var Backbone = require('backbone');
 //var Backgrid=require('./backgrid-paginator.js');
 //var Backgrid=require('./backgrid-filter.js');
-var Backgrid=require('./backgrid-responsiveGrid.js');
+var Backgrid=require('./backgrid-text-cell.js');
 var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
 Backbone.$=$;
@@ -16,6 +16,7 @@ var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
 var BackgridCells=require('./backgrid.cell.js');
+var Bootstrap=require('./bootstrap.js');
 
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
@@ -1095,36 +1096,47 @@ var ContractView=Wholeren.baseView.extend({
             action:function(e){
                 var item=$(e.currentTarget);
                 var id = this.model.get('id');
-                var type='serv';
-                var m=new CommentModalView({sid:id});
+                var m=new CommentModalView({cid:id});
                 $('.app').html(m.renderAll().el);   
             }
         });
         var self=this;
-        util.ajaxGET('/ServiceProgress/').then(function(progress){
-            var progressselect=BackgridCells.SelectCell({name:"Progress",values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
-
+        util.ajaxGET('/contract/getAllOptions/').then(function(AllOptions){
+            self.ready=true;
+            var category=BackgridCells.SelectCell({name:"ContractCategory",values:_.map(AllOptions['ContractCategory'],function(e){return [e.contractCategory,e.id]})});
+            var lead=BackgridCells.SelectCell({name:"Lead",values:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})});
+            var leadLevel=BackgridCells.SelectCell({name:"LeadLevel",values:_.map(AllOptions['LeadLevel'],function(e){return [e.leadLevel,e.id]})});
+            var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
+            var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
+            var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
             var columns=[
-            {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
-            {name:'nickname',label:'负责老师',editable: false,cell:'string'},
-            {name:'serviceProgress',label:'状态',cell:progressselect},                    
-            {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
-            {name:'type',label:'服务类型',editable:false,cell:'string'},
-            {name:'gpa',label:'GPA',editable:false,cell:'number'},
-            {name:'toefl',label:'托福',editable:false,cell:'number'},
-            {name:'gre',label:'GRE',editable:false,cell:'number'},
-            {name:'sat',label:'SAT',editable:false,cell:'number'},
-            {name:'otherScore',label:'其他分数',editable:false,cell:'string'},
-            {name:'degree',label:'原学校类型',editable:false,cell:'string'},
-            {name:'previousSchool',label:'原学校',editable:false,cell:'string'},
-            {name:'major',label:'原专业',editable:false,cell:'number'},
-            {name:'targetDegree',label:'申请学校类型',editable:false,cell:'string'},
-            {name:'step1',label:'step1',cell:'date'},
-            {name:'step2',label:'step2',cell:'date'},
-            {name:'studentDestination',label:'学生去向',cell:'string'},
-            {name:'',label:'Show Applications',cell:appPopup},
+            {name:'contractCategory',label:'咨询服务类别',cell:category},
+            {name:'lead',label:'Lead种类',cell:lead},
+            {name:'leadName',label:'Lead介绍人',cell:'string'},
+            {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
+            {name:'status',label:'签约状态',cell:status},
+            {name:'salesFollowup',label:'销售跟进记录',cell:'text'},
+            {name:'salesRecord',label:'销售跟进摘要',cell:'text'},
+            {name:'expertContactDate',label:'专家咨询日期',cell:'date'},
+            {name:'expertFollowup',label:'专家跟进记录',cell:'text'},
+            {name:'originalText',label:'求助原文',cell:'text'},
+            {name:'country',label:'当前所在地',cell:country},                    
+            {name:'validI20',label:'I-20有效',cell:'boolean'},
+            {name:'previousSchool',label:'原学校',cell:'string'},
+            {name:'degree',label:'原学校类型',cell:degree},
+            {name:'targetSchool',label:'目标学校',cell:'string'},
+            {name:'targetSchoolDegree',label:'申请学校类型',cell:degree},
+            {name:'gpa',label:'GPA',cell:'number'},
+            {name:'toefl',label:'托福',cell:'number'},
+            {name:'gre',label:'GRE',cell:'number'},
+            {name:'sat',label:'SAT',cell:'number'},
+            {name:'otherScore',label:'其他分数',cell:'string'},
+            {name:'age',label:'年龄',cell:'string'},
+            {name:'major',label:'就读专业',cell:'string'},
+            {name:'diagnose',label:'何弃疗',cell:'string'},
+            {name:'endFeeDue',label:'是否应收尾款',cell:'boolean'},
+            {name:'endFee',label:'是否已收尾款',cell:'boolean'},
             {name:'',label:'Comment',cell:comment},
-            {name:'',label:'Show Details',cell:popup},
             ];
             self.columns=columns;
             self.grid=new Backgrid.Extension.ResponsiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
@@ -1142,7 +1154,7 @@ var ContractView=Wholeren.baseView.extend({
                 collection: self.collection,
                 placeholder: "Search in the browser",
                 // The model fields to search for matches
-                fields: ['chineseName','type','degree','previousSchool','major','studentDestination','nickname'],
+                fields: ['contractCategory','lead','leadName','status','major','country','degree'],
                 // How long to wait after typing has stopped before searching can start
                 wait: 150
             });
@@ -1167,150 +1179,150 @@ var ContractView=Wholeren.baseView.extend({
         util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
     }
 });
-var ContractView=Wholeren.FormView.extend({
-    serviceTypes:{},
-    ready:false,
-    singleTemplate:JST['contractSingle'],
-    templateName:'contract',
-        initialize: function (options) {
-            this.rank=$('#rank').text();
-            _.bindAll(this,'rerenderSingle');
-            _.bindAll(this,'renderCollection');
-            _.bindAll(this,'renderCollectionCore');
-            _.bindAll(this,'renderSingle');
-            _.bindAll(this,'modifyRow');
-            this.serviceTypes=new Obiwang.Collections.ServiceType();
-            var self=this;
-            this.render();
-          // $('.Contracts.responsive').floatThead();
-          this.collection = new Obiwang.Collections.Contract();
-          if(options.id){
-                var model=new Obiwang.Models.simpleModel({_url:'/Contract/',id:options.id});
-                model.fetch().then(function(){
-                    if(model)
-                        self.collection.add(model);
-                    self.renderCollection();
-                    self.collection.on("sort", self.renderCollection, self);
-                }).fail(function(err){
-                    util.handleRequestError(err); 
-                });
-            }else if (!this.collection || this.collection.length < 1) {
+// var ContractView=Wholeren.FormView.extend({
+//     serviceTypes:{},
+//     ready:false,
+//     singleTemplate:JST['contractSingle'],
+//     templateName:'contract',
+//         initialize: function (options) {
+//             this.rank=$('#rank').text();
+//             _.bindAll(this,'rerenderSingle');
+//             _.bindAll(this,'renderCollection');
+//             _.bindAll(this,'renderCollectionCore');
+//             _.bindAll(this,'renderSingle');
+//             _.bindAll(this,'modifyRow');
+//             this.serviceTypes=new Obiwang.Collections.ServiceType();
+//             var self=this;
+//             this.render();
+//           // $('.Contracts.responsive').floatThead();
+//           this.collection = new Obiwang.Collections.Contract();
+//           if(options.id){
+//                 var model=new Obiwang.Models.simpleModel({_url:'/Contract/',id:options.id});
+//                 model.fetch().then(function(){
+//                     if(model)
+//                         self.collection.add(model);
+//                     self.renderCollection();
+//                     self.collection.on("sort", self.renderCollection, self);
+//                 }).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });
+//             }else if (!this.collection || this.collection.length < 1) {
                 
-                self.collection.on("sort", self.renderCollection, self);
-                self.collection.on("reset", self.renderCollection, self);
-            }    
-            // Now get filters
-            $.ajax({
-                url: '/contract/getFilters/',
-                type: 'GET',
-                headers: {
-                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
-                },
-                success: function (data) {
-                    self.renderFilterButtons(data);                
-                },
-                error: function (xhr) {
-                    console.log('error');
-                }
-            });
-            //self.collection.on("sort", this.renderCollection, this); 
-        },
-        events: {
-        'click  button.button-add': 'editView',
-        'click  button.button-alt': 'refetch',
-        'click  a.payment':'showPayment',
-        'change .filter':'renderCollection',
-        'click .clickablecell':'editContract2',
-        'click .edit,.del':'editContract',
-        'click .textbox,.selectbox,.multiselectbox,.singletextbox,.boolbox':'editAttr',
-        'click th.sortable':'sortCollection',
-        'click .comment_edit':'showComments',
-        'click a.page':'switchPage'
-        },     
-        refetch:function(e){
-            var startDate=$('#startDate').val();
-            var endDate=$('#endDate').val();
-            this.collection.setdate({startDate:startDate,endDate:endDate});
-            this.collection.endDate=endDate;
-            this.removeAll();
-            this.collection.fetch({reset:true}).fail(function(err){
-                    util.handleRequestError(err); 
-                });;;
-        },
-        renderCollection: function (){
-            var self=this;
+//                 self.collection.on("sort", self.renderCollection, self);
+//                 self.collection.on("reset", self.renderCollection, self);
+//             }    
+//             // Now get filters
+//             $.ajax({
+//                 url: '/contract/getFilters/',
+//                 type: 'GET',
+//                 headers: {
+//                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+//                 },
+//                 success: function (data) {
+//                     self.renderFilterButtons(data);                
+//                 },
+//                 error: function (xhr) {
+//                     console.log('error');
+//                 }
+//             });
+//             //self.collection.on("sort", this.renderCollection, this); 
+//         },
+//         events: {
+//         'click  button.button-add': 'editView',
+//         'click  button.button-alt': 'refetch',
+//         'click  a.payment':'showPayment',
+//         'change .filter':'renderCollection',
+//         'click .clickablecell':'editContract2',
+//         'click .edit,.del':'editContract',
+//         'click .textbox,.selectbox,.multiselectbox,.singletextbox,.boolbox':'editAttr',
+//         'click th.sortable':'sortCollection',
+//         'click .comment_edit':'showComments',
+//         'click a.page':'switchPage'
+//         },     
+//         refetch:function(e){
+//             var startDate=$('#startDate').val();
+//             var endDate=$('#endDate').val();
+//             this.collection.setdate({startDate:startDate,endDate:endDate});
+//             this.collection.endDate=endDate;
+//             this.removeAll();
+//             this.collection.fetch({reset:true}).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });;;
+//         },
+//         renderCollection: function (){
+//             var self=this;
 
-            if(!this.ready){
-                this.serviceTypes=new Obiwang.Collections.ServiceType();
-                this.serviceTypes.fetch({ reset: true }).done(function(data){self.ready=true;self.renderCollectionCore();}); 
-            }else{
-                this.renderCollectionCore();
-            }
-            $('#total_count').text(this.contractLength);
-        },
-        headline:function(obj){
-            if(obj.client){
-                var text=obj.client.chineseName;
-                if(text)
-                    return text.substring(0,14);
-                else
-                    return "NO NAME";
-            }else{
-                return "NO NAME";
-            }
-        },
-        editView: function(){
-            var popUpView = new ContractEdit({view:this});
-            $('.app').html(popUpView.render().el);
-        },
-        editContract2: function(e){
-            var id = $(e.currentTarget).data("id");
-            var item = this.collection.get(id);
-            console.log("clicked item ",item);
-            var popUpView = new ContractEdit({view:this,model:item});
-            $('.app').html(popUpView.render().el);
-        },
-        editContract:function(e){
-            // Service id
-            var item=$(e.currentTarget);
-            var id = item.attr('href').substring(1);
-            var action=item.attr('class');
-            var self=this;
-            switch(action){
-                case 'del':
-                    var newApp=new Obiwang.Models.simpleModel({_url:'/Contract/',id:id});
-                    newApp.destroy({
-                        success:function(d){
-                            self.rerenderSingle({id:id,del:true});            
-                        },
-                        error:function(model,response){
-                            util.handleRequestError(response);                       
-                        }
-                    });
-                    break;
-                case 'edit':
-                    var curCont=this.collection.get(id);
-                    if(!curCont){
-                        return;
-                    }
-                    var popUpView = new ContractEdit({view:this,model:curCont});
-                    $('.app').html(popUpView.render().el);
-            }
-        },
-        showComments:function(e){
-            var item=$(e.currentTarget);
-            var id = item.attr('href').substring(1);
-            var m=new CommentModalView({cid:id});
-            $('.app').html(m.renderAll().el);
-        } ,
-        showPayment:function(e){
-            var item=$(e.currentTarget);
-            var id = item.parent().parent().attr('name');
-            var ci= new ContractInvoiceView({id:id});
-            ci.render();
-            $('.app').html(ci.el);
-        }
-});
+//             if(!this.ready){
+//                 this.serviceTypes=new Obiwang.Collections.ServiceType();
+//                 this.serviceTypes.fetch({ reset: true }).done(function(data){self.ready=true;self.renderCollectionCore();}); 
+//             }else{
+//                 this.renderCollectionCore();
+//             }
+//             $('#total_count').text(this.contractLength);
+//         },
+//         headline:function(obj){
+//             if(obj.client){
+//                 var text=obj.client.chineseName;
+//                 if(text)
+//                     return text.substring(0,14);
+//                 else
+//                     return "NO NAME";
+//             }else{
+//                 return "NO NAME";
+//             }
+//         },
+//         editView: function(){
+//             var popUpView = new ContractEdit({view:this});
+//             $('.app').html(popUpView.render().el);
+//         },
+//         editContract2: function(e){
+//             var id = $(e.currentTarget).data("id");
+//             var item = this.collection.get(id);
+//             console.log("clicked item ",item);
+//             var popUpView = new ContractEdit({view:this,model:item});
+//             $('.app').html(popUpView.render().el);
+//         },
+//         editContract:function(e){
+//             // Service id
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var action=item.attr('class');
+//             var self=this;
+//             switch(action){
+//                 case 'del':
+//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Contract/',id:id});
+//                     newApp.destroy({
+//                         success:function(d){
+//                             self.rerenderSingle({id:id,del:true});            
+//                         },
+//                         error:function(model,response){
+//                             util.handleRequestError(response);                       
+//                         }
+//                     });
+//                     break;
+//                 case 'edit':
+//                     var curCont=this.collection.get(id);
+//                     if(!curCont){
+//                         return;
+//                     }
+//                     var popUpView = new ContractEdit({view:this,model:curCont});
+//                     $('.app').html(popUpView.render().el);
+//             }
+//         },
+//         showComments:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var m=new CommentModalView({cid:id});
+//             $('.app').html(m.renderAll().el);
+//         } ,
+//         showPayment:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.parent().parent().attr('name');
+//             var ci= new ContractInvoiceView({id:id});
+//             ci.render();
+//             $('.app').html(ci.el);
+//         }
+// });
 
 
 var ContractInvoiceView=Backbone.Modal.extend({

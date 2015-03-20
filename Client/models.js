@@ -351,20 +351,17 @@ var sortableCollection=Backbone.Collection.extend({
         }
 });
 Collections={
-    Contract :sortableCollection.extend({
-        model: Models.simpleModel,
+    Contract :Backbone.PageableCollection.extend({
+        model: Models.syncModel,
         
-        //url: '/Contract/',
+        _url: '/Contract/',
         url: function(){return '/Contract/?where='+this.whereclaus();},
         initialize:function(models,options){
             options=options||{};
-            if(options.sortAttr){
-                this.sortAttr=options.sortAttr;
-            }else{
-                this.selectedStrat({sortAttr:'client.firstName'});
-            }
             this.startDate=options.startDate||"09-01-2014";
             this.endDate=options.endDate||"";
+            this.mode="client";
+            this.state={pageSize:20};
         },
         setdate:function(options){
             this.startDate=options.startDate;
