@@ -7,7 +7,7 @@
   Licensed under the MIT @license
  */
 var factory=function() {
- var Backbone=require('Backbone');
+ var Backbone= require('./backbone.modal.js');
  var _=require('underscore');
   // Backform namespace and global options
   Backform = {

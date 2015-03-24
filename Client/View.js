@@ -17,7 +17,7 @@ var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
 var BackgridCells=require('./backgrid.cell.js');
-var BackboneForms=require('backbone-forms');
+require('backbone-forms');
 $=require('./bootstrap-modal.js')($);
 var Backform=require('./backform');
 Backbone.$=$;
