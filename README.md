@@ -145,9 +145,9 @@ problem with sorting of pageable collection --DONE
 
 click name show client edit form
 
-click sign show contract sign form -- DONE  need the date to be nullable
+click sign show contract sign form -- DONE  need the date to be nullable --DONE
 
-click user show sales, experts 
+click user show sales, experts  --DONE
 
 click service show selected services
 

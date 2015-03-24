@@ -137,6 +137,14 @@ module.exports.routes = {
     controller:'user',
     action:'update'
   },
+  'PATCH /Invoice/:id':{
+    controller:'invoice',
+    action:'update'
+  },
+  'PATCH /ServiceInvoice/:id':{
+    controller:'ServiceInvoice',
+    action:'update'
+  },
   'POST /user/changepw/':{
     controller:'user',
     action:'changepw'
