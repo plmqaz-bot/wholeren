@@ -1,5 +1,6 @@
 ﻿"use strict";
 var $ = require('./backgrid.fixedheader.js');
+require('jquery-ui');
 //var Backbone = require('backbone');
 //var Backgrid=require('./backgrid-paginator.js');
 //var Backgrid=require('./backgrid-filter.js');
@@ -16,9 +17,34 @@ var util=require('./util');
 var JST=require('./JST');
 var Promise=require('bluebird');
 var BackgridCells=require('./backgrid.cell.js');
-var BackboneForms=require('backbone-forms');
+require('backbone-forms');
 $=require('./bootstrap-modal.js')($);
+var Backform=require('./backform');
 Backbone.$=$;
+Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
+    render: function() {
+        // Call the parent's render method
+        Backbone.Form.editors.Text.prototype.render.call(this);
+        // Then make the editor's element a datepicker.
+        this.$el.datepicker({
+            format: 'yyyy-mm-dd',
+            autoclose: true,
+            weekStart: 1
+        });
+
+        return this;
+    },
+
+    // The set value must correctl
+    setValue: function(value) {
+        var d=new Date(value);
+        if(isNaN(d.getTime())){
+            this.$el.val("");    
+        }else{
+            this.$el.val(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate());
+        }        
+    }
+});
 //#region
 Handlebars.registerHelper('ifCond', function (v1, v2, options) {
     if (v1 == v2) {
@@ -1101,8 +1127,18 @@ var ContractView=Wholeren.baseView.extend({
                 $('.app').html(m.renderAll().el);   
             }
         });
+        var payment=BackgridCells.Cell.extend({
+            cellText:'费用详细',
+            action:function(e){
+                var item=$(e.currentTarget);
+                var id = this.model.get('id');
+                var m=new ContractInvoiceView({id:id});
+                m.render();
+                $('.app').html(m.el);   
+            } 
+        });
         var self=this;
-        util.ajaxGET('/contract/getAllOptions/').then(function(AllOptions){
+        Promise.all([util.ajaxGET('/contract/getAllOptions/'),util.ajaxGET('/User/')]).spread(function(AllOptions,Users){
             self.ready=true;
             var category=BackgridCells.SelectCell({name:"ContractCategory",values:_.map(AllOptions['ContractCategory'],function(e){return [e.contractCategory,e.id]})});
             var lead=BackgridCells.SelectCell({name:"Lead",values:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})});
@@ -1114,9 +1150,17 @@ var ContractView=Wholeren.baseView.extend({
                 cellText:'Status',
                 action:function(e){
                     var item=$(e.currentTarget);
-                    var ci= new ContractSignView({model:this.model});
+                    var ci= new ContractSignView({model:this.model,options:AllOptions['Status']});
                     ci.render();
                     $('.app').html(ci.el);
+                }
+            });
+            var agent=BackgridCells.Cell.extend({
+                cellText:'负责老师选择',
+                action:function(e){
+                    var m=new ContractAgentView({model:this.model,options:Users});
+                    m.render();
+                    $('.app').html(m.el);
                 }
             });
             var columns=[
@@ -1127,6 +1171,7 @@ var ContractView=Wholeren.baseView.extend({
             {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
             {name:'createdAt',label:'咨询日期',editable:false,cell:'date'},
             {name:'status',label:'签约状态',cell:sign},
+            {name:'',label:'人员分配',cell:agent},
             {name:'salesFollowup',label:'销售跟进记录',cell:'text'},
             {name:'salesRecord',label:'销售跟进摘要',cell:'text'},
             {name:'expertContactDate',label:'专家咨询日期',cell:'date'},
@@ -1148,6 +1193,7 @@ var ContractView=Wholeren.baseView.extend({
             {name:'diagnose',label:'何弃疗',cell:'string'},
             {name:'endFeeDue',label:'是否应收尾款',cell:'boolean'},
             {name:'endFee',label:'是否已收尾款',cell:'boolean'},
+            {name:'',label:'费用详细',cell:payment},
             {name:'',label:'Comment',cell:comment},
             ];
             self.columns=columns;
@@ -1204,24 +1250,204 @@ var ContractSignView=Backbone.Modal.extend({
             self.afterRender();
         });
         this.model=options.model;
+        this.options=_.map(options.options,function(e){
+            return {label:e.status,value:e.id};
+        });
     },
     afterRender:function(){
-        BackboneForms
         var container=this.$el.find('.bbm-modal__section');
         var self=this;
+        
+
         this.form=new Backbone.Form({
-            model:self.model,
+            model:this.model,
             schema:{
                 status:{type:'Select',options:new Obiwang.Collections.Status()},
-                contractSigned:'Date',
-                contractPaid:'Date'
+                contractSigned:{type:'DatePicker'},
+                contractPaid:{type:'DatePicker'},
             }
-        }).render();
+        });
+        this.form.render();
+        //var fields=[
+        // {name:'status',label:'Status',control:'select',options:this.options},
+        // {name:'contractSigned',label:'Signed',control:'datepicker',options:{format:"yyyy-mm-dd"}},
+        // {name:'contractPaid',label:'Paid',control:'datepicker',options:{format:"yyyy-mm-dd"}}];
+        // this.form=new Backform.Form({
+        //     el:self.$el.find('.bbm-modal__section'),
+        //     model:self.model,
+        //     fields:fields,
+        // });
+        // this.form.render();
         container.append(this.form.el);
         return this;
     },
-    Submit:function(e){
+    submit:function(e){
+        var self=this;
+        // this.model.save(null,{
+        //     patch:true,
+        //     success:function(d){
+        //         self.close();
+        //     },
+        //     error:function(model,response){
+        //         util.handleRequestError(response);                       
+        //     },
+        //     save:false,
+        // });
         this.form.commit();
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
+});
+
+var ContractAgentView=Backbone.Modal.extend({
+    prefix:"bbm",
+    template: JST['editbox'],
+    submitEl: '.ok',
+    cancelEl:'.cancel',
+    initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.model=options.model;
+        this.options=options.options;
+        this.options=_.map(options.options,function(e){
+            return {label:e.nickname,value:e.id};
+        });
+        this.options.push({label:'NONE',value:null});
+    },
+    afterRender:function(){
+        var container=this.$el.find('.bbm-modal__section');
+        var self=this;
+        var fields=[
+        {name:'assistant1',label:'助理1',control:'select',options:this.options},
+        {name:'assistant2',label:'助理2',control:'select',options:this.options},
+        {name:'assistant3',label:'助理3',control:'select',options:this.options},
+        {name:'assistant4',label:'助理4',control:'select',options:this.options},
+        {name:'assisCont1',label:'助签1',control:'select',options:this.options},
+        {name:'assisCont2',label:'助签1',control:'select',options:this.options},
+        {name:'expert1',label:'专家1',control:'select',options:this.options},
+        {name:'expert2',label:'专家2',control:'select',options:this.options},
+        {name:'sales1',label:'销售1',control:'select',options:this.options},
+        {name:'sales2',label:'销售2',control:'select',options:this.options},
+        {name:'teacher',label:'总服务老师',control:'select',options:this.options}];
+        this.form=new Backform.Form({
+            el:self.$el.find('.bbm-modal__section'),
+            model:self.model,
+            fields:fields,
+        });
+        this.form.render();
+        return this;
+    },
+    submit:function(e){
+        
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
+});
+var ContractServiceView=Backbone.Modal.extend({
+    prefix:"bbm",
+    template: JST['editbox'],
+    submitEl: '.ok',
+    cancelEl:'.cancel',
+     events:{
+        'click .button-add-invoice':'addnew'
+    },
+    initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.contractID=parseInt(options.id);
+        this.collection=new Obiwang.Collections.Invoice();
+        this.collection.contract=this.contractID;
+    },     
+    addnew:function(e){
+        e.preventDefault();
+        var toAdd=new Obiwang.Models.Invoice({_url:'/Invoice/'});
+        toAdd.setContract({contract:this.contractID});
+        var self=this;
+        toAdd.save(null,{
+            success:function(model){
+                self.collection.add(toAdd);
+            },
+            error:function(response,model){
+                util.handleRequestError(response);
+            },
+            save:false
+        });  
+    },
+    afterRender:function(model){
+        var container=this.$el.find('.bbm-modal__section');
+        container.append('<button class="button-add-invoice">Add New</button>');
+        var DeleteCell = BackgridCells.DeleteCell;
+        var ServiceInvoiceCell=Backgrid.Cell.extend({
+            template: _.template("<a href='#'>Details</a>"),
+            events: {
+              "click a": "showDetails"
+            },
+            showDetails: function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+              var childview=new ServiceInvoiceView({invoice:this.model});
+              childview.render();
+              $('.app').append(childview.el);
+            },
+            render: function () {
+              this.$el.html(this.template());
+              this.delegateEvents();
+              return this;
+            }
+        });
+        var self=this;
+        Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
+            var selection=_.map(account,function(e){return [e.account,e.id]});
+            var ps=_.map(payment,function(e){return [e.paymentOption,e.id]})
+            var accountSelect=Backgrid.SelectCell.extend({
+                optionValues:  [{name:"Users",values:selection}],
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                })
+            });
+            var paymentSelect=accountSelect.extend({
+                optionValues:[{name:"Users",values:ps}],
+            });
+            var columns=[
+            {name:'nontaxable',label:'申请费',cell:'number'},
+            {name:'remittances',label:'shouxu',cell:'number'},
+            {name:'other',label:'其他费用',cell:'number'},
+            {name:'service',label:'服务收费',editable:false,cell:'number'},
+            {name:'total',label:'Total',editable:false,cell:'number'},
+            {name:'depositAccount',label:'收款账户',cell:accountSelect},
+            {name:'paymentOption',label:'收款方式',cell:paymentSelect},
+            {name:'',label:'具体服务收费',cell:ServiceInvoiceCell},
+            {name:'',label:'Delete Action',cell:DeleteCell}
+            ];
+
+            self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            container.append(self.grid.render().el);
+            self.collection.fetch({reset:true});
+        });
+
+        return this;
+    },
+    submit: function () {
+        // get text and submit, and also refresh the collection. 
+        this.grid.remove();
+        this.close();
+
     },
     checkKey:function(e){
         if (this.active) {

@@ -21,7 +21,9 @@
   .small-bbm-modal{
     max-width:600px;
   }
-
+.bbm-modal__section{
+  overflow:auto;
+}
 .bbm-views {
   width: 100%;
   box-sizing: border-box; }

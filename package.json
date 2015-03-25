@@ -36,7 +36,9 @@
     "backbone.paginator":"*",
     "later":"*",
     "nodemailer":"*",
-    "lunr":"*"
+    "lunr":"*",
+    "underscore":"*",
+    "backbone-forms":"*"
   },
   "scripts": {
     "start": "node main.js",
