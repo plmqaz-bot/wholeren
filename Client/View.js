@@ -1494,17 +1494,37 @@ var ServiceInvoiceView=Backbone.Modal.extend({
         this.collection=new Obiwang.Collections.ServiceInvoice({invoice:this.invoiceID});
     },
     afterRender:function(model){
-        var container=this.$el.find('.bbm-modal__section');
-        var columns=[
-            {name:'serviceType',label:'服务',editable:false,cell:'string'},
-            {name:'price',label:'服务价格',cell:'number'},
-            {name:'paid',label:'已付',editable:false,cell:'number'},
-            {name:'paidAmount',label:'付款',cell:'number'}
-            ];
-        var grid=new Backgrid.Grid({columns:columns,collection:this.collection});
+        util.ajaxGET('/ServiceType/').then(function(data){
+            var type=BackgridCells.SelectCell({name:"ServiceType",values:_.map(data,function(e){return [e.serviceType,e.id]})});
+            var container=this.$el.find('.bbm-modal__section');
+            container.append('<button class="button-add-invoice">Add New</button>');
+            var columns=[
+                {name:'serviceType',label:'服务',cell:type},
+                {name:'price',label:'服务价格',cell:'number'},
+                {name:'paid',label:'已付',editable:false,cell:'number'},
+                {name:'paidAmount',label:'付款',cell:'number'}
+                ];
+            var grid=new Backgrid.Grid({columns:columns,collection:this.collection});
             container.append(grid.render().el);
             this.collection.fetch({reset:true});
+        });
+        
         return this;
+    },
+    addnew:function(e){
+        e.preventDefault();
+        var toAdd=new Obiwang.Models.syncModel({_url:'/Service/'});
+        toAdd.set('Contract',this.invoice.contract);
+        var self=this;
+        toAdd.save(null,{
+            success:function(model){
+                self.collection.fetch({reset:true});
+            },
+            error:function(response,model){
+                util.handleRequestError(response);
+            },
+            save:false
+        });  
     },
     submit: function () {
         // get text and submit, and also refresh the collection. 

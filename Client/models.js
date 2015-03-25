@@ -476,7 +476,11 @@ Collections={
         model: Models.syncModel,
         _url:'/Service/',
         url: function(){
-            return '/Service/?where='+this.whereclaus();
+            if(this.customWhere){
+                return '/Service/?where='+this.customWhere;   
+            }else{
+                return '/Service/?where='+this.whereclaus();   
+            }
         },
         
         initialize:function(models,options){

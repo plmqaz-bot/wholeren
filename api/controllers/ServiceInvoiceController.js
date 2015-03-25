@@ -6,7 +6,7 @@
  */
  var Promise=require('bluebird');
 function constructsql(where,on){
-	var sql="select s.id,service.id as service, invoice.id as invoice,s.paidAmount,p1.paid,service.price,servicetype.serviceType \
+	var sql="select s.id,service.id as service, invoice.id as invoice,s.paidAmount,p1.paid,service.price,service.serviceType \
 	from invoice \
 	left join contract on contract.id=invoice.contract \
 	left join service on contract.id=service.contract \
@@ -85,6 +85,14 @@ module.exports = {
 			var promise=ServiceInvoice.findOne({id:id}).then(function(data){
 				if((data||{})['service']){
 					return Service.update({id:data['service']},{price:attribs.price});
+				}
+			});
+			promises.push(promise);
+		}
+		if(attribs.serviceType!=null){
+			var promise=ServiceInvoice.findOne({id:id}).then(function(data){
+				if((data||{})['service']){
+					return Service.update({id:data['service']},{serviceType:attribs.serviceType});
 				}
 			});
 			promises.push(promise);
