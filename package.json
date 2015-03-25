@@ -38,7 +38,8 @@
     "nodemailer":"*",
     "lunr":"*",
     "underscore":"*",
-    "backbone-forms":"*"
+    "backbone-forms":"*",
+    "jquery-ui":"*"
   },
   "scripts": {
     "start": "node main.js",

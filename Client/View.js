@@ -1719,10 +1719,14 @@ var ServiceInvoiceView=Backbone.Modal.extend({
         this.invoiceID=parseInt(this.invoice.id);
         this.collection=new Obiwang.Collections.ServiceInvoice({invoice:this.invoiceID});
     },
+    events:{
+        'click .button-add-invoice':'addnew'
+    },
     afterRender:function(model){
+        var self=this;
         util.ajaxGET('/ServiceType/').then(function(data){
             var type=BackgridCells.SelectCell({name:"ServiceType",values:_.map(data,function(e){return [e.serviceType,e.id]})});
-            var container=this.$el.find('.bbm-modal__section');
+            var container=self.$el.find('.bbm-modal__section');
             container.append('<button class="button-add-invoice">Add New</button>');
             var columns=[
                 {name:'serviceType',label:'服务',cell:type},
@@ -1730,9 +1734,9 @@ var ServiceInvoiceView=Backbone.Modal.extend({
                 {name:'paid',label:'已付',editable:false,cell:'number'},
                 {name:'paidAmount',label:'付款',cell:'number'}
                 ];
-            var grid=new Backgrid.Grid({columns:columns,collection:this.collection});
+            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
             container.append(grid.render().el);
-            this.collection.fetch({reset:true});
+            self.collection.fetch({reset:true});
         });
         
         return this;
@@ -1740,7 +1744,7 @@ var ServiceInvoiceView=Backbone.Modal.extend({
     addnew:function(e){
         e.preventDefault();
         var toAdd=new Obiwang.Models.syncModel({_url:'/Service/'});
-        toAdd.set('Contract',this.invoice.contract);
+        toAdd.set('contract',this.invoice.get('contract'));
         var self=this;
         toAdd.save(null,{
             success:function(model){
