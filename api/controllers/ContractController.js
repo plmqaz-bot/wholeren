@@ -5,18 +5,34 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 var Promise=require('bluebird');
+function constructsql(who){
+	return "select distinct(contract.id) from contract \
+	left join service on contract.id=service.contract \
+	left join servicedetail s on s.service=service.id \
+	inner join user on (user.id =s.user) where "+who+"\
+	union\
+	select distinct(contract.id) from contract \
+	inner join user on \
+	(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) where "+who;
+}
+var findOne=function(req,res,id){
+
+		return Contract.findOne({id:id}).populate('client').then(function(data){
+			console.log("look for "+id)
+			if(data.client) {
+				data.clientName=data.client['chineseName'];
+				data.client=data.client.id;
+			}
+			return res.json(data);
+		});
+	}
 module.exports = {
+	'findOne':function(req,res){
+		var id=req.params.id;
+		return findOne(req,res,id);
+	},
 	'getContract':function(req, res){
-		function constructsql(who){
-			return "select distinct(contract.id) from contract \
-			left join service on contract.id=service.contract \
-			left join servicedetail s on s.service=service.id \
-			inner join user on (user.id =s.user) where "+who+"\
-			union\
-			select distinct(contract.id) from contract \
-			inner join user on \
-			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) where "+who;
-		}
+
 		//git preq.session.user={id:1,rank:3};
 		var where=req.param('where')||"{}";
 		console.log(where);
@@ -144,7 +160,8 @@ module.exports = {
 				}
 			}).then(function(cont){
 				console.log("got contract",cont);
-				return res.json(cont);	
+				return findOne(req,res,cont.id);
+				//return res.json(cont);	
 			}).fail(function(err){
             	Utilfunctions.errorHandler(err,res,"Import User failed");
 			});
@@ -214,7 +231,7 @@ module.exports = {
 							return res.json(400,err);
 						}
 						console.log("contract updated: ",data);
-						return res.json(data);
+						return findOne(req,res,data.id);
 					});
 							
 				});
@@ -235,7 +252,7 @@ module.exports = {
 							return res.json(400,err);
 						}
 						console.log("contract updated: ",data);
-						return res.json(data);
+						return findOne(req,res,data.id);
 					});					
 				});
 			}
@@ -255,7 +272,7 @@ module.exports = {
 				if(err){
 					return res.json(400,err);
 				}
-				return res.json(data);
+				return findOne(req,res,data.id);
 			});	
 		}
 		/**Disabled**/

@@ -19,11 +19,11 @@ var simpleModel=Backbone.Model.extend({
             this._url=(options||{})._url;
         },
         parse:function(response){
-            if(response.createdAt){
-                if(!isNaN(new Date(response.createdAt).getTime())){
-                    response.createdAt=new Date(response.createdAt);
-                }
-            }
+            // if(response.createdAt){
+            //     if(!isNaN(new Date(response.createdAt).getTime())){
+            //         response.createdAt=new Date(response.createdAt);
+            //     }
+            // }
             return response;
         },
         toString:function(){

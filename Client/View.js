@@ -1118,6 +1118,7 @@ var ContractView=Wholeren.baseView.extend({
         this.el=options.el;
         this.collection = new Obiwang.Collections['Contract']();
         this.render({title:"Contracts"});
+        $('.page-actions').prepend('<button class="button-add">Add New</button>');
         var comment=BackgridCells.Cell.extend({
             cellText:'Comments',
             action:function(e){
@@ -1195,6 +1196,7 @@ var ContractView=Wholeren.baseView.extend({
             {name:'endFee',label:'是否已收尾款',cell:'boolean'},
             {name:'',label:'费用详细',cell:payment},
             {name:'',label:'Comment',cell:comment},
+            {name:'',label:'Delete',cell:BackgridCells.DeleteCell}
             ];
             self.columns=columns;
             self.grid=new Backgrid.Extension.ResponsiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
@@ -1222,7 +1224,8 @@ var ContractView=Wholeren.baseView.extend({
     },
     events: {
     'click  button.button-alt': 'refetch',
-    'click  button.button-save': 'save'
+    'click  button.button-save': 'save',
+    'click button.button-add':'add'
     },    
     refetch:function(e){
         if(!this.ready) return;
@@ -1235,6 +1238,10 @@ var ContractView=Wholeren.baseView.extend({
     },   
     save:function(e){
         util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
+    },
+    add:function(e){
+        var popUpView = new ContractEdit({view:this});
+        $('.app').html(popUpView.render().el);
     }
 });
 var ContractSignView=Backbone.Modal.extend({
@@ -1455,152 +1462,6 @@ var ContractServiceView=Backbone.Modal.extend({
         }
     }
 });
-// var ContractView=Wholeren.FormView.extend({
-//     serviceTypes:{},
-//     ready:false,
-//     singleTemplate:JST['contractSingle'],
-//     templateName:'contract',
-//         initialize: function (options) {
-//             this.rank=$('#rank').text();
-//             _.bindAll(this,'rerenderSingle');
-//             _.bindAll(this,'renderCollection');
-//             _.bindAll(this,'renderCollectionCore');
-//             _.bindAll(this,'renderSingle');
-//             _.bindAll(this,'modifyRow');
-//             this.serviceTypes=new Obiwang.Collections.ServiceType();
-//             var self=this;
-//             this.render();
-//           // $('.Contracts.responsive').floatThead();
-//           this.collection = new Obiwang.Collections.Contract();
-//           if(options.id){
-//                 var model=new Obiwang.Models.simpleModel({_url:'/Contract/',id:options.id});
-//                 model.fetch().then(function(){
-//                     if(model)
-//                         self.collection.add(model);
-//                     self.renderCollection();
-//                     self.collection.on("sort", self.renderCollection, self);
-//                 }).fail(function(err){
-//                     util.handleRequestError(err); 
-//                 });
-//             }else if (!this.collection || this.collection.length < 1) {
-                
-//                 self.collection.on("sort", self.renderCollection, self);
-//                 self.collection.on("reset", self.renderCollection, self);
-//             }    
-//             // Now get filters
-//             $.ajax({
-//                 url: '/contract/getFilters/',
-//                 type: 'GET',
-//                 headers: {
-//                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
-//                 },
-//                 success: function (data) {
-//                     self.renderFilterButtons(data);                
-//                 },
-//                 error: function (xhr) {
-//                     console.log('error');
-//                 }
-//             });
-//             //self.collection.on("sort", this.renderCollection, this); 
-//         },
-//         events: {
-//         'click  button.button-add': 'editView',
-//         'click  button.button-alt': 'refetch',
-//         'click  a.payment':'showPayment',
-//         'change .filter':'renderCollection',
-//         'click .clickablecell':'editContract2',
-//         'click .edit,.del':'editContract',
-//         'click .textbox,.selectbox,.multiselectbox,.singletextbox,.boolbox':'editAttr',
-//         'click th.sortable':'sortCollection',
-//         'click .comment_edit':'showComments',
-//         'click a.page':'switchPage'
-//         },     
-//         refetch:function(e){
-//             var startDate=$('#startDate').val();
-//             var endDate=$('#endDate').val();
-//             this.collection.setdate({startDate:startDate,endDate:endDate});
-//             this.collection.endDate=endDate;
-//             this.removeAll();
-//             this.collection.fetch({reset:true}).fail(function(err){
-//                     util.handleRequestError(err); 
-//                 });;;
-//         },
-//         renderCollection: function (){
-//             var self=this;
-
-//             if(!this.ready){
-//                 this.serviceTypes=new Obiwang.Collections.ServiceType();
-//                 this.serviceTypes.fetch({ reset: true }).done(function(data){self.ready=true;self.renderCollectionCore();}); 
-//             }else{
-//                 this.renderCollectionCore();
-//             }
-//             $('#total_count').text(this.contractLength);
-//         },
-//         headline:function(obj){
-//             if(obj.client){
-//                 var text=obj.client.chineseName;
-//                 if(text)
-//                     return text.substring(0,14);
-//                 else
-//                     return "NO NAME";
-//             }else{
-//                 return "NO NAME";
-//             }
-//         },
-//         editView: function(){
-//             var popUpView = new ContractEdit({view:this});
-//             $('.app').html(popUpView.render().el);
-//         },
-//         editContract2: function(e){
-//             var id = $(e.currentTarget).data("id");
-//             var item = this.collection.get(id);
-//             console.log("clicked item ",item);
-//             var popUpView = new ContractEdit({view:this,model:item});
-//             $('.app').html(popUpView.render().el);
-//         },
-//         editContract:function(e){
-//             // Service id
-//             var item=$(e.currentTarget);
-//             var id = item.attr('href').substring(1);
-//             var action=item.attr('class');
-//             var self=this;
-//             switch(action){
-//                 case 'del':
-//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Contract/',id:id});
-//                     newApp.destroy({
-//                         success:function(d){
-//                             self.rerenderSingle({id:id,del:true});            
-//                         },
-//                         error:function(model,response){
-//                             util.handleRequestError(response);                       
-//                         }
-//                     });
-//                     break;
-//                 case 'edit':
-//                     var curCont=this.collection.get(id);
-//                     if(!curCont){
-//                         return;
-//                     }
-//                     var popUpView = new ContractEdit({view:this,model:curCont});
-//                     $('.app').html(popUpView.render().el);
-//             }
-//         },
-//         showComments:function(e){
-//             var item=$(e.currentTarget);
-//             var id = item.attr('href').substring(1);
-//             var m=new CommentModalView({cid:id});
-//             $('.app').html(m.renderAll().el);
-//         } ,
-//         showPayment:function(e){
-//             var item=$(e.currentTarget);
-//             var id = item.parent().parent().attr('name');
-//             var ci= new ContractInvoiceView({id:id});
-//             ci.render();
-//             $('.app').html(ci.el);
-//         }
-// });
-
-
 var ContractInvoiceView=Backbone.Modal.extend({
     prefix:"bbm",
     template: JST['editbox'],
@@ -1769,6 +1630,153 @@ var ServiceInvoiceView=Backbone.Modal.extend({
         }
     }
 });
+// var ContractView=Wholeren.FormView.extend({
+//     serviceTypes:{},
+//     ready:false,
+//     singleTemplate:JST['contractSingle'],
+//     templateName:'contract',
+//         initialize: function (options) {
+//             this.rank=$('#rank').text();
+//             _.bindAll(this,'rerenderSingle');
+//             _.bindAll(this,'renderCollection');
+//             _.bindAll(this,'renderCollectionCore');
+//             _.bindAll(this,'renderSingle');
+//             _.bindAll(this,'modifyRow');
+//             this.serviceTypes=new Obiwang.Collections.ServiceType();
+//             var self=this;
+//             this.render();
+//           // $('.Contracts.responsive').floatThead();
+//           this.collection = new Obiwang.Collections.Contract();
+//           if(options.id){
+//                 var model=new Obiwang.Models.simpleModel({_url:'/Contract/',id:options.id});
+//                 model.fetch().then(function(){
+//                     if(model)
+//                         self.collection.add(model);
+//                     self.renderCollection();
+//                     self.collection.on("sort", self.renderCollection, self);
+//                 }).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });
+//             }else if (!this.collection || this.collection.length < 1) {
+                
+//                 self.collection.on("sort", self.renderCollection, self);
+//                 self.collection.on("reset", self.renderCollection, self);
+//             }    
+//             // Now get filters
+//             $.ajax({
+//                 url: '/contract/getFilters/',
+//                 type: 'GET',
+//                 headers: {
+//                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+//                 },
+//                 success: function (data) {
+//                     self.renderFilterButtons(data);                
+//                 },
+//                 error: function (xhr) {
+//                     console.log('error');
+//                 }
+//             });
+//             //self.collection.on("sort", this.renderCollection, this); 
+//         },
+//         events: {
+//         'click  button.button-add': 'editView',
+//         'click  button.button-alt': 'refetch',
+//         'click  a.payment':'showPayment',
+//         'change .filter':'renderCollection',
+//         'click .clickablecell':'editContract2',
+//         'click .edit,.del':'editContract',
+//         'click .textbox,.selectbox,.multiselectbox,.singletextbox,.boolbox':'editAttr',
+//         'click th.sortable':'sortCollection',
+//         'click .comment_edit':'showComments',
+//         'click a.page':'switchPage'
+//         },     
+//         refetch:function(e){
+//             var startDate=$('#startDate').val();
+//             var endDate=$('#endDate').val();
+//             this.collection.setdate({startDate:startDate,endDate:endDate});
+//             this.collection.endDate=endDate;
+//             this.removeAll();
+//             this.collection.fetch({reset:true}).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });;;
+//         },
+//         renderCollection: function (){
+//             var self=this;
+
+//             if(!this.ready){
+//                 this.serviceTypes=new Obiwang.Collections.ServiceType();
+//                 this.serviceTypes.fetch({ reset: true }).done(function(data){self.ready=true;self.renderCollectionCore();}); 
+//             }else{
+//                 this.renderCollectionCore();
+//             }
+//             $('#total_count').text(this.contractLength);
+//         },
+//         headline:function(obj){
+//             if(obj.client){
+//                 var text=obj.client.chineseName;
+//                 if(text)
+//                     return text.substring(0,14);
+//                 else
+//                     return "NO NAME";
+//             }else{
+//                 return "NO NAME";
+//             }
+//         },
+//         editView: function(){
+//             var popUpView = new ContractEdit({view:this});
+//             $('.app').html(popUpView.render().el);
+//         },
+//         editContract2: function(e){
+//             var id = $(e.currentTarget).data("id");
+//             var item = this.collection.get(id);
+//             console.log("clicked item ",item);
+//             var popUpView = new ContractEdit({view:this,model:item});
+//             $('.app').html(popUpView.render().el);
+//         },
+//         editContract:function(e){
+//             // Service id
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var action=item.attr('class');
+//             var self=this;
+//             switch(action){
+//                 case 'del':
+//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Contract/',id:id});
+//                     newApp.destroy({
+//                         success:function(d){
+//                             self.rerenderSingle({id:id,del:true});            
+//                         },
+//                         error:function(model,response){
+//                             util.handleRequestError(response);                       
+//                         }
+//                     });
+//                     break;
+//                 case 'edit':
+//                     var curCont=this.collection.get(id);
+//                     if(!curCont){
+//                         return;
+//                     }
+//                     var popUpView = new ContractEdit({view:this,model:curCont});
+//                     $('.app').html(popUpView.render().el);
+//             }
+//         },
+//         showComments:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var m=new CommentModalView({cid:id});
+//             $('.app').html(m.renderAll().el);
+//         } ,
+//         showPayment:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.parent().parent().attr('name');
+//             var ci= new ContractInvoiceView({id:id});
+//             ci.render();
+//             $('.app').html(ci.el);
+//         }
+// });
+
+
+
 /**
 
 TODO: refresh view after submit--done
@@ -1924,12 +1932,14 @@ var ContractEdit = EditForm.extend({
             validator.handleErrors(validationErrors);
         }else{
             var self=this;
-            this.model.save(this.modelChanges,{
+            if(this.model.isNew()){
+                this.model.save(this.modelChanges,{
                 patch:true,
                 success:function(d){
                     // refresh parent view
                     try{
-                        self.parentView.rerenderSingle({id:d.get('id')});
+                        //self.parentView.rerenderSingle({id:d.get('id')});
+                        self.parentView.collection.push(d);
                     }catch(e){
                         return self.close();
                     }
@@ -1940,7 +1950,11 @@ var ContractEdit = EditForm.extend({
                     util.handleRequestError(response); 
                     self.refreshClientID();                      
                 }
-            });
+                });
+            }else{
+                this.model.fetch({fetch:true});
+                return self.close();
+            }            
         }        
     },
 });
