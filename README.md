@@ -149,6 +149,8 @@ click sign show contract sign form -- DONE  need the date to be nullable --DONE
 
 click user show sales, experts  --DONE
 
-click service show selected services
+click service show selected services --DONE
+
+Filter to select only finished contract and service
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.
