@@ -1164,8 +1164,17 @@ var ContractView=Wholeren.baseView.extend({
                     $('.app').html(m.el);
                 }
             });
+            var edit=Backgrid.StringCell.extend({
+                events:{
+                    "click":"action"
+                },
+                action:function(e){
+                    var popUpView = new ContractEdit({view:self,model:this.model});
+                    $('.app').html(popUpView.render().el);
+                }
+            })
             var columns=[
-            {name:'clientName',label:'Name',cell:'string'},
+            {name:'clientName',label:'Name',cell:edit},
             {name:'contractCategory',label:'咨询服务类别',cell:category},
             {name:'lead',label:'Lead种类',cell:lead},
             {name:'leadName',label:'Lead介绍人',cell:'string'},
@@ -1214,7 +1223,7 @@ var ContractView=Wholeren.baseView.extend({
                 collection: self.collection,
                 placeholder: "Search in the browser",
                 // The model fields to search for matches
-                fields: ['contractCategory','lead','leadName','status','major','country','degree'],
+                fields: ['clientName','contractCategory','lead','leadName','status','major','country','degree'],
                 // How long to wait after typing has stopped before searching can start
                 wait: 150
             });
@@ -1242,7 +1251,7 @@ var ContractView=Wholeren.baseView.extend({
     add:function(e){
         var popUpView = new ContractEdit({view:this});
         $('.app').html(popUpView.render().el);
-    }
+    },
 });
 var ContractSignView=Backbone.Modal.extend({
     prefix:"bbm",
@@ -2226,33 +2235,24 @@ var ServiceView=Wholeren.baseView.extend({
             }
         });
         var self=this;
-        util.ajaxGET('/ServiceProgress/').then(function(progress){
-            var progressselect=Backgrid.SelectCell.extend({
-                optionValues:function(){
-                    var selection=_.map(progress,function(e){return [e.serviceProgress,e.id]});
-                    return [{name:"Progress",values:selection}];
-                },
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
+        Promise.all([util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/Degree/')]).spread(function(progress,degree){
+            var progressselect=BackgridCells.SelectCell({name:"Progress",values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+            var degreeselect=BackgridCells.SelectCell({name:"Degree",values:_.map(degree,function(e){return [e.degree,e.id]})});
             var columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
             {name:'nickname',label:'负责老师',editable: false,cell:'string'},
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
-            {name:'gpa',label:'GPA',editable:false,cell:'number'},
-            {name:'toefl',label:'托福',editable:false,cell:'number'},
-            {name:'gre',label:'GRE',editable:false,cell:'number'},
-            {name:'sat',label:'SAT',editable:false,cell:'number'},
-            {name:'otherScore',label:'其他分数',editable:false,cell:'string'},
-            {name:'degree',label:'原学校类型',editable:false,cell:'string'},
-            {name:'previousSchool',label:'原学校',editable:false,cell:'string'},
-            {name:'major',label:'原专业',editable:false,cell:'string'},
-            {name:'targetDegree',label:'申请学校类型',editable:false,cell:'string'},
+            {name:'gpa',label:'GPA',cell:'number'},
+            {name:'toefl',label:'托福',cell:'number'},
+            {name:'gre',label:'GRE',cell:'number'},
+            {name:'sat',label:'SAT',cell:'number'},
+            {name:'otherScore',label:'其他分数',cell:'string'},
+            {name:'degree',label:'原学校类型',cell:degreeselect},
+            {name:'previousSchool',label:'原学校',cell:'string'},
+            {name:'major',label:'原专业',cell:'string'},
+            {name:'targetSchoolDegree',label:'申请学校类型',cell:degreeselect},
             {name:'step1',label:'step1',cell:'date'},
             {name:'step2',label:'step2',cell:'date'},
             {name:'studentDestination',label:'学生去向',cell:'string'},

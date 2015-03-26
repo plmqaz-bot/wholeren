@@ -5,7 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
  function constructsql(where,who){
-			return "select distinct client.chineseName,u.nickname,service.*,c.contractSigned, servicetype.serviceType as 'type', c.gpa,c.toefl,c.sat,c.gre,c.otherScore, degree.degree, d.degree as 'targetDegree', c.major, c.previousSchool \
+			return "select distinct client.chineseName,u.nickname,service.*,c.contractSigned, servicetype.serviceType as 'type', c.gpa,c.toefl,c.sat,c.gre,c.otherScore, c.degree, c.targetSchoolDegree , c.major, c.previousSchool \
 			from contract c \
 			inner join status on c.status=status.id \
 			inner join client on c.client=client.id \
@@ -120,7 +120,17 @@ module.exports = {
 		var id=req.params.id;
 		delete attribs["createAt"];
 		delete attribs["updateAt"];
-		Service.update({id:id},attribs).then(function(data){
+		var serviceUpdate=Utilfunctions.prepareUpdate(attribs,['serviceProgress','step1','step2','studentDestination']);
+		var contractUpdate=Utilfunctions.prepareUpdate(attribs,['gpa','gre','toefl','sat','otherScore','degree','previousSchool','major','targetDegree']);
+		var promise=Service.findOne({id:id}).then(function(data){
+			if(data.contract){
+				return Contract.update({id:data.contract},contractUpdate);
+			}else{
+				return Promise.reject({error:"Service not found"});	
+			}
+		}).then(function(d){
+			return Service.update({id:id},serviceUpdate);
+		}).then(function(data){
 			var sql=constructsql("", " and service.id="+req.params.id);
 			return Utilfunctions.nativeQuery(sql);
 		}).then(function(serv){

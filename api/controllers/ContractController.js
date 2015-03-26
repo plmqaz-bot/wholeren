@@ -21,7 +21,7 @@ var findOne=function(req,res,id){
 			console.log("look for "+id)
 			if(data.client) {
 				data.clientName=data.client['chineseName'];
-				data.client=data.client.id;
+				//data.client=data.client.id;
 			}
 			return res.json(data);
 		});
@@ -97,7 +97,10 @@ module.exports = {
 				// 	if(r.sales1) r.sales1=Hashs[7][r.sales1];
 				// 	if(r.sales2) r.sales2=Hashs[7][r.sales2];
 				// 	if(r.teacher) r.teacher=Hashs[7][r.teacher];
-				 	if(r.client) r.clientName=Hashs[8][r.client]['chineseName'];
+				 	if(r.client){
+				 		r.client=Hashs[8][r.client];
+				 		r.clientName=r.client['chineseName'];
+				 	} 
 				// 	r.service=Hashs[9][r.id]||[];
 				 	return r;
 				 });

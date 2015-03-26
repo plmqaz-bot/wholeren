@@ -150,13 +150,14 @@ click sign show contract sign form -- DONE  need the date to be nullable --DONE
 click user show sales, experts  --DONE
 
 
-click service show selected services 
-
 Filter to select only finished contract and service
 
 delete does not delete the head column
 
 edit contract
 
+make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3. --DONE
 
-make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3.
+
+
+chagne one contract field, other service should also update --Sync subscribe and stuff, later
