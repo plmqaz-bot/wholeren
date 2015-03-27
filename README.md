@@ -152,9 +152,9 @@ click user show sales, experts  --DONE
 
 Filter to select only finished contract and service
 
-delete does not delete the head column
+delete does not delete the head column --DONE
 
-edit contract
+edit contract --DONE
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3. --DONE
 

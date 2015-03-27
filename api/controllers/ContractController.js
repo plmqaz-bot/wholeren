@@ -234,7 +234,7 @@ module.exports = {
 							return res.json(400,err);
 						}
 						console.log("contract updated: ",data);
-						return findOne(req,res,data.id);
+						return findOne(req,res,data[0].id);
 					});
 							
 				});
@@ -255,7 +255,7 @@ module.exports = {
 							return res.json(400,err);
 						}
 						console.log("contract updated: ",data);
-						return findOne(req,res,data.id);
+						return findOne(req,res,data[0].id);
 					});					
 				});
 			}
@@ -275,7 +275,7 @@ module.exports = {
 				if(err){
 					return res.json(400,err);
 				}
-				return findOne(req,res,data.id);
+				return findOne(req,res,data[0].id);
 			});	
 		}
 		/**Disabled**/

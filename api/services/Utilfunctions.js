@@ -583,7 +583,7 @@ module.exports = {
     },
     'errorHandler':function(err,res,txt){
     	console.log(txt);
-    	console.log(err.toJSON());
+    	console.log(err);
     	return res.json(400,err.toJSON());
     }
 }

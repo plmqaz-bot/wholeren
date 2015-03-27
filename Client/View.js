@@ -1593,16 +1593,47 @@ var ServiceInvoiceView=Backbone.Modal.extend({
         'click .button-add-invoice':'addnew'
     },
     afterRender:function(model){
+        var container=this.$el.find('.bbm-modal__section');
+        container.append('<button class="button-add-invoice">Add New</button>');
         var self=this;
         util.ajaxGET('/ServiceType/').then(function(data){
             var type=BackgridCells.SelectCell({name:"ServiceType",values:_.map(data,function(e){return [e.serviceType,e.id]})});
-            var container=self.$el.find('.bbm-modal__section');
-            container.append('<button class="button-add-invoice">Add New</button>');
+            var deletecell =BackgridCells.Cell.extend({
+                cellText:'Delete Service',
+                action:function(e){
+                    e.preventDefault();
+                    var s=new Obiwang.Models.syncModel({_url:'/Service/'});
+                    s.set('id',this.model.get('service'),{save:false});
+                    this.model.destroy({
+                        success:function(model){
+                            s.destroy({
+                                success:function(model){
+                                    Wholeren.notifications.addItem({
+                                    type: 'success',
+                                    message: "Delete Successful",
+                                    status: 'passive'
+                                    });
+                                },
+                                error:function(response){
+                                  util.handleRequestError(response);
+                                },
+                                wait:true
+                            });
+                        },
+                        error:function(response){
+                          util.handleRequestError(response);
+                        },
+                        wait:true
+                    });
+                   
+                }
+            });
             var columns=[
                 {name:'serviceType',label:'服务',cell:type},
                 {name:'price',label:'服务价格',cell:'number'},
                 {name:'paid',label:'已付',editable:false,cell:'number'},
-                {name:'paidAmount',label:'付款',cell:'number'}
+                {name:'paidAmount',label:'付款',cell:'number'},
+                {name:'',label:'删除',cell:deletecell}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
             container.append(grid.render().el);
@@ -1614,7 +1645,7 @@ var ServiceInvoiceView=Backbone.Modal.extend({
     addnew:function(e){
         e.preventDefault();
         var toAdd=new Obiwang.Models.syncModel({_url:'/Service/'});
-        toAdd.set('contract',this.invoice.get('contract'));
+        toAdd.set('contract',this.invoice.get('contract'),{save:false});
         var self=this;
         toAdd.save(null,{
             success:function(model){
@@ -1941,29 +1972,30 @@ var ContractEdit = EditForm.extend({
             validator.handleErrors(validationErrors);
         }else{
             var self=this;
-            if(this.model.isNew()){
                 this.model.save(this.modelChanges,{
                 patch:true,
+                save:false,
                 success:function(d){
                     // refresh parent view
                     try{
                         //self.parentView.rerenderSingle({id:d.get('id')});
-                        self.parentView.collection.push(d);
+                        if(this.model.isNew()){
+                           // this.model.fetch({fetch:true});
+                        }else{
+                            self.parentView.collection.push(d);    
+                        }
                     }catch(e){
                         return self.close();
                     }
                     return self.close();
                 },
                 error:function(model,response){
-                    model.attributes=model._previousAttributes;
+                    self.model.attributes=model._previousAttributes;
                     util.handleRequestError(response); 
                     self.refreshClientID();                      
                 }
                 });
-            }else{
-                this.model.fetch({fetch:true});
-                return self.close();
-            }            
+                
         }        
     },
 });

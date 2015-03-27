@@ -48,6 +48,8 @@
       this.columnsToPin = options.columnsToPin || this.columnsToPin;
 
       this.body.collection.on('backgrid:refresh', this.pinColumns, this);
+      this.body.collection.on('destroy',this.pinColumns,this);
+      this.body.collection.on('add',this.pinColumns,this);
       this.header.collection.on('backgrid:sort', this.pinColumns, this);
 
       $(window).on('resize', {'grid' : this}, this.setSwitchable);

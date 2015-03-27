@@ -134,8 +134,8 @@ module.exports = {
 			var sql=constructsql("", " and service.id="+req.params.id);
 			return Utilfunctions.nativeQuery(sql);
 		}).then(function(serv){
-			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
-			return res.json(serv[0]);
+			//if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
+			return res.json(serv[0]||{});
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Find Service failed id:"+req.params.id);
 		});
