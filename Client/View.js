@@ -2276,6 +2276,7 @@ var ServiceView=Wholeren.baseView.extend({
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
+            {name:'endFee',label:'预付申请费',editable:false,cell:'boolean'},
             {name:'gpa',label:'GPA',cell:'number'},
             {name:'toefl',label:'托福',cell:'number'},
             {name:'gre',label:'GRE',cell:'number'},
