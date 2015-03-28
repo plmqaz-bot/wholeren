@@ -1369,108 +1369,108 @@ var ContractAgentView=Backbone.Modal.extend({
         }
     }
 });
-var ContractServiceView=Backbone.Modal.extend({
-    prefix:"bbm",
-    template: JST['editbox'],
-    submitEl: '.ok',
-    cancelEl:'.cancel',
-     events:{
-        'click .button-add-invoice':'addnew'
-    },
-    initialize: function (options){
-        _.bindAll(this,  'render', 'afterRender');
-        var self=this;
-        this.render=_.wrap(this.render,function(render){
-            render();
-            self.afterRender();
-        });
-        this.contractID=parseInt(options.id);
-        this.collection=new Obiwang.Collections.Invoice();
-        this.collection.contract=this.contractID;
-    },     
-    addnew:function(e){
-        e.preventDefault();
-        var toAdd=new Obiwang.Models.Invoice({_url:'/Invoice/'});
-        toAdd.setContract({contract:this.contractID});
-        var self=this;
-        toAdd.save(null,{
-            success:function(model){
-                self.collection.add(toAdd);
-            },
-            error:function(response,model){
-                util.handleRequestError(response);
-            },
-            save:false
-        });  
-    },
-    afterRender:function(model){
-        var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add-invoice">Add New</button>');
-        var DeleteCell = BackgridCells.DeleteCell;
-        var ServiceInvoiceCell=Backgrid.Cell.extend({
-            template: _.template("<a href='#'>Details</a>"),
-            events: {
-              "click a": "showDetails"
-            },
-            showDetails: function (e) {
-              e.preventDefault();
-              e.stopPropagation();
-              var childview=new ServiceInvoiceView({invoice:this.model});
-              childview.render();
-              $('.app').append(childview.el);
-            },
-            render: function () {
-              this.$el.html(this.template());
-              this.delegateEvents();
-              return this;
-            }
-        });
-        var self=this;
-        Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
-            var selection=_.map(account,function(e){return [e.account,e.id]});
-            var ps=_.map(payment,function(e){return [e.paymentOption,e.id]})
-            var accountSelect=Backgrid.SelectCell.extend({
-                optionValues:  [{name:"Users",values:selection}],
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
-            var paymentSelect=accountSelect.extend({
-                optionValues:[{name:"Users",values:ps}],
-            });
-            var columns=[
-            {name:'nontaxable',label:'申请费',cell:'number'},
-            {name:'remittances',label:'shouxu',cell:'number'},
-            {name:'other',label:'其他费用',cell:'number'},
-            {name:'service',label:'服务收费',editable:false,cell:'number'},
-            {name:'total',label:'Total',editable:false,cell:'number'},
-            {name:'depositAccount',label:'收款账户',cell:accountSelect},
-            {name:'paymentOption',label:'收款方式',cell:paymentSelect},
-            {name:'',label:'具体服务收费',cell:ServiceInvoiceCell},
-            {name:'',label:'Delete Action',cell:DeleteCell}
-            ];
+// var ContractServiceView=Backbone.Modal.extend({
+//     prefix:"bbm",
+//     template: JST['editbox'],
+//     submitEl: '.ok',
+//     cancelEl:'.cancel',
+//      events:{
+//         'click .button-add-invoice':'addnew'
+//     },
+//     initialize: function (options){
+//         _.bindAll(this,  'render', 'afterRender');
+//         var self=this;
+//         this.render=_.wrap(this.render,function(render){
+//             render();
+//             self.afterRender();
+//         });
+//         this.contractID=parseInt(options.id);
+//         this.collection=new Obiwang.Collections.Invoice();
+//         this.collection.contract=this.contractID;
+//     },     
+//     addnew:function(e){
+//         e.preventDefault();
+//         var toAdd=new Obiwang.Models.Invoice({_url:'/Invoice/'});
+//         toAdd.setContract({contract:this.contractID});
+//         var self=this;
+//         toAdd.save(null,{
+//             success:function(model){
+//                 self.collection.add(toAdd);
+//             },
+//             error:function(response,model){
+//                 util.handleRequestError(response);
+//             },
+//             save:false
+//         });  
+//     },
+//     afterRender:function(model){
+//         var container=this.$el.find('.bbm-modal__section');
+//         container.append('<button class="button-add-invoice">Add New</button>');
+//         var DeleteCell = BackgridCells.DeleteCell;
+//         var ServiceInvoiceCell=Backgrid.Cell.extend({
+//             template: _.template("<a href='#'>Details</a>"),
+//             events: {
+//               "click a": "showDetails"
+//             },
+//             showDetails: function (e) {
+//               e.preventDefault();
+//               e.stopPropagation();
+//               var childview=new ServiceInvoiceView({invoice:this.model});
+//               childview.render();
+//               $('.app').append(childview.el);
+//             },
+//             render: function () {
+//               this.$el.html(this.template());
+//               this.delegateEvents();
+//               return this;
+//             }
+//         });
+//         var self=this;
+//         Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
+//             var selection=_.map(account,function(e){return [e.account,e.id]});
+//             var ps=_.map(payment,function(e){return [e.paymentOption,e.id]})
+//             var accountSelect=Backgrid.SelectCell.extend({
+//                 optionValues:  [{name:"Users",values:selection}],
+//                 formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+//                     toRaw: function (formattedValue, model) {
+//                       return formattedValue == null ? null: parseInt(formattedValue);
+//                     }
+//                 })
+//             });
+//             var paymentSelect=accountSelect.extend({
+//                 optionValues:[{name:"Users",values:ps}],
+//             });
+//             var columns=[
+//             {name:'nontaxable',label:'申请费',cell:'number'},
+//             {name:'remittances',label:'shouxu',cell:'number'},
+//             {name:'other',label:'其他费用',cell:'number'},
+//             {name:'service',label:'服务收费',editable:false,cell:'number'},
+//             {name:'total',label:'Total',editable:false,cell:'number'},
+//             {name:'depositAccount',label:'收款账户',cell:accountSelect},
+//             {name:'paymentOption',label:'收款方式',cell:paymentSelect},
+//             {name:'',label:'具体服务收费',cell:ServiceInvoiceCell},
+//             {name:'',label:'Delete Action',cell:DeleteCell}
+//             ];
 
-            self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-            container.append(self.grid.render().el);
-            self.collection.fetch({reset:true});
-        });
+//             self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+//             container.append(self.grid.render().el);
+//             self.collection.fetch({reset:true});
+//         });
 
-        return this;
-    },
-    submit: function () {
-        // get text and submit, and also refresh the collection. 
-        this.grid.remove();
-        this.close();
+//         return this;
+//     },
+//     submit: function () {
+//         // get text and submit, and also refresh the collection. 
+//         this.grid.remove();
+//         this.close();
 
-    },
-    checkKey:function(e){
-        if (this.active) {
-            if (e.keyCode==27) return this.triggerCancel();
-        }
-    }
-});
+//     },
+//     checkKey:function(e){
+//         if (this.active) {
+//             if (e.keyCode==27) return this.triggerCancel();
+//         }
+//     }
+// });
 var ContractInvoiceView=Backbone.Modal.extend({
     prefix:"bbm",
     template: JST['editbox'],
@@ -1509,39 +1509,19 @@ var ContractInvoiceView=Backbone.Modal.extend({
         var container=this.$el.find('.bbm-modal__section');
         container.append('<button class="button-add-invoice">Add New</button>');
         var DeleteCell = BackgridCells.DeleteCell;
-        var ServiceInvoiceCell=Backgrid.Cell.extend({
-            template: _.template("<a href='#'>Details</a>"),
-            events: {
-              "click a": "showDetails"
-            },
-            showDetails: function (e) {
-              e.preventDefault();
-              e.stopPropagation();
-              var childview=new ServiceInvoiceView({invoice:this.model});
-              childview.render();
-              $('.app').append(childview.el);
-            },
-            render: function () {
-              this.$el.html(this.template());
-              this.delegateEvents();
-              return this;
+        var ServiceInvoiceCell=BackgridCells.Cell.extend({
+            cellText:'Detail',
+            action:function(e){
+                e.preventDefault();
+                var childview=new ServiceInvoiceView({invoice:this.model});
+                childview.render();
+                $('.app').append(childview.el);
             }
         });
         var self=this;
         Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
-            var selection=_.map(account,function(e){return [e.account,e.id]});
-            var ps=_.map(payment,function(e){return [e.paymentOption,e.id]})
-            var accountSelect=Backgrid.SelectCell.extend({
-                optionValues:  [{name:"Users",values:selection}],
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
-            var paymentSelect=accountSelect.extend({
-                optionValues:[{name:"Users",values:ps}],
-            });
+            var accountSelectBackgridCells.SelectCell.extend({name:"收款账户",values:_.map(account,function(e){return [e.account,e.id]})});
+            var paymentSelect=BackgridCells.SelectCell.extend({name:"付款方式",values:_.map(payment,function(e){return [e.paymentOption,e.id]})});
             var columns=[
             {name:'nontaxable',label:'申请费',cell:'number'},
             {name:'remittances',label:'shouxu',cell:'number'},
@@ -2369,20 +2349,8 @@ var ServicePopup=Backbone.Modal.extend({
         
         var self=this;
         Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/'),util.ajaxGET('/User/')]).spread(function(roles,data,users){
-            var roleselect=Backgrid.SelectCell.extend({
-                optionValues: [{name:10,values:roles}],
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
-            var userselect=roleselect.extend({
-                optionValues:function(){
-                    var selection=_.map(users,function(e){return [e.nickname,e.id]});
-                    return [{name:"Users",values:selection}];
-                }
-            });
+            var roleselect=BackgridCells.SelectCell.extend({name:'职位',values:_.map(roles,function(e){return [e.role,e.id]})});
+            var userselect=BackgridCells.SelectCell.extend({name:'Users',values:_.map(roles,function(e){return [e.nickname,e.id]})});
             var levelselect=roleselect.extend({
                 optionValues:function(){
                     var cell=this;
@@ -2487,17 +2455,7 @@ var ApplicationPopup=ServicePopup.extend({
         
         var self=this;
         util.ajaxGET('/User/').then(function(users){
-            var userselect=Backgrid.SelectCell.extend({
-                optionValues:function(){
-                    var selection=_.map(users,function(e){return [e.nickname,e.id]});
-                    return [{name:"Users",values:selection}];
-                },
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
+            var userselect=BackgridCells.SelectCell.extend({name:'Users',values:_.map(roles,function(e){return [e.nickname,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',
                 action:function(e){
@@ -2542,17 +2500,7 @@ var SalesComissionView=Wholeren.baseView.extend({
         var self=this;
         this.ready=false;
         util.ajaxGET('/SalesComission/roles/').then(function(data){
-                testroles=[{name:"role",values:data}]; 
-                var myselect=Backgrid.SelectCell.extend({
-                    optionValues:function(){
-                        return testroles
-                    },
-                    formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                        toRaw: function (formattedValue, model) {
-                          return formattedValue == null ? null: parseInt(formattedValue);
-                        }
-                    })
-                });
+                var myselect=BackgridCells.SelectCell.extend({name:'Roles',values:[{name:"role",values:data}]});
                 var columns=[
                 {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
                 {name:'nickname',label:'销售名字',editable: false,cell:'string'},
@@ -2615,14 +2563,7 @@ var ServiceComissionView=SalesComissionView.extend({
         this.collection = new Obiwang.Collections['Comission']({url:'/ServiceComission/'});
         this.render({title:"service"});
         Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(roles,data){
-            var roleselect=Backgrid.SelectCell.extend({
-                optionValues: [{name:10,values:roles}],
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
+            var roleselect=BackgridCells.SelectCell.extend({name:'Roles',values:roles});
             var levelselect=roleselect.extend({
                 optionValues:function(){
                     var cell=this;
