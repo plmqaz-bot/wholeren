@@ -21,6 +21,7 @@ require('backbone-forms');
 $=require('./bootstrap-modal.js')($);
 var Backform=require('./backform');
 Backbone.$=$;
+var moment=require('moment');
 Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
     render: function() {
         // Call the parent's render method
@@ -1520,7 +1521,7 @@ var ContractInvoiceView=Backbone.Modal.extend({
         });
         var self=this;
         Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
-            var accountSelectBackgridCells.SelectCell.extend({name:"收款账户",values:_.map(account,function(e){return [e.account,e.id]})});
+            var accountSelect=BackgridCells.SelectCell.extend({name:"收款账户",values:_.map(account,function(e){return [e.account,e.id]})});
             var paymentSelect=BackgridCells.SelectCell.extend({name:"付款方式",values:_.map(payment,function(e){return [e.paymentOption,e.id]})});
             var columns=[
             {name:'nontaxable',label:'申请费',cell:'number'},
@@ -2349,8 +2350,8 @@ var ServicePopup=Backbone.Modal.extend({
         
         var self=this;
         Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/'),util.ajaxGET('/User/')]).spread(function(roles,data,users){
-            var roleselect=BackgridCells.SelectCell.extend({name:'职位',values:_.map(roles,function(e){return [e.role,e.id]})});
-            var userselect=BackgridCells.SelectCell.extend({name:'Users',values:_.map(roles,function(e){return [e.nickname,e.id]})});
+            var roleselect=BackgridCells.SelectCell({name:'职位',values:roles});
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var levelselect=roleselect.extend({
                 optionValues:function(){
                     var cell=this;
@@ -2424,7 +2425,7 @@ var ServicePopup=Backbone.Modal.extend({
     }
 });
 var ApplicationPopup=ServicePopup.extend({
-     initialize: function (options){
+    initialize: function (options){
         _.bindAll(this,  'render', 'afterRender');
         this.cache=[];
         var self=this;
@@ -2455,7 +2456,7 @@ var ApplicationPopup=ServicePopup.extend({
         
         var self=this;
         util.ajaxGET('/User/').then(function(users){
-            var userselect=BackgridCells.SelectCell.extend({name:'Users',values:_.map(roles,function(e){return [e.nickname,e.id]})});
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',
                 action:function(e){
@@ -2467,13 +2468,25 @@ var ApplicationPopup=ServicePopup.extend({
             });
             var DeleteCell = BackgridCells.DeleteCell;
             var UpdateCell=BackgridCells.UpdateCell;
+            var DateCell=Backgrid.DateCell.extend({
+                formatter:{
+                    fromRaw:function(rawValue,model){
+                        var d=moment(rawValue);
+                        return d.format('YYYYMM');
+                    },
+                    toRaw:function(formattedData, model){
+                        var d=moment(formattedData,'YYYYMM');
+                        return d;
+                    }
+                }
+            });
             var columns=[
                 {name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
                 {name:'appliedMajor',label:'申请专业',cell:'string'},
                 {name:'succeed',label:'录取',cell:'boolean'},
                 {name:'newDev',label:'新开发？',cell:'boolean'},
-                {name:'appliedSemester',label:'申请入读学期',cell:'date'},
+                {name:'appliedSemester',label:'申请入读学期',cell:DateCell},
                 //{name:'studentCondition',label:'Condition',cell:'string'},
                 {name:'',label:'Comments',cell:comment},
                 //{name:'',label:'Update',cell:UpdateCell},
