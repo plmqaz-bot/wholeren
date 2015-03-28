@@ -1521,8 +1521,8 @@ var ContractInvoiceView=Backbone.Modal.extend({
         });
         var self=this;
         Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
-            var accountSelect=BackgridCells.SelectCell.extend({name:"收款账户",values:_.map(account,function(e){return [e.account,e.id]})});
-            var paymentSelect=BackgridCells.SelectCell.extend({name:"付款方式",values:_.map(payment,function(e){return [e.paymentOption,e.id]})});
+            var accountSelect=BackgridCells.SelectCell({name:"收款账户",values:_.map(account,function(e){return [e.account,e.id]})});
+            var paymentSelect=BackgridCells.SelectCell({name:"付款方式",values:_.map(payment,function(e){return [e.paymentOption,e.id]})});
             var columns=[
             {name:'nontaxable',label:'申请费',cell:'number'},
             {name:'remittances',label:'shouxu',cell:'number'},
@@ -2513,7 +2513,7 @@ var SalesComissionView=Wholeren.baseView.extend({
         var self=this;
         this.ready=false;
         util.ajaxGET('/SalesComission/roles/').then(function(data){
-                var myselect=BackgridCells.SelectCell.extend({name:'Roles',values:[{name:"role",values:data}]});
+                var myselect=BackgridCells.SelectCell({name:'Roles',values:[{name:"role",values:data}]});
                 var columns=[
                 {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
                 {name:'nickname',label:'销售名字',editable: false,cell:'string'},
@@ -2576,7 +2576,7 @@ var ServiceComissionView=SalesComissionView.extend({
         this.collection = new Obiwang.Collections['Comission']({url:'/ServiceComission/'});
         this.render({title:"service"});
         Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(roles,data){
-            var roleselect=BackgridCells.SelectCell.extend({name:'Roles',values:roles});
+            var roleselect=BackgridCells.SelectCell({name:'Roles',values:roles});
             var levelselect=roleselect.extend({
                 optionValues:function(){
                     var cell=this;
