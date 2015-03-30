@@ -1960,10 +1960,9 @@ var ContractEdit = EditForm.extend({
                     // refresh parent view
                     try{
                         //self.parentView.rerenderSingle({id:d.get('id')});
-                        if(this.model.isNew()){
-                           // this.model.fetch({fetch:true});
-                        }else{
-                            self.parentView.collection.push(d);    
+                        if(!self.parentView.collection.contains(d)){
+                            self.parentView.collection.fullCollection.add(d); 
+                            self.parentView.collection.fullCollection.sort();
                         }
                     }catch(e){
                         return self.close();
