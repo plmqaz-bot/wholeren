@@ -2481,10 +2481,10 @@ var ApplicationPopup=ServicePopup.extend({
                 formatter:{
                     fromRaw:function(rawValue,model){
                         var d=moment(rawValue);
-                        return d.format('YYYYMM');
+                        return d.format('YYYY-MM');
                     },
                     toRaw:function(formattedData, model){
-                        var d=moment(formattedData,'YYYYMM');
+                        var d=moment(formattedData,'YYYY-MM');
                         return d;
                     }
                 }
