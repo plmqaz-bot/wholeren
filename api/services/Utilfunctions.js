@@ -53,7 +53,9 @@ module.exports = {
     prepareUpdate:function(attribs,fields){
     	var toReturn={};
     	fields.forEach(function(e){
-    		if(attribs[e]!=null) toReturn[e]=attribs[e];
+    		if(attribs.hasOwnProperty(e)){
+    			toReturn[e]=attribs[e];
+    		}
     	});
     	return toReturn;
     },
@@ -584,6 +586,6 @@ module.exports = {
     'errorHandler':function(err,res,txt){
     	console.log(txt);
     	console.log(err);
-    	return res.json(400,err.toJSON());
+    	return res.json(400,{error:err});
     }
 }

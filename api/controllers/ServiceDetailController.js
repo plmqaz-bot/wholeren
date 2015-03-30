@@ -34,11 +34,12 @@ module.exports = {
 		if(!id) return res.json(404,{error:"no id"});
 		var attribs=req.body;
 		var tocreate={};
-		tocreate['user']=attribs.user;
-		tocreate['service']=attribs.service;
-		tocreate['servRole']=attribs.servRole;
-		tocreate['servLevel']=attribs.servLevel;
+		// tocreate['user']=attribs.user;
+		// tocreate['service']=attribs.service;
+		// tocreate['servRole']=attribs.servRole;
+		// tocreate['servLevel']=attribs.servLevel;
 		progress=attribs['progress'];
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel']);
 		ServiceDetail.update({id:id},tocreate).then(function(data){
 			data=data[0]||data;
 			if(progress&&data.id){
@@ -59,12 +60,8 @@ module.exports = {
 	},
 	createorupdate:function(req,res){
 		var attribs=req.body;
-		if(!attribs.user||!attribs.service) return res.json(404,{error:"no user or service"});
-		var tocreate={};
-		tocreate['user']=attribs.user;
-		tocreate['service']=attribs.service;
-		tocreate['servRole']=attribs.servRole;
-		tocreate['servLevel']=attribs.servLevel;
+		if(!attribs.service) return res.json(404,{error:"no user or service"});
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel']);
 		progress=attribs['progress'];
 		console.log(progress);
 		ServiceDetail.findOne({user:attribs.user,service:attribs.service}).then(function(data){

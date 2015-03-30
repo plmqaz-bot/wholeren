@@ -156,6 +156,15 @@ delete does not delete the head column --DONE
 
 edit contract --DONE
 
+
+bug in signup -DONE
+
+bug in sales role
+
+bug in user --DONE
+
+change sales comission lookup into cumulative
+
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3. --DONE
 
 

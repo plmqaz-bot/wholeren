@@ -50,6 +50,13 @@ module.exports = {
 		}else{
 			return res.json(400,{error:"new passwords don't match"});
 		}
-	}
+	},
+	// 'find':function(req,res){
+	// 	User.find().then(function(data){
+	// 		return res.json(data);
+	// 	}).fail(function(err){
+	// 		return Utilfunctions.errorHandler(err,res,"Get All Users failed");
+	// 	});
+	// }
 };
 

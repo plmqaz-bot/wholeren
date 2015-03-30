@@ -2338,10 +2338,19 @@ var ServicePopup=Backbone.Modal.extend({
         this.collection.setSID(this.serviceID);
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.simpleModel({_url:'/ServiceDetail/'});
-        toAdd.set('service',this.serviceID);
-        toAdd.set('type',this.type);
-        this.collection.add(toAdd);
+        var toAdd=new Obiwang.Models.syncModel({_url:'/ServiceDetail/'});
+        toAdd.set('service',this.serviceID,{save:false});
+        toAdd.set('type',this.type,{save:false});
+        var self=this;
+        toAdd.save(null,{
+            save:false,
+            success:function(model){
+                self.collection.add(model);
+            },
+            error:function(response,model){
+                util.handleRequestError(response);
+            }
+        })
   
     },
     afterRender:function(model){
@@ -2397,13 +2406,13 @@ var ServicePopup=Backbone.Modal.extend({
                 } 
             });
             var DeleteCell = BackgridCells.DeleteCell;
-            var UpdateCell=BackgridCells.UpdateCell;
+           // var UpdateCell=BackgridCells.UpdateCell;
             var columns=[
                 {name:'user',label:'User',cell:userselect},
                 {name:'servRole',label:'Role',cell:roleselect},
                 {name:'servLevel',label:'Level',cell:levelselect},
                 {name:'progress',label:'Current Status',cell:statusselect},
-                {name:'',label:'Update',cell:UpdateCell},
+                //{name:'',label:'Update',cell:UpdateCell},
                 {name:'',label:'Delete Action',cell:DeleteCell}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});

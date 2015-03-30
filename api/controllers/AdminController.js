@@ -251,7 +251,7 @@ module.exports={
                 //         "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
                 //     );
                 // });
-                EmailService.sendWelcomeEmail({nickname:nickname,email:email});
+                return EmailService.sendWelcomeEmail({nickname:nickname,email:email});
                 // req.session.regenerate(function (err) {
                 //     if (!err) {
                 //         if (req.session.user === undefined) {
@@ -263,8 +263,10 @@ module.exports={
                 //         res.json(401,{error:err});
                 //     }
                 // });
-                res.json(200, {redirect: '/admin/signin/'});
-                console.log("User created");
+                
+        }).then(function(data){
+            return res.json(200, {redirect: '/admin/signin/'});
+            console.log("User created");
         }).fail(function (err) {
             Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
         });

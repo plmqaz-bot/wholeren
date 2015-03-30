@@ -17,15 +17,11 @@ module.exports={
 		service:"Gmail",
 		auth:sails.config.emailAuth
 		});
-		sendMail(email,{
+		return sendMail(email,{
 		to : options.email,
 		from : "obama@whitehouse.gov",
 		subject : "Thanks for registering",
 		html:"Dear "+options.nickname+"<br> Thank you for registering, please wait for a manager to activate your account."
-		}).then(function(response){
-			console.log(response);
-		}).fail(function(err){
-			console.log(err);
 		});
 	}
 }
