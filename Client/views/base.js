@@ -19,8 +19,7 @@ require('backbone-forms');
 var Backform=require('./backform');
 Backbone.$=$;
 
-module.exports={
-	baseView:Backbone.View.extend({
+var baseView=Backbone.View.extend({
         templateName: "widget",
 
         template: function (data) {
@@ -85,6 +84,68 @@ module.exports={
             }
             return Backbone.View.prototype.remove.apply(this, arguments);
         }
-    }),
+    });
+
+module.exports={
+	baseView:baseView,
+	baseDataView:baseView.extend({
+		templateName:'dateTableView',
+	    initialize: function (options) {
+	    	_.bindAll(this,'constructColumns','constructTable');
+	        this.rank=$('#rank').text();
+	        this.el=options.el;
+	        this.collection = new Obiwang.Collections[options.collectionName]();
+	        this.render({title:options.title});
+	        //$('.page-actions').prepend('<button class="button-add">Add New</button>'); 
+	        var self=this;
+	        this.constructColumns.then(function(data){
+	        	self.constructTable();
+	        }).fail(function(err){
+	        	util.handleRequestError(err);
+	        });
+	    },
+	    constructColumns:function(){
+	    	this.columns=[];
+	    	return Promise.resolve({});
+	    },
+	    constructTable:function(){
+            this.grid=new Backgrid.Extension.ResponsiveGrid({columns:this.columns,collection:this.collection,columnsToPin:1,minScreenSize:4000});
+            //ResposiveGrid
+            //self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+            $('.table-wrapper').append(this.grid.render().el);
+             var paginator = new Backgrid.Extension.Paginator({
+                    windowSize: 20, // Default is 10
+                    slideScale: 0.25, // Default is 0.5
+                    goBackFirstOnSort: false, // Default is true
+                    collection: this.collection
+                    });
+            $('.table-wrapper').append(paginator.render().el);  
+            var clientSideFilter = new Backgrid.Extension.ClientSideFilter({
+                collection: this.collection,
+                placeholder: "Search in the browser",
+                // The model fields to search for matches
+                fields: ['clientName','contractCategory','lead','leadName','status','major','country','degree'],
+                // How long to wait after typing has stopped before searching can start
+                wait: 150
+            });
+            $('.table-wrapper').prepend(clientSideFilter.render().el);    
+	    },
+	    events: {
+	    'click  button.button-alt': 'refetch',
+	    'click  button.button-save': 'save',
+	    },    
+	    refetch:function(e){
+	        if(!this.ready) return;
+	        var startDate=$('#startDate').val();
+	        var endDate=$('#endDate').val();
+	        this.collection.setdate({startDate:startDate,endDate:endDate});
+	        this.collection.reset();
+	        if(this.collection.fullCollection)this.collection.fullCollection.reset();
+	        this.collection.fetch({reset:true});
+	    },   
+	    save:function(e){
+	        util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
+	    },
+	})
 }
 
