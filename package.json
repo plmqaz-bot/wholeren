@@ -39,7 +39,8 @@
     "lunr":"*",
     "underscore":"*",
     "backbone-forms":"*",
-    "jquery-ui":"*"
+    "jquery-ui":"*",
+    "moment":"*"
   },
   "scripts": {
     "start": "node main.js",

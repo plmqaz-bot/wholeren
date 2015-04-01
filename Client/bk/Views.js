@@ -1,4 +1,4 @@
-﻿"use strict";
+"use strict";
 var $ = require('./backgrid.fixedheader.js');
 require('jquery-ui');
 //var Backbone = require('backbone');
@@ -44,6 +44,769 @@ Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
         }else{
             this.$el.val(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate());
         }        
+    }
+});
+//#region
+Handlebars.registerHelper('ifCond', function (v1, v2, options) {
+    if (v1 == v2) {
+        return options.fn(this);
+    }
+    return options.inverse(this);
+});
+Handlebars.registerHelper('shortText', function (text) {
+    text=text||'';
+    return text.substring(0,14);
+});
+Handlebars.registerHelper('displayBool', function(bool){
+    if(bool!=undefined){
+        if(bool==true){
+            return '是';   
+        }else{
+            return '否';
+        }
+    }else{
+        return '';   
+    }
+});
+Handlebars.registerHelper('detailStatus', function (serviceType,step,options) {
+    if(!serviceType) return "";
+ if(serviceType.indexOf('e')!=-1){
+            if(step==1){
+                return "Terminate Date:";
+            }else{
+                return "File Date:";
+            }
+        }else if(serviceType.indexOf('i2')!=-1||serviceType.indexOf('i3')!=-1){
+            if(step==1){
+                return "申请计划确认日期:";
+            }else{
+                return "选校单确认日期:";
+            }
+        }else if(serviceType.indexOf('p')!=-1){
+            if(step==1){
+                return "初稿预计完成日期:";
+            }else{
+                return "终稿预计完成日期:";
+            }
+        }
+    return "";
+});
+//#endregion
+Wholeren.baseView= Backbone.View.extend({
+        templateName: "widget",
+
+        template: function (data) {
+            return JST[this.templateName](data);
+        },
+
+        templateData: function () {
+            if (this.model) {
+                return this.model.toJSON();
+            }
+
+            if (this.collection) {
+                return this.collection.toJSON();
+            }
+
+            return {};
+        },
+
+        render: function () {
+            if (_.isFunction(this.beforeRender)) {
+                this.beforeRender();
+            }
+
+            this.$el.html(this.template(this.templateData()));
+
+            if (_.isFunction(this.afterRender)) {
+                this.afterRender();
+            }
+
+            return this;
+        },
+        addSubview: function (view) {
+            if (!(view instanceof Backbone.View)) {
+                throw new Error("Subview must be a Backbone.View");
+            }
+            this.subviews = this.subviews || [];
+            this.subviews.push(view);
+            return view;
+        },
+
+        // Removes any subviews associated with this view
+        // by `addSubview`, which will in-turn remove any
+        // children of those views, and so on.
+        removeSubviews: function () {
+            var children = this.subviews;
+
+            if (!children) {
+                return this;
+            }
+
+            _(children).invoke("remove");
+
+            this.subviews = [];
+            return this;
+        },
+
+        // Extends the view's remove, by calling `removeSubviews`
+        // if any subviews exist.
+        remove: function () {
+            if (this.subviews) {
+                this.removeSubviews();
+            }
+            return Backbone.View.prototype.remove.apply(this, arguments);
+        }
+    });
+
+Views.Forgotten=Wholeren.baseView.extend({
+    templateName: "forgotten",
+    initialize: function () {
+                this.render();
+    },
+    afterRender: function () {
+        var self = this;
+        this.$el.css({"opacity": 0}).animate({"opacity": 1}, 500, function () {
+            self.$("[name='email']").focus();
+        });
+    },
+    events: {
+        'submit #forgotten': 'submitHandler'
+    },
+    submitHandler: function (event) {
+            event.preventDefault();
+
+            var email = this.$el.find('.email').val(),
+                validationErrors = [];
+
+            if (!validator.isEmail(email)) {
+                validationErrors.push("Please enter a correct email address.");
+            }
+
+            if (validationErrors.length) {
+                validator.handleErrors(validationErrors);
+            } else {
+                $.ajax({
+                    url: '/admin/forgotten/',
+                    type: 'POST',
+                    headers: {
+                        'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                    },
+                    data: {
+                        email: email
+                    },
+                    success: function (msg) {
+                        window.location.href = msg.redirect;
+                    },
+                    error: function (xhr) {
+                        util.handleRequestError(xhr);
+                    }
+                });
+            }
+        }
+});
+
+
+
+/*************************************************Views for Notifications *****************************/
+/**
+     * This handles Notification groups
+     */
+
+Notification.Single = Wholeren.baseView.extend({
+    templateName: 'notification',
+    initialize: function (options) {
+        this.model = options.model;
+    },
+    className: 'js-bb-notification',
+    render: function () {
+        var html = this.template(this.model);
+        this.$el.html(html);
+        return this;
+    }
+});
+Notification.Collection = Wholeren.baseView.extend({
+    el: '#notifications',
+    initialize: function () {
+        var self = this;
+        this.render();
+        Wholeren.on('urlchange', function () {
+            self.clearEverything();
+        });
+        //shortcut.add("ESC", function () {
+        //    // Make sure there isn't currently an open modal, as the escape key should close that first.
+        //    // This is a temporary solution to enable closing extra-long notifications, and should be refactored
+        //    // into something more robust in future
+        //    if ($('.js-modal').length < 1) {
+        //        self.clearEverything();
+        //    }
+        //});
+    },
+    events: {
+        'animationend .js-notification': 'removeItem',
+        'webkitAnimationEnd .js-notification': 'removeItem',
+        'oanimationend .js-notification': 'removeItem',
+        'MSAnimationEnd .js-notification': 'removeItem',
+        'click .js-notification.notification-passive .close': 'closePassive',
+        'click .js-notification.notification-persistent .close': 'closePersistent'
+    },
+    render: function () {
+        _.each(this.model, function (item) {
+            this.renderItem(item);
+        }, this);
+    },
+    renderItem: function (item) {
+        var itemView = new Notification.Single({ model: item }),
+            height,
+            $notification = $(itemView.render().el);
+        
+        this.$el.append($notification);
+        height = $notification.hide().outerHeight(true);
+        $notification.animate({ height: height }, 250, function () {
+            $(this)
+                    .css({ height: "auto" })
+                    .fadeIn(250);
+        });
+    },
+    addItem: function (item) {
+        this.model.push(item);
+        this.renderItem(item);
+    },
+    clearEverything: function () {
+        this.$el.find('.js-notification.notification-passive').parent().remove();
+    },
+    removeItem: function (e) {
+        e.preventDefault();
+        var self = e.currentTarget,
+            bbSelf = this;
+        if (self.className.indexOf('notification-persistent') !== -1) {
+            $.ajax({
+                type: "DELETE",
+                headers: {
+                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                },
+                url: '/api/notifications/' + $(self).find('.close').data('id')
+            }).done(function (result) {
+                /*jshint unused:false*/
+                bbSelf.$el.slideUp(250, function () {
+                    $(this).show().css({ height: "auto" });
+                    $(self).remove();
+                });
+            });
+        } else {
+            $(self).slideUp(250, function () {
+                $(this)
+                        .show()
+                        .css({ height: "auto" })
+                        .parent()
+                        .remove();
+            });
+        }
+    },
+    closePassive: function (e) {
+        $(e.currentTarget)
+                .parent()
+                .fadeOut(250)
+                .slideUp(250, function () {
+            $(this).remove();
+        });
+    },
+    closePersistent: function (e) {
+        var self = e.currentTarget,
+            bbSelf = this;
+        $.ajax({
+            type: "DELETE",
+            headers: {
+                'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+            },
+            url: +'/api/notifications/' + $(self).data('id')
+        }).done(function (result) {
+            /*jshint unused:false*/
+            var height = bbSelf.$('.js-notification').outerHeight(true),
+                $parent = $(self).parent();
+            bbSelf.$el.css({ height: height });
+            
+            if ($parent.parent().hasClass('js-bb-notification')) {
+                $parent.parent().fadeOut(200, function () {
+                    $(this).remove();
+                    bbSelf.$el.slideUp(250, function () {
+                        $(this).show().css({ height: "auto" });
+                    });
+                });
+            } else {
+                $parent.fadeOut(200, function () {
+                    $(this).remove();
+                    bbSelf.$el.slideUp(250, function () {
+                        $(this).show().css({ height: "auto" });
+                    });
+                });
+            }
+        });
+    }
+});
+
+
+
+/************************************************Views for Forms**************************************/
+ Wholeren.FormView=Wholeren.baseView.extend({
+        templateName:'contract',
+        curPage:1,
+        events: {
+        'click .textbox,.selectbox':'editAttr',
+        'click .sortable':'sortCollection'
+        },
+        constructor:function(){
+            this.filter=[];
+            Wholeren.baseView.apply(this,arguments);
+        },
+        render: function (options) {
+             var ml = this.template(options);
+             if (ml[0] != '<') {
+                 ml = ml.substring(1);
+             }
+            this.$el.html(ml);
+        },
+        renderFilterButtons:function(options){
+            var last_ele=$('.page-actions').children().last();
+            var self=this;
+            for( var key in options){
+                var value=options[key]; // Key is the attribute name, value are either boolean or a table
+                switch (value.type){
+                    case "bool":
+                    var s=$('<select name="'+key+'" class="filter"></select>');
+                    $("<option />",{value:"",text:value.text}).appendTo(s);
+                    $("<option />",{value:true,text:"TRUE"}).appendTo(s);
+                    $("<option />",{value:false,text:"FALSE"}).appendTo(s);
+                    s.insertAfter(last_ele);
+                    break;
+                    case "table":
+                    var s=$('<select name="'+key+'" class="filter"></select>');
+                    $("<option />",{value:"",text:value.text}).appendTo(s);
+                    value.value.forEach(function(ele){
+                        var id=ele.id;
+                        var txt=ele[key];
+                        $("<option />",{value:JSON.stringify(id),text:txt}).appendTo(s);
+                    });
+                    s.insertAfter(last_ele);
+                    break;
+                }
+            }
+        },
+        sortCollection:function(e){
+            if(!this.collection) return;
+            var attr=$(e.currentTarget).data("attr");
+            var direction;
+            switch($(e.currentTarget).data("direction")){
+                case "asec":
+                direction="desc";$(e.currentTarget).data("direction","desc");break;
+                case "desc":
+                direction="asec";$(e.currentTarget).data("direction","asec");break;
+                default:
+                direction="asec";$(e.currentTarget).data("direction","asec");
+            }
+            this.collection.selectedStrat({sortAttr:attr,direction:direction});
+            this.collection.sort();
+        },
+        editAttr:function(e){
+            var item=$(e.currentTarget);
+            var attr=item.data("attr");
+            var type=item.attr("class");
+            var id=item.parent().attr("name");
+            var filter=item.data("restri")||"";
+            var coll=item.data("coll")||"";
+            var optext=item.data("optext")||"";
+            var curValue=this.collection.get(id).get(attr);
+            var modelName=item.data("model");
+            var modelId=item.data("id");
+
+             var popUpView=new AttributeEdit({view:this,id:id,filter:filter,coll:coll,optext:optext,attr:attr,type:type,curValue:curValue,modelName:modelName,modelId:modelId});
+             popUpView.render();
+             $('.app').html(popUpView.el);
+        },
+        rerenderSingle:function(options){
+            var self=this;
+            var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
+            var toRender=new Obiwang.Models.simpleModel({_url:'/'+modelName+'/',id:options.id});
+            if(options.del){
+                self.collection.remove(self.collection.get(options.id));
+                self.renderCollection();
+                return;
+            }
+            if(!this.collection.get(options.id)){
+                this.collection.add(toRender);
+            }
+            this.collection.get(options.id).fetch({
+                reset:true,
+                success:function(model,response,options){
+                    if(!model){
+                       self.collection.remove(self.collection.get(model.get('id')));
+                    }
+                    // pinned previous row
+                    var id=model.get('id');
+
+                    var pinned= $("tr.pin[name='"+id+"']").prev();
+                    var row=$("tr[name='"+id+"']").not('.pin').prev();
+                    //self.renderCollection();
+                    self.removeCurRow(model);
+                    self.renderSingle(model,row,pinned);
+                },
+                error: function(model,response,options){
+                        Wholeren.notifications.clearEverything();
+                        Wholeren.notifications.addItem({
+                            type: 'error',
+                            message: util.getRequestErrorMessage(response),
+                            status: 'passive'
+                        });
+                }
+            });
+            // toRender.fetch({
+            //     reset:true,
+            //     success:function(model,response,options){
+            //         if(model){
+            //             self.collection.set(model.get('id'),model);
+            //         }else{
+            //             self.collection.remove(self.collection.get(model.get('id')));
+            //         }
+            //         // pinned previous row
+            //         var pinned=$('.clickablecell#'+model.get('id'));
+            //         var row=$('#'+model.get('id')).not('.clickablecell');
+            //         //self.renderCollection();
+            //         self.renderSingle(model,row,pinned);
+            //     },
+            //     error: function(model,response,options){
+            //             Wholeren.notifications.clearEverything();
+            //             Wholeren.notifications.addItem({
+            //                 type: 'error',
+            //                 message: util.getRequestErrorMessage(response),
+            //                 status: 'passive'
+            //             });
+            //     }
+            // });
+            
+        },
+        removeCurRow:function(model){
+            var id=model.get('id');
+            $("tr[name='"+id+"']").remove();
+        },
+        renderSingle:function(model,previousRow,previousPinnedRow,append){
+            append=typeof append!=='undefined'?append:false;
+            var self=this;
+            var obj=model.toJSON();
+            //if(self.applyFilter(obj)){
+            //    return;
+            //}
+            obj=self.modifyRow(obj);
+            var ele = self.singleTemplate(obj);
+            var toInsert = $('<div/>').html(ele).contents();
+            var headline=self.headline(obj);
+            if(previousRow.length==0||previousPinnedRow.length==0){
+                previousRow=$('#scrollerfirst');
+                previousPinnedRow=$('#pinnedfirst');
+                append=false;
+            }
+
+            var headInsert=$('<div/>').html('<tr name="'+obj.id+'" class="pin"><td data-id="'+obj.id+'" class="clickablecell">'+headline+'</td></tr>').contents();
+            if(append==true){
+                if(previousRow.parent()) previousRow.parent().append(toInsert);
+                if(previousPinnedRow.parent())previousPinnedRow.parent().append(headInsert);
+            }else{
+                toInsert.insertAfter(previousRow);
+                headInsert.insertAfter(previousPinnedRow);
+            }            
+        },
+        applyFilter:function(obj){
+            var fs=$('.filter');
+            function match(v1,v2,ele){
+                if(v1.toString()==v2||v1==v2){
+                    return true;
+                }else{
+                    if(!v1.id){
+                    }else if(v1.id==v2||v1.id.toString()==v2){
+                        return true;
+                    }
+                }
+                if(ele.tagName.toLowerCase()=='input'){
+                    if(v1.indexOf(v2)!=-1){
+                        return true;
+                    }
+                }
+                return false;
+            }
+            var filteredout=false;
+            _.forEach(fs,function(ele){
+                var attr=ele.name;
+                var value=ele.value;
+                if(!value) return; // return if the filter is null
+                try{
+                    value=JSON.parse(value);
+                }catch(e){
+                     // if value cannot be parsed, then it is a string, not json;
+                }
+                var sub=attr.indexOf('.');
+                var tocomp;
+                if(sub>0){
+                    tocomp=obj[attr.substring(0,sub)]||{};
+                    attr=attr.substring(sub+1);
+                }
+                if(tocomp instanceof Array&&tocomp.length>0){
+                    tocomp.forEach(function(e){
+                        var c=e[attr];
+                        if(c!=undefined){
+                            if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+                                var ind=_.findIndex(value,function(v){
+                                    return match(c,v,ele);
+                                });
+                                if(ind<0) e.display=false;
+                            }else{
+                                if(!match(c,value,ele)){
+                                    e.display=false;
+                                }
+                            }
+                        }else{
+                            e.display=false;
+                        }
+                    });
+                }else{
+                    tocomp=obj[attr];
+                    if(tocomp!=undefined){
+                        if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+                            var ind=_.findIndex(value,function(v){
+                                return match(tocomp,v,ele);
+                            });
+                            if(ind<0) filteredout=true;
+                        }else{
+                            if(!match(tocomp,value,ele)){
+                                filteredout=true;
+                            }
+                        }
+                    }else{
+                        filteredout=true;
+                    }
+                }                                
+                
+            });
+            return filteredout;
+        },
+        modifyRow:function(obj){
+            var self=this;
+            obj.service.forEach(function(ele){
+                var id=ele.serviceType;
+                if(id){
+                    var servT=self.serviceTypes.get(id);
+                    if(!servT.toJSON){
+                        console.log("something wrong");
+                    }else{
+                        ele.serviceType=servT.toJSON();
+                    }
+                }
+            });
+            if(this.rank>1){
+                obj.displayDelete=1;
+            }
+            this.contractLength++;
+            return obj;
+        },
+        headline:function(obj){
+            return "NO NAME";
+        },
+        removeAll:function(){
+            var toRemove = $('.content tbody tr').not('#scrollerfirst').not('#pinnedfirst');
+            toRemove.remove();
+        },
+        renderCollectionCore:function(){
+        // Remove all keywords
+        this.removeAll();
+        var headrow=$('#scrollerfirst');
+        var stableheadrow=$('#pinnedfirst');
+        var self=this;
+        this.contractLength=0;
+        var counter=0;
+        // add pagination
+        $('.pagination').children().remove();
+        var collectionToRender=this.collection.complexFilter($('.filter'));
+        var total=collectionToRender.getTotalPage();
+        for(var i=1;i<=total;i++){
+            if(i==this.curPage)
+                $('.pagination').append('<span class="page active">'+i+'</span>');
+            else
+                $('.pagination').append('<a href="#" class="page">'+i+'</a>');
+        }
+        collectionToRender.getPage(this.curPage).forEach(function(item){
+            // if(counter>200){
+            //     return;
+            // }else{
+                self.renderSingle(item,headrow,stableheadrow,true);
+            //     counter++;   
+            // }
+        });     
+        },
+        switchPage:function(e){
+            var item=$(e.currentTarget);
+            var page=item.text();
+            this.curPage=parseInt(page);
+            this.renderCollectionCore();
+        }
+
+
+});
+
+var AttributeEdit=Backbone.Modal.extend({
+    modelName:'',
+    prefix:"small-bbm",
+    initialize: function (options){
+        this.modelName=options.modelName;
+        _.bindAll(this,  'render', 'afterRender');
+        this.parentView = options.view;
+        this.filter=options.filter.replace(/\'/g,"\"");
+        this.selectModel=options.coll;
+        this.rerenderId = options.id;
+        this.updateId=options.modelId||options.id;
+        this.attr=options.attr;
+        this.type=options.type;
+        this.curValue=options.curValue||'';
+        this.optext=options.optext;
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        })
+        //this.model={attr:options.attr};
+    }, 
+    template: JST['editbox'],
+    cancelEl: '.cancel',
+    submitEl: '.ok',
+    afterRender:function(model){
+        switch(this.type){
+            case 'textbox':
+            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><textarea class="reply-content">'+this.curValue+'</textarea>').contents();        
+            this.$el.find('.bbm-modal__section').append(ele);
+            break;
+            case 'singletextbox':
+            var ele=$('<div/>').html('<p>Text for '+this.attr+'</p><input type="text" class="reply-content" value="'+this.curValue+'"/>').contents();        
+            this.$el.find('.bbm-modal__section').append(ele);
+            break;
+            case 'selectbox':
+            var eletitle=$('<div/>').html('<p>Text for '+this.attr+'</p>').contents();
+            var ele=$('<div/>').html('<select class="reply-content"></select>').contents();
+            var choices=new Obiwang.Collections[this.selectModel]();
+            var self=this;
+            choices.fetch().done(function(){
+                choices.forEach(function(item){
+                    var choice=item.toJSON();
+                    var toAdd=$('<option>', { value : choice.id }).text(choice[self.optext]);
+                    if(self.filter){
+                        var obfilter=JSON.parse(self.filter);
+                        for(var key in obfilter){
+                            if(choice[key][key]!=obfilter[key]){
+                                return;
+                            }
+                        }
+                    }
+                    if(self.curValue){
+                        if(self.curValue.id==choice.id||self.curValue==choice.id){
+                            toAdd.attr('selected', 'selected');
+                        }  
+                    }
+                    ele.append(toAdd);                   
+                });
+                self.$el.find('.bbm-modal__section').append(eletitle).append(ele);
+            });             
+            break;
+            case 'multiselectbox':
+            var eletitle=$('<div/>').html('<p>Text for '+this.attr+'</p>').contents();
+            //var ele=$('<div/>');
+             var ele=$('<div/>').html('<select class="reply-content" multiple size=10></select>').contents();
+            var choices=new Obiwang.Collections[this.selectModel]();
+            var self=this;
+            choices.fetch().done(function(){
+                choices.forEach(function(item){
+                    var choice=item.toJSON();
+                    //var toAdd=$('<input>', { value : choice.id,type:"checkbox",name:"names[]" }).text(choice[self.optext]);
+                    var sel='';
+                    var found=_.find(self.curValue,function(e){
+                        e=e||{};
+                        var atr=e[self.optext];
+                        if(e.id==choice.id||atr.id==choice.id){
+                            return true;
+                        }
+                    });
+                    if(found){
+                        sel='selected=""';
+                    }
+                    var toAdd=$('<option value="'+choice.id+'"'+sel+'>'+choice[self.optext]+'</option>');
+                    if(found){
+                        toAdd.css('background-color','#b3d5f3');
+                    }
+                     //var toAdd=$('<option>', { value : choice.id,selected:sel }).text(choice[self.optext]);
+                    if(self.filter){
+                        var obfilter=JSON.parse(self.filter);
+                        for(var key in obfilter){
+                            if(choice[key][key]!=obfilter[key]){
+                                return;
+                            }
+                        }
+                    }
+                    //search if it exist
+                    if(self.curValue){
+                        self.curValue.forEach(function(curv){
+                            curv=curv[self.optext]||curv;
+                            if(curv.id==choice.id||curv==choice.id){
+                                toAdd.attr('selected', 'selected');
+                                return;
+                            }
+                        });
+                    }
+                    ele.append(toAdd);
+                    //ele.append($('<br>'));                   
+                });
+                ele.val(this.curValue);
+                self.$el.find('.bbm-modal__section').append(eletitle).append(ele);
+            });   
+            break;
+            case 'boolbox':
+            var ele=$('<div/>').html('<select class="reply-content"></select>').contents();
+            var toAdd=$('<option>', { value : true }).text('TRUE');
+            if(this.curValue){
+                ele.append($('<option>', { value : true, selected:'selected' }).text('TRUE'));
+                ele.append($('<option>', { value : false}).text('FALSE'));
+            }else{
+                ele.append($('<option>', { value : true}).text('TRUE'));
+                ele.append($('<option>', { value : false, selected:'selected' }).text('FALSE'));
+            }
+            this.$el.find('.bbm-modal__section').append(eletitle).append(ele);
+        }
+        return this;
+    },
+    submit: function () {
+        // get text and submit, and also refresh the collection. 
+        var content = $('.reply-content').val();
+        if(this.type=="multiselectbox") content=content||[];
+        var options={};
+        options["id"]=this.updateId;
+        options[this.attr]=content;
+        options._url='/'+this.modelName+'/';
+        var toupdate = new Obiwang.Models.simpleModel(options);
+        var self=this;
+        toupdate.save(options,{
+            patch:true,
+            success:function(d){
+                // refresh parent view
+                    self.parentView.rerenderSingle({id:self.rerenderId});
+                    return self.close();
+                  
+            },
+            error:function(model,response){
+                util.handleRequestError(response);                       
+            }
+        });
+    },
+    clickOutside:function(){
+        return;
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
     }
 });
 
@@ -441,7 +1204,108 @@ var ContractAgentView=Backbone.Modal.extend({
         }
     }
 });
+// var ContractServiceView=Backbone.Modal.extend({
+//     prefix:"bbm",
+//     template: JST['editbox'],
+//     submitEl: '.ok',
+//     cancelEl:'.cancel',
+//      events:{
+//         'click .button-add-invoice':'addnew'
+//     },
+//     initialize: function (options){
+//         _.bindAll(this,  'render', 'afterRender');
+//         var self=this;
+//         this.render=_.wrap(this.render,function(render){
+//             render();
+//             self.afterRender();
+//         });
+//         this.contractID=parseInt(options.id);
+//         this.collection=new Obiwang.Collections.Invoice();
+//         this.collection.contract=this.contractID;
+//     },     
+//     addnew:function(e){
+//         e.preventDefault();
+//         var toAdd=new Obiwang.Models.Invoice({_url:'/Invoice/'});
+//         toAdd.setContract({contract:this.contractID});
+//         var self=this;
+//         toAdd.save(null,{
+//             success:function(model){
+//                 self.collection.add(toAdd);
+//             },
+//             error:function(response,model){
+//                 util.handleRequestError(response);
+//             },
+//             save:false
+//         });  
+//     },
+//     afterRender:function(model){
+//         var container=this.$el.find('.bbm-modal__section');
+//         container.append('<button class="button-add-invoice">Add New</button>');
+//         var DeleteCell = BackgridCells.DeleteCell;
+//         var ServiceInvoiceCell=Backgrid.Cell.extend({
+//             template: _.template("<a href='#'>Details</a>"),
+//             events: {
+//               "click a": "showDetails"
+//             },
+//             showDetails: function (e) {
+//               e.preventDefault();
+//               e.stopPropagation();
+//               var childview=new ServiceInvoiceView({invoice:this.model});
+//               childview.render();
+//               $('.app').append(childview.el);
+//             },
+//             render: function () {
+//               this.$el.html(this.template());
+//               this.delegateEvents();
+//               return this;
+//             }
+//         });
+//         var self=this;
+//         Promise.all([util.ajaxGET('/DepositAccount/'),util.ajaxGET('/PaymentOption/')]).spread(function(account,payment){
+//             var selection=_.map(account,function(e){return [e.account,e.id]});
+//             var ps=_.map(payment,function(e){return [e.paymentOption,e.id]})
+//             var accountSelect=Backgrid.SelectCell.extend({
+//                 optionValues:  [{name:"Users",values:selection}],
+//                 formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+//                     toRaw: function (formattedValue, model) {
+//                       return formattedValue == null ? null: parseInt(formattedValue);
+//                     }
+//                 })
+//             });
+//             var paymentSelect=accountSelect.extend({
+//                 optionValues:[{name:"Users",values:ps}],
+//             });
+//             var columns=[
+//             {name:'nontaxable',label:'申请费',cell:'number'},
+//             {name:'remittances',label:'shouxu',cell:'number'},
+//             {name:'other',label:'其他费用',cell:'number'},
+//             {name:'service',label:'服务收费',editable:false,cell:'number'},
+//             {name:'total',label:'Total',editable:false,cell:'number'},
+//             {name:'depositAccount',label:'收款账户',cell:accountSelect},
+//             {name:'paymentOption',label:'收款方式',cell:paymentSelect},
+//             {name:'',label:'具体服务收费',cell:ServiceInvoiceCell},
+//             {name:'',label:'Delete Action',cell:DeleteCell}
+//             ];
 
+//             self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+//             container.append(self.grid.render().el);
+//             self.collection.fetch({reset:true});
+//         });
+
+//         return this;
+//     },
+//     submit: function () {
+//         // get text and submit, and also refresh the collection. 
+//         this.grid.remove();
+//         this.close();
+
+//     },
+//     checkKey:function(e){
+//         if (this.active) {
+//             if (e.keyCode==27) return this.triggerCancel();
+//         }
+//     }
+// });
 var ContractInvoiceView=Backbone.Modal.extend({
     prefix:"bbm",
     template: JST['editbox'],
@@ -621,6 +1485,152 @@ var ServiceInvoiceView=Backbone.Modal.extend({
         }
     }
 });
+// var ContractView=Wholeren.FormView.extend({
+//     serviceTypes:{},
+//     ready:false,
+//     singleTemplate:JST['contractSingle'],
+//     templateName:'contract',
+//         initialize: function (options) {
+//             this.rank=$('#rank').text();
+//             _.bindAll(this,'rerenderSingle');
+//             _.bindAll(this,'renderCollection');
+//             _.bindAll(this,'renderCollectionCore');
+//             _.bindAll(this,'renderSingle');
+//             _.bindAll(this,'modifyRow');
+//             this.serviceTypes=new Obiwang.Collections.ServiceType();
+//             var self=this;
+//             this.render();
+//           // $('.Contracts.responsive').floatThead();
+//           this.collection = new Obiwang.Collections.Contract();
+//           if(options.id){
+//                 var model=new Obiwang.Models.simpleModel({_url:'/Contract/',id:options.id});
+//                 model.fetch().then(function(){
+//                     if(model)
+//                         self.collection.add(model);
+//                     self.renderCollection();
+//                     self.collection.on("sort", self.renderCollection, self);
+//                 }).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });
+//             }else if (!this.collection || this.collection.length < 1) {
+                
+//                 self.collection.on("sort", self.renderCollection, self);
+//                 self.collection.on("reset", self.renderCollection, self);
+//             }    
+//             // Now get filters
+//             $.ajax({
+//                 url: '/contract/getFilters/',
+//                 type: 'GET',
+//                 headers: {
+//                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+//                 },
+//                 success: function (data) {
+//                     self.renderFilterButtons(data);                
+//                 },
+//                 error: function (xhr) {
+//                     console.log('error');
+//                 }
+//             });
+//             //self.collection.on("sort", this.renderCollection, this); 
+//         },
+//         events: {
+//         'click  button.button-add': 'editView',
+//         'click  button.button-alt': 'refetch',
+//         'click  a.payment':'showPayment',
+//         'change .filter':'renderCollection',
+//         'click .clickablecell':'editContract2',
+//         'click .edit,.del':'editContract',
+//         'click .textbox,.selectbox,.multiselectbox,.singletextbox,.boolbox':'editAttr',
+//         'click th.sortable':'sortCollection',
+//         'click .comment_edit':'showComments',
+//         'click a.page':'switchPage'
+//         },     
+//         refetch:function(e){
+//             var startDate=$('#startDate').val();
+//             var endDate=$('#endDate').val();
+//             this.collection.setdate({startDate:startDate,endDate:endDate});
+//             this.collection.endDate=endDate;
+//             this.removeAll();
+//             this.collection.fetch({reset:true}).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });;;
+//         },
+//         renderCollection: function (){
+//             var self=this;
+
+//             if(!this.ready){
+//                 this.serviceTypes=new Obiwang.Collections.ServiceType();
+//                 this.serviceTypes.fetch({ reset: true }).done(function(data){self.ready=true;self.renderCollectionCore();}); 
+//             }else{
+//                 this.renderCollectionCore();
+//             }
+//             $('#total_count').text(this.contractLength);
+//         },
+//         headline:function(obj){
+//             if(obj.client){
+//                 var text=obj.client.chineseName;
+//                 if(text)
+//                     return text.substring(0,14);
+//                 else
+//                     return "NO NAME";
+//             }else{
+//                 return "NO NAME";
+//             }
+//         },
+//         editView: function(){
+//             var popUpView = new ContractEdit({view:this});
+//             $('.app').html(popUpView.render().el);
+//         },
+//         editContract2: function(e){
+//             var id = $(e.currentTarget).data("id");
+//             var item = this.collection.get(id);
+//             console.log("clicked item ",item);
+//             var popUpView = new ContractEdit({view:this,model:item});
+//             $('.app').html(popUpView.render().el);
+//         },
+//         editContract:function(e){
+//             // Service id
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var action=item.attr('class');
+//             var self=this;
+//             switch(action){
+//                 case 'del':
+//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Contract/',id:id});
+//                     newApp.destroy({
+//                         success:function(d){
+//                             self.rerenderSingle({id:id,del:true});            
+//                         },
+//                         error:function(model,response){
+//                             util.handleRequestError(response);                       
+//                         }
+//                     });
+//                     break;
+//                 case 'edit':
+//                     var curCont=this.collection.get(id);
+//                     if(!curCont){
+//                         return;
+//                     }
+//                     var popUpView = new ContractEdit({view:this,model:curCont});
+//                     $('.app').html(popUpView.render().el);
+//             }
+//         },
+//         showComments:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var m=new CommentModalView({cid:id});
+//             $('.app').html(m.renderAll().el);
+//         } ,
+//         showPayment:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.parent().parent().attr('name');
+//             var ci= new ContractInvoiceView({id:id});
+//             ci.render();
+//             $('.app').html(ci.el);
+//         }
+// });
+
+
 
 /**
 
@@ -804,6 +1814,232 @@ var ContractEdit = EditForm.extend({
     },
 });
 /*************************************************Views for Services *****************************/
+// var ServiceView=Wholeren.FormView.extend({
+//     filter:[],
+//     singleTemplate:JST['serviceSingle'],
+//     user:{},
+//     ready:false,
+//     templateName:'service',
+//         initialize: function (options) {
+//             this.rank=$('#rank').text();
+//             _.bindAll(this,'rerenderSingle');
+//             _.bindAll(this,'renderCollection');
+//             _.bindAll(this,'renderCollectionCore');
+//             this.el=options.el;
+//             this.user=new Obiwang.Collections.User();
+//             var self=this;
+//             this.collection = new Obiwang.Collections.Service();
+//             this.render();
+//             if(options.id){
+//                 var model=new Obiwang.Models.simpleModel({_url:'/Service/',id:options.id});
+//                 model.fetch().then(function(){
+//                     if(model)
+//                         self.collection.add(model);
+//                     self.ready=true;
+//                     self.renderCollectionCore();
+//                     self.collection.on("sort", self.renderCollection, self);
+//                 }).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });
+//             }else {
+//                 this.collection.fetch().then(function(){
+//                     self.ready=true;
+//                     self.renderCollectionCore();
+//                     self.collection.on("sort", self.renderCollection, self);
+//                 }).fail(function(err){
+//                     util.handleRequestError(err); 
+//                 });;
+//             }
+//             self.collection.on("reset",self.renderCollection,self);
+//              // Now get filters
+//             $.ajax({
+//                 url: '/service/getFilters/',
+//                 type: 'GET',
+//                 headers: {
+//                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+//                 },
+//                 success: function (data) {
+//                     self.renderFilterButtons(data);                
+//                 },
+//                 error: function (xhr) {
+//                     console.log('error');
+//                 }
+//             });
+//         },
+//         events: {
+//         'click .add,.edit,.del':'editApplication',
+//         'click  button.button-alt': 'refetch',
+//         'change .filter':'renderCollection',
+//         'click .textbox,.selectbox,.multiselectbox':'editAttr',
+//         'click .sortablehead':'sortCollection',
+//         'click .comment_edit':'showComments',
+//         'click a.page':'switchPage',
+//         'click .pop':'editTeacher'
+//         },    
+//         editTeacher:function(e){
+//             e.preventDefault();
+//             var item =$(e.currentTarget);
+//             var id = item.parent().parent().attr('name');
+//             var type=item.data('type');
+//             var teacherview= new ServicePopup({id:id,type:type});
+//             teacherview.render();
+//             $('.app').html(teacherview.el);
+//         },
+//         refetch:function(e){
+//             var startDate=$('#startDate').val();
+//             var endDate=$('#endDate').val();
+//             this.collection.setdate({startDate:startDate,endDate:endDate});
+//             this.collection.endDate=endDate;
+//             this.removeAll();
+//             this.collection.fetch({reset:true});
+//         },    
+//         renderCollection: function (){
+//             // if(this.ready){
+//                 this.resetCollection();
+//                 this.renderCollectionCore();       
+//             // }else{
+//             //      var self=this;
+//             //     this.user=new Obiwang.Collections.User();
+//             //     this.user.fetch().done(function(data){
+//             //         self.ready=true;
+//             //         self.resetCollection();
+//             //         self.renderCollectionCore();
+//             //     }); 
+//             // }            
+//         },
+//         resetCollection:function(){
+//             this.collection.forEach(function(serv){
+//                 var apps=serv.get('application');
+//                 if(apps){
+//                     apps.forEach(function(app){
+//                         app.display=true;
+//                     });
+//                 }
+//                 serv.set('application',apps);
+//             });
+//         },
+//         headline:function(obj){
+//             if(obj.contract.client){
+//                 return obj.contract.client.chineseName;                
+//             }else{
+//                 return "NO NAME";
+//             }
+//         },
+//         modifyRow:function(obj){
+//             var self=this;
+//             if(obj.application){
+//                 obj.application.forEach(function(ele){
+//                     var id=parseInt(ele.writer);
+//                     if(id){
+//                         ele.writer=self.user.get(id).toJSON();
+//                     }
+//                 });   
+//             }
+//             // var id=obj.contract.client;
+//             // if(id){
+//             //     obj.contract.client=self.client.get(id).toJSON();
+//             // }
+//             if(this.rank>1){
+//                 obj.displayDelete=1;
+//             }
+//             return obj;
+//         },
+//         editApplication:function(e){
+//             // Service id
+//             var item=$(e.currentTarget);
+//             var id = item.parent().parent().attr('name');
+//             var action=item.attr('class');
+//             var appid=item.attr('href').substring(1);
+//             var curService = this.collection.get(id);
+//             var self=this;
+//             switch(action){
+//                 case 'add':
+//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',service:id});
+//                     newApp.save({},{
+//                         success:function(d){
+//                             self.rerenderSingle({id:id});            
+//                         },
+//                         error:function(model,response){
+//                             util.handleRequestError(response);                       
+//                         }
+//                     });
+//                     break;
+//                 case 'del':
+//                     var newApp=new Obiwang.Models.simpleModel({_url:'/Application/',id:appid});
+//                     newApp.destroy({
+//                         success:function(d){
+//                             self.rerenderSingle({id:id});            
+//                         },
+//                         error:function(model,response){
+//                             util.handleRequestError(response);                       
+//                         }
+//                     });
+//                     break;
+//                 case 'edit':
+//                     var apps=curService.get('application')||[];
+//                     var curApp;
+//                     apps.forEach(function(ele){
+//                         if(ele.id==appid){
+//                             curApp=ele;
+//                             return;
+//                         }
+//                     });
+//                     if(!curApp){
+//                         return;
+//                     }
+
+//                     var popUpView = new ApplicationEdit({view:this,service:curService,curApp:curApp});
+//                     $('.app').html(popUpView.render().el);
+//             }             
+//         },
+//         showComments:function(e){
+//             var item=$(e.currentTarget);
+//             var id = item.attr('href').substring(1);
+//             var type=item.data('type');
+//             if(type=='app'){
+//                 var m=new CommentModalView({aid:id});
+//                 $('.app').html(m.renderAll().el); 
+//             }else{
+//                 var m=new CommentModalView({sid:id});
+//                 $('.app').html(m.renderAll().el); 
+//             }
+            
+//         }  
+//         // renderCollectionCore:function(){
+//         // // Remove all keywords
+//         // var toRemove = $('.content tr').not('#scrollableheader').not('#pinnedheader');
+//         // toRemove.remove();
+//         // var headrow=$('#scrollableheader');
+//         // var stableheadrow=$('#pinnedheader');
+//         // var self=this;
+//         // this.collection.forEach(function(item){
+//         //     var obj=item.toJSON();
+//         //     obj.application.forEach(function(ele){
+//         //         var id=ele.writer;
+//         //         if(id){
+//         //             ele.writer=self.user.get(id).toJSON();
+//         //         }
+//         //     });
+//         //     var id=obj.contract.client;
+//         //     if(id){
+//         //         obj.contract.client=self.client.get(id).toJSON();
+//         //     }
+//         //     var ele = self.singleTemplate(obj);
+//         //     var toInsert = $('<div/>').html(ele).contents();
+//         //     toInsert.insertAfter(headrow);
+//         //     var headline='';
+//         //     if(obj.contract.client){
+//         //         headline=obj.contract.client.chineseName;
+                
+//         //     }
+//         //     if(!headline){
+//         //             headline="NO NAME";
+//         //     }
+//         //     var headInsert=$('<div/>').html('<tr><td data-id="'+obj.id+'" class="clickablecell" name="'+obj.id+'">'+headline+'</td></tr>').contents();
+//         //     headInsert.insertAfter(stableheadrow);
+//         // });     
+//         // },
+// });
 
 var ServiceView=Wholeren.baseView.extend({
     templateName:'dateTableView',
@@ -1296,6 +2532,86 @@ var Comission={
     'assis':AssisComissionView
 };
 
+
+// var ApplicationEdit=EditForm.extend({
+//     template: JST['serviceEdit'],
+//     events:{
+//         "click .ok":"Submit",
+//         "change select:not([id^='client.'])":"selectionChanged",
+//         "change input":"inputChanged",
+//     },
+//     initialize: function (options){
+//         this.parentView = options.view;
+//         if(!options.service||!options.curApp){
+//             util.showError("No service or application selected!");
+//             this.close();
+//             return;
+//         }
+//         this.serviceId=options.service.id;
+//         this.model=new Obiwang.Models.simpleModel(options.curApp);
+//         this.model._url='/Application/';
+//         this.model.set('service',options.service.toJSON());
+//         this.modelChanges.id=this.model.get('id');
+//         _.bindAll(this,'renderSelect');
+//         _.bindAll(this,'render', 'afterRender'); 
+//         var _this = this;
+//         this.render = _.wrap(this.render, function(render) {
+//           render();
+//           _this.afterRender();
+//           return _this;
+//         }); 
+//     }, 
+//     Submit:function(option){
+//         if(this.formError) return;
+//         var self=this;
+//         var changes=JSON.parse(JSON.stringify(this.modelChanges));
+//         this.model.save(changes,{
+//             patch:true,
+//             success:function(d){
+//                 // refresh parent view
+//                 self.parentView.rerenderSingle({id:self.serviceId});
+//                 return self.close();
+                  
+//             },
+//             error:function(model,response){
+//                 util.handleRequestError(response);                       
+//             }
+//         });
+//     },
+//     afterRender:function(){
+//          var self=this;
+//         $.ajax({
+//             url: '/User/?role=4',
+//             type: 'GET',
+//             headers: {
+//                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+//             },
+//             success: function (data) {
+//                     self.renderSelect({name:'writer',content:data});
+                                
+//             },
+//             error: function (xhr) {
+//                 console.log('error');
+//             }
+//         });
+//     },
+//     renderSelect:function(collection){
+//         var col=collection.content;
+//         var tableName=collection.name;   
+//         tableName=tableName.charAt(0).toLowerCase() + tableName.slice(1);
+//         var self=this; 
+//         var theSel=$('#'+tableName).find('option').remove().end();
+//         theSel.append('<option></option>');
+//         col.forEach(function(item){
+//             var ele=item;
+//             var toAdd=$('<option>', { value : ele.id }).text(ele['nickname']);
+//             if(self.model.get(tableName)&&((self.model.get(tableName).id&&self.model.get(tableName).id==ele.id)||self.model.get(tableName)==ele.id)){
+//                 toAdd.attr('selected','selected');
+//             }
+//             theSel.append(toAdd); 
+//         });  
+//     },
+// });
 var UserView=Wholeren.baseView.extend({
     templateName:'dateTableView',
     initialize: function (options) {
@@ -1376,6 +2692,50 @@ var UserView=Wholeren.baseView.extend({
         util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
     }
     });
+// var UserView=Wholeren.FormView.extend({
+//     filter:[],
+//     singleTemplate:JST['userSingle'],
+//     ready:false,
+//     templateName:'user',
+//         initialize: function (options) {
+//             _.bindAll(this,'rerenderSingle');
+//             _.bindAll(this,'renderCollection');
+//             _.bindAll(this,'renderCollectionCore');
+//             this.el=options.el;
+//             var modelName=this.templateName.charAt(0).toUpperCase() + this.templateName.slice(1);
+//             var self=this;
+//             this.collection = new Obiwang.Collections[modelName]();
+//             this.render();
+//             this.collection.fetch().done(function(){
+//                 self.ready=true;
+//                 self.renderCollectionCore();
+//                 self.collection.on("sort", self.renderCollection, self);
+//             });
+            
+//         },
+//         events: {
+//         'click .singletextbox,.textbox,.selectbox,.multiselectbox,.boolbox':'editAttr',
+//         'click .sortable':'sortCollection',
+//         },        
+//         renderCollection: function (){
+//             if(this.ready){
+//                 this.renderCollectionCore();       
+//             }else{
+//                  var self=this;
+//                 this.collection.fetch().done(function(){
+//                 self.ready=true;
+//                 self.renderCollectionCore();
+//             });
+//             }            
+//         },
+//         headline:function(obj){
+//                 return "NO NAME";
+//         },
+//         modifyRow:function(obj){
+
+//             return obj;
+//         },
+// });
 var CommentView=Wholeren.baseView.extend({
     tagName:'li',
     template: JST['commentSingle'],
