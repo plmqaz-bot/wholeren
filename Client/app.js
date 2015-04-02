@@ -14,11 +14,11 @@ global.Wholeren={
     _.extend(Wholeren, Backbone.Events);
 var Router=require('./Router');
 var Models=require('./models');
-var View=require('./View');
+var View=require('./views/index.js');
     
 var init=function(){
         Wholeren.router = new Router();
-        Wholeren.notifications = new View.Notification.Collection({ model: [] });
+        Wholeren.notifications = new View.Notification.collection({ model: [] });
                 
 	Backbone.history.start({
 		pushState:true,

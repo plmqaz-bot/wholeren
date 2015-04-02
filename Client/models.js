@@ -387,6 +387,9 @@ Collections={
                     where.createdAt=where.createdAt||{};
                     where.createdAt['<']=new Date(this.endDate);
                 }
+                if(this.deleted==true){
+                    where.deleted=true;
+                }
                 if(where.createdAt){
                     return JSON.stringify(where);
                 }

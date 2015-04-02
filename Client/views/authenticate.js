@@ -1,26 +1,24 @@
 "use strict";
-var $ = require('./backgrid.fixedheader.js');
-require('jquery-ui');
-$=require('./bootstrap-modal.js')($);
-//var Backbone = require('backbone');
-//var Backgrid=require('./backgrid-paginator.js');
-//var Backgrid=require('./backgrid-filter.js');
-var Backgrid=require('./backgrid-text-cell.js');
-var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
-var Obiwang = require('./models');
-var validator=require('./validator.js');
-var util=require('./util');
-var JST=require('./JST');
 var Promise=require('bluebird');
-var BackgridCells=require('./backgrid.cell.js');
+var moment=require('moment');
+var $ = require('jquery');
+require('jquery-ui');
+$=require('../bootstrap-modal.js')($);
+var Backgrid=require('../backgrid-text-cell.js');
+var Backbone= require('../backbone.modal.js');
+var Obiwang = require('../models');
+var validator=require('../validator.js');
+var util=require('../util');
+var BackgridCells=require('../backgrid.cell.js');
 require('backbone-forms');
-var Backform=require('./backform');
+var Backform=require('../backform');
+var JST=require('../JST');
 Backbone.$=$;
-var base=require('./base.js');
-
+var base=require('./base');
+var Notification=require('./notification');
 module.exports={
-	login:base.baseView.extend({
+	login:base.extend({
 	    initialize: function () {
 	        this.render();
 	    },
@@ -74,7 +72,7 @@ module.exports={
 
 	    }
 	}),
-	signup:base.baseView.extend({
+	signup:base.extend({
 
         initialize: function () {
             this.submitted = "no";
@@ -227,5 +225,5 @@ module.exports={
 	                });
 	            }
 	        }
-	});
+	})
 }

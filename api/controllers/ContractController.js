@@ -37,7 +37,7 @@ module.exports = {
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
-		if(!(where.createdAt||{})['>']&&!(where.createdAt||{})['<']) where={};
+		if(!(where.createdAt||{})['>']&&!(where.createdAt||{})['<']&&where.deleted==undefined) where={};
 		var id=req.session.user.id;
 		var promise,who;
 		console.log(where);
@@ -407,5 +407,26 @@ module.exports = {
 		});
 		
 	},
+	'delete':function(req,res){
+		var id=req.params.id;
+		if(!id){
+			return res.json(404,{error:"no contract id to update"});
+		}
+		Contract.findOne({id:id}).then(function(data){
+			if(data.id){
+				if(data.deleted==true){
+					return Contract.update({id:id},{deleted:false});
+				}else{
+					return Contract.update({id:id},{deleted:true});
+				}
+			}else{
+				return Promise.reject({error:"not found"});
+			}
+		}).then(function(data){
+			return res.json(data);
+		}).fail(function(err){
+			Utilfunctions.errorHandler(err,res,"Delete failed");
+		});
+	}
 };
 

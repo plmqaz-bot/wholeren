@@ -1,27 +1,24 @@
 "use strict";
-var $ = require('./backgrid.fixedheader.js');
-require('jquery-ui');
-$=require('./bootstrap-modal.js')($);
-//var Backbone = require('backbone');
-//var Backgrid=require('./backgrid-paginator.js');
-//var Backgrid=require('./backgrid-filter.js');
-var Backgrid=require('./backgrid-text-cell.js');
-var Backbone= require('./backbone.modal.js');
 var _=require('lodash');
-var Obiwang = require('./models');
-var validator=require('./validator.js');
-var util=require('./util');
-var JST=require('./JST');
 var Promise=require('bluebird');
-var BackgridCells=require('./backgrid.cell.js');
+var moment=require('moment');
+var $ = require('jquery');
+require('jquery-ui');
+$=require('../bootstrap-modal.js')($);
+var Backgrid=require('../backgrid-text-cell.js');
+var Backbone= require('../backbone.modal.js');
+var Obiwang = require('../models');
+var validator=require('../validator.js');
+var util=require('../util');
+var BackgridCells=require('../backgrid.cell.js');
 require('backbone-forms');
-var Backform=require('./backform');
+var Backform=require('../backform');
 Backbone.$=$;
 var base=require('./base.js');
+var JST=require('../JST');
 
-
-module.exports={
-	single:base.baseView.extend({
+var Notification={};
+Notification.single=base.extend({
     	templateName: 'notification',
 	    initialize: function (options) {
 	        this.model = options.model;
@@ -32,8 +29,8 @@ module.exports={
 	        this.$el.html(html);
 	        return this;
 	    }
-	}),
-	collection:base.baseView.extend({
+	});
+Notification.collection=base.extend({
 	    el: '#notifications',
 	    initialize: function () {
 	        var self = this;
@@ -64,7 +61,7 @@ module.exports={
 	        }, this);
 	    },
 	    renderItem: function (item) {
-	        var itemView = new Notification.Single({ model: item }),
+	        var itemView = new Notification.single({ model: item }),
 	            height,
 	            $notification = $(itemView.render().el);
 	        
@@ -152,5 +149,4 @@ module.exports={
 	        });
 	    }
 	});
-}
-
+module.exports=Notification;

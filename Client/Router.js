@@ -5,7 +5,7 @@
 var $ = require('jquery');
 var Backbone = require('backbone');
 Backbone.$=$;
-var View=require('./View');
+var View=require('./views/');
  Wholeren.Views=View;
 var Router=Backbone.Router.extend({
 	routes: {
@@ -23,15 +23,15 @@ var Router=Backbone.Router.extend({
         'reset/:token/'    : 'reset'
     },
     signup: function () {
-        Wholeren.currentView = new Wholeren.Views.Auth.Signup({ el: '.js-signup-box' });
+        Wholeren.currentView = new Wholeren.Views.Auth.signup({ el: '.js-signup-box' });
     },
 
     signin: function () {
-        Wholeren.currentView = new Wholeren.Views.Auth.Login({ el: '.js-login-box' });
+        Wholeren.currentView = new Wholeren.Views.Auth.login({ el: '.js-login-box' });
     },
 
     forgotten: function () {
-        Wholeren.currentView = new Wholeren.Views.Auth.Forgotten({ el: '.js-forgotten-box' });
+        Wholeren.currentView = new Wholeren.Views.Auth.forgotten({ el: '.js-forgotten-box' });
     },
 
     reset: function (token) {

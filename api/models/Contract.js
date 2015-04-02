@@ -105,7 +105,8 @@ module.exports = {
     //acedemiarService:{model:'Service'},
 
     //visaService:{model:'Service'},
-    service:{collection:'Service',via:'contract'}
+    service:{collection:'Service',via:'contract'},
+    deleted:{type:'boolean',defaultsTo:'false'},
   },
   beforeUpdate2: function (attrs, next) {
     // update service separatly
