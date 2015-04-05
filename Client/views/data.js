@@ -40,7 +40,7 @@ module.exports={
 		}
 
 		this.render({title:this.title,options:this.renderOptions});
-		
+
 		//$('.page-actions').prepend('<button class="button-add">Add New</button>'); 
 		var self=this;
 		this.constructColumns().then(function(data){
@@ -96,8 +96,8 @@ module.exports={
         		var month=$('#month').val();
         		this.collection.setdate({year:year,month:month});
 			}
-			if(this.renderOptions['delete']){
-				this.collection.deleted=$('#deleted').checked;
+			if(this.renderOptions['deleted']){
+				this.collection.deleted=$('#deleted').is(':checked');
 			}			
 			this.collection.reset();
 			if(this.collection.fullCollection)this.collection.fullCollection.reset();
@@ -153,21 +153,17 @@ module.exports={
 	    }
 	}),
 	basePaneView:baseView.extend({
-    destroy: function () {
-        this.$el.removeClass('active');
-        this.undelegateEvents();
-    },
-    
-    render: function () {
-        this.$el.hide();
-        this.$el.html("Selected pane does not exist");
-        this.$el.fadeIn(300);
-    },
-    afterRender: function () {
-        this.$el.attr('id', this.id);
-        this.$el.addClass('active');
-    }
-});
+	    destroy: function () {
+	        this.$el.removeClass('active');
+	        this.undelegateEvents();
+	    },
+	    
+
+	    afterRender: function () {
+	        this.$el.attr('id', this.id);
+	        this.$el.addClass('active');
+	    }
+	})
 
 }
 

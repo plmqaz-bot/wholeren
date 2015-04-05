@@ -600,7 +600,7 @@ Collections={
         }
     }),
     UserLevel:Backbone.Collection.extend({
-        model:Models.simpleModel,
+        model:Models.syncModel,
         url:'/userLevel/'
     }),
     ServiceDetail:Backbone.PageableCollection.extend({

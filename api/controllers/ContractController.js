@@ -407,7 +407,7 @@ module.exports = {
 		});
 		
 	},
-	'delete':function(req,res){
+	'destroy':function(req,res){
 		var id=req.params.id;
 		if(!id){
 			return res.json(404,{error:"no contract id to update"});

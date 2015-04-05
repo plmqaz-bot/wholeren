@@ -3,10 +3,21 @@
     <h1 class="title">{{title}}</h1>
     <button class="button-back">Back</button>
     <section class="page-actions" style="float:right">
-        <label>Month</label><input id="month" value="9"></input>
+        {{#if options.deleted}}
+        <label>Deleted</label>
+        <input type="checkbox" id="deleted"></input>
+        {{/if}}
+        {{#if options.date}}
+        <label>Start Date</label><input id="startDate" value="09-01-2014"></input>
+        <label>End Date</label><input id="endDate"></input>
+
+        {{/if}}
+        {{#if options.month}}
         <label>Year</label><input id="year" value="2014"></input>
+        <label>Month</label><input id="month" value="12"></input>
+       
+        {{/if}}
         <button class="button-alt" >刷新</button>
-        <button class="button-save" >Save</button>
     </section>
 </header>
 <section class="content">

@@ -73,6 +73,14 @@ module.exports.routes = {
     controller:'service',
     action:'update'
   },
+  'PATCH /userLevel/:id':{
+    controller:'userLevel',
+    action:'update'
+  },
+  'PATCH /serviceType/:id':{
+    controller:'serviceType',
+    action:'update'
+  },
   // 'GET /service/':{
   //   controller:'service',
   //   action:'getService'

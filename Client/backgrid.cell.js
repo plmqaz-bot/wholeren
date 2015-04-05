@@ -3,7 +3,7 @@ var util=require('./util');
 var _=require('lodash');
 module.exports={
 	DeleteCell:Backgrid.Cell.extend({
-    template: _.template("<a>Delete</a>"),
+    template: _.template("<a>Delete/Undelete</a>"),
     events: {
       "click a": "deleteRow"
     },
@@ -13,7 +13,7 @@ module.exports={
         success:function(model){
           Wholeren.notifications.addItem({
             type: 'success',
-            message: "Delete Successful",
+            message: "Delete/Undelete Successful",
             status: 'passive'
           });
         },

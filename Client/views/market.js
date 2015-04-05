@@ -22,11 +22,16 @@ var Market={};
 Market.general=main.basePaneView.extend({
     templateName:'default',
     id:"general",
+    renderOptions:{month:true},
     events: {
         'click .button-alt':'refetch',
         'click .button-save':'save'
     },
     requrestUrl:'general',
+    initialize:function(options){
+        main.basePaneView.prototype.initialize.apply(this,arguments);
+        this.render({title:this.title,options:this.renderOptions});
+    },
     refetch:function(){
         var month=$('#month').val()||'';
         var year=$('#year').val()||'';
@@ -57,14 +62,6 @@ Market.general=main.basePaneView.extend({
     save:function(e){
         var col=new Backbone.Collection(this.result);
         util.saveCSV(col);
-    },
-    render: function () {
-         var ml = this.template();
-         if (ml[0] != '<') {
-             ml = ml.substring(1);
-         }
-        this.$el.html(ml);
-        this.refetch();
     },
     displayQuery:function(data){
 
@@ -102,13 +99,13 @@ Market.view2=Market.general.extend({
     id:'view2',
     requrestUrl:'MonthlyChange'
 });
-Market.view3=main.baseModalDataView.extend({
+Market.view3=main.baseDataView.extend({
     id:'view3',
     title:'每月销量',
     paginator:true,
     collectionName:'General',
     renderOptions:{month:true},
-    collectionParam：{url:'/Market/MonthlyGoal/',model:Backbone.Model.extend({url:'/MonthlyGoal/'})},
+    collectionParam:{url:'/Market/MonthlyGoal/',model:Backbone.Model.extend({url:'/MonthlyGoal/'})},
     templateName:'default',
     constructColumns:function(){
          this.columns=[
@@ -123,7 +120,11 @@ Market.view3=main.baseModalDataView.extend({
         {name:'studyExpGoal',label:'学术专家目标',cell:'integer'},
         {name:'leadGoal',label:'lead',cell:'integer'},
         ];
-        return Promise.resolve({})；
+        return Promise.resolve({});
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
     },
     afterRender:function(){
         this.$el.attr('id', this.id);
@@ -134,32 +135,43 @@ Market.view4=Market.view3.extend({
     id:'view4',
     title:'Sales Role ',
     renderOptions:{},
-    collectionParam：{url:'/SalesRole/'},
+    collectionParam:{url:'/SalesRole/'},
     constructColumns:function(){
         this.columns=[
         {name:'salesRole',label:'角色名称',editable:false,cell:'string'},
         {name:'comissionPercent',label:'佣金百分比',cell:Backgrid.NumberCell.extend({decimals:3})},
         {name:'flatComission',label:'非百分比佣金',cell:'number'}
         ];
+
+        return Promise.resolve({});
      },
+     refetch:function(e){
+        this.collection.setdate({year:null,month:null});
+        this.collection.reset();
+        if(this.collection.fullCollection)this.collection.fullCollection.reset();
+        this.collection.fetch({reset:true});
+    },
 });
 Market.view5=Market.view4.extend({
     id:'view5',
     title:'Service Type Comission',
-    collectionParam：{url:'/ServiceType/'},
+    collectionParam:{url:'/ServiceType/'},
     constructColumns:function(){
+        this.UL=new Obiwang.Collections['UserLevel']();
+        var grid2=new Backgrid.Grid({columns:[{name:'userLevel',label:'老师等级',editable:false,cell:'string'},
+        {name:'userComission',label:'等级佣金百分比',cell:'number'}],collection:this.UL});
+        $('.table-wrapper').append(grid2.render().el);
+        this.UL.fetch();
         this.columns=[
         {name:'serviceType',label:'服务名称',editable:false,cell:'string'},
         {name:'category',label:'类型',editable:false,cell:'string'},
         {name:'comission',label:'百分比佣金',cell:Backgrid.NumberCell.extend({decimals:3})}
         ];
+
+        return Promise.resolve({});
     },
     afterRender:function(){
-        this.UL=new Obiwang.Collections['UserLevel']();
-        var grid2=new Backgrid.Grid({columns:[{name:'userLevel',label:'老师等级',editable:false,cell:'string'},
-        {name:'userComission',label:'等级佣金百分比',cell:'number'}],collection:self.UL});
-        $('.content').append(grid2.render().el);
-        this.UL.fetch();
+
         this.$el.attr('id', this.id);
         this.$el.addClass('active');
      },
@@ -167,7 +179,7 @@ Market.view5=Market.view4.extend({
 Market.view6=Market.view4.extend({
     id:'view6',
     title:'Notifications',
-    collectionParam：{url:'/Notifications/'},
+    collectionParam:{url:'/Notifications/'},
     constructColumns:function(){
         var self=this;
         var DeleteCell = BackgridCells.DeleteCell;
@@ -188,7 +200,7 @@ Market.view6=Market.view4.extend({
         {name:'',label:'跳转',editable:false,cell:RedirectCell},
         {name:'',label:'Delete',editable:false,cell:DeleteCell}
         ];
-        return Promise.resolve({})；
+        return Promise.resolve({});
      },
 });
 
