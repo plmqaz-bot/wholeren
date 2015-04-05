@@ -65,7 +65,7 @@ module.exports={
     this.delegateEvents();
     return this;
   }
-}),
+  }),
   SelectCell:function(options){
     options=options||{};
     return Backgrid.SelectCell.extend({

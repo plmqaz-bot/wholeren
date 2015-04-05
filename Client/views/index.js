@@ -840,12 +840,10 @@ var SettingView = Backbone.View.extend({
     }
 });
 module.exports={
-		Sidebar:Sidebar,
-        Panes: Settings,
         Notification:require('./notification.js'),
         Contract:require('./contract.js'),
         Service:require('./service.js'),
-        Market:MarketView,
+        Market:require('./market'),
         Setting:SettingView,
         User:UserView,
         Auth:require('./authenticate.js'),

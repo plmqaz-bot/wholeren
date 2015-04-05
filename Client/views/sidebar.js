@@ -100,3 +100,5 @@ var Sidebar = baseView.extend({
         
     }
 });
+
+module.exports=Sidebar;

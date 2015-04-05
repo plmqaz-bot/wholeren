@@ -40,6 +40,7 @@ module.exports={
 		}
 
 		this.render({title:this.title,options:this.renderOptions});
+		
 		//$('.page-actions').prepend('<button class="button-add">Add New</button>'); 
 		var self=this;
 		this.constructColumns().then(function(data){
@@ -150,6 +151,23 @@ module.exports={
 	            if (e.keyCode==27) return this.triggerCancel();
 	        }
 	    }
-	})
+	}),
+	basePaneView:baseView.extend({
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    
+    render: function () {
+        this.$el.hide();
+        this.$el.html("Selected pane does not exist");
+        this.$el.fadeIn(300);
+    },
+    afterRender: function () {
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    }
+});
+
 }
 
