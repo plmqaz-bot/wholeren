@@ -115,6 +115,17 @@ var ContractView=main.baseDataView.extend({
             return Promise.resolve({});
         });
 	},
+    constructTable:function(){
+        main.baseDataView.prototype.constructTable.apply(this,arguments);
+        if(this.id){
+            var one =new Obiwang.Models.syncModel({_url:'/Contract/'});
+            one.set('id',this.id,{save:false});
+            var self=this;
+            one.fetch({save:false}).then(function(data){
+                self.collection.push(data);
+            });
+        }
+    },
     events: {
     'click  button.button-alt': 'refetch',
     'click  button.button-save': 'save',
@@ -246,6 +257,7 @@ var ContractInvoiceView=main.baseModalDataView.extend({
 	events:{
         'click .button-add-invoice':'addnew'
     },
+    collectionName:'Invoice',
     initialize:function(options){
     	main.baseModalDataView.prototype.initialize.apply(this,arguments);
     	this.contractID=parseInt(options.id);
@@ -302,6 +314,7 @@ var ContractInvoiceView=main.baseModalDataView.extend({
     },
 });
 var ServiceInvoiceView=main.baseModalDataView.extend({
+    collectionName:'ServiceInvoice',
     initialize: function (options){
        	main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.invoice=options.invoice;

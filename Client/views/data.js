@@ -33,6 +33,7 @@ module.exports={
 		if(options.renderOptions)this.renderOptions=options.renderOptions;
 		if(options.paginator)this.paginator=options.paginator;
 		if(options.filterFields)this.filterFields=options.filterFields;
+		if(options.id)this.id=options.id;
 		if(this.collectionParam){
 			this.collection = new Obiwang.Collections[this.collectionName](this.collectionParam);
 		}else{
@@ -138,7 +139,7 @@ module.exports={
 	    constructTable:function(){
 			this.grid=new Backgrid.Grid({columns:this.columns,collection:this.collection});
 	        var container=this.$el.find('.bbm-modal__section');
-	        container.append(self.grid.render().el);
+	        container.append(this.grid.render().el);
 	        this.collection.fetch({reset:true});
 	    },
 	    submit: function () {

@@ -19,11 +19,17 @@ var findOne=function(req,res,id){
 
 		return Contract.findOne({id:id}).populate('client').then(function(data){
 			console.log("look for "+id)
-			if(data.client) {
-				data.clientName=data.client['chineseName'];
-				//data.client=data.client.id;
-			}
-			return res.json(data);
+			if(data){
+				if(data.client) {
+					data.clientName=data.client['chineseName'];
+					//data.client=data.client.id;
+				}	
+				return res.json(data);
+			}else{
+				return Promise.reject("contract does not exist!!");
+			}			
+		}).catch(function(err){
+			Utilfunctions.errorHandler(err,res,"Find Contract failed");
 		});
 	}
 module.exports = {
@@ -234,7 +240,7 @@ module.exports = {
 							return res.json(400,err);
 						}
 						console.log("contract updated: ",data);
-						return findOne(req,res,data[0].id);
+						return findOne(req,res,req.params.id);
 					});
 							
 				});
@@ -255,7 +261,7 @@ module.exports = {
 							return res.json(400,err);
 						}
 						console.log("contract updated: ",data);
-						return findOne(req,res,data[0].id);
+						return findOne(req,res,req.params.id);
 					});					
 				});
 			}
@@ -275,7 +281,7 @@ module.exports = {
 				if(err){
 					return res.json(400,err);
 				}
-				return findOne(req,res,data[0].id);
+				return findOne(req,res,req.params.id);
 			});	
 		}
 		/**Disabled**/
