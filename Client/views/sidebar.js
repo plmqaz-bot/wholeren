@@ -18,28 +18,32 @@ var JST=require('../JST');
 var baseView=require('./base.js');
 
 var Sidebar = baseView.extend({
-    //templateName:'marketSidebar',
+    templateName:'marketSidebar',
     //submenu:'market',
     initialize: function (options) {
-        
         this.el=options.el;
-        this.templateName=options.templateName;
         this.submenu=options.submenu;
         this.MenuViews=options.MenuViews;
-        this.render();
-
+        this.MenuTitle=options.MenuTitle;
+        //this.render();
         this.menu = this.$('.settings-menu');
     },
     models: {},
     events: {
         'click .settings-menu li': 'switchPane'
     },
-    render: function () {
-        var ml = this.template();
+    render: function (options) {
+        var ml = this.template(options);
         if (ml[0] != '<') {
             ml = ml.substring(1);
         }
-       this.$el.html(ml);
+        this.$el.html(ml);
+        var container=this.$('.settings-menu>ul')
+        for(var key in this.MenuViews){
+            if (this.MenuViews.hasOwnProperty(key)){
+                container.append('<li class="general"><a href="#'+key+'">'+this.MenuTitle[key]+'</a></li>');
+            }
+        }
         return this;
     },
     switchPane: function (e) {

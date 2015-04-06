@@ -157,12 +157,36 @@ module.exports={
 	        this.$el.removeClass('active');
 	        this.undelegateEvents();
 	    },
-	    
-
 	    afterRender: function () {
 	        this.$el.attr('id', this.id);
 	        this.$el.addClass('active');
-	    }
+	    },
+        saveSuccess: function (model, response, options) {
+            /*jshint unused:false*/
+            Wholeren.notifications.clearEverything();
+            Wholeren.notifications.addItem({
+                type: 'success',
+                message: 'Saved',
+                status: 'passive'
+            });
+        },
+        saveError: function (model, xhr) {
+            /*jshint unused:false*/
+            Wholeren.notifications.clearEverything();
+            Wholeren.notifications.addItem({
+                type: 'error',
+                message: util.handleRequestError(xhr),
+                status: 'passive'
+            });
+        },
+        validationError: function (message) {
+            Wholeren.notifications.clearEverything();
+            Wholeren.notifications.addItem({
+                type: 'error',
+                message: message,
+                status: 'passive'
+            });
+        }
 	})
 
 }
