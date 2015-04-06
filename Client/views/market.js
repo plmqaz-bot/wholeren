@@ -17,11 +17,11 @@ Backbone.$=$;
 var JST=require('../JST');
 var main=require('./data.js');
 var Sidebar=require('./sidebar');
+var base=require('./base');
 
 var Market={};
 Market.general=main.basePaneView.extend({
     templateName:'default',
-    id:"general",
     renderOptions:{month:true},
     events: {
         'click .button-alt':'refetch',
@@ -92,15 +92,12 @@ Market.general=main.basePaneView.extend({
 });
 
 Market.view1=Market.general.extend({
-    id:'view1',
     requrestUrl:'contractOfSaleAndExpert'
 });
 Market.view2=Market.general.extend({
-    id:'view2',
     requrestUrl:'MonthlyChange'
 });
 Market.view3=main.baseDataView.extend({
-    id:'view3',
     title:'每月销量',
     paginator:true,
     collectionName:'General',
@@ -132,7 +129,6 @@ Market.view3=main.baseDataView.extend({
     },
 });
 Market.view4=Market.view3.extend({
-    id:'view4',
     title:'Sales Role ',
     renderOptions:{},
     collectionParam:{url:'/SalesRole/'},
@@ -153,7 +149,6 @@ Market.view4=Market.view3.extend({
     },
 });
 Market.view5=Market.view4.extend({
-    id:'view5',
     title:'Service Type Comission',
     collectionParam:{url:'/ServiceType/'},
     constructColumns:function(){
@@ -177,7 +172,6 @@ Market.view5=Market.view4.extend({
      },
 });
 Market.view6=Market.view4.extend({
-    id:'view6',
     title:'Notifications',
     collectionParam:{url:'/Notifications/'},
     constructColumns:function(){
@@ -203,18 +197,26 @@ Market.view6=Market.view4.extend({
         return Promise.resolve({});
      },
 });
-
-var MarketView=Wholeren.baseView.extend({
+var MarketTitle={
+    'general':'General',
+    'view1':'总结',
+    'view2':'月份收入',
+    'view3':'月份销售目标',
+    'view4':'销售专家佣金调整',
+    'view5':'服务佣金',
+    'view6':'提醒'
+}
+var MarketView=base.extend({
     initialize: function (options) {
         $(".settings-content").removeClass('active');
         this.sidebar = new Sidebar({
             el: '.settings-sidebar',
             pane: options.pane,
-            model: this.model,
-            templateName:'marketSidebar',
             submenu:'market',
-            MenuViews:Market
+            MenuViews:Market,
+            MenuTitle:MarketTitle
         });
+        this.render();
         this.listenTo(Wholeren.router, 'route:market', this.changePane);
         
     },
@@ -225,11 +227,7 @@ var MarketView=Wholeren.baseView.extend({
         this.sidebar.showContent(pane);
     },
     render: function () {
-        this.sidebar.render();
-//        if(!this.sidebar.pane)
-//          this.showContent('general');
-//        else
-//          this.sidebar.renderPane({});
+        this.sidebar.render({title:'Market'});
     }
 });
 
