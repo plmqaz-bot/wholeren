@@ -1,0 +1,10 @@
+var Backbone=require('../backbone');
+var _=require('lodash');
+var $=require('../jquery');
+var Backgrid=require('./backgrid')(_,Backbone);
+Backgrid=require('./backgrid-text-cell')(_,Backgrid);
+Backgrid=require('./backgrid-responsiveGrid')($,_,Backbone,Backgrid);
+Backgrid=require('./backgrid-paginator')(_,Backbone,Backgrid);
+Backgrid=require('./backgrid-filter')(_,Backbone,Backgrid,require('lunr'));
+console.log("required");
+module.exports=Backgrid;
