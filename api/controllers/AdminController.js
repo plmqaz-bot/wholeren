@@ -19,7 +19,7 @@ adminNavbar = {
         path: '/service/',
         display:true
     },
-    salescomission: {
+    /*salescomission: {
         name: 'Comission',
         navClass: 'contract',
         key: 'admin.navbar.contract',
@@ -39,13 +39,21 @@ adminNavbar = {
         key: 'admin.navbar.contract',
         path: '/comission/service/',
         display:true
-    },
+    },*/
     accounting:{
         name: 'Accounting',
         navClass: 'contract',
         key: 'admin.navbar.contract',
         path: '/accounting/',
         display:true
+    },
+    comission:{
+        name: 'Comission',
+        navClass: 'contract',
+        key: 'admin.navbar.settings',
+        path: '/comission/',
+        display:true
+
     },
     market: {
         name: 'Market',
@@ -54,13 +62,13 @@ adminNavbar = {
         path: '/market/',
         display:false
     },
-    user: {
-        name: 'User',
-        navClass: 'contract',
-        key: 'admin.navbar.contract',
-        path: '/user/',
-        display:false
-    },
+    // user: {
+    //     name: 'User',
+    //     navClass: 'contract',
+    //     key: 'admin.navbar.contract',
+    //     path: '/user/',
+    //     display:false
+    // },
     settings: {
         name: 'Settings',
         navClass: 'settings',
@@ -86,10 +94,10 @@ function comission(req,res,template,selected,body){
 }
 function handleRank(req){
     if(req.session.manager){
-        adminNavbar.user.display=true;
+        //adminNavbar.user.display=true;
         adminNavbar.market.display=true;
     }else{
-        adminNavbar.user.display=false;
+        //adminNavbar.user.display=false;
         adminNavbar.market.display=false;
     }
 }
@@ -109,29 +117,26 @@ module.exports={
     'market':function(req,res){
         handleRank(req);
         comission(req,res,'settings','market','settings');
-        // res.render('settings', {
-        //     bodyClass: 'settings',
-        //     adminNav: setSelected(adminNavbar, 'market'),
-        //     currentUser:req.session.user
-        // });
     },
     'comission':function(req,res){
-        console.log(req.params);
-        var pane=req.params.id;
-        if(!pane){
-            return res.redirect('/admin/comission/sales/');
-        }
+        // console.log(req.params);
+        // var pane=req.params.id;
+        // if(!pane){
+        //     return res.redirect('/admin/comission/sales/');
+        // }
         handleRank(req);
-        comission(req,res,'contract',pane+'comission');
+       // comission(req,res,'contract',pane+'comission');
+       comission(req,res,'settings','comission','settings');
+        
     },
     'accounting':function(req,res){
         handleRank(req);
         comission(req,res,'contract','accounting');
     },
-    'user':function(req,res){
-        handleRank(req);
-        comission(req,res,'contract','user');
-    },
+    // 'user':function(req,res){
+    //     handleRank(req);
+    //     comission(req,res,'contract','user');
+    // },
 
     'settings': function (req, res, next) {
         // TODO: Centralise list/enumeration of settings panes, so we don't run into trouble in future.

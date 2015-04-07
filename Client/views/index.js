@@ -2,19 +2,15 @@
 var _=require('lodash');
 var Promise=require('bluebird');
 var moment=require('moment');
-var $ = require('jquery');
-require('jquery-ui');
-$=require('../bootstrap-modal.js')($);
-var Backgrid=require('../backgrid-text-cell.js');
-var Backbone= require('../backbone.modal.js');
+var $ = require('../jquery');
+var Backgrid=require('../backgrid');
+var Backbone= require('../backbone');
 var Obiwang = require('../models');
 var validator=require('../validator.js');
 var util=require('../util');
 var BackgridCells=require('../backgrid.cell.js');
-require('backbone-forms');
 var Backform=require('../backform');
 var JST=require('../JST');
-Backbone.$=$;
 Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
     render: function() {
         // Call the parent's render method
@@ -105,86 +101,8 @@ Wholeren.baseView= Backbone.View.extend({
             return Backbone.View.prototype.remove.apply(this, arguments);
         }
     });
-var UserView=Wholeren.baseView.extend({
-    templateName:'dateTableView',
-    initialize: function (options) {
-        this.rank=$('#rank').text();
-        this.el=options.el;
-        this.collection = new Obiwang.Collections['User']();
-        this.render({title:"Services"});
-        var self=this;
-        this.collection.fetch().done(function(){
-            return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/')]).spread(function(role,user,level){
-            var roleselect=Backgrid.SelectCell.extend({
-                optionValues:function(){
-                    var selection=_.map(role,function(e){return [e.role,e.id]});
-                    return [{name:"Role",values:selection}];
-                },
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
-            var userselect=Backgrid.SelectCell.extend({
-                optionValues:function(){
-                    var selection=_.map(user,function(e){return [e.nickname,e.id]});
-                    return [{name:"User",values:selection}];
-                },
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
-            var levelselect=Backgrid.SelectCell.extend({
-                optionValues:function(){
-                    var selection=_.map(level,function(e){return [e.userLevel,e.id]});
-                    return [{name:"UserLevel",values:selection}];
-                },
-                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
-                    toRaw: function (formattedValue, model) {
-                      return formattedValue == null ? null: parseInt(formattedValue);
-                    }
-                })
-            });
-            var booleanCell=Backgrid.BooleanCell.extend({
-                formatter:{
-                    fromRaw:function(modelValue){
-                        if(modelValue==true) return true;
-                        return false;
-                    },
-                    toRaw:function(formattedValue,model){
-                        return formattedValue =="true" ?true:false;
-                    }
-                }
-            });
-            var columns=[
-            {name:'nickname',label:'称呼',editable: false,cell:'string'},
-            {name:'firstname',label:'姓',editable:false,cell:'string'},                    
-            {name:'lastname',label:'名',editable:false,cell:'string'},
-            {name:'email',label:'邮箱',editable:false,cell:'string'},
-            {name:'role',label:'职位',cell:roleselect},
-            {name:'userLevel',label:'佣金等级',cell:levelselect},
-            {name:'rank',label:'职位等级',cell:'number'},
-            {name:'boss',label:'主管',cell:userselect},
-            {name:'active',label:'在职',cell:'boolean'}
-            ];
-            self.columns=columns;
-            self.grid=new Backgrid.Extension.ResponsiveGrid({columns:columns,collection:self.collection,columnsToPin:1,minScreenSize:4000});
-            //ResposiveGrid
-            //self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-            $('.table-wrapper').append(self.grid.render().el);             
-        });
-        }).fail(function(err){
-            console.log(err);
-        });
-        
-    },   
-    save:function(e){
-        util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
-    }
-    });
+
+
 /**************************************************** Accounting ******************************************************/
 var Accounting=Wholeren.baseView.extend({
     templateName:'dateTableView',
@@ -262,7 +180,7 @@ module.exports={
         Service:require('./service.js'),
         Market:require('./market'),
         Setting:require('./settings'),
-        User:UserView,
+       //User:UserView,
         Auth:require('./authenticate.js'),
         Comission:require('./comission.js'),
         Accounting:Accounting

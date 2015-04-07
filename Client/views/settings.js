@@ -2,18 +2,14 @@
 var _=require('lodash');
 var Promise=require('bluebird');
 var moment=require('moment');
-var $ = require('jquery');
-require('jquery-ui');
-$=require('../bootstrap-modal.js')($);
-var Backgrid=require('../backgrid-text-cell.js');
-var Backbone= require('../backbone.modal.js');
+var $ = require('../jquery');
+var Backgrid=require('../backgrid');
+var Backbone= require('../backbone');
 var Obiwang = require('../models');
 var validator=require('../validator.js');
 var util=require('../util');
 var BackgridCells=require('../backgrid.cell.js');
-require('backbone-forms');
 var Backform=require('../backform');
-Backbone.$=$;
 var JST=require('../JST');
 var main=require('./data.js');
 var base=require('./base');
@@ -142,8 +138,50 @@ Settings.user=main.basePaneView.extend({
             }
     },
 });
+Settings.allUsers=main.baseDataView.extend({
+    collectionName:'User',
+    title:'Users',
+    paginator:true,
+    renderOptions:{},
+    templateName:'default',
+    constructColumns:function(){
+        var self=this;
+        var editable=false;
+        if(parseInt(this.rank||"1")==3){
+            editable=true;
+        }
+        return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/')]).spread(function(role,user,level){
+            var roleselect=BackgridCells.SelectCell({name:"Role",values:_.map(role,function(e){return [e.role,e.id]})});
+            var userselect=BackgridCells.SelectCell({name:"User",values:_.map(user,function(e){return [e.nickname,e.id]})});
+            var levelselect=BackgridCells.SelectCell({name:"UserLevel",values:_.map(level,function(e){return [e.userLevel,e.id]})});      
+            
+            self.columns=[
+            {name:'nickname',label:'称呼',editable: false,cell:'string'},
+            {name:'firstname',label:'姓',editable:false,cell:'string'},                    
+            {name:'lastname',label:'名',editable:false,cell:'string'},
+            {name:'email',label:'邮箱',editable:false,cell:'string'},
+            {name:'role',label:'职位',editable:editable,cell:roleselect},
+            {name:'userLevel',label:'佣金等级',editable:editable,cell:levelselect},
+            {name:'rank',label:'职位等级',editable:editable,cell:'number'},
+            {name:'boss',label:'主管',editable:editable,cell:userselect},
+            {name:'active',label:'在职',editable:editable,cell:'boolean'}
+            ];
+            return Promise.resolve({});
+        });
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    },
+});
+
 var MenuTitle={
-    user:'个人资料'
+    user:'个人资料',
+    allUsers:'UserControl'
 }
 
 

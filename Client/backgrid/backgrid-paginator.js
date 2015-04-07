@@ -6,10 +6,7 @@
   Licensed under the MIT @license.
 */
 
-    module.exports = factory(require("lodash"),
-                             require("./backbone.modal.js"),
-                             require("./backgrid.js")
-                             );
+    module.exports = factory;
 
 function factory(_, Backbone, Backgrid) {
 

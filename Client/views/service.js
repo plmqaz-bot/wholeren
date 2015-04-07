@@ -2,19 +2,16 @@
 var _=require('lodash');
 var Promise=require('bluebird');
 var moment=require('moment');
-var $ = require('jquery');
-require('jquery-ui');
-$=require('../bootstrap-modal.js')($);
-var Backgrid=require('../backgrid-text-cell.js');
-var Backbone= require('../backbone.modal.js');
+var $ = require('../jquery');
+var Backgrid=require('../backgrid');
+var Backbone= require('../backbone');
 var Obiwang = require('../models');
 var validator=require('../validator.js');
 var util=require('../util');
 var BackgridCells=require('../backgrid.cell.js');
-require('backbone-forms');
 var Backform=require('../backform');
 var JST=require('../JST');
-Backbone.$=$;
+
 var main=require('./data');
 var CommentModalView=require('./comment');
 var ServiceView=main.baseDataView.extend({

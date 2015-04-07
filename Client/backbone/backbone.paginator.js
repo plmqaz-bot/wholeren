@@ -8,7 +8,7 @@
   // CommonJS
   //var ArraySort=require('node-sort');
  // var arraysort=new ArraySort();
-  module.exports = factory(require("lodash"), require("backbone"));
+  module.exports = factory;
   
   function factory(_, Backbone) {
 

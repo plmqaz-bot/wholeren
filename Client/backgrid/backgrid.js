@@ -2888,4 +2888,4 @@ var Grid = Backgrid.Grid = Backbone.View.extend({
 };
 
 
-module.exports =main(require('lodash'),require('backbone'));
+module.exports =main;

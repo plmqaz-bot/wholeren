@@ -1,6 +1,6 @@
-﻿var Backbone = require('./backbone.paginator.js');
+﻿var Backbone = require('./backbone');
 //var PageableCollection=require('backbone.paginator');
-$ = require('jquery');
+$ = require('./jquery');
 var util=require('./util.js');
 Backbone.$ = $;
 Models = {};
@@ -456,9 +456,13 @@ Collections={
         model:Models.simpleModel,
         url:'/ServiceProgress/'
     }),
-    User:Backbone.Collection.extend({
+    User:Backbone.PageableCollection.extend({
         model: Models.syncModel,
         url: '/User/',
+        initialize:function(models,options){
+            this.mode="client";
+            this.state={pageSize:20};
+        },
     }),
     Application:Backbone.Collection.extend({
         model:Models.syncModel,
@@ -601,7 +605,8 @@ Collections={
     }),
     UserLevel:Backbone.Collection.extend({
         model:Models.syncModel,
-        url:'/userLevel/'
+        url:'/userLevel/',
+
     }),
     ServiceDetail:Backbone.PageableCollection.extend({
         model:Models.syncModel,

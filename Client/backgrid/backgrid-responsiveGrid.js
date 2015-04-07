@@ -14,7 +14,7 @@
     });
   } else if (typeof exports === "object") {
     // CommonJS
-    module.exports = factory(require("jquery"), require("lodash"), require("backbone"), require("./backgrid-filter.js"));
+    module.exports = factory;
   } else {
     // Browser
     root.Backgrid.Extension.ResponsiveGrid = factory(root.$, root._, root.Backbone, root.Backgrid);

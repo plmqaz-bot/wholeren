@@ -3,7 +3,7 @@
  */
 "use strict";
 var $ = require('jquery');
-var Backbone = require('backbone');
+var Backbone = require('./backbone');
 Backbone.$=$;
 var View=require('./views/');
  Wholeren.Views=View;
@@ -83,7 +83,8 @@ var Router=Backbone.Router.extend({
             return;
         }
         if(!Wholeren.currentView){
-            Wholeren.currentView=new  Wholeren.Views.Comission[pane]({el:'.content-view-container'});
+            //Wholeren.currentView=new  Wholeren.Views.Comission[pane]({el:'.content-view-container'});
+            Wholeren.currentView=new  Wholeren.Views.Comission({el:'#main',pane:pane});
         }
     },
     // servicecomission:function(option){
@@ -96,11 +97,11 @@ var Router=Backbone.Router.extend({
     //         Wholeren.currentView=new  Wholeren.Views.AssisComission({el:'.content-view-container',id:option});
     //     }
     // },
-    user:function(option){
-        if(!Wholeren.currentView){
-            Wholeren.currentView=new  Wholeren.Views.User({el:'.content-view-container',id:option});
-        }
-    }
+    // user:function(option){
+    //     if(!Wholeren.currentView){
+    //         Wholeren.currentView=new  Wholeren.Views.User({el:'.content-view-container',id:option});
+    //     }
+    // }
 	
 });
 module.exports=Router;

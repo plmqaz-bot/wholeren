@@ -2,27 +2,26 @@
 var _=require('lodash');
 var Promise=require('bluebird');
 var moment=require('moment');
-var $ = require('jquery');
-require('jquery-ui');
-$=require('../bootstrap-modal.js')($);
-var Backgrid=require('../backgrid-text-cell.js');
-var Backbone= require('../backbone.modal.js');
+var $ = require('../jquery');
+var Backgrid=require('../backgrid');
+var Backbone= require('../backbone');
 var Obiwang = require('../models');
 var validator=require('../validator.js');
 var util=require('../util');
 var BackgridCells=require('../backgrid.cell.js');
-require('backbone-forms');
 var Backform=require('../backform');
-Backbone.$=$;
 var JST=require('../JST');
 var main=require('./data');
+var base=require('./base');
+var Sidebar=require('./sidebar');
 
-var SalesComissionView=main.baseDataView.extend({
+var sales=main.baseDataView.extend({
     collectionName:'Comission',
     collectionParam:{url:'/SalesComission/'},
     title:'销售佣金列表',
     paginator:true,
     renderOptions:{month:true},
+    templateName:'default',
     constructColumns:function(){
         var self=this;
         return util.ajaxGET('/SalesComission/roles/').then(function(data){
@@ -43,16 +42,25 @@ var SalesComissionView=main.baseDataView.extend({
             ];
             return Promise.resolve({});
         }); 
-    }    
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    },   
 });
 
-var ServiceComissionView=main.baseDataView.extend({
+var teacher=main.baseDataView.extend({
     collectionName:'Comission',
     collectionParam:{url:'/ServiceComission/'},
     title:'申请老师佣金列表',
     paginator:true,
     renderOptions:{month:true},
     cache:{},
+    templateName:'default',
     constructColumns:function(){
         var self=this;
         return Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(roles,data){
@@ -119,14 +127,23 @@ var ServiceComissionView=main.baseDataView.extend({
             return Promise.resolve({});
         });
         
-    }    
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    },    
 });
-var AssisComissionView=main.baseDataView.extend({
+var assis=main.baseDataView.extend({
     collectionName:'Comission',
     collectionParam:{url:'/AssistantComission/'},
     title:'申请老师佣金列表',
     paginator:true,
     renderOptions:{month:true},
+    templateName:'default',
     constructColumns:function(){
         this.columns=[{name:'chineseName',label:'客户名字',editable: false,cell:'string'},
         //{name:'contract',label:'Contract',editable:false,cell:'string'},
@@ -137,10 +154,54 @@ var AssisComissionView=main.baseDataView.extend({
         {name:'comission',label:'佣金',editable: false,cell:'number'},
         ];
         return Promise.resolve({});
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    },
+});
+
+var ComissionTitle={
+    'sales':'销售佣金',
+    'teacher':'申请老师佣金',
+    'assis':'助理佣金',
+}
+var Comission={
+    'sales':sales,
+    'teacher':teacher,
+    'assis':assis
+}
+var ComissionView=base.extend({
+    initialize: function (options) {
+        $(".settings-content").removeClass('active');
+        this.sidebar = new Sidebar({
+            el: '.settings-sidebar',
+            pane: options.pane,
+            submenu:'comission',
+            MenuViews:Comission,
+            MenuTitle:ComissionTitle
+        });
+        this.render();
+        this.listenTo(Wholeren.router, 'route:comission', this.changePane);
+        
+    },
+    changePane: function (pane) {
+        if (!pane) {
+            return;
+        }
+        this.sidebar.showContent(pane);
+    },
+    render: function () {
+        this.sidebar.render({title:'Comission'});
     }
 });
-module.exports={
-    'sales':SalesComissionView,
-    'service':ServiceComissionView,
-    'assis':AssisComissionView
-};
+module.exports=ComissionView;
+// module.exports={
+//     'sales':SalesComissionView,
+//     'service':ServiceComissionView,
+//     'assis':AssisComissionView
+// };

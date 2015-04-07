@@ -12,8 +12,7 @@
     define(['underscore', 'backgrid'], factory);
   } else if (typeof exports === 'object') {
     // CommonJS
-    module.exports = factory(require("underscore"),
-                             require("./backgrid-responsiveGrid.js"));
+    module.exports = factory;
   } else {
     // Browser globals
     factory(root._, root.Backgrid);

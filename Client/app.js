@@ -1,9 +1,8 @@
 ﻿(function(){
-	var $ = require('jquery');
-    var Backbone = require('backbone');
+	var $ = require('./jquery');
+    var Backbone = require('./backbone');
     var _ = require('lodash');
     var Handlebars = require('handlebars');
-Backbone.$ = $;
 global.Wholeren={
 		Views:{},
 		Models:{},

@@ -1,5 +1,6 @@
-var Backbone = require('backbone');
-var _ = require('lodash')
+  
+  
+var factory=function(_,Backbone){
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; },
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; },
@@ -8,7 +9,6 @@ var _ = require('lodash')
   if (typeof Backbone === "undefined" || Backbone === null) {
     throw new Error("Backbone is not defined. Please include the latest version from http://documentcloud.github.com/backbone/backbone.js");
   }
-
   Backbone.Modal = (function(_super) {
     __extends(Modal, _super);
 
@@ -376,4 +376,7 @@ var _ = require('lodash')
     return Modal;
 
   })(Backbone.View);
-module.exports = Backbone;
+  return Backbone;
+}
+  
+module.exports = factory;

@@ -4559,9 +4559,9 @@ body.zen {
     -moz-box-sizing: border-box;
     box-sizing: border-box;
     display: block;
-    width: 100%;
-    padding: 20px;
-    border: 0 none;
+    /*width: 100%;*/
+    /*padding: 20px;*/
+    /*border: 0 none;*/
     border-top: 1px solid #e2edf2; }
     .settings .user:first-child {
       border: none; }

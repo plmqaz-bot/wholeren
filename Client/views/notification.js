@@ -2,21 +2,17 @@
 var _=require('lodash');
 var Promise=require('bluebird');
 var moment=require('moment');
-var $ = require('jquery');
-require('jquery-ui');
-$=require('../bootstrap-modal.js')($);
-var Backgrid=require('../backgrid-text-cell.js');
-var Backbone= require('../backbone.modal.js');
+var $ = require('../jquery');
+var Backgrid=require('../backgrid');
+var Backbone= require('../backbone');
 var Obiwang = require('../models');
 var validator=require('../validator.js');
 var util=require('../util');
 var BackgridCells=require('../backgrid.cell.js');
-require('backbone-forms');
 var Backform=require('../backform');
-Backbone.$=$;
-var base=require('./base.js');
 var JST=require('../JST');
 
+var base=require('./base.js');
 var Notification={};
 Notification.single=base.extend({
     	templateName: 'notification',

@@ -1,4 +1,4 @@
-var Backgrid=require('./backgrid-paginator.js');
+var Backgrid=require('./backgrid/index.js');
 var util=require('./util');
 var _=require('lodash');
 module.exports={

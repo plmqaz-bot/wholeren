@@ -15,10 +15,7 @@
     (function () {
       var lunr;
       try { lunr = require("lunr"); } catch (e) {}
-      module.exports = factory(require("lodash"),
-                               require("backbone"),
-                               require("./backgrid-paginator"),
-                               lunr);
+      module.exports = factory;
     }());
   } else {
     // Browser

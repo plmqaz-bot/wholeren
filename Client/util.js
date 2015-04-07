@@ -1,6 +1,6 @@
 
 var Promise=require('bluebird');
-var $=require('jquery');
+var $=require('./jquery');
 module.exports={
 
 
