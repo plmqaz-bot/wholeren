@@ -121,6 +121,12 @@ module.exports = {
 		delete attribs["createAt"];
 		delete attribs["updateAt"];
 		var serviceUpdate=Utilfunctions.prepareUpdate(attribs,['serviceProgress','step1','step2','studentDestination']);
+		if(serviceUpdate['step1']){
+			serviceUpdate['step1']=new Date(serviceUpdate['step1']);
+		}
+		if(serviceUpdate['step2']){
+			serviceUpdate['step2']=new Date(serviceUpdate['step2']);
+		}
 		var contractUpdate=Utilfunctions.prepareUpdate(attribs,['gpa','gre','toefl','sat','otherScore','degree','previousSchool','major','targetSchoolDegree']);
 		var promise=Service.findOne({id:id}).then(function(data){
 			if(data.contract){

@@ -136,7 +136,9 @@ module.exports={
 			this.grid=new Backgrid.Grid({columns:this.columns,collection:this.collection});
 	        var container=this.$el.find('.bbm-modal__section');
 	        container.append(this.grid.render().el);
-	        this.collection.fetch({reset:true});
+	        this.collection.fetch({reset:true}).then(function(data){
+	        	console.log(data);
+	        });
 	    },
 	    submit: function () {
 	        // get text and submit, and also refresh the collection. 

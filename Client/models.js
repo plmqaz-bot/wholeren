@@ -364,7 +364,13 @@ Collections={
         model: Models.syncModel,
         
         _url: '/Contract/',
-        url: function(){return '/Contract/?where='+this.whereclaus();},
+        url: function(){
+            if(this.whereclaus){
+                return '/Contract/?where='+this.whereclaus();
+            }else{
+                return '/Contract/';
+            }
+        },
         initialize:function(models,options){
             options=options||{};
             this.startDate=options.startDate||"09-01-2014";
@@ -485,8 +491,10 @@ Collections={
         url: function(){
             if(this.customWhere){
                 return '/Service/?where='+this.customWhere;   
-            }else{
+            }else if(this.whereclaus){
                 return '/Service/?where='+this.whereclaus();   
+            }else{
+                return '/Service/';
             }
         },
         
