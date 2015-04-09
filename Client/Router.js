@@ -2,12 +2,9 @@
  * New node file
  */
 "use strict";
-var $ = require('jquery');
 var Backbone = require('./backbone');
-Backbone.$=$;
-var View=require('./views/');
- Wholeren.Views=View;
-var Router=Backbone.Router.extend({
+Wholeren.Views=require('./views/');
+module.exports=Backbone.Router.extend({
 	routes: {
         'settings(/:pane)/' : 'settings',
         'market(/:pane)/':'market',
@@ -49,10 +46,10 @@ var Router=Backbone.Router.extend({
         }
         Wholeren.currentView = new  Wholeren.Views.Setting({ el: '#main', pane: pane });            
         
-// only update the currentView if we don't already have a Settings view
-//        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
-//            Ghost.currentView = new Ghost.Views.Settings({ el: '#main', pane: pane });
-//        }
+        // only update the currentView if we don't already have a Settings view
+        //        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
+        //            Ghost.currentView = new Ghost.Views.Settings({ el: '#main', pane: pane });
+        //        }
     },
     market:function(pane){
         if(!pane){
@@ -104,4 +101,3 @@ var Router=Backbone.Router.extend({
     // }
 	
 });
-module.exports=Router;

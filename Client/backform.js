@@ -6,9 +6,8 @@
   Written by Martin Drapeau
   Licensed under the MIT @license
  */
-var factory=function() {
- var Backbone= require('./backbone');
- var _=require('underscore');
+var factory=function(_,Backbone) {
+
   // Backform namespace and global options
   Backform = {
     // HTML markup global class names. More can be added by individual controls
@@ -406,4 +405,4 @@ var factory=function() {
   return Backform;
 }
 
-module.exports=factory();
+module.exports=factory(require('underscore'),require('./backbone'));

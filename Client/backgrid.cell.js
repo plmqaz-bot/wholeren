@@ -1,4 +1,4 @@
-var Backgrid=require('./backgrid/index.js');
+var Backgrid=require('./backgrid');
 var util=require('./util');
 var _=require('lodash');
 module.exports={
