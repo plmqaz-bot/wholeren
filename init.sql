@@ -1,17 +1,26 @@
 use test;
 #合同类型
-insert into contractcategory values('紧急服务',NULL,NOW(),NOW());
-insert into contractcategory values('社区转学/直升',NULL,NOW(),NOW());
-insert into contractcategory values('高中转学/直升',NULL,NOW(),NOW());
-insert into contractcategory values('大学转学/直升',NULL,NOW(),NOW());
-insert into contractcategory values('研究生/博士申请',NULL,NOW(),NOW());
-insert into contractcategory values('学术辅导',NULL,NOW(),NOW()); # This is now 辅导
-insert into contractcategory values('签证辅导',NULL,NOW(),NOW()); # This is now 辅导
-#insert into contractcategory values('薛涌留学预备课程',NULL,NOW(),NOW()); This is in  其他
-insert into contractcategory values('Free Session',NULL,NOW(),NOW());
-insert into contractcategory values('二次签约',NULL,NOW(),NOW());
+insert into contractcategory values('紧急',NULL,NOW(),NOW());
+insert into contractcategory values('升学',NULL,NOW(),NOW());
+insert into contractcategory values('转学',NULL,NOW(),NOW());
+insert into contractcategory values('学术辅导',NULL,NOW(),NOW());
+insert into contractcategory values('文书修改',NULL,NOW(),NOW());
+insert into contractcategory values('签证服务',NULL,NOW(),NOW());
+insert into contractcategory values('国会奖',NULL,NOW(),NOW());
+insert into contractcategory values('合作机构',NULL,NOW(),NOW());
 insert into contractcategory values('其它',NULL,NOW(),NOW());
-insert into contractcategory values('辅导',NULL,NOW(),NOW());
+#insert into contractcategory values('紧急服务',NULL,NOW(),NOW());
+#insert into contractcategory values('社区转学/直升',NULL,NOW(),NOW());
+#insert into contractcategory values('高中转学/直升',NULL,NOW(),NOW());
+#insert into contractcategory values('大学转学/直升',NULL,NOW(),NOW());
+#insert into contractcategory values('研究生/博士申请',NULL,NOW(),NOW());
+#insert into contractcategory values('学术辅导',NULL,NOW(),NOW()); # This is now 辅导
+#insert into contractcategory values('签证辅导',NULL,NOW(),NOW()); # This is now 辅导
+##insert into contractcategory values('薛涌留学预备课程',NULL,NOW(),NOW()); This is in  其他
+#insert into contractcategory values('Free Session',NULL,NOW(),NOW());
+#insert into contractcategory values('二次签约',NULL,NOW(),NOW());
+#insert into contractcategory values('其它',NULL,NOW(),NOW());
+#insert into contractcategory values('辅导',NULL,NOW(),NOW());
 
 #Lead
 insert into lead values('Campus校代介绍',NULL,NOW(),NOW());
@@ -42,7 +51,27 @@ insert into lead values('合作：洛杉矶华人资讯网',NULL,NOW(),NOW());
 insert into lead values('合作：Gesoo',NULL,NOW(),NOW());
 insert into lead values('合作：其他机构',NULL,NOW(),NOW());
 
-
+insert into leadDetail values('在线咨询',1,NULL,NOW(),NOW());
+insert into leadDetail values('谷歌',2,NULL,NOW(),NOW());
+insert into leadDetail values('百度',2,NULL,NOW(),NOW());
+insert into leadDetail values('其他',2,NULL,NOW(),NOW());
+insert into leadDetail values('厚仁学术哥',3,NULL,NOW(),NOW());
+insert into leadDetail values('留美导师',3,NULL,NOW(),NOW());
+insert into leadDetail values('美国转学',3,NULL,NOW(),NOW());
+insert into leadDetail values('陈航老师微信',3,NULL,NOW(),NOW());
+insert into leadDetail values('厚仁教育科技微信',3,NULL,NOW(),NOW());
+insert into leadDetail values('校代',4,NULL,NOW(),NOW());
+insert into leadDetail values('presale code',4,NULL,NOW(),NOW());
+insert into leadDetail values('服务中的学生再次签约',5,NULL,NOW(),NOW());
+insert into leadDetail values('陌生leads',6,NULL,NOW(),NOW());
+insert into leadDetail values('Dealmoon北美微论坛',7,NULL,NOW(),NOW());
+insert into leadDetail values('洛杉矶华人资讯网',7,NULL,NOW(),NOW());
+insert into leadDetail values('Gesoo',7,NULL,NOW(),NOW());
+insert into leadDetail values('其他',7,NULL,NOW(),NOW());
+insert into leadDetail values('官方博微',8,NULL,NOW(),NOW());
+insert into leadDetail values('官方博客',8,NULL,NOW(),NOW());
+insert into leadDetail values('陈航老师博客',8,NULL,NOW(),NOW());
+insert into leadDetail values('陈航老师微博  ',8,NULL,NOW(),NOW());
 #LeadLevel
 insert into leadlevel values('L1：有互动，且信息完整',NULL,NOW(),NOW());
 insert into leadlevel values('L2：有互动，但信息不完整',NULL,NOW(),NOW());
@@ -50,15 +79,15 @@ insert into leadlevel values('L0：老客户、二次签约、关系户',NULL,NO
 insert into leadlevel values('L3：无回复',NULL,NOW(),NOW());
 
 #签约状态
-insert into status values('A. 未签约',NULL,NOW(),NOW());
+insert into status values('A. 跟进中',NULL,NOW(),NOW());
 insert into status values('B. 放弃治疗',NULL,NOW(),NOW());
 insert into status values('C. WIP',NULL,NOW(),NOW());
 insert into status values('C1. 退款',NULL,NOW(),NOW());
 insert into status values('C2. 签约未付款',NULL,NOW(),NOW());
 insert into status values('D. Done',NULL,NOW(),NOW());
-insert into status values('F. 放弃并转至其他服务',NULL,NOW(),NOW());
+insert into status values('F. 付费咨询',NULL,NOW(),NOW());
 insert into status values('G. 公益完结',NULL,NOW(),NOW());
-insert into status values('H. 未咨询',NULL,NOW(),NOW());
+insert into status values('H. 未联系上',NULL,NOW(),NOW());
 
 #国家
 insert into country values('中国',NULL,NOW(),NOW());
@@ -71,7 +100,7 @@ insert into degree values('语言',NULL,NOW(),NOW());
 insert into degree values('本科',NULL,NOW(),NOW());
 insert into degree values('硕士',NULL,NOW(),NOW());# 硕博
 insert into degree values('博士',NULL,NOW(),NOW());# 硕博
-insert into degree values('硕博',NULL,NOW(),NOW());
+#insert into degree values('硕博',NULL,NOW(),NOW());
 #付款方式
 insert into paymentoption values('中国汇款',NULL,NOW(),NOW());
 insert into paymentoption values('美国汇款',NULL,NOW(),NOW());
