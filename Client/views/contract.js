@@ -113,6 +113,8 @@ var ContractView=main.baseDataView.extend({
 	},
     constructTable:function(){
         main.baseDataView.prototype.constructTable.apply(this,arguments);
+
+        $('.page-actions').prepend('<button class="button-add">Add New</button>');
         if(this.id){
             var one =new Obiwang.Models.syncModel({_url:'/Contract/'});
             one.set('id',this.id,{save:false});
@@ -296,7 +298,7 @@ var ContractInvoiceView=main.baseModalDataView.extend({
             var paymentSelect=BackgridCells.SelectCell({name:"付款方式",values:_.map(payment,function(e){return [e.paymentOption,e.id]})});
             self.columns=[
             {name:'nontaxable',label:'申请费',cell:'number'},
-            {name:'remittances',label:'shouxu',cell:'number'},
+            {name:'remittances',label:'手续费',cell:'number'},
             {name:'other',label:'其他费用',cell:'number'},
             {name:'service',label:'服务收费',editable:false,cell:'number'},
             {name:'total',label:'Total',editable:false,cell:'number'},

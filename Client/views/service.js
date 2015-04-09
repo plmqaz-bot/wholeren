@@ -18,7 +18,7 @@ var ServiceView=main.baseDataView.extend({
     collectionName:'Service',
     title:'服务列表',
     paginator:true,
-    filterFields:true,
+    filterFields:['chineseName','nickname','serviceProgress','type','degree','previousSchool','studentDestination'],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({

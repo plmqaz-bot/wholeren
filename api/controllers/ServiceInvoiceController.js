@@ -9,7 +9,7 @@ function constructsql(where,on){
 	var sql="select s.id,service.id as service, invoice.id as invoice,s.paidAmount,p1.paid,service.price,service.serviceType \
 	from invoice \
 	left join contract on contract.id=invoice.contract \
-	left join service on contract.id=service.contract \
+	inner join service on contract.id=service.contract \
 	left join servicetype on service.serviceType=servicetype.id \
 	left join serviceinvoice s on invoice.id=s.invoice and service.id=s.service \
 	left join  \
