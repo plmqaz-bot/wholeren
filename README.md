@@ -165,6 +165,14 @@ bug in user --DONE
 
 change sales comission lookup into cumulative
 
+change service to show Application only for service that allow application. 
+
+add salesGroup into contract, and select contractcategory based on group, 
+
+select leadDetail based on lead. 
+
+in service, show seperate service if it is a package
+
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3. --DONE
 
 
