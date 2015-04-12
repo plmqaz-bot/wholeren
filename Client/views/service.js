@@ -34,6 +34,14 @@ var ServiceView=main.baseDataView.extend({
         });
         var appPopup=BackgridCells.Cell.extend({
             cellText:'Applications',
+            render: function () {
+                if(this.model.get('addApplication')!=0)
+                    this.$el.html('<a>'+this.cellText+'</a>');
+                else
+                    this.$el.html('');        
+                this.delegateEvents();
+                return this;
+              },
             action:function(e){
                 e.preventDefault();
                 var id=this.model.get('id');

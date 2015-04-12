@@ -165,7 +165,7 @@ bug in user --DONE
 
 change sales comission lookup into cumulative
 
-change service to show Application only for service that allow application. 
+change service to show Application only for service that allow application. --DONE
 
 add salesGroup into contract, and select contractcategory based on group, 
 

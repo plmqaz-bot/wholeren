@@ -16,6 +16,8 @@ module.exports = {
     primaryKey: true,
     unique: true},
 
+    salesGroup:{model:'SalesGroup'},
+    
     contractCategory:{model:'ContractCategory'},
 
   	client:{model:'Client',required:true,defaultsTo:1},

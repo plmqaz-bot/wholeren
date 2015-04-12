@@ -166,19 +166,41 @@ insert into servicetype values('d1.紧急服务之CC申请2所，7天','d1','Eme
 insert into servicetype values('d2.紧急服务之硕士申请3所，50天','d2','Emerg',true,0.9,8,NOW(),NOW());
 insert into servicetype values('e.身份激活','e','Emerg',false,0.5,9,NOW(),NOW());
 insert into servicetype values('f.签证辅导紧急','f','Emerg',false,0.9,10,NOW(),NOW());
-insert into servicetype values('g.签证工具（PAP）','g','Emerg',false,0.9,12,NOW(),NOW());
-insert into servicetype values('h.学术正规辅导','h','Emerg',false,0.9,13,NOW(),NOW());
-insert into servicetype values('i.后续二次转学','i','Emerg',true,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack1:b+d，申诉+紧急转学-本科','pack1','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack2:a,b,d1/d2,e,f,g,7000-本科','pack2','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack3:h与i服务打包-本科','pack3','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack4:所有服务打包12,000-本科','pack4','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack5:b+d1/d2-研究生','pack5','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack6:d1,i-研究生','pack6','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack7:a,b,d1/d2,e,f,g-研究生','pack7','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack8:h与i服务打包-研究生','pack8','Emerg',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('pack9:所有服务打包-研究生','pack9','Emerg',false,0.9,NULL,NOW(),NOW());
+insert into servicetype values('g.签证工具（PAP）','g','Emerg',false,0.9,11,NOW(),NOW());
+insert into servicetype values('h.学术正规辅导','h','Emerg',false,0.9,12,NOW(),NOW());
+insert into servicetype values('i.后续二次转学','i','Emerg',true,0.9,13,NOW(),NOW());
+insert into servicetype values('pack1:b+d，申诉+紧急转学-本科','pack1','Emerg',false,0.9,14,NOW(),NOW());
+insert into servicetype values('pack2:a,b,d1/d2,e,f,g,7000-本科','pack2','Emerg',false,0.9,15,NOW(),NOW());
+insert into servicetype values('pack3:h与i服务打包-本科','pack3','Emerg',false,0.9,16,NOW(),NOW());
+insert into servicetype values('pack4:所有服务打包12,000-本科','pack4','Emerg',false,0.9,17,NOW(),NOW());
+insert into servicetype values('pack5:b+d1/d2-研究生','pack5','Emerg',false,0.9,18,NOW(),NOW());
+insert into servicetype values('pack6:d1,i-研究生','pack6','Emerg',false,0.9,19,NOW(),NOW());
+insert into servicetype values('pack7:a,b,d1/d2,e,f,g-研究生','pack7','Emerg',false,0.9,20,NOW(),NOW());
+insert into servicetype values('pack8:h与i服务打包-研究生','pack8','Emerg',false,0.9,21,NOW(),NOW());
+insert into servicetype values('pack9:所有服务打包-研究生','pack9','Emerg',false,0.9,22,NOW(),NOW());
 
+insert into serviceTypeGroup values(14,2);
+insert into serviceTypeGroup values(14,6);
+insert into serviceTypeGroup values(15,1);
+insert into serviceTypeGroup values(15,2);
+insert into serviceTypeGroup values(15,7);
+insert into serviceTypeGroup values(15,9);
+insert into serviceTypeGroup values(15,10);
+insert into serviceTypeGroup values(15,11);
+insert into serviceTypeGroup values(16,12);
+insert into serviceTypeGroup values(16,13);
+insert into serviceTypeGroup values(18,2);
+insert into serviceTypeGroup values(18,7);
+insert into serviceTypeGroup values(19,7);
+insert into serviceTypeGroup values(19,7);
+insert into serviceTypeGroup values(19,13);
+insert into serviceTypeGroup values(20,1);
+insert into serviceTypeGroup values(20,2);
+insert into serviceTypeGroup values(20,7);
+insert into serviceTypeGroup values(20,9);
+insert into serviceTypeGroup values(20,10);
+insert into serviceTypeGroup values(20,11);
+insert into serviceTypeGroup values(21,11);
 #升学t
 insert into servicetype values('t1.普通中学升/转学服务','pack9','Study',false,0.9,NULL,NOW(),NOW());
 insert into servicetype values('t.普通本科升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
@@ -271,6 +293,8 @@ insert into servicetype values('f2.签证辅导普通-非紧急','T1','Study',fa
 insert into servicetype values('f1. 签证辅导VIP-紧急','T1','Study',false,0.9,NULL,NOW(),NOW());
 insert into servicetype values('金奖奖牌$24,000','T1','Study',false,0.9,NULL,NOW(),NOW());
 
+#serviceTypeGroup
+insert into serviceTypeGroup values()
 #Service Progress	
 #insert into serviceprogress values('W.等待启动',NULL,NOW(),NOW());
 #insert into serviceprogress values('A.紧急处理中',NULL,NOW(),NOW());
