@@ -8,7 +8,7 @@
 module.exports = {
 
   attributes: {
-  	leadDetail:{type:'string',required:true,unique:true},
+  	leadDetail:{type:'string',required:true},
   	lead:{model:'Lead'}
   }
 };

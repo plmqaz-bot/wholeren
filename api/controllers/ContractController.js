@@ -389,6 +389,12 @@ module.exports = {
 			},
 			Status:function(dt){
 				Status.find().exec(dt);
+			},
+			SalesGroup:function(dt){
+				SalesGroup.find().exec(dt);
+			},
+			Group2Service:function(dt){
+				Group2Service.find().exec(dt);
 			}
 		},function(err,results){
 			if(err){return res.json(404,err);}

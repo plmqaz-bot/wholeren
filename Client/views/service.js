@@ -147,7 +147,7 @@ var ServicePopup=Backbone.Modal.extend({
                     self.cache[role][type]["level"]=self.cache[role][type]["level"]||[];
                     if(self.cache[role][type]["level"].length<1){                     
                         var shrunk=_.where(data,{servRole:role,serviceType:type});
-                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
+                        _.where(data,{servRole:role,serviceType:0}).forEach(function(e){
                             shrunk.push(e);
                         });
                         var unique=_.uniq(shrunk,false,function(e){return e.lid;});
