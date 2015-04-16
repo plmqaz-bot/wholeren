@@ -1,0 +1,39 @@
+extends layout
+
+append stylesheets
+	link(rel='stylesheet', href='../../css/style.css')
+	line(rel='stylesheet', href='../../css/tipsy.css')
+
+append jscripts
+	script(src="../../js/topojson.v1.min.js")
+	script(src="../../js/jquery.tipsy.js")
+
+block content
+	.container
+		.row.col-md-12.col-lg-12
+			.col-xs-12.col-sm-12.col-md-5.col-lg-5
+				#map
+			.col-xs-12.col-sm-12.col-md-7.col-lg-7
+				#piechart
+		.row.col-md-12.col-lg-12
+			.col-xs-12.col-sm-12.col-md-5.col-lg-5
+				#timechart
+			.col-xs-12.col-sm-12.col-md-3.col-lg-3
+				.col.xs-3.col-sm-3.col-md-3.col-lg-3
+					br
+					img(src="../../img/male.png" height=100) 
+				.col.xs-9.col-sm-9.col-md-9.col-lg-9
+					svg#malechart(width="97%" height=150)
+				.col.xs-3.col-sm-3.col-md-3.col-lg-3
+					br
+					img(src="../../img/female.png" height=100) 
+				.col.xs-9.col-sm-9.col-md-9.col-lg-9
+					svg#femalechart(width="97%" height=150)
+				
+				
+block footer
+	script(type="text/javascript").
+		var allClients =!{clients};
+	script(src="../../js/combine.js")
+	
+
