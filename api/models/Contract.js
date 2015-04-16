@@ -23,6 +23,8 @@ module.exports = {
   	client:{model:'Client',required:true,defaultsTo:1},
   	
   	lead:{model:'Lead'},
+
+    leadDetail:{model:'LeadDetail'},
   	
   	leadName:{type:"string"},
   	

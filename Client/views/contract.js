@@ -41,23 +41,32 @@ var ContractView=main.baseDataView.extend({
                 $('.app').html(m.el);   
             } 
         });
-        return Promise.all([util.ajaxGET('/contract/getAllOptions/'),util.ajaxGET('/User/')])).spread(function(AllOptions,Users){
+        return Promise.all([util.ajaxGET('/contract/getAllOptions/'),util.ajaxGET('/User/')]).spread(function(AllOptions,Users){
         	var salesgroup=BackgridCells.SelectCell({name:"SalesGroup",values:_.map(AllOptions['SalesGroup'],function(e){return [e.salesGroup,e.id]})});
             //var category=BackgridCells.SelectCell({name:"ContractCategory",values:_.map(AllOptions['ContractCategory'],function(e){return [e.contractCategory,e.id]})});
-            var category=roleselect.extend({
+            var category=salesgroup.extend({
                 optionValues:function(){
-                    var cell=this;
+                   // var cell=this;
                     var sg=this.model.get('salesGroup')||0;
                     var shrunk=_.where(AllOptions['Group2Service'],{salesGroup:sg});
                     var unique=_.uniq(shrunk,false,function(e){return e.contractCategory;});
                     shrunk=_.map(unique,function(e){return [e.contractCategory.contractCategory,e.contractCategory.id]});
                     var toadd=shrunk.slice(0);//clone it
                     //toadd.push(["No Category",null]);
-                    cell._optionValues=[{name:'ContractCategory',values:toadd}];
-                    return cell._optionValues;
+                    //cell._optionValues=[{name:'ContractCategory',values:toadd}];
+                    //return cell._optionValues;
+                    return [{name:'ContractCategory',values:toadd}];
                 } 
             });
             var lead=BackgridCells.SelectCell({name:"Lead",values:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})});
+            var leadDetail=lead.extend({
+                optionValues:function(){
+                    var l=this.model.get('lead')||0;
+                    var shrunk=_.where(AllOptions['LeadDetail'],{lead:l});
+                    var toadd=_.map(shrunk,function(e){return [e.leadDetail,e.id]});
+                    return [{name:'LeadDetail',values:toadd}];
+                }
+            });
             var leadLevel=BackgridCells.SelectCell({name:"LeadLevel",values:_.map(AllOptions['LeadLevel'],function(e){return [e.leadLevel,e.id]})});
             var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
             var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
@@ -93,6 +102,7 @@ var ContractView=main.baseDataView.extend({
             {name:'salesGroup',label:'销售组',cell:salesgroup},
             {name:'contractCategory',label:'咨询服务类别',cell:category},
             {name:'lead',label:'Lead种类',cell:lead},
+            {name:'leadDetail',label:'LeadDetail',cell:leadDetail},
             {name:'leadName',label:'Lead介绍人',cell:'string'},
             {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
             {name:'createdAt',label:'咨询日期',editable:false,cell:'date'},

@@ -104,7 +104,7 @@ module.exports = {
 				// 	if(r.sales2) r.sales2=Hashs[7][r.sales2];
 				// 	if(r.teacher) r.teacher=Hashs[7][r.teacher];
 				 	if(r.client){
-				 		r.client=Hashs[8][r.client];
+				 		r.client=Hashs[8][r.client]||{};
 				 		r.clientName=r.client['chineseName'];
 				 	} 
 				// 	r.service=Hashs[9][r.id]||[];
@@ -381,6 +381,9 @@ module.exports = {
 			Lead:function(dt){
 				Lead.find().exec(dt);
 			},
+			LeadDetail:function(dt){
+				LeadDetail.find().exec(dt);
+			},
 			LeadLevel:function(dt){
 				LeadLevel.find().exec(dt);
 			},
@@ -394,7 +397,7 @@ module.exports = {
 				SalesGroup.find().exec(dt);
 			},
 			Group2Service:function(dt){
-				Group2Service.find().exec(dt);
+				Group2Service.find().populate('contractCategory').exec(dt);
 			}
 		},function(err,results){
 			if(err){return res.json(404,err);}
