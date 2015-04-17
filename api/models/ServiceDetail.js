@@ -10,6 +10,7 @@ module.exports = {
   attributes: {
   	service:{model:'Service',required:true},
   	user:{model:'User'},
+  	serviceType:{model:'ServiceType'},
   	servRole:{model:'ServRole'},
     servLevel:{model:'ServLevel'},
   }

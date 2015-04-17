@@ -5,11 +5,12 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 function createsql(service,user){
-	var sql="select s.id,s.service,s.user,s.servRole,s.servLevel, y.serviceProgress as 'progress' ,z.serviceType as 'type' \
+	var sql="select s.id,s.service,s.user,s.servRole,s.servLevel, y.serviceProgress as 'progress' ,z.serviceType as 'originalType',s.serviceType as 'type' \
 		from  serviceprogressupdate y \
 		inner join (select u.serviceDetail,max(u.id) as 'mostrecent' from serviceprogressupdate u group by u.serviceDetail) as x on y.id=x.mostrecent \
 		right join servicedetail s on s.id=y.serviceDetail  \
-		left join service z on s.service=z.id where s.user is not null "
+		left join service z on s.service=z.id \
+		left join servicetype on z.serviceType=servicetype.id where s.user is not null "
 	if(service){
 		sql+="and s.service="+service;
 	}

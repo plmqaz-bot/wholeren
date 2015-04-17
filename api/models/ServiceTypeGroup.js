@@ -8,8 +8,8 @@
 module.exports = {
 
   attributes: {
-  	groupService:{model:'Service',required:true},
-  	service:{model:'Service',required:true}
+  	groupServiceType:{model:'ServiceType',required:true},
+  	serviceType:{model:'ServiceType',required:true}
   }
 };
 

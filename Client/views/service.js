@@ -134,9 +134,20 @@ var ServicePopup=Backbone.Modal.extend({
         container.append('<button class="button-add">Add New</button>');
         
         var self=this;
-        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/'),util.ajaxGET('/User/')]).spread(function(roles,data,users){
+        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/'),util.ajaxGET('/User/'),util.ajaxGET('/ServiceTypeGroup/')]).spread(function(roles,data,users,stype){
             var roleselect=BackgridCells.SelectCell({name:'职位',values:roles});
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
+            var typeselect=roleselect.extend({
+                optionValues:function(){
+                    var oritype=this.model.get('originalType');
+                    var shrunk=_.where(stype,{groupServiceType:oritype});
+                    var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
+                    if((toadd||[]).length<1){
+                        toadd.push({[this.model.get('serviceType'),this.model.get('originalType')]});
+                    }
+                    return [{name:'ServiceType',values:toadd}];
+                }
+            });
             var levelselect=roleselect.extend({
                 optionValues:function(){
                     var cell=this;
@@ -185,6 +196,7 @@ var ServicePopup=Backbone.Modal.extend({
            // var UpdateCell=BackgridCells.UpdateCell;
             var columns=[
                 {name:'user',label:'User',cell:userselect},
+                {name:'type',label:'ServiceType',},
                 {name:'servRole',label:'Role',cell:roleselect},
                 {name:'servLevel',label:'Level',cell:levelselect},
                 {name:'progress',label:'Current Status',cell:statusselect},
