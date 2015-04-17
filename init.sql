@@ -1,5 +1,6 @@
 use test;
 #销售组
+truncate salesgroup;
 insert into salesgroup values('紧急',1,NOW(),NOW());
 insert into salesgroup values('转学',2,NOW(),NOW());
 insert into salesgroup values('升学',3,NOW(),NOW());
@@ -7,6 +8,7 @@ insert into salesgroup values('高中',4,NOW(),NOW());
 insert into salesgroup values('其它',5,NOW(),NOW());
 
 #合同类型
+truncate contractcategory;
 insert into contractcategory values('紧急',1,NOW(),NOW());
 insert into contractcategory values('升学',2,NOW(),NOW());
 insert into contractcategory values('转学',3,NOW(),NOW());
@@ -31,6 +33,7 @@ insert into contractcategory values('大客户',10,NOW(),NOW());
 #insert into contractcategory values('辅导',NULL,NOW(),NOW());
 
 #销售组和服务类别
+truncate group2service;
 insert into group2service values(1,1,NULL,NOW(),NOW());
 insert into group2service values(1,4,NULL,NOW(),NOW());
 insert into group2service values(1,5,NULL,NOW(),NOW());
@@ -82,6 +85,7 @@ insert into group2service values(5,10,NULL,NOW(),NOW());
 #insert into lead values('合作：洛杉矶华人资讯网',NULL,NOW(),NOW());
 #insert into lead values('合作：Gesoo',NULL,NOW(),NOW());
 #insert into lead values('合作：其他机构',NULL,NOW(),NOW());
+truncate lead;
 insert into lead values('官网',1,NOW(),NOW());
 insert into lead values('网络搜索',2,NOW(),NOW());
 insert into lead values('微信',3,NOW(),NOW());
@@ -92,6 +96,7 @@ insert into lead values('朋友&员工介绍2',7,NOW(),NOW());
 insert into lead values('博客微博',8,NOW(),NOW());
 insert into lead values('邮件Newsletter',9,NOW(),NOW());
 
+truncate leaddetail;
 insert into leaddetail values('在线咨询',1,NULL,NOW(),NOW());
 insert into leaddetail values('谷歌',2,NULL,NOW(),NOW());
 insert into leaddetail values('百度',2,NULL,NOW(),NOW());
@@ -188,28 +193,30 @@ insert into servicetype values('pack7:a,b,d1/d2,e,f,g-研究生','pack7','Emerg'
 insert into servicetype values('pack8:h与i服务打包-研究生','pack8','Emerg',false,0.9,21,NOW(),NOW());
 insert into servicetype values('pack9:所有服务打包-研究生','pack9','Emerg',false,0.9,22,NOW(),NOW());
 
-insert into serviceTypeGroup values(14,2);
-insert into serviceTypeGroup values(14,6);
-insert into serviceTypeGroup values(15,1);
-insert into serviceTypeGroup values(15,2);
-insert into serviceTypeGroup values(15,7);
-insert into serviceTypeGroup values(15,9);
-insert into serviceTypeGroup values(15,10);
-insert into serviceTypeGroup values(15,11);
-insert into serviceTypeGroup values(16,12);
-insert into serviceTypeGroup values(16,13);
-insert into serviceTypeGroup values(18,2);
-insert into serviceTypeGroup values(18,7);
-insert into serviceTypeGroup values(19,7);
-insert into serviceTypeGroup values(19,7);
-insert into serviceTypeGroup values(19,13);
-insert into serviceTypeGroup values(20,1);
-insert into serviceTypeGroup values(20,2);
-insert into serviceTypeGroup values(20,7);
-insert into serviceTypeGroup values(20,9);
-insert into serviceTypeGroup values(20,10);
-insert into serviceTypeGroup values(20,11);
-insert into serviceTypeGroup values(21,11);
+insert into serviceTypeGroup values(14,2,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(14,6,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(15,1,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(15,2,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(15,7,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(15,8,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(15,9,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(15,10,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(15,11,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(16,12,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(16,13,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(18,2,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(18,7,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(19,7,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(19,13,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(20,1,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(20,2,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(20,7,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(20,8,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(20,9,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(20,10,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(20,11,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(21,11,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(21,13,NULL,NOW(),NOW());
 #升学t
 insert into servicetype values('t1.普通中学升/转学服务','pack9','Study',false,0.9,NULL,NOW(),NOW());
 insert into servicetype values('t.普通本科升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
