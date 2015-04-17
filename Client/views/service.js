@@ -114,9 +114,10 @@ var ServicePopup=Backbone.Modal.extend({
         this.collection.setSID(this.serviceID);
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel({_url:'/ServiceDetail/'});
+        var toAdd=new Obiwang.Models.syncModel();
+        toAdd['_url']='/ServiceDetail/';
         toAdd.set('service',this.serviceID,{save:false});
-        toAdd.set('type',this.type,{save:false});
+        toAdd.set('originalType',this.type,{save:false});
         var self=this;
         toAdd.save(null,{
             save:false,
@@ -143,7 +144,7 @@ var ServicePopup=Backbone.Modal.extend({
                     var shrunk=_.where(stype,{groupServiceType:oritype});
                     var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
                     if((toadd||[]).length<1){
-                        toadd.push({[this.model.get('serviceType'),this.model.get('originalType')]});
+                        toadd.push([this.model.get('typetext'),this.model.get('originalType')]);
                     }
                     return [{name:'ServiceType',values:toadd}];
                 }
@@ -152,7 +153,7 @@ var ServicePopup=Backbone.Modal.extend({
                 optionValues:function(){
                     var cell=this;
                     var role=this.model.get('servRole')||0;
-                    var type=this.model.get('type')||0;
+                    var type=this.model.get('serviceType')||0;
                     self.cache[role]=self.cache[role]||[];
                     self.cache[role][type]=self.cache[role][type]||[];
                     self.cache[role][type]["level"]=self.cache[role][type]["level"]||[];
@@ -174,7 +175,7 @@ var ServicePopup=Backbone.Modal.extend({
                 optionValues:function(){
                     var cell=this;
                     var role=this.model.get('servRole')||0;
-                    var type=this.model.get('type')||0;
+                    var type=this.model.get('serviceType')||0;
                     self.cache[role]=self.cache[role]||[];
                     self.cache[role][type]=self.cache[role][type]||[];
                     self.cache[role][type]["status"]=self.cache[role][type]["status"]||[];
@@ -196,7 +197,7 @@ var ServicePopup=Backbone.Modal.extend({
            // var UpdateCell=BackgridCells.UpdateCell;
             var columns=[
                 {name:'user',label:'User',cell:userselect},
-                {name:'type',label:'ServiceType',},
+                {name:'serviceType',label:'ServiceType',cell:typeselect},
                 {name:'servRole',label:'Role',cell:roleselect},
                 {name:'servLevel',label:'Level',cell:levelselect},
                 {name:'progress',label:'Current Status',cell:statusselect},

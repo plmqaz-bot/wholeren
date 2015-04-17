@@ -4,18 +4,22 @@
  * @description :: Server-side logic for managing Servicedetails
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-function createsql(service,user){
-	var sql="select s.id,s.service,s.user,s.servRole,s.servLevel, y.serviceProgress as 'progress' ,z.serviceType as 'originalType',s.serviceType as 'type' \
+ var Promise=require('bluebird');
+function createsql(service,user,option){
+	var sql="select s.id,s.service,s.user,s.servRole,s.servLevel, y.serviceProgress as 'progress' ,servicetype.serviceType as 'typetext',z.serviceType as 'originalType',s.serviceType \
 		from  serviceprogressupdate y \
 		inner join (select u.serviceDetail,max(u.id) as 'mostrecent' from serviceprogressupdate u group by u.serviceDetail) as x on y.id=x.mostrecent \
 		right join servicedetail s on s.id=y.serviceDetail  \
 		left join service z on s.service=z.id \
-		left join servicetype on z.serviceType=servicetype.id where s.user is not null "
+		left join servicetype on z.serviceType=servicetype.id where z.serviceType is not null "
 	if(service){
 		sql+="and s.service="+service;
 	}
 	if(user){
 		sql+=" and s.user="+user;
+	}
+	if(option){
+		sql+=" and "+option;
 	}
 	return sql;
 }
@@ -40,7 +44,7 @@ module.exports = {
 		// tocreate['servRole']=attribs.servRole;
 		// tocreate['servLevel']=attribs.servLevel;
 		progress=attribs['progress'];
-		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel']);
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel','serviceType']);
 		ServiceDetail.update({id:id},tocreate).then(function(data){
 			data=data[0]||data;
 			if(progress&&data.id){
@@ -51,9 +55,10 @@ module.exports = {
 				return data;
 			}
 		}).then(function(data){
-			var sql=createsql(attribs.service,attribs.user);
+			var sql=createsql(attribs.service,attribs.user,'s.id='+id);
 			return Utilfunctions.nativeQuery(sql);
 		}).then(function(data){
+			data=data[0]||data;
 			return res.json(data);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Update Service failed id:"+id);
@@ -62,7 +67,7 @@ module.exports = {
 	createorupdate:function(req,res){
 		var attribs=req.body;
 		if(!attribs.service) return res.json(404,{error:"no user or service"});
-		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel']);
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel','serviceType']);
 		progress=attribs['progress'];
 		console.log(progress);
 		ServiceDetail.findOne({user:attribs.user,service:attribs.service}).then(function(data){
@@ -81,12 +86,14 @@ module.exports = {
 				return ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:progress});
 			}else{
 				console.log("not creating progress ",progress,data);
-				return data;
+				return Promise.resolve(data);
 			}
 		}).then(function(data){
-			var sql=createsql(attribs.service,attribs.user);
+			console.log("create sql to retrieve the row", data);
+			var sql=createsql(attribs.service,attribs.user,'s.id='+data.id);
 			return Utilfunctions.nativeQuery(sql);
 		}).then(function(data){
+			data=data[0]||data;
 			return res.json(data);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Create ServiceDetail failed");
