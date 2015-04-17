@@ -36,7 +36,7 @@ var ContractView=main.baseDataView.extend({
             action:function(e){
                 var item=$(e.currentTarget);
                 var id = this.model.get('id');
-                var m=new ContractInvoiceView({id:id});
+                var m=new ContractInvoiceView({model:this.model});
                 m.render();
                 $('.app').html(m.el);   
             } 
@@ -283,7 +283,8 @@ var ContractInvoiceView=main.baseModalDataView.extend({
     collectionName:'Invoice',
     initialize:function(options){
     	main.baseModalDataView.prototype.initialize.apply(this,arguments);
-    	this.contractID=parseInt(options.id);
+        this.contract=options.model;
+    	this.contractID=this.contract.get('id');
     	this.collection.contract=this.contractID;
     },
     addnew:function(e){
@@ -308,11 +309,12 @@ var ContractInvoiceView=main.baseModalDataView.extend({
     },
     constructColumns:function(){
     	var DeleteCell = BackgridCells.DeleteCell;
+        var self=this;
         var ServiceInvoiceCell=BackgridCells.Cell.extend({
             cellText:'Detail',
             action:function(e){
                 e.preventDefault();
-                var childview=new ServiceInvoiceView({invoice:this.model});
+                var childview=new ServiceInvoiceView({invoice:this.model,contract:self.contract});
                 childview.render();
                 $('.app').append(childview.el);
             }
@@ -340,6 +342,7 @@ var ServiceInvoiceView=main.baseModalDataView.extend({
     collectionName:'ServiceInvoice',
     initialize: function (options){
        	main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.contract=options.contract;
         this.invoice=options.invoice;
         this.invoiceID=parseInt(this.invoice.id);
         this.collection.invoice=this.invoiceID;
@@ -349,8 +352,29 @@ var ServiceInvoiceView=main.baseModalDataView.extend({
     },
     constructColumns:function(){
     	var self=this;
-    	return util.ajaxGET('/ServiceType/').then(function(data){
-            var type=BackgridCells.SelectCell({name:"ServiceType",values:_.map(data,function(e){return [e.serviceType,e.id]})});
+    	return util.ajaxGET('/Category2Service/').then(function(data){
+
+            var type=Backgrid.SelectCell.extend({
+                optionValues:function(){
+                   // var cell=this;
+                    var category=self.contract.get('contractCategory')||0;
+                    var shrunk=_.where(data,{contractCategory:category});
+                    //var unique=_.uniq(shrunk,false,function(e){return e.contractCategory;});
+                    shrunk=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
+                    var toadd=shrunk.slice(0);//clone it
+                    //toadd.push(["No Category",null]);
+                    //cell._optionValues=[{name:'ContractCategory',values:toadd}];
+                    //return cell._optionValues;
+                    return [{name:'ServiceType',values:toadd}];
+                },
+                formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                    toRaw: function (formattedValue, model) {
+                      return formattedValue == null ? null: parseInt(formattedValue);
+                    }
+                }) 
+            });
+
+            //BackgridCells.SelectCell({name:"ServiceType",values:_.map(data,function(e){return [e.serviceType,e.id]})});
             var deletecell =BackgridCells.Cell.extend({
                 cellText:'Delete Service',
                 action:function(e){

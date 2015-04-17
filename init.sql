@@ -192,12 +192,72 @@ insert into servicetype values('pack6:d1,i-研究生','pack6','Emerg',false,0.9,
 insert into servicetype values('pack7:a,b,d1/d2,e,f,g-研究生','pack7','Emerg',false,0.9,20,NOW(),NOW());
 insert into servicetype values('pack8:h与i服务打包-研究生','pack8','Emerg',false,0.9,21,NOW(),NOW());
 insert into servicetype values('pack9:所有服务打包-研究生','pack9','Emerg',false,0.9,22,NOW(),NOW());
+#升学t
+insert into servicetype values('t1.普通中学升/转学服务','t1','Study',false,0.9,23,NOW(),NOW());
+insert into servicetype values('t.普通本科升学','t','Study',false,0.9,24,NOW(),NOW());
+insert into servicetype values('t2.普通硕士升学','t2','Study',false,0.9,25,NOW(),NOW());
+insert into servicetype values('t3.普通艺术类本科升学','t3','Study',false,0.9,26,NOW(),NOW());
+insert into servicetype values('t4.普通艺术类硕士升学','t4','Study',false,0.9,27,NOW(),NOW());
+insert into servicetype values('t5.VIP本科升学','t5','Study',false,0.9,28,NOW(),NOW());
+insert into servicetype values('t6.VIP硕士升学','t6','Study',false,0.9,29,NOW(),NOW());
+insert into servicetype values('t7.普通CC申请','t7','Study',false,0.9,30,NOW(),NOW());
+insert into servicetype values('t8.普通语言项目申请','t8','Study',false,0.9,31,NOW(),NOW());
+insert into servicetype values('tpack1.“早起鸟”+ 硕士升学服务','tpack1','Study',false,0.9,32,NOW(),NOW());
+insert into servicetype values('tpack2.“早起鸟”+ 本科升学服务','tpack2','Study',false,0.9,33,NOW(),NOW());
+insert into servicetype values('tpack3.“早起鸟”+ 高中升/转学服务','tpack3','Study',false,0.9,34,NOW(),NOW());
+insert into servicetype values('tpack4.“早起鸟”+ VIP硕士升学服务','tpack4','Study',false,0.9,35,NOW(),NOW());
+insert into servicetype values('tpack5.“早起鸟”+ VIP本科升学服务','tpack5','Study',false,0.9,36,NOW(),NOW());
+insert into servicetype values('tpack6.“早起鸟”+高中升转学学服务+大学升学','tpack6','Study',false,0.9,37,NOW(),NOW());
+insert into servicetype values('tpack7.“早起鸟”+高中名校连升服务+大学升学','tpack7','Study',false,0.9,38,NOW(),NOW());
+#转学i
+insert into servicetype values('i1.高中名校连升项目服务','i1','Study',false,0.9,39,NOW(),NOW());
+insert into servicetype values('i.普通本科转学','i','Study',false,0.9,40,NOW(),NOW());
+insert into servicetype values('i2.普通本科转学','i2','Study',false,0.9,41,NOW(),NOW());
+insert into servicetype values('i3.普通艺术类本科转学','i3','Study',false,0.9,42,NOW(),NOW());
+insert into servicetype values('i4.普通艺术类研究生转学','i4','Study',false,0.9,43,NOW(),NOW());
+insert into servicetype values('i5.VIP高中转学','i5','Study',false,0.9,44,NOW(),NOW());
+insert into servicetype values('i6.VIP本科转学','i6','Study',false,0.9,45,NOW(),NOW());
+insert into servicetype values('i7.VIP研究生转学','i7','Study',false,0.9,46,NOW(),NOW());
+insert into servicetype values('ipack1.“早起鸟”+ 本科转学服务','ipack1','Study',false,0.9,47,NOW(),NOW());
+insert into servicetype values('ipack2.“早起鸟”+ 本科转学服务','ipack2','Study',false,0.9,48,NOW(),NOW());
+insert into servicetype values('ipack13.“早起鸟”+ 高中名校连升服务','ipack3','Study',false,0.9,49,NOW(),NOW());
+insert into servicetype values('ipack14.“早起鸟”+ VIP本科转学服务','ipack4','Study',false,0.9,50,NOW(),NOW());
+insert into servicetype values('ipack15.“早起鸟”+ VIP硕士转学服务','ipack5','Study',false,0.9,51,NOW(),NOW());
+#文书服务p
+insert into servicetype values('p1.普通Essay修改','p1','Study',false,0.9,52,NOW(),NOW());
+insert into servicetype values('p2.普通文书服务','p2','Study',false,0.9,53,NOW(),NOW());
+insert into servicetype values('p3.VIP文书服务','p3','Study',false,0.9,54,NOW(),NOW());
+#国会奖j
+insert into servicetype values('j1.铜奖奖状$2,000','j1','Study',false,0.9,55,NOW(),NOW());
+insert into servicetype values('j2.银奖奖状$4,000','j2','Study',false,0.9,56,NOW(),NOW());
+insert into servicetype values('j3.金奖奖状$6,000','j3','Study',false,0.9,57,NOW(),NOW());
+insert into servicetype values('j4.铜奖奖牌$6,000','j4','Study',false,0.9,58,NOW(),NOW());
+insert into servicetype values('j5.银奖奖牌$12,000','j5','Study',false,0.9,59,NOW(),NOW());
+insert into servicetype values('j6.金奖奖牌$24,000','j6','Study',false,0.9,60,NOW(),NOW());
+#签证f&g
+insert into servicetype values('f1.签证辅导普通-非紧急','f1','Visa',false,0.9,61,NOW(),NOW());insert into serviceTypeGroup values(14,2,NULL,NOW(),NOW());
+#学术辅导h
+#insert into servicetype values('h.学术正轨','h','Study',false,0.9,64,NOW(),NOW());
+insert into servicetype values('h2.早起鸟','h2','Study',true,0.6,65,NOW(),NOW());
+insert into servicetype values('h3.单科辅导','h3','Study',false,0.6,66,NOW(),NOW());
+insert into servicetype values('h4.托福辅导','h4','Study',false,0.6,67,NOW(),NOW());
+insert into servicetype values('h5.ASPIRE全套1年','h5','Study',false,0.6,68,NOW(),NOW());
+insert into servicetype values('h6.ASPIRE全套2年','h6','Study',false,0.6,69,NOW(),NOW());
+insert into servicetype values('h7.SAT辅导','h7','Study',false,0.6,70,NOW(),NOW());
+insert into servicetype values('h8.学术写作辅导','h8','Study',false,0.6,71,NOW(),NOW());
+insert into servicetype values('h9.非全年学术辅导','h9','Study',false,0.6,72,NOW(),NOW());
+insert into servicetype values('h10.作品集辅导','h10','Study',false,0.6,73,NOW(),NOW());
+insert into servicetype values('h11.选课辅导','h11','Study',false,0.6,74,NOW(),NOW());insert into serviceTypeGroup values(14,6,NULL,NOW(),NOW());
+#合作机构k
+insert into servicetype values('k.薛涌留美预科','k','Study',false,0.9,75,NOW(),NOW());
+insert into servicetype values('k1.AHS','k1','Study',false,0.9,76,NOW(),NOW());
+insert into servicetype values('k2.ELS','k2','Study',false,0.9,77,NOW(),NOW());insert into serviceTypeGroup values(15,1,NULL,NOW(),NOW());
+#大客户项目L
+insert into servicetype values('L.中信项目','L','Transfer',true,0.9,78,NOW(),NOW());
+insert into servicetype values('L1.游学营','L1','Transfer',true,0.9,79,NOW(),NOW());insert into serviceTypeGroup values(15,2,NULL,NOW(),NOW());
+#其它M
+insert into servicetype values('M1.夏校申请','M1','Transfer',true,0.9,80,NOW(),NOW());insert into serviceTypeGroup values(15,7,NULL,NOW(),NOW());
 
-insert into serviceTypeGroup values(14,2,NULL,NOW(),NOW());
-insert into serviceTypeGroup values(14,6,NULL,NOW(),NOW());
-insert into serviceTypeGroup values(15,1,NULL,NOW(),NOW());
-insert into serviceTypeGroup values(15,2,NULL,NOW(),NOW());
-insert into serviceTypeGroup values(15,7,NULL,NOW(),NOW());
 insert into serviceTypeGroup values(15,8,NULL,NOW(),NOW());
 insert into serviceTypeGroup values(15,9,NULL,NOW(),NOW());
 insert into serviceTypeGroup values(15,10,NULL,NOW(),NOW());
@@ -217,100 +277,107 @@ insert into serviceTypeGroup values(20,10,NULL,NOW(),NOW());
 insert into serviceTypeGroup values(20,11,NULL,NOW(),NOW());
 insert into serviceTypeGroup values(21,11,NULL,NOW(),NOW());
 insert into serviceTypeGroup values(21,13,NULL,NOW(),NOW());
-#升学t
-insert into servicetype values('t1.普通中学升/转学服务','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t.普通本科升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t2.普通硕士升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t3.普通艺术类本科升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t4.普通艺术类硕士升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t5.VIP本科升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t6.VIP硕士升学','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t7.普通CC申请','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('t8.普通语言项目申请','pack9','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('tpack1.“早起鸟”+ 硕士升学服务','tpack1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('tpack2.“早起鸟”+ 本科升学服务','tpack2','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('tpack3.“早起鸟”+ 高中升/转学服务','tpack3','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('tpack4.“早起鸟”+ VIP硕士升学服务','tpack4','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('tpack5.“早起鸟”+ VIP本科升学服务','tpack5','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('tpack6.“早起鸟”+高中升转学学服务+大学升学','tpack6','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('tpack7.“早起鸟”+高中名校连升服务+大学升学','tpack7','Study',false,0.9,NULL,NOW(),NOW());
+insert into serviceTypeGroup values(32,13,NULL,NOW(),NOW());
 
-#转学i
+insert into category2service values(1,1,NULL,NOW(),NOW());
+insert into category2service values(1,2,NULL,NOW(),NOW());
+insert into category2service values(1,3,NULL,NOW(),NOW());
+insert into category2service values(1,4,NULL,NOW(),NOW());
+insert into category2service values(1,5,NULL,NOW(),NOW());
+insert into category2service values(1,6,NULL,NOW(),NOW());
+insert into category2service values(1,7,NULL,NOW(),NOW());
+insert into category2service values(1,8,NULL,NOW(),NOW());
+insert into category2service values(1,9,NULL,NOW(),NOW());
+insert into category2service values(1,10,NULL,NOW(),NOW());
+insert into category2service values(1,11,NULL,NOW(),NOW());
+insert into category2service values(1,12,NULL,NOW(),NOW());
+insert into category2service values(1,13,NULL,NOW(),NOW());
+insert into category2service values(1,14,NULL,NOW(),NOW());
+insert into category2service values(1,15,NULL,NOW(),NOW());
+insert into category2service values(1,16,NULL,NOW(),NOW());
+insert into category2service values(1,17,NULL,NOW(),NOW());
+insert into category2service values(1,18,NULL,NOW(),NOW());
+insert into category2service values(1,19,NULL,NOW(),NOW());
+insert into category2service values(1,20,NULL,NOW(),NOW());
+insert into category2service values(1,21,NULL,NOW(),NOW());
+insert into category2service values(1,22,NULL,NOW(),NOW());
 
-insert into servicetype values('i1.高中名校连升项目服务','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i.普通本科转学','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i2.普通本科转学','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i3.普通艺术类本科转学','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i4.普通艺术类研究生转学','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i5.VIP高中转学','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i6.VIP本科转学','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i7.VIP研究生转学','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('ipack1.“早起鸟”+ 本科转学服务','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('ipack2.“早起鸟”+ 本科转学服务','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('ipack13.“早起鸟”+ 高中名校连升服务','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('ipack14.“早起鸟”+ VIP本科转学服务','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('ipack15.“早起鸟”+ VIP硕士转学服务','T1','Study',false,0.9,NULL,NOW(),NOW());
+insert into category2service values(2,23,NULL,NOW(),NOW());
+insert into category2service values(2,24,NULL,NOW(),NOW());
+insert into category2service values(2,25,NULL,NOW(),NOW());
+insert into category2service values(2,26,NULL,NOW(),NOW());
+insert into category2service values(2,27,NULL,NOW(),NOW());
+insert into category2service values(2,28,NULL,NOW(),NOW());
+insert into category2service values(2,29,NULL,NOW(),NOW());
+insert into category2service values(2,30,NULL,NOW(),NOW());
+insert into category2service values(2,31,NULL,NOW(),NOW());
+insert into category2service values(2,32,NULL,NOW(),NOW());
+insert into category2service values(2,33,NULL,NOW(),NOW());
+insert into category2service values(2,34,NULL,NOW(),NOW());
+insert into category2service values(2,35,NULL,NOW(),NOW());
+insert into category2service values(2,36,NULL,NOW(),NOW());
+insert into category2service values(2,37,NULL,NOW(),NOW());
+insert into category2service values(2,38,NULL,NOW(),NOW());
 
-#文书服务p
-insert into servicetype values('p1.普通Essay修改','p1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('p2.普通文书服务','p2','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('p3.VIP文书服务','p3','Study',false,0.9,NULL,NOW(),NOW());
+insert into category2service values(3,39,NULL,NOW(),NOW());
+insert into category2service values(3,40,NULL,NOW(),NOW());
+insert into category2service values(3,41,NULL,NOW(),NOW());
+insert into category2service values(3,42,NULL,NOW(),NOW());
+insert into category2service values(3,43,NULL,NOW(),NOW());
+insert into category2service values(3,44,NULL,NOW(),NOW());
+insert into category2service values(3,45,NULL,NOW(),NOW());
+insert into category2service values(3,46,NULL,NOW(),NOW());
+insert into category2service values(3,47,NULL,NOW(),NOW());
+insert into category2service values(3,48,NULL,NOW(),NOW());
+insert into category2service values(3,49,NULL,NOW(),NOW());
+insert into category2service values(3,50,NULL,NOW(),NOW());
+insert into category2service values(3,51,NULL,NOW(),NOW());
 
-#国会奖j
-insert into servicetype values('j1.铜奖奖状$2,000','j1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('j2.银奖奖状$4,000','j2','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('j3.金奖奖状$6,000','j3','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('j4.铜奖奖牌$6,000','j4','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('j5.银奖奖牌$12,000','j5','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('j6.金奖奖牌$24,000','j6','Study',false,0.9,NULL,NOW(),NOW());
+insert into category2service values(5,52,NULL,NOW(),NOW());
+insert into category2service values(5,53,NULL,NOW(),NOW());
+insert into category2service values(5,54,NULL,NOW(),NOW());
 
-#签证f&g
-insert into servicetype values('f1.签证辅导普通-非紧急','f1','Visa',false,0.9,11,NOW(),NOW());
-insert into servicetype values('f.签证辅导VIP-紧急','f','Visa',false,0.9,10,NOW(),NOW());
-insert into servicetype values('g. 签证工具（PAP）','g','Visa',false,0.9,10,NOW(),NOW());
+insert into category2service values(7,55,NULL,NOW(),NOW());
+insert into category2service values(7,56,NULL,NOW(),NOW());
+insert into category2service values(7,57,NULL,NOW(),NOW());
+insert into category2service values(7,58,NULL,NOW(),NOW());
+insert into category2service values(7,59,NULL,NOW(),NOW());
+insert into category2service values(7,60,NULL,NOW(),NOW());
 
-#学术辅导h
-insert into servicetype values('h.学术正轨','h','Study',false,0.9,14,NOW(),NOW());
-insert into servicetype values('h2.早起鸟','h2','Study',true,0.6,15,NOW(),NOW());
-insert into servicetype values('h3.单科辅导','h3','Study',false,0.6,16,NOW(),NOW());
-insert into servicetype values('h4.托福辅导','h4','Study',false,0.6,NULL,NOW(),NOW());
-insert into servicetype values('h5.ASPIRE全套1年','h5','Study',false,0.6,NULL,NOW(),NOW());
-insert into servicetype values('h6.ASPIRE全套2年','h6','Study',false,0.6,NULL,NOW(),NOW());
-insert into servicetype values('h7.SAT辅导','h7','Study',false,0.6,NULL,NOW(),NOW());
-insert into servicetype values('h8.学术写作辅导','h8','Study',false,0.6,NULL,NOW(),NOW());
-insert into servicetype values('h9.非全年学术辅导','h9','Study',false,0.6,NULL,NOW(),NOW());
-insert into servicetype values('h10.作品集辅导','h10','Study',false,0.6,NULL,NOW(),NOW());
-insert into servicetype values('h11.选课辅导','h11','Study',false,0.6,NULL,NOW(),NOW());
+#insert into servicetype values('f.签证辅导VIP-紧急','f','Visa',false,0.9,62,NOW(),NOW());
+#insert into servicetype values('g. 签证工具（PAP）','g','Visa',false,0.9,63,NOW(),NOW());
 
-#合作机构k
-insert into servicetype values('k.薛涌留美预科','k','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('k1.AHS','k1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('k2.ELS','k2','Study',false,0.9,NULL,NOW(),NOW());
+insert into category2service values(6,61,NULL,NOW(),NOW());
+insert into category2service values(6,10,NULL,NOW(),NOW());
+insert into category2service values(6,11,NULL,NOW(),NOW());
 
-#大客户项目L
-insert into servicetype values('L.中信项目','L','Transfer',true,0.9,NULL,NOW(),NOW());
-insert into servicetype values('L1.游学营','L1','Transfer',true,0.9,NULL,NOW(),NOW());
-#其它M
-insert into servicetype values('M1.夏校申请','M1','Transfer',true,0.9,NULL,NOW(),NOW());
+#insert into category2service values(4,64,NULL,NOW(),NOW());
+insert into category2service values(4,65,NULL,NOW(),NOW());
+insert into category2service values(4,66,NULL,NOW(),NOW());
+insert into category2service values(4,67,NULL,NOW(),NOW());
+insert into category2service values(4,68,NULL,NOW(),NOW());
+insert into category2service values(4,69,NULL,NOW(),NOW());
+insert into category2service values(4,70,NULL,NOW(),NOW());
+insert into category2service values(4,71,NULL,NOW(),NOW());
+insert into category2service values(4,72,NULL,NOW(),NOW());
+insert into category2service values(4,73,NULL,NOW(),NOW());
+insert into category2service values(4,74,NULL,NOW(),NOW());
 
-insert into servicetype values('i3.大U申请(本或硕)','i3','Transfer',true,0.9,NULL,NOW(),NOW());
-insert into servicetype values('i4.国会奖申请','i4','Transfer',true,0.9,NULL,NOW(),NOW());
-insert into servicetype values('j.$4500省心装(申诉+紧急转)','j','Emerg',true,0.9,NULL,NOW(),NOW());
-insert into servicetype values('L.$7000 紧急礼包二','L','Emerg',true,0.82,NULL,NOW(),NOW());
-insert into servicetype values('M.$11000, 紧急礼包4，全包','M','Emerg',true,0.85,NULL,NOW(),NOW());
-insert into servicetype values('K.$5000正规+转学','K','Emerg',true,0.75,NULL,NOW(),NOW());
-insert into servicetype values('z.北京所购服务送的cc only申请','z','Transfer',0.9,true,NULL,NOW(),NOW());
-insert into servicetype values('p.文书','p','Transfer',true,0.75,NULL,NOW(),NOW());
-insert into servicetype values('紧急助理','助理','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('选课指导','选课','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('普通CC申请','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('普通语言项目申请','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('f2.签证辅导普通-非紧急','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('f1. 签证辅导VIP-紧急','T1','Study',false,0.9,NULL,NOW(),NOW());
-insert into servicetype values('金奖奖牌$24,000','T1','Study',false,0.9,NULL,NOW(),NOW());
+insert into category2service values(8,75,NULL,NOW(),NOW());
+insert into category2service values(8,76,NULL,NOW(),NOW());
+insert into category2service values(8,77,NULL,NOW(),NOW());
 
-#serviceTypeGroup
-insert into serviceTypeGroup values()
+insert into category2service values(10,78,NULL,NOW(),NOW());
+insert into category2service values(10,79,NULL,NOW(),NOW());
+
+insert into category2service values(9,80,NULL,NOW(),NOW());
+
+
+#Category To Service
+
+
+
+#insert into serviceTypeGroup values(1,)
 #Service Progress	
 #insert into serviceprogress values('W.等待启动',NULL,NOW(),NOW());
 #insert into serviceprogress values('A.紧急处理中',NULL,NOW(),NOW());

@@ -19,9 +19,9 @@ module.exports = {
 
   	comission:{type:'float',required:true,defaultsTo:0},
 
-  	price:{type:'float',defaultsTo:0},
+  	//price:{type:'float',defaultsTo:0},
 
-    contractCategory:{model:'ContractCategory'},
+    //contractCategory:{model:'ContractCategory'},
 
   }
 };
