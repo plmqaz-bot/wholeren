@@ -167,14 +167,15 @@ change sales comission lookup into cumulative
 
 change service to show Application only for service that allow application. --DONE
 
-add salesGroup into contract, and select contractcategory based on group, 
+add salesGroup into contract, and select contractcategory based on group,  --DONE
 
-select leadDetail based on lead. 
+select leadDetail based on lead.  --DONE
 
-in service, show seperate service if it is a package
+in service, show seperate service if it is a package --DONE
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3. --DONE
 
+price of service is based on serviceType and the current school type. 
 
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
