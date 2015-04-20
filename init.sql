@@ -442,15 +442,15 @@ insert into serviceprogress values('交接出去了',NULL,NOW(),NOW());
 
 
 #服务进度
-insert into servicestatus values('无',NULL,NOW(),NOW());
-insert into servicestatus values('进入服务',NULL,NOW(),NOW());
-insert into servicestatus values('选校确定',NULL,NOW(),NOW());
-insert into servicestatus values('提交申请',NULL,NOW(),NOW());
-insert into servicestatus values('录取佣金',NULL,NOW(),NOW());
-insert into servicestatus values('完成服务',NULL,NOW(),NOW());
-insert into servicestatus values('文书启动',NULL,NOW(),NOW());
-insert into servicestatus values('提交文书',NULL,NOW(),NOW());
-insert into servicestatus values('拿到录取',NULL,NOW(),NOW());
+insert into servicestatus values('无',1,NOW(),NOW());
+insert into servicestatus values('进入服务',2,NOW(),NOW());
+insert into servicestatus values('选校确定',3,NOW(),NOW());
+insert into servicestatus values('提交申请',4,NOW(),NOW());
+insert into servicestatus values('录取佣金',5,NOW(),NOW());
+insert into servicestatus values('完成服务',6,NOW(),NOW());
+insert into servicestatus values('文书启动',7,NOW(),NOW());
+insert into servicestatus values('提交文书',8,NOW(),NOW());
+insert into servicestatus values('拿到录取',9,NOW(),NOW());
 #销售角色
 insert into salesrole values('紧急销售',0.06,0,NULL,NOW(),NOW());
 insert into salesrole values('紧急专家',0.035,0,NULL,NOW(),NOW());
@@ -480,30 +480,30 @@ insert into salesrole values('Lead介绍人(陌生)',0.075,0,NULL,NOW(),NOW());
 insert into salesrole values('无角色',0,0,NULL,NOW(),NOW());
 
 #后期角色
-insert into servrole values('负责老师',NULL,NOW(),NOW());
-insert into servrole values('申请全负责老师',NULL,NOW(),NOW());
-insert into servrole values('申请老师',NULL,NOW(),NOW());
-insert into servrole values('选校专家',NULL,NOW(),NOW());
-insert into servrole values('文书全负责老师',NULL,NOW(),NOW());
-insert into servrole values('文书专家',NULL,NOW(),NOW());
-insert into servrole values('文书编辑',NULL,NOW(),NOW());
-insert into servrole values('Native editor',NULL,NOW(),NOW());
-insert into servrole values('无角色',NULL,NOW(),NOW());
+insert into servrole values('负责老师',1,NOW(),NOW());
+insert into servrole values('申请全负责老师',2,NOW(),NOW());
+insert into servrole values('申请老师',3,NOW(),NOW());
+insert into servrole values('选校专家',4,NOW(),NOW());
+insert into servrole values('文书全负责老师',5,NOW(),NOW());
+insert into servrole values('文书专家',6,NOW(),NOW());
+insert into servrole values('文书编辑',7,NOW(),NOW());
+insert into servrole values('Native editor',8,NOW(),NOW());
+insert into servrole values('无角色',9,NOW(),NOW());
 #文书LEVEL
-insert into servlevel values('H1',NULL,NOW(),NOW());
-insert into servlevel values('H2',NULL,NOW(),NOW());
-insert into servlevel values('U1',NULL,NOW(),NOW());
-insert into servlevel values('U2',NULL,NOW(),NOW());
-insert into servlevel values('U3',NULL,NOW(),NOW());
-insert into servlevel values('U4',NULL,NOW(),NOW());
-insert into servlevel values('U5',NULL,NOW(),NOW());
-insert into servlevel values('U6',NULL,NOW(),NOW());
-insert into servlevel values('UR',NULL,NOW(),NOW());
-insert into servlevel values('D1',NULL,NOW(),NOW());
-insert into servlevel values('D2',NULL,NOW(),NOW());
-insert into servlevel values('D3',NULL,NOW(),NOW());
-insert into servlevel values('D4',NULL,NOW(),NOW());
-insert into servlevel values('DR',NULL,NOW(),NOW());
+insert into servlevel values('H1',1,NOW(),NOW());
+insert into servlevel values('H2',2,NOW(),NOW());
+insert into servlevel values('U1',3,NOW(),NOW());
+insert into servlevel values('U2',4,NOW(),NOW());
+insert into servlevel values('U3',5,NOW(),NOW());
+insert into servlevel values('U4',6,NOW(),NOW());
+insert into servlevel values('U5',7,NOW(),NOW());
+insert into servlevel values('U6',8,NOW(),NOW());
+insert into servlevel values('UR',9,NOW(),NOW());
+insert into servlevel values('D1',10,NOW(),NOW());
+insert into servlevel values('D2',11,NOW(),NOW());
+insert into servlevel values('D3',12,NOW(),NOW());
+insert into servlevel values('D4',13,NOW(),NOW());
+insert into servlevel values('DR',14,NOW(),NOW());
 
 #UserLevel
 insert into userlevel values('C1',1,NULL,NOW(),NOW());
@@ -519,7 +519,7 @@ insert into notifyinterval values(15,'Day 15 ',NULL,NOW(),NOW());
 insert into notifyinterval values(30,'Day 30 ',NULL,NOW(),NOW());
 
 # Now hard part 服务佣金的lookup table
-select id from servicetype where serviceType like 'a%' into @stype;
+set @stype=1; #a
 select id from servrole where servRole ='负责老师' into @srole;
 select id from servicestatus where serviceStatus ='进入服务' into @sprogress1;
 select id from servicestatus where serviceStatus ='选校确定' into @sprogress2;
@@ -528,16 +528,16 @@ select id from servicestatus where serviceStatus ='录取佣金' into @sprogress
 select id from servicestatus where serviceStatus ='完成服务' into @sprogress5;
 insert into servcomissionlookup values(@stype,@srole,NULL,0,30,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,30,@sprogress5,0.5,0,NULL,NOW(),NOW());
-select id from servicetype where serviceType like 'b%' into @stype;	
+set @stype=2; #b
 insert into servcomissionlookup values(@stype,@srole,NULL,0,100,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,100,@sprogress5,0.5,0,NULL,NOW(),NOW());
-select id from servicetype where serviceType like 'c1%' into @stype;	
+set @stype=3; #c1	
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress5,0.5,0,NULL,NOW(),NOW());
-select id from servicetype where serviceType like 'c2%' into @stype;	
+set @stype=4; #c2
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress5,0.5,0,NULL,NOW(),NOW());
-select id from servicetype where serviceType like 'e%' into @stype;	
+set @stype=9; #e
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress1,0.5,0,NULL,NOW(),NOW());
 insert into servcomissionlookup values(@stype,@srole,NULL,0,50,@sprogress5,0.5,0,NULL,NOW(),NOW());
 
