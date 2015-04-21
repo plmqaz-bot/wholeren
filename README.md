@@ -163,7 +163,7 @@ bug in sales role
 
 bug in user --DONE
 
-change sales comission lookup into cumulative
+change sales comission lookup into cumulative --
 
 change service to show Application only for service that allow application. --DONE
 
@@ -175,7 +175,13 @@ in service, show seperate service if it is a package --DONE
 
 make a service to generally handle all forbidden requests, query errors,  redirect to appropriate page and return correct format --Stage 3. --DONE
 
-price of service is based on serviceType and the current school type. 
+price of service is based on serviceType and the current school type.  
+
+collection initialize (models,options), not (options)
+
+so is model 
+
+extending view, instance variables should not be object.
 
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
