@@ -31,8 +31,8 @@ module.exports={
 		if(options.paginator)this.paginator=options.paginator;
 		if(options.filterFields)this.filterFields=options.filterFields;
 		if(options.id)this.id=options.id;
-		if(this.collectionParam){
-			this.collection = new Obiwang.Collections[this.collectionName](this.collectionParam);
+		if(this.collectionUrl){
+			this.collection = new Obiwang.Collections[this.collectionName]({url:this.collectionUrl});
 		}else{
 			this.collection = new Obiwang.Collections[this.collectionName]();
 		}

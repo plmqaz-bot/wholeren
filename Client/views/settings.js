@@ -180,7 +180,7 @@ Settings.allUsers=main.baseDataView.extend({
 });
 Settings.lookup=main.baseDataView.extend({
     collectionName:'SyncCollection',
-    collectionParam:{url:'/ServComissionLookUp/'},
+    collectionUrl:'/ServComissionLookUp/',
     title:'申请老师Comission机制',
     paginator:true,
     minScreenSize:0,
