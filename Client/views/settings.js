@@ -183,6 +183,7 @@ Settings.lookup=main.baseDataView.extend({
     collectionParam:{url:'/ServComissionLookUp/'},
     title:'申请老师Comission机制',
     paginator:true,
+    minScreenSize:0,
     renderOptions:{},
     filterFields:['serviceType'],
     templateName:'default',
