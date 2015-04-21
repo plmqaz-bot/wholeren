@@ -57,11 +57,17 @@ var syncModel=simpleModel.extend({
 });
 var simpleCollection=Backbone.Collection.extend({
         model: simpleModel,
-        initialize:function(options){
-            this.name=(options||{}).name;
-            this.url=(options||{}).url;
+        initialize:function(models,options){
+            options=options||{};
+            this.name=options.name;
+            this.url=options.url;
+            delete options.name;
+            delete options.url;
         },
-    }),
+    });
+var syncCollection=simpleCollection.extend({
+    model:syncModel
+});
 
 Models={
     simpleModel: simpleModel,
@@ -362,6 +368,8 @@ var sortableCollection=Backbone.Collection.extend({
         }
 });
 Collections={
+    SimpleCollection:simpleCollection,
+    SimpleSyncCollection:syncCollection,
     Contract :Backbone.PageableCollection.extend({
         model: Models.syncModel,
         
@@ -659,7 +667,7 @@ Collections={
         model:Models.syncModel,
         initialize:function(options){
             this.url=options.url;
-            delete options[url];
+            delete options.url;
             this.mode=options.mode||"client";
             this.state=options.state||{pageSize:25};
             Backbone.PageableCollection.prototype.initialize.apply(this,arguments);

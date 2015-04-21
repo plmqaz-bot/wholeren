@@ -135,10 +135,9 @@ var ServicePopup=Backbone.Modal.extend({
         container.append('<button class="button-add">Add New</button>');
         
         var self=this;
-        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/'),util.ajaxGET('/User/'),util.ajaxGET('/ServiceTypeGroup/')]).spread(function(roles,data,users,stype){
-            var roleselect=BackgridCells.SelectCell({name:'职位',values:roles});
+        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServComissionLooUp/'),util.ajaxGET('/User/'),util.ajaxGET('/ServiceTypeGroup/')]).spread(function(roles,data,users,stype){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
-            var typeselect=roleselect.extend({
+            var typeselect=userselect.extend({
                 optionValues:function(){
                     var oritype=this.model.get('originalType');
                     var shrunk=_.where(stype,{groupServiceType:oritype});
@@ -149,6 +148,25 @@ var ServicePopup=Backbone.Modal.extend({
                     return [{name:'ServiceType',values:toadd}];
                 }
             });
+            var roleselect=userselect.extend({
+                optionValues:function(){
+                    var type=this.model.get('serviceType')||0;
+                    var rols=_.unique(_.where(data,{serviceType:type}),false,function(e){
+                        if(e.servRole){
+                            return e.servRole.id;
+                        }
+                        return undefined;
+                    })
+                    var toAdd=_.map(rols,function(e){
+                        if(e.servRole){
+                            return [e.servLevel,e.lid];    
+                        }
+                        return ['error',null];                        
+                    });
+                    return [{name:'Roles',values:toAdd}];
+                }
+            });
+            
             var levelselect=roleselect.extend({
                 optionValues:function(){
                     var cell=this;

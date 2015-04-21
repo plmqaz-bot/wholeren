@@ -178,12 +178,13 @@ Settings.allUsers=main.baseDataView.extend({
         this.$el.addClass('active');
     },
 });
-Settings.lookup=Settings.allUsers.extend({
+Settings.lookup=main.baseDataView.extend({
     collectionName:'SyncCollection',
     collectionParam:{url:'/ServComissionLookUp/'},
     title:'申请老师Comission机制',
     paginator:true,
     renderOptions:{},
+    filterFields:['serviceType'],
     templateName:'default',
     constructColumns:function(){
         var self=this;
@@ -205,38 +206,115 @@ Settings.lookup=Settings.allUsers.extend({
             {name:'priceFlat',label:'固定佣金',editable:editable,cell:'number'},
             {name:'serviceStatus',label:'进度',editable:editable,cell:sStatusSel},
             {name:'statusportion',label:'进度佣金百分比',editable:editable,cell:'number'},
-            {name:'statusflat',label:'进度佣金固定',editable:editable,cell:'number'},
+            {name:'statusflat',label:'固定进度佣金',editable:editable,cell:'number'},
+            {name:'',label:'Delete',cell:BackgridCells.DeleteCell}
             ];
             return Promise.resolve({});
         });
     },
     events:{
+        'click  button.button-alt': 'refetch',
         'click .button-add':'addnew'
     },
-    afterRender:function(model){
-        //var container=this.$el.find('.bbm-modal__section');
-        //container.append('<button class="button-add-invoice">Add New</button>');
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+        $('.content').prepend('<div>The Comission is calculated: 佣金=[(每学校佣金*学校#)+固定佣金]*进度佣金百分比+固定进度佣金</div>')
         $('.page-actions').prepend('<button class="button-add">Add New</button>');
-        return this;
     },
     addnew:function(e){
         e.preventDefault();
-        var toAdd=new Obiwang.Models.syncModel({_url:'/ServComissionLookUp/'});
+        var popUpView = new LookupForm({collection:this.collection});
+        popUpView.render()
+        $('.app').html(popUpView.el);
+        // var toAdd=new Obiwang.Models.syncModel({_url:'/ServComissionLookUp/'});
+        // var self=this;
+        // toAdd.save(null,{
+        //     success:function(model){
+        //         self.collection.add(toAdd);
+        //     },
+        //     error:function(model,response){
+        //         util.handleRequestError(response);
+        //     },
+        //     save:false
+        // });  
+    },
+});
+var LookupForm=Backbone.Modal.extend({
+    prefix:"bbm",
+    template: JST['editbox'],
+    submitEl: '.ok',
+    cancelEl:'.cancel',
+    initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
         var self=this;
-        toAdd.save(null,{
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.collection=options.collection;
+        this.model=new Obiwang.Models.syncModel({_url:'/ServComissionLookUp/'});
+    },
+    afterRender:function(){
+        var template=_.template('<div class="form-group">\
+                <label for="<%= editorId %>">\
+                <% if (typeof(titleHTML) !== "undefined"){ %><%= titleHTML %>\
+                <% } else { %><%- title %><% } %></label>\
+                <div class="controls">\
+                <span data-editor></span>\
+                <div class="help-inline" data-error></div>\
+                <div class="help-block"><%= help %></div>\
+                </div>\
+            </div>');
+        Backbone.Form.Field.template=template;
+        var container=this.$el.find('.bbm-modal__section');
+        var self=this;
+        
+
+        this.form=new Backbone.Form({
+            model:this.model,
+            schema:{
+                servRole:{type:'Select',title:'角色名称',options:new Obiwang.Collections.SimpleCollection([],{url:'/ServRole/'})},
+                serviceType:{type:'Select',title:'服务名称',options:new Obiwang.Collections.SimpleCollection([],{url:'/ServiceType/'})},
+                servLevel:{type:'Select',title:'文书级别',options:new Obiwang.Collections.SimpleCollection([],{url:'/ServLevel/'})},
+                serviceStatus:{type:'Select',title:'进度',options:new Obiwang.Collections.SimpleCollection([],{url:'/ServiceStatus/'})},
+                pricePerCol:{type:'Number',title:'每学校佣金'},
+                priceFlat:{type:'Number',title:'固定佣金'},
+                statusportion:{type:'Number',title:'进度佣金百分比'},
+                statusflat:{type:'Number',title:'固定进度佣金'},
+            }
+        });
+        this.form.render();
+        container.append(this.form.el);
+        return this;
+    },
+    submit:function(e){
+        var self=this;
+        var data=this.form.getValue();
+        this.model.save(data,{
+            save:false,
             success:function(model){
-                self.collection.add(toAdd);
+                self.collection.add(model);
             },
-            error:function(response,model){
+            error:function(model,response){
                 util.handleRequestError(response);
             },
-            save:false
-        });  
+        })
     },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
 });
 var MenuTitle={
     user:'个人资料',
-    allUsers:'UserControl'
+    allUsers:'UserControl',
+    lookup:'Comission机制'
 }
 
 

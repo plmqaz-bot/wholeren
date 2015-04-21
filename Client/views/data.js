@@ -22,6 +22,7 @@ module.exports={
 	*/
 	baseDataView:baseView.extend({
 		templateName:'dateTableView',
+		minScreenSize:4000,
 		initialize: function (options) {
 		_.bindAll(this,'constructColumns','constructTable');
 		this.rank=$('#rank').text();
@@ -51,7 +52,7 @@ module.exports={
 			return Promise.resolve({});
 		},
 		constructTable:function(){
-			this.grid=new Backgrid.Extension.ResponsiveGrid({columns:this.columns,collection:this.collection,columnsToPin:1,minScreenSize:4000});
+			this.grid=new Backgrid.Extension.ResponsiveGrid({columns:this.columns,collection:this.collection,columnsToPin:1,minScreenSize:this.minScreenSize});
 			//ResposiveGrid
 			//self.grid=new Backgrid.Grid({columns:columns,collection:self.collection});
 			$('.table-wrapper').append(this.grid.render().el);

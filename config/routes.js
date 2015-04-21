@@ -165,6 +165,10 @@ module.exports.routes = {
     controller:'serviceDetail',
     action:'update'
   },
+  'PATCH /ServComissionLookUp/:id':{
+    controller:'ServComissionLookUp',
+    action:'update'
+  },
   'GET /options/?':{
     controller:'contract',
     action:'getAllOptions'

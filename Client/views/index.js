@@ -35,6 +35,15 @@ Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
         }        
     }
 });
+Backbone.Form.Field.template=_.template('<div class="form-group">\
+                <label for="<%= editorId %>"><%- title %></label>\
+                <div class="controls">\
+                <span data-editor></span>\
+                <div class="help-inline" data-error></div>\
+                <div class="help-block"><%= help %></div>\
+                </div>\
+            </div>');
+
 Wholeren.baseView= Backbone.View.extend({
         templateName: "widget",
 
