@@ -178,7 +178,62 @@ Settings.allUsers=main.baseDataView.extend({
         this.$el.addClass('active');
     },
 });
-
+Settings.lookup=Settings.allUsers.extend({
+    collectionName:'SyncCollection',
+    collectionParam:{url:'/ServComissionLookUp/'},
+    title:'申请老师Comission机制',
+    paginator:true,
+    renderOptions:{},
+    templateName:'default',
+    constructColumns:function(){
+        var self=this;
+        var editable=false;
+        if(parseInt(this.rank||"1")==3){
+            editable=true;
+        }
+        return Promise.all([util.ajaxGET('/ServiceType/'),util.ajaxGET('/ServRole/'),util.ajaxGET('/ServLevel/'),util.ajaxGET('/ServiceStatus/')]).spread(function(sType,sRole,sLevel,sStatus){
+            var sTypeSel=BackgridCells.SelectCell({name:"ServiceType",values:_.map(sType,function(e){return [e.serviceType,e.id]})});
+            var sRoleSel=BackgridCells.SelectCell({name:"Service Role",values:_.map(sRole,function(e){return [e.servRole,e.id]})});
+            var sLevelSel=BackgridCells.SelectCell({name:"Service Level",values:_.map(sLevel,function(e){return [e.servLevel,e.id]})});
+            var sStatusSel=BackgridCells.SelectCell({name:"Service Status",values:_.map(sStatus,function(e){return [e.serviceStatus,e.id]})});
+            
+            self.columns=[
+            {name:'serviceType',label:'服务名称',editable:editable,cell:sTypeSel},
+            {name:'servRole',label:'角色名称',editable:editable,cell:sRoleSel},
+            {name:'servLevel',label:'文书级别',editable:editable,cell:sLevelSel},                    
+            {name:'pricePerCol',label:'每学校佣金',editable:editable,cell:'number'},
+            {name:'priceFlat',label:'固定佣金',editable:editable,cell:'number'},
+            {name:'serviceStatus',label:'进度',editable:editable,cell:sStatusSel},
+            {name:'statusportion',label:'进度佣金百分比',editable:editable,cell:'number'},
+            {name:'statusflat',label:'进度佣金固定',editable:editable,cell:'number'},
+            ];
+            return Promise.resolve({});
+        });
+    },
+    events:{
+        'click .button-add':'addnew'
+    },
+    afterRender:function(model){
+        //var container=this.$el.find('.bbm-modal__section');
+        //container.append('<button class="button-add-invoice">Add New</button>');
+        $('.page-actions').prepend('<button class="button-add">Add New</button>');
+        return this;
+    },
+    addnew:function(e){
+        e.preventDefault();
+        var toAdd=new Obiwang.Models.syncModel({_url:'/ServComissionLookUp/'});
+        var self=this;
+        toAdd.save(null,{
+            success:function(model){
+                self.collection.add(toAdd);
+            },
+            error:function(response,model){
+                util.handleRequestError(response);
+            },
+            save:false
+        });  
+    },
+});
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl'

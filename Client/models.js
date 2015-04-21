@@ -38,7 +38,9 @@ var simpleModel=Backbone.Model.extend({
     });
 var syncModel=simpleModel.extend({
     initialize:function(options){
-        this._url=(options||{})._url;
+        options=options||{};
+        this._url=options._url;
+        delete options['_url'];
         Backbone.Model.prototype.initialize.apply(this, arguments);
         this.on("change", function (model, options) {
             if (options && options.save === false) return;
@@ -652,6 +654,16 @@ Collections={
             this.year=options.year;
             this.month=options.month;
         },
+    }),
+    SyncCollection:Backbone.PageableCollection.extend({
+        model:Models.syncModel,
+        initialize:function(options){
+            this.url=options.url;
+            delete options[url];
+            this.mode=options.mode||"client";
+            this.state=options.state||{pageSize:25};
+            Backbone.PageableCollection.prototype.initialize.apply(this,arguments);
+        }
     }),
     TimeRangeGeneral:Backbone.PageableCollection.extend({
        model:Models.syncModel,
