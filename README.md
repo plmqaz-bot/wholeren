@@ -183,5 +183,6 @@ so is model --DONE
 
 extending view, instance variables should not be object. --DONE
 
+setup debug enviroment and utest
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
