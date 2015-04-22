@@ -57,10 +57,13 @@ var syncModel=simpleModel.extend({
 });
 var simpleCollection=Backbone.Collection.extend({
         model: simpleModel,
+        url:function(){
+            return this._url;
+        },
         initialize:function(models,options){
             options=options||{};
             this.name=options.name;
-            this.url=options.url;
+            this._url=options.url;
             delete options.name;
             delete options.url;
         },
