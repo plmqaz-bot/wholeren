@@ -114,10 +114,9 @@ var ServicePopup=Backbone.Modal.extend({
         this.collection.setSID(this.serviceID);
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel();
-        toAdd['_url']='/ServiceDetail/';
-        toAdd.set('service',this.serviceID,{save:false});
-        toAdd.set('originalType',this.type,{save:false});
+        var toAdd=new Obiwang.Models.syncModel({service:this.serviceID,originalType:this.type},{_url:'/ServiceDetail/'});
+        //toAdd.set('service',this.serviceID,{save:false});
+        //toAdd.set('originalType',this.type,{save:false});
         var self=this;
         toAdd.save(null,{
             save:false,
@@ -254,7 +253,7 @@ var ApplicationPopup=ServicePopup.extend({
         this.collection.setSID(this.serviceID);
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.simpleModel({_url:'/Application/'});
+        var toAdd=new Obiwang.Models.simpleModel({},{_url:'/Application/'});
         toAdd.set('service',this.serviceID);
         var self=this;
         toAdd.save(null,{

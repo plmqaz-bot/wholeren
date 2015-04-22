@@ -66,11 +66,11 @@ module.exports=Backbone.Modal.extend({
         this.sid=option.sid;
         this.aid=option.aid;
         if(this.cid){
-            this.Todos=new Obiwang.Collections.Comment({cid:this.cid});
+            this.Todos=new Obiwang.Collections.Comment([],{cid:this.cid});
         }else if(this.sid){
-            this.Todos=new Obiwang.Collections.Comment({sid:this.sid});
+            this.Todos=new Obiwang.Collections.Comment([],{sid:this.sid});
         }else if(this.aid){
-            this.Todos=new Obiwang.Collections.Comment({aid:this.aid});
+            this.Todos=new Obiwang.Collections.Comment([],{aid:this.aid});
         }else{
             return;
         }

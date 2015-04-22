@@ -141,7 +141,7 @@ var ContractView=main.baseDataView.extend({
 
         $('.page-actions').prepend('<button class="button-add">Add New</button>');
         if(this.id){
-            var one =new Obiwang.Models.syncModel({_url:'/Contract/'});
+            var one =new Obiwang.Models.syncModel({},{_url:'/Contract/'});
             one.set('id',this.id,{save:false});
             var self=this;
             one.fetch({save:false}).then(function(data){
@@ -289,7 +289,7 @@ var ContractInvoiceView=main.baseModalDataView.extend({
     },
     addnew:function(e){
 		e.preventDefault();
-		var toAdd=new Obiwang.Models.Invoice({_url:'/Invoice/'});
+		var toAdd=new Obiwang.Models.Invoice({},{_url:'/Invoice/'});
 		toAdd.setContract({contract:this.contractID});
 		var self=this;
 		toAdd.save(null,{
@@ -379,7 +379,7 @@ var ServiceInvoiceView=main.baseModalDataView.extend({
                 cellText:'Delete Service',
                 action:function(e){
                     e.preventDefault();
-                    var s=new Obiwang.Models.syncModel({_url:'/Service/'});
+                    var s=new Obiwang.Models.syncModel({},{_url:'/Service/'});
                     s.set('id',this.model.get('service'),{save:false});
                     this.model.destroy({
                         success:function(model){
@@ -422,7 +422,7 @@ var ServiceInvoiceView=main.baseModalDataView.extend({
     },
     addnew:function(e){
         e.preventDefault();
-        var toAdd=new Obiwang.Models.syncModel({_url:'/Service/'});
+        var toAdd=new Obiwang.Models.syncModel({},{_url:'/Service/'});
         toAdd.set('contract',this.invoice.get('contract'),{save:false});
         var self=this;
         toAdd.save(null,{
@@ -460,7 +460,7 @@ var EditForm=Backbone.Modal.extend({
             this.modelChanges.client=this.model.get('client');
             this.modelChanges.id=this.model.get('id');
         }else{
-            this.model=new Obiwang.Models.simpleModel({_url:'/Contract/'});
+            this.model=new Obiwang.Models.simpleModel({},{_url:'/Contract/'});
         }
         _.bindAll(this,'renderSelect');
        _.bindAll(this,'render', 'afterRender'); 
@@ -595,7 +595,7 @@ var ContractEdit = EditForm.extend({
             this.modelChanges.client=this.model.get('client');
             this.modelChanges.id=this.model.get('id');
         }else{
-            this.model=new Obiwang.Models.simpleModel({_url:'/Contract/'});
+            this.model=new Obiwang.Models.syncModel({},{_url:'/Contract/'});
         }
         _.bindAll(this,'renderSelect');
        _.bindAll(this,'render', 'afterRender'); 
@@ -666,7 +666,7 @@ var ContractEdit = EditForm.extend({
        if(!selected){
             return;
        }
-        var client=new Obiwang.Models.simpleModel({_url:'/Client/',id:selected});
+        var client=new Obiwang.Models.simpleModel({},{_url:'/Client/',id:selected});
         var self=this;
         client.fetch({
             reset: true,

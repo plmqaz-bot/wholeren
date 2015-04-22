@@ -26,7 +26,7 @@ Settings.user=main.basePaneView.extend({
     },
     initialize:function(option){
         var id=parseInt($('#userid').text())||null;
-        this.model=new Obiwang.Models.simpleModel({id:id,_url:'/User/'});
+        this.model=new Obiwang.Models.simpleModel({id:id},{_url:'/User/'});
         var self=this;
         this.model.fetch().then(function(data){
             self.render();
@@ -258,7 +258,7 @@ var LookupForm=Backbone.Modal.extend({
             self.afterRender();
         });
         this.collection=options.collection;
-        this.model=new Obiwang.Models.syncModel({_url:'/ServComissionLookUp/'});
+        this.model=new Obiwang.Models.syncModel({},{_url:'/ServComissionLookUp/'});
     },
     afterRender:function(){
         var template=_.template('<div class="form-group">\

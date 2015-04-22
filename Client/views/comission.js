@@ -17,7 +17,7 @@ var Sidebar=require('./sidebar');
 
 var sales=main.baseDataView.extend({
     collectionName:'Comission',
-    collectionParam:{url:'/SalesComission/'},
+    collectionUrl:'/SalesComission/',
     title:'销售佣金列表',
     paginator:true,
     renderOptions:{month:true},
@@ -55,7 +55,7 @@ var sales=main.baseDataView.extend({
 
 var teacher=main.baseDataView.extend({
     collectionName:'Comission',
-    collectionParam:{url:'/ServiceComission/'},
+    collectionUrl:'/ServiceComission/',
     title:'申请老师佣金列表',
     paginator:true,
     renderOptions:{month:true},
@@ -139,7 +139,7 @@ var teacher=main.baseDataView.extend({
 });
 var assis=main.baseDataView.extend({
     collectionName:'Comission',
-    collectionParam:{url:'/AssistantComission/'},
+    collectionUrl:'/AssistantComission/',
     title:'申请老师佣金列表',
     paginator:true,
     renderOptions:{month:true},

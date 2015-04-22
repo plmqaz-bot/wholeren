@@ -32,7 +32,9 @@ module.exports={
 		if(options.filterFields)this.filterFields=options.filterFields;
 		if(options.id)this.id=options.id;
 		if(this.collectionUrl){
-			this.collection = new Obiwang.Collections[this.collectionName]({url:this.collectionUrl});
+			this.collection = new Obiwang.Collections[this.collectionName]([],{url:this.collectionUrl});
+		}else if(this.collectionParam){
+			this.collection = new Obiwang.Collections[this.collectionName]([],this.collectionParam);
 		}else{
 			this.collection = new Obiwang.Collections[this.collectionName]();
 		}
@@ -96,7 +98,10 @@ module.exports={
 			}
 			if(this.renderOptions['deleted']){
 				this.collection.deleted=$('#deleted').is(':checked');
-			}			
+			}
+			if(_.isFunction(this.collection.setSorting)){
+				this.collection.setSorting(null,null);
+			}
 			this.collection.reset();
 			if(this.collection.fullCollection)this.collection.fullCollection.reset();
 			this.collection.fetch({reset:true});

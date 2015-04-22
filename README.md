@@ -177,11 +177,11 @@ make a service to generally handle all forbidden requests, query errors,  redire
 
 price of service is based on serviceType and the current school type.  
 
-collection initialize (models,options), not (options)
+collection initialize (models,options), not (options) --DONE
 
-so is model 
+so is model --DONE
 
-extending view, instance variables should not be object.
+extending view, instance variables should not be object. --DONE
 
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later

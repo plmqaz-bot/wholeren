@@ -15,7 +15,7 @@ var simpleModel=Backbone.Model.extend({
                 return base;
             }
         },
-        initialize:function(options){
+        initialize:function(attrs,options){
             this._url=(options||{})._url;
         },
         parse:function(response){
@@ -37,7 +37,7 @@ var simpleModel=Backbone.Model.extend({
         }
     });
 var syncModel=simpleModel.extend({
-    initialize:function(options){
+    initialize:function(attrs,options){
         options=options||{};
         this._url=options._url;
         delete options['_url'];
@@ -114,7 +114,7 @@ Models={
     //     urlRoot:'/ServiceType/'
     // }),
     Service : simpleModel.extend({
-    initialize:function(options){
+    initialize:function(attrs,options){
         this.set('createdAt',new Date(this.get('createdAt')));
         if((this.get('contract')||{})['contractSigned']){
             var thiscontract=this.get('contract');
@@ -549,7 +549,7 @@ Collections={
             return toreturn;
         },
         
-        initialize:function(options){
+        initialize:function(models,options){
             this.year=new Date().getFullYear();
             this.month=new Date().getMonth()+1;
             this._url=options.url;
@@ -593,7 +593,7 @@ Collections={
             return toreturn;
         },
         
-        initialize:function(){
+        initialize:function(models,options){
             this.year=new Date().getFullYear();
             this.month=new Date().getMonth()+1;
             this.mode="client";
@@ -607,7 +607,7 @@ Collections={
 
     Comment:Backbone.Collection.extend({
         model:Models.simpleModel,
-        initialize:function(option){
+        initialize:function(models,option){
             this.cid=option.cid;
             this.sid=option.sid;
             this.aid=option.aid;
@@ -633,7 +633,7 @@ Collections={
             var toReturn='/ServiceDetail/?service='+this.sid;
             return toReturn;
         },
-        initialize:function(options){
+        initialize:function(models, options){
             this.mode="client";
             this.state={pageSize:25};
         },
@@ -650,7 +650,7 @@ Collections={
             return toreturn;
         },
         
-        initialize:function(options){
+        initialize:function(models,options){
             options=options||{};
             this.year=options.year||new Date().getFullYear();
             this.month=options.month||new Date().getMonth()+1;
@@ -665,7 +665,7 @@ Collections={
     }),
     SyncCollection:Backbone.PageableCollection.extend({
         model:Models.syncModel,
-        initialize:function(options){
+        initialize:function(models,options){
             this.url=options.url;
             delete options.url;
             this.mode=options.mode||"client";
@@ -683,7 +683,7 @@ Collections={
                 toreturn+="&sendDate="+encodeURI(this.endDate);
             return toreturn;
         },
-        initialize:function(options){
+        initialize:function(models, options){
             options=options||{};
             var cur=new Date();
             this.startDate=cur.setMonth(cur.getMonth()-1);
@@ -706,7 +706,7 @@ Collections={
         url:function(){
             return this._url+'?contract='+this.contract;
         },
-        initialize:function(options){
+        initialize:function(models,options){
             this.contract=(options||{}).contract;
         }
     }),
@@ -716,7 +716,7 @@ Collections={
         url:function(){
             return this._url+'?invoice='+this.invoice;
         },
-        initialize:function(options){
+        initialize:function(models, options){
             this.invoice=(options||{}).invoice;
         }
     })
