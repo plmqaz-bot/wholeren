@@ -176,7 +176,7 @@ module.exports={
             }
         }
     }),
-	forgotten:Wholeren.baseView.extend({
+	forgotten:base.extend({
 	    templateName: "forgotten",
 	    initialize: function () {
 	                this.render();
