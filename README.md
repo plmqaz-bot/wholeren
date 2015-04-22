@@ -185,4 +185,6 @@ extending view, instance variables should not be object. --DONE
 
 setup debug enviroment and utest
 
+auto mysql backup setup --DONE
+
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
