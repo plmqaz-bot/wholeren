@@ -15,6 +15,8 @@ var Router=require('./Router');
 var Models=require('./models');
 var View=require('./views/index.js');
     
+    Wholeren.Views=View;
+    Wholeren.Models=Models;
 var init=function(){
         Wholeren.router = new Router();
         Wholeren.notifications = new View.Notification.collection({ model: [] });
