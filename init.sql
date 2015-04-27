@@ -480,14 +480,21 @@ insert into salesrole values('Lead介绍人(陌生)',0.075,0,NULL,NOW(),NOW());
 insert into salesrole values('无角色',0,0,NULL,NOW(),NOW());
 
 #后期角色
+-- insert into servrole values('负责老师',1,NOW(),NOW());
+-- insert into servrole values('申请全负责老师',2,NOW(),NOW());
+-- insert into servrole values('申请老师',3,NOW(),NOW());
+-- insert into servrole values('选校专家',4,NOW(),NOW());
+-- insert into servrole values('文书全负责老师',5,NOW(),NOW());
+-- insert into servrole values('文书专家',6,NOW(),NOW());
+-- insert into servrole values('文书编辑',7,NOW(),NOW());
+-- insert into servrole values('Native editor',8,NOW(),NOW());
+-- insert into servrole values('无角色',9,NOW(),NOW());
+truncate servrole;
 insert into servrole values('负责老师',1,NOW(),NOW());
-insert into servrole values('申请全负责老师',2,NOW(),NOW());
-insert into servrole values('申请老师',3,NOW(),NOW());
-insert into servrole values('选校专家',4,NOW(),NOW());
-insert into servrole values('文书全负责老师',5,NOW(),NOW());
-insert into servrole values('文书专家',6,NOW(),NOW());
-insert into servrole values('文书编辑',7,NOW(),NOW());
-insert into servrole values('Native editor',8,NOW(),NOW());
+insert into servrole values('专家老师',2,NOW(),NOW());
+insert into servrole values('助理',3,NOW(),NOW());
+insert into servrole values('文书',4,NOW(),NOW());
+insert into servrole values('文书编辑',5,NOW(),NOW());
 insert into servrole values('无角色',9,NOW(),NOW());
 #文书LEVEL
 insert into servlevel values('H1',1,NOW(),NOW());
