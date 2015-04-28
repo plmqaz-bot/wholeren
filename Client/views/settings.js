@@ -163,7 +163,7 @@ Settings.allUsers=main.baseDataView.extend({
             {name:'role',label:'职位',editable:editable,cell:roleselect},
             {name:'userLevel',label:'佣金等级',editable:editable,cell:levelselect},
             {name:'rank',label:'职位等级',editable:editable,cell:'number'},
-            {name:'boss',label:'主管',editable:editable,cell:userselect},
+            //{name:'boss',label:'主管',editable:editable,cell:userselect},
             {name:'active',label:'在职',editable:editable,cell:'boolean'}
             ];
             return Promise.resolve({});
@@ -312,10 +312,72 @@ var LookupForm=Backbone.Modal.extend({
         }
     }
 });
+Settings.hierarchy=main.baseDataView.extend({
+    collectionName:'SyncCollection',
+    collectionUrl:'/WhoOwnsWho/',
+    title:'老师等级机制',
+    paginator:true,
+    minScreenSize:0,
+    renderOptions:{},
+    filterFields:['puppet','boss'],
+    templateName:'default',
+    constructColumns:function(){
+        var self=this;
+        var editable=false;
+        if(parseInt(this.rank||"1")==3){
+            editable=true;
+        }
+        return util.ajaxGET('/User/').then(function(user){
+            var userselect=BackgridCells.SelectCell({name:"User",values:_.map(user,function(e){return [e.nickname,e.id]})});
+            self.columns=[
+                {name:'id',label:'id',editable:false,cell:'integer'},
+                {name:'puppet',label:'被偷窥',editable:editable,cell:userselect},
+                {name:'boss',label:'主动偷窥',editable:editable,cell:userselect},
+            ];
+            self.selectFields=[
+            {name:'puppet',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            {name:'boss',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            ];
+            return Promise.resolve({});
+        });
+    },
+    events:{
+        'click  button.button-alt': 'refetch',
+        'click .button-add':'addnew'
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+        $('.page-actions').prepend('<button class="button-add">Add New</button>');
+    },
+    addnew:function(e){
+        e.preventDefault();
+        // var popUpView = new LookupForm({collection:this.collection});
+        // popUpView.render()
+        // $('.app').html(popUpView.el);
+        var toAdd=new Obiwang.Models.syncModel(null,{_url:'/WhoOwnsWho/'});
+        var self=this;
+        toAdd.save(null,{
+            success:function(model){
+                self.collection.add(toAdd);
+            },
+            error:function(model,response){
+                util.handleRequestError(response);
+            },
+            save:false
+        });  
+    },
+});
+
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl',
-    lookup:'Comission机制'
+    lookup:'Comission机制',
+    hierarchy:'老师等级机制'
 }
 
 

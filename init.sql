@@ -216,7 +216,7 @@ insert into servicetype values('tpack7.“早起鸟”+高中名校连升服务+
 
 #转学i
 insert into servicetype values('i1.高中名校连升项目服务','i1','Study',false,0.9,39,NOW(),NOW());
-insert into servicetype values('i.普通本科转学','i','Study',false,0.9,40,NOW(),NOW());
+insert into servicetype values('i0.普通本科转学','i0','Study',false,0.9,40,NOW(),NOW());
 insert into servicetype values('i2.普通研究生转学','i2','Study',false,0.9,41,NOW(),NOW());
 insert into servicetype values('i3.普通艺术类本科转学','i3','Study',false,0.9,42,NOW(),NOW());
 insert into servicetype values('i4.普通艺术类研究生转学','i4','Study',false,0.9,43,NOW(),NOW());

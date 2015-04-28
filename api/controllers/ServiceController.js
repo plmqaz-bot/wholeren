@@ -5,7 +5,7 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
  function constructsql(where,who){
-			return "select distinct client.chineseName,u.nickname,service.*,c.contractSigned, servicetype.serviceType as 'type',servicetype.addApplication, c.gpa,c.toefl,c.sat,c.gre,c.otherScore, c.degree, c.targetSchoolDegree , c.major, c.previousSchool,c.endFee,servrole.servRole \
+			return "select distinct client.chineseName,u.nickname,service.*,c.contractSigned, servicetype.serviceType as 'type',servicetype.addApplication, c.gpa,c.toefl,c.sat,c.gre,c.otherScore, c.degree, c.targetSchoolDegree , c.major, c.previousSchool,c.endFee,user.nickname as 'realnickname',servrole.servRole \
 			from contract c \
 			inner join status on c.status=status.id \
 			inner join client on c.client=client.id \
@@ -18,7 +18,8 @@
 			left join degree d on c.targetSchoolDegree=d.id \
 			inner join user on \
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher, s.user)) \
-			left join user u on c.teacher=u.id where \
+			left join user u on c.teacher=u.id \
+			left join whoownswho w on w.puppet=user.id where \
 			c.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"
 		}
 var Promise=require('bluebird');
@@ -33,10 +34,10 @@ module.exports = {
 			sql=constructsql("", " and service.id="+req.params.id);	
 			break;
 			case 2:
-			sql=constructsql("and boss="+userId, " and service.id="+req.params.id);
+			sql=constructsql("and (user.id="+userId+" or w.boss="+userId+")", " and service.id="+req.params.id);
 			break;
 			default:
-			sql=constructsql("and user.id="+userId, " and service.id="+req.params.id);
+			sql=constructsql("and (user.id="+userId+" or w.boss="+userId+")", " and service.id="+req.params.id);
 		}
 		Utilfunctions.nativeQuery(sql).then(function(serv){
 			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
@@ -67,11 +68,11 @@ module.exports = {
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			case 2:
-			sql=constructsql(wherequery," and user.boss="+id);
+			sql=constructsql(wherequery,"and (user.id="+id+" or w.boss="+id+")");
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			default:
-			sql=constructsql(wherequery," and user.id="+id);
+			sql=constructsql(wherequery,"and (user.id="+id+" or w.boss="+id+")");
 			promise=Utilfunctions.nativeQuery(sql);
 		}
 		promise.then(function(servIDs){

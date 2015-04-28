@@ -9,11 +9,15 @@ function constructsql(who){
 	return "select distinct(contract.id) from contract \
 	left join service on contract.id=service.contract \
 	left join servicedetail s on s.service=service.id \
-	inner join user on (user.id =s.user) where "+who+"\
+	inner join user on (user.id =s.user) \
+	left join whoownswho w on w.puppet=user.id \
+	where "+who+"\
 	union\
 	select distinct(contract.id) from contract \
 	inner join user on \
-	(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) where "+who;
+	(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) \
+	left join whoownswho w on w.puppet=user.id \
+	where "+who;
 }
 var findOne=function(req,res,id){
 
@@ -53,7 +57,7 @@ module.exports = {
 			promise=Contract.find(where);
 			break;
 			case 2:
-			var sql=constructsql("user.boss="+id);
+			var sql=constructsql(" (user.id ="+id+" or w.boss="+id+")");
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
 				where['id']=idarray;
@@ -61,7 +65,7 @@ module.exports = {
 			});
 			break;
 			default:
-			var sql=constructsql("user.id="+id);
+			var sql=constructsql(" (user.id ="+id+" or w.boss="+id+")");
 			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
 				var idarray=ids.map(function(c){return c.id;});
 				where['id']=idarray;

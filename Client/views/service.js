@@ -66,11 +66,12 @@ var ServiceView=main.baseDataView.extend({
             var degreeselect=BackgridCells.SelectCell({name:"Degree",values:_.map(degree,function(e){return [e.degree,e.id]})});
             self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
-            {name:'nickname',label:'负责老师',editable: false,cell:'string'},
+            {name:'nickname',label:'总负责老师',editable: false,cell:'string'},
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
-            {name:'servRole',label:'负责任务',editable:false,cell:'string'},
+            {name:'realnickname',label:'具体负责老师',editable:false,cell:'string'},
+            {name:'servRole',label:'具体负责任务',editable:false,cell:'string'},
             {name:'endFee',label:'预付申请费',editable:false,cell:'boolean'},
             {name:'gpa',label:'GPA',cell:'number'},
             {name:'toefl',label:'托福',cell:'number'},
