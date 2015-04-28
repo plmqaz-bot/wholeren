@@ -142,6 +142,7 @@ insert into country values('中国',NULL,NOW(),NOW());
 insert into country values('美国',NULL,NOW(),NOW());
 
 #就读学位
+insert into degree values('无学校',NULL,NOW(),NOW());
 insert into degree values('高中',NULL,NOW(),NOW());
 insert into degree values('社区',NULL,NOW(),NOW());
 insert into degree values('语言',NULL,NOW(),NOW());

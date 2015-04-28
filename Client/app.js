@@ -1,4 +1,4 @@
-﻿(function(){
+(function(){
 	var $ = require('./jquery');
     var Backbone = require('./backbone');
     var _ = require('lodash');
@@ -15,10 +15,12 @@ var Router=require('./Router');
 var Models=require('./models');
 var View=require('./views/index.js');
     
+    
 var init=function(){
         Wholeren.router = new Router();
         Wholeren.notifications = new View.Notification.collection({ model: [] });
-                
+          Wholeren.Views=View;
+    Wholeren.Models=Models;      
 	Backbone.history.start({
 		pushState:true,
 		hashChange:false,

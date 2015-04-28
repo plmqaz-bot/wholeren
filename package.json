@@ -22,25 +22,25 @@
     "grunt-contrib-cssmin": "~0.9.0",
     "grunt-contrib-less": "0.11.1",
     "grunt-contrib-coffee": "~0.10.1",
-    "hbsfy":"2.1.0",
-    "sails-memory":"0.10.3",
-    "sails-mysql":"*",
-    "bluebird":"*",
-    "bcrypt":"*",
-    "handlebars":"*",
-    "lodash":"*",
-    "jquery":"*",
-    "backbone":"*",
-    "node-uuid":"*",
-    "csv-parse":"*",
-    "backbone.paginator":"*",
-    "later":"*",
-    "nodemailer":"*",
-    "lunr":"*",
-    "underscore":"*",
-    "backbone-forms":"*",
-    "jquery-ui":"*",
-    "moment":"*"
+    "hbsfy": "2.1.0",
+    "sails-memory": "0.10.3",
+    "sails-mysql": "*",
+    "bluebird": "*",
+    "bcrypt": "*",
+    "handlebars": "*",
+    "lodash": "*",
+    "jquery": "*",
+    "backbone": "*",
+    "node-uuid": "*",
+    "csv-parse": "*",
+    "backbone.paginator": "*",
+    "later": "*",
+    "nodemailer": "*",
+    "lunr": "*",
+    "underscore": "*",
+    "backbone-forms": "*",
+    "jquery-ui": "*",
+    "moment": "*"
   },
   "scripts": {
     "start": "node main.js",
@@ -52,5 +52,8 @@
     "url": "git://github.com/nickrechard/wholeren/archive/master.zip"
   },
   "author": "han",
-  "license": ""
+  "license": "",
+  "devDependencies": {
+    "jasmine": "^2.2.1"
+  }
 }

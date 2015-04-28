@@ -133,6 +133,7 @@ var ContractView=main.baseDataView.extend({
             {name:'',label:'Comment',cell:comment},
             {name:'',label:'Delete/Undelete',cell:BackgridCells.DeleteCell}
             ];
+            self.selectFields=[{name:'lead',options:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})}];
             return Promise.resolve({});
         });
 	},

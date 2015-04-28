@@ -18,7 +18,7 @@ var ServiceView=main.baseDataView.extend({
     collectionName:'Service',
     title:'服务列表',
     paginator:true,
-    filterFields:['chineseName','nickname','serviceProgress','type','degree','previousSchool','studentDestination'],
+    filterFields:['chineseName','nickname','serviceProgress','type','degree','previousSchool','studentDestination','servRole'],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({
@@ -70,6 +70,7 @@ var ServiceView=main.baseDataView.extend({
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
+            {name:'servRole',label:'负责任务',editable:false,cell:'string'},
             {name:'endFee',label:'预付申请费',editable:false,cell:'boolean'},
             {name:'gpa',label:'GPA',cell:'number'},
             {name:'toefl',label:'托福',cell:'number'},
