@@ -68,14 +68,16 @@ module.exports={
 				$('.table-wrapper').append(paginator.render().el);  
 			}
 			if(this.filterFields){
-				var clientSideFilter = new Backgrid.Extension.ClientSideFilter({
+				var clientSideFilter = new Backgrid.Extension.AlmightyFilter({
 					collection: this.collection,
 					placeholder: "Search in the browser",
 					// The model fields to search for matches
 					fields: this.filterFields,
 					// How long to wait after typing has stopped before searching can start
-					wait: 150
+					wait: 150,
+
 				});
+				clientSideFilter.selectFields=this.selectFields||[];
 				$('.table-wrapper').prepend(clientSideFilter.render().el);    
 			}
 			this.ready=true;
