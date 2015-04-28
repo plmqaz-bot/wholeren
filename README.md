@@ -187,4 +187,10 @@ setup debug enviroment and utest
 
 auto mysql backup setup --DONE
 
+filter on grid table works on string cells and also select cells --DONE
+
+authorization needs to change, aparently there are more than three layers  of "who owns who"
+
+
+
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
