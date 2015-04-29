@@ -189,7 +189,7 @@ auto mysql backup setup --DONE
 
 filter on grid table works on string cells and also select cells --DONE
 
-authorization needs to change, aparently there are more than three layers  of "who owns who"
+authorization needs to change, aparently there are more than three layers  of "who owns who" --DONE
 
 
 

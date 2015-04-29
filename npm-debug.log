@@ -1,213 +1,59 @@
 0 info it worked if it ends with ok
-1 verbose cli [ '/usr/bin/node', '/usr/bin/npm', 'install', '-g', 'watchify' ]
+1 verbose cli [ 'C:\\Program Files\\nodejs\\\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'view',
+1 verbose cli   'sailsjs' ]
 2 info using npm@1.4.28
-3 info using node@v0.10.38
-4 verbose node symlink /usr/bin/node
-5 verbose cache add [ 'watchify', null ]
-6 verbose cache add name=undefined spec="watchify" args=["watchify",null]
-7 verbose parsed url { protocol: null,
-7 verbose parsed url   slashes: null,
-7 verbose parsed url   auth: null,
-7 verbose parsed url   host: null,
-7 verbose parsed url   port: null,
-7 verbose parsed url   hostname: null,
-7 verbose parsed url   hash: null,
-7 verbose parsed url   search: null,
-7 verbose parsed url   query: null,
-7 verbose parsed url   pathname: 'watchify',
-7 verbose parsed url   path: 'watchify',
-7 verbose parsed url   href: 'watchify' }
-8 silly lockFile f821d843-watchify watchify
-9 verbose lock watchify /home/han/.npm/f821d843-watchify.lock
-10 silly lockFile f821d843-watchify watchify
-11 silly lockFile f821d843-watchify watchify
-12 verbose addNamed [ 'watchify', '' ]
-13 verbose addNamed [ null, '*' ]
-14 silly lockFile 19227da7-watchify watchify@
-15 verbose lock watchify@ /home/han/.npm/19227da7-watchify.lock
-16 silly addNameRange { name: 'watchify', range: '*', hasData: false }
-17 verbose request where is /watchify
-18 verbose request registry https://registry.npmjs.org/
-19 verbose request id 229b6c88d4d52e4f
-20 verbose url raw /watchify
-21 verbose url resolving [ 'https://registry.npmjs.org/', './watchify' ]
-22 verbose url resolved https://registry.npmjs.org/watchify
-23 verbose request where is https://registry.npmjs.org/watchify
-24 info trying registry request attempt 1 at 18:09:58
-25 http GET https://registry.npmjs.org/watchify
-26 http 200 https://registry.npmjs.org/watchify
-27 silly registry.get cb [ 200,
-27 silly registry.get   { date: 'Tue, 28 Apr 2015 22:09:40 GMT',
-27 silly registry.get     server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
-27 silly registry.get     etag: '"2HEOJUWJ4TMABF5TUDQ7L06PH"',
-27 silly registry.get     'content-type': 'application/json',
-27 silly registry.get     'cache-control': 'max-age=60',
-27 silly registry.get     'content-length': '67733',
-27 silly registry.get     'accept-ranges': 'bytes',
-27 silly registry.get     via: '1.1 varnish',
-27 silly registry.get     age: '33',
-27 silly registry.get     'x-served-by': 'cache-iad2141-IAD',
-27 silly registry.get     'x-cache': 'HIT',
-27 silly registry.get     'x-cache-hits': '1',
-27 silly registry.get     'x-timer': 'S1430258979.999494,VS0,VE0',
-27 silly registry.get     vary: 'Accept',
-27 silly registry.get     'keep-alive': 'timeout=10, max=50',
-27 silly registry.get     connection: 'Keep-Alive' } ]
-28 silly addNameRange number 2 { name: 'watchify', range: '*', hasData: true }
-29 silly addNameRange versions [ 'watchify',
-29 silly addNameRange   [ '0.0.0',
-29 silly addNameRange     '0.0.1',
-29 silly addNameRange     '0.1.0',
-29 silly addNameRange     '0.2.0',
-29 silly addNameRange     '0.3.0',
-29 silly addNameRange     '0.4.0',
-29 silly addNameRange     '0.4.1',
-29 silly addNameRange     '0.5.0',
-29 silly addNameRange     '0.5.1',
-29 silly addNameRange     '0.5.2',
-29 silly addNameRange     '0.5.3',
-29 silly addNameRange     '0.5.4',
-29 silly addNameRange     '0.5.5',
-29 silly addNameRange     '0.5.6',
-29 silly addNameRange     '0.6.0',
-29 silly addNameRange     '0.6.1',
-29 silly addNameRange     '0.6.2',
-29 silly addNameRange     '0.6.3',
-29 silly addNameRange     '0.6.4',
-29 silly addNameRange     '0.7.0',
-29 silly addNameRange     '0.7.1',
-29 silly addNameRange     '0.7.2',
-29 silly addNameRange     '0.8.0',
-29 silly addNameRange     '0.8.1',
-29 silly addNameRange     '0.8.2',
-29 silly addNameRange     '0.8.3',
-29 silly addNameRange     '0.9.0',
-29 silly addNameRange     '0.10.0',
-29 silly addNameRange     '0.10.1',
-29 silly addNameRange     '0.10.2',
-29 silly addNameRange     '1.0.0',
-29 silly addNameRange     '1.0.1',
-29 silly addNameRange     '1.0.2',
-29 silly addNameRange     '1.0.3',
-29 silly addNameRange     '1.0.4',
-29 silly addNameRange     '1.0.5',
-29 silly addNameRange     '1.0.6',
-29 silly addNameRange     '2.0.0',
-29 silly addNameRange     '2.1.0',
-29 silly addNameRange     '2.1.1',
-29 silly addNameRange     '2.2.0',
-29 silly addNameRange     '2.2.1',
-29 silly addNameRange     '2.3.0',
-29 silly addNameRange     '2.4.0',
-29 silly addNameRange     '2.5.0',
-29 silly addNameRange     '2.6.0',
-29 silly addNameRange     '2.6.1',
-29 silly addNameRange     '2.6.2',
-29 silly addNameRange     '3.0.0',
-29 silly addNameRange     '3.0.1',
-29 silly addNameRange     '3.1.0',
-29 silly addNameRange     '3.1.1',
-29 silly addNameRange     '3.1.2',
-29 silly addNameRange     '3.2.0' ] ]
-30 verbose addNamed [ 'watchify', '3.2.0' ]
-31 verbose addNamed [ '3.2.0', '3.2.0' ]
-32 silly lockFile a26e91f6-watchify-3-2-0 watchify@3.2.0
-33 verbose lock watchify@3.2.0 /home/han/.npm/a26e91f6-watchify-3-2-0.lock
-34 silly lockFile 56bc80cd--org-watchify-watchify-3-2-0-tgz https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz
-35 verbose lock https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz /home/han/.npm/56bc80cd--org-watchify-watchify-3-2-0-tgz.lock
-36 verbose addRemoteTarball [ 'https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz',
-36 verbose addRemoteTarball   'f8642930e41939a4c280e7129b6ff5767d71ab5e' ]
-37 info retry fetch attempt 1 at 18:09:58
-38 verbose fetch to= /tmp/npm-724-pHqjRH9N/registry.npmjs.org/watchify/-/watchify-3.2.0.tgz
-39 http GET https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz
-40 http 200 https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz
-41 silly lockFile 56bc80cd--org-watchify-watchify-3-2-0-tgz https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz
-42 silly lockFile 56bc80cd--org-watchify-watchify-3-2-0-tgz https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz
-43 silly lockFile a26e91f6-watchify-3-2-0 watchify@3.2.0
-44 silly lockFile a26e91f6-watchify-3-2-0 watchify@3.2.0
-45 silly lockFile 19227da7-watchify watchify@
-46 silly lockFile 19227da7-watchify watchify@
-47 silly resolved [ { name: 'watchify',
-47 silly resolved     version: '3.2.0',
-47 silly resolved     description: 'watch mode for browserify builds',
-47 silly resolved     main: 'index.js',
-47 silly resolved     bin: { watchify: 'bin/cmd.js' },
-47 silly resolved     dependencies:
-47 silly resolved      { browserify: '^9.0.2',
-47 silly resolved        chokidar: '^1.0.0',
-47 silly resolved        defined: '^1.0.0',
-47 silly resolved        outpipe: '^1.1.0',
-47 silly resolved        through2: '~0.6.3',
-47 silly resolved        xtend: '^4.0.0' },
-47 silly resolved     devDependencies:
-47 silly resolved      { brfs: '^1.0.1',
-47 silly resolved        mkdirp: '~0.3.5',
-47 silly resolved        split: '~0.3.0',
-47 silly resolved        tape: '^2.12.3',
-47 silly resolved        'win-spawn': '^2.0.0' },
-47 silly resolved     scripts: { test: 'tape test/*.js' },
-47 silly resolved     repository: { type: 'git', url: 'git://github.com/substack/watchify.git' },
-47 silly resolved     homepage: 'https://github.com/substack/watchify',
-47 silly resolved     keywords:
-47 silly resolved      [ 'browserify',
-47 silly resolved        'browserify-tool',
-47 silly resolved        'watch',
-47 silly resolved        'bundle',
-47 silly resolved        'build',
-47 silly resolved        'browser' ],
-47 silly resolved     author:
-47 silly resolved      { name: 'James Halliday',
-47 silly resolved        email: 'mail@substack.net',
-47 silly resolved        url: 'http://substack.net' },
-47 silly resolved     license: 'MIT',
-47 silly resolved     gitHead: 'a7f9dc4b91a5e95d77537b476764f321fb77a5c5',
-47 silly resolved     bugs: { url: 'https://github.com/substack/watchify/issues' },
-47 silly resolved     _id: 'watchify@3.2.0',
-47 silly resolved     _shasum: 'f8642930e41939a4c280e7129b6ff5767d71ab5e',
-47 silly resolved     _from: 'watchify@',
-47 silly resolved     _npmVersion: '1.4.28',
-47 silly resolved     _npmUser: { name: 'zertosh', email: 'zertosh@gmail.com' },
-47 silly resolved     maintainers: [ [Object], [Object], [Object] ],
-47 silly resolved     dist:
-47 silly resolved      { shasum: 'f8642930e41939a4c280e7129b6ff5767d71ab5e',
-47 silly resolved        tarball: 'http://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz' },
-47 silly resolved     directories: {},
-47 silly resolved     _resolved: 'https://registry.npmjs.org/watchify/-/watchify-3.2.0.tgz' } ]
-48 info install watchify@3.2.0 into /usr/lib
-49 info installOne watchify@3.2.0
-50 verbose lib/node_modules/watchify unbuild
-51 verbose tar unpack /home/han/.npm/watchify/3.2.0/package.tgz
-52 silly lockFile b8b5efc0-ar-usr-lib-node-modules-watchify tar:///usr/lib/node_modules/watchify
-53 verbose lock tar:///usr/lib/node_modules/watchify /home/han/.npm/b8b5efc0-ar-usr-lib-node-modules-watchify.lock
-54 silly lockFile 241cbe12-n-npm-watchify-3-2-0-package-tgz tar:///home/han/.npm/watchify/3.2.0/package.tgz
-55 verbose lock tar:///home/han/.npm/watchify/3.2.0/package.tgz /home/han/.npm/241cbe12-n-npm-watchify-3-2-0-package-tgz.lock
-56 silly gunzTarPerm modes [ '775', '664' ]
-57 error Error: EACCES, mkdir '/usr/lib/node_modules/watchify'
-57 error  { [Error: EACCES, mkdir '/usr/lib/node_modules/watchify']
-57 error   errno: 3,
-57 error   code: 'EACCES',
-57 error   path: '/usr/lib/node_modules/watchify',
-57 error   fstream_type: 'Directory',
-57 error   fstream_path: '/usr/lib/node_modules/watchify',
-57 error   fstream_class: 'DirWriter',
-57 error   fstream_stack:
-57 error    [ '/usr/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23',
-57 error      '/usr/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53',
-57 error      'Object.oncomplete (fs.js:108:15)' ] }
-58 error Please try running this command again as root/Administrator.
-59 error System Linux 3.16.0-34-generic
-60 error command "/usr/bin/node" "/usr/bin/npm" "install" "-g" "watchify"
-61 error cwd /home/han/SailsProjects/wholeren
-62 error node -v v0.10.38
-63 error npm -v 1.4.28
-64 error path /usr/lib/node_modules/watchify
-65 error fstream_path /usr/lib/node_modules/watchify
-66 error fstream_type Directory
-67 error fstream_class DirWriter
-68 error code EACCES
-69 error errno 3
-70 error stack Error: EACCES, mkdir '/usr/lib/node_modules/watchify'
-71 error fstream_stack /usr/lib/node_modules/npm/node_modules/fstream/lib/dir-writer.js:36:23
-71 error fstream_stack /usr/lib/node_modules/npm/node_modules/mkdirp/index.js:46:53
-71 error fstream_stack Object.oncomplete (fs.js:108:15)
-72 verbose exit [ 3, true ]
+3 info using node@v0.10.32
+4 verbose node symlink C:\Program Files\nodejs\\node.exe
+5 verbose request where is /sailsjs
+6 verbose request registry https://registry.npmjs.org/
+7 verbose request id 1cb44c209db2460e
+8 verbose url raw /sailsjs
+9 verbose url resolving [ 'https://registry.npmjs.org/', './sailsjs' ]
+10 verbose url resolved https://registry.npmjs.org/sailsjs
+11 verbose request where is https://registry.npmjs.org/sailsjs
+12 info trying registry request attempt 1 at 22:10:23
+13 http GET https://registry.npmjs.org/sailsjs
+14 http 404 https://registry.npmjs.org/sailsjs
+15 verbose headers { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+15 verbose headers   'content-type': 'application/json',
+15 verbose headers   'cache-control': 'max-age=0',
+15 verbose headers   'content-length': '51',
+15 verbose headers   'accept-ranges': 'bytes',
+15 verbose headers   date: 'Wed, 29 Apr 2015 02:13:35 GMT',
+15 verbose headers   via: '1.1 varnish',
+15 verbose headers   age: '0',
+15 verbose headers   connection: 'keep-alive',
+15 verbose headers   'x-served-by': 'cache-atl6221-ATL',
+15 verbose headers   'x-cache': 'MISS',
+15 verbose headers   'x-cache-hits': '0',
+15 verbose headers   'x-timer': 'S1430273615.605804,VS0,VE81' }
+16 silly registry.get cb [ 404,
+16 silly registry.get   { server: 'CouchDB/1.5.0 (Erlang OTP/R16B03)',
+16 silly registry.get     'content-type': 'application/json',
+16 silly registry.get     'cache-control': 'max-age=0',
+16 silly registry.get     'content-length': '51',
+16 silly registry.get     'accept-ranges': 'bytes',
+16 silly registry.get     date: 'Wed, 29 Apr 2015 02:13:35 GMT',
+16 silly registry.get     via: '1.1 varnish',
+16 silly registry.get     age: '0',
+16 silly registry.get     connection: 'keep-alive',
+16 silly registry.get     'x-served-by': 'cache-atl6221-ATL',
+16 silly registry.get     'x-cache': 'MISS',
+16 silly registry.get     'x-cache-hits': '0',
+16 silly registry.get     'x-timer': 'S1430273615.605804,VS0,VE81' } ]
+17 error 404 404 Not Found: sailsjs
+17 error 404
+17 error 404 'sailsjs' is not in the npm registry.
+17 error 404 You should bug the author to publish it
+17 error 404
+17 error 404 Note that you can also install from a
+17 error 404 tarball, folder, or http url, or git url.
+18 error System Windows_NT 6.1.7601
+19 error command "C:\\Program Files\\nodejs\\\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "view" "sailsjs"
+20 error cwd C:\Users\Han\Documents\GitHub\wholeren
+21 error node -v v0.10.32
+22 error npm -v 1.4.28
+23 error code E404
+24 verbose exit [ 1, true ]

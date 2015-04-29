@@ -169,10 +169,10 @@ module.exports.routes = {
     controller:'ServComissionLookUp',
     action:'update'
   },
-  'PATCH /WhoOwnsWho/:id':{
-    controller:'WhoOwnsWho',
-    action:'update'
-  },
+  //'PATCH /WhoOwnsWho/:id':{
+  //  controller:'WhoOwnsWho',
+  //  action:'update'
+  //},
   'GET /options/?':{
     controller:'contract',
     action:'getAllOptions'

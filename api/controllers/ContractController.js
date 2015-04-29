@@ -20,7 +20,6 @@ function constructsql(who){
 	where "+who;
 }
 var findOne=function(req,res,id){
-
 		return Contract.findOne({id:id}).populate('client').then(function(data){
 			console.log("look for "+id)
 			if(data){

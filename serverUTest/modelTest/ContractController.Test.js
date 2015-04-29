@@ -4,6 +4,7 @@
 var assert=require('assert');
 describe('test',function(){
     it("testing ContractController",function(){
-        assert.isNotNull(ContractController);
+        assert.equal(1,1,"one should equals one");
+
     })
 })

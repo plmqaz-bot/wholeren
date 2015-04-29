@@ -21,7 +21,7 @@ module.exports.http = {
   *                                                                           *
   ****************************************************************************/
 
-  // middleware: {
+   middleware: {
 
   /***************************************************************************
   *                                                                          *
@@ -30,23 +30,25 @@ module.exports.http = {
   *                                                                          *
   ***************************************************************************/
 
-    // order: [
-    //   'startRequestTimer',
-    //   'cookieParser',
-    //   'session',
-    //   'myRequestLogger',
-    //   'bodyParser',
-    //   'handleBodyParserError',
-    //   'compress',
-    //   'methodOverride',
-    //   'poweredBy',
-    //   '$custom',
-    //   'router',
-    //   'www',
-    //   'favicon',
-    //   '404',
-    //   '500'
-    // ],
+     order: [
+       'startRequestTimer',
+       'methodCaster',
+       'cookieParser',
+       'session',
+       'sessionHack',
+       'myRequestLogger',
+       'bodyParser',
+       'handleBodyParserError',
+       'compress',
+       'methodOverride',
+       'poweredBy',
+       '$custom',
+       'router',
+       'www',
+       'favicon',
+       '404',
+       '500'
+     ],
 
   /****************************************************************************
   *                                                                           *
@@ -58,6 +60,22 @@ module.exports.http = {
     //     console.log("Requested :: ", req.method, req.url);
     //     return next();
     // }
+    methodCaster:function(req,res,next){
+        //Backbone generate PATCH requests, which sailsjs does not handle, but the blueprint update works
+        if(req.method=='PATCH'){
+            req.method='PUT'
+        }
+        next();
+    },
+    sessionHack:function(req,res,next){
+        // If debugging always use a manager's session
+        if(sails.config.debug){
+            req.session.user={nickname:"Ting",rank:3,id:1,active:true};
+            req.session.authenticated=true;
+            req.session.manager=true;
+        }
+        next();
+    }
 
 
   /***************************************************************************
@@ -71,7 +89,7 @@ module.exports.http = {
 
     // bodyParser: require('skipper')
 
-  // },
+   },
 
   /***************************************************************************
   *                                                                          *
