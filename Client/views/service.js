@@ -85,6 +85,7 @@ var ServiceView=main.baseDataView.extend({
             // {name:'step1',label:'step1',cell:'date'},
             // {name:'step2',label:'step2',cell:'date'},
             {name:'studentDestination',label:'学生去向',cell:'string'},
+                {name:'link',label:'链接',cell:'uri'},
             {name:'',label:'Show Applications',cell:appPopup},
             {name:'',label:'Comment',cell:comment},
             {name:'',label:'Show Details',cell:popup},

@@ -30,6 +30,7 @@ module.exports={
             return message;
     },
     handleRequestError:function(response){
+        console.log(response);
         Wholeren.notifications.clearEverything();
         var errors=response.responseJSON||{};
         var errortext=response.responseText||"";

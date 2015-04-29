@@ -122,7 +122,7 @@ module.exports = {
 		var id=req.params.id;
 		delete attribs["createAt"];
 		delete attribs["updateAt"];
-		var serviceUpdate=Utilfunctions.prepareUpdate(attribs,['serviceProgress','step1','step2','studentDestination']);
+		var serviceUpdate=Utilfunctions.prepareUpdate(attribs,['serviceProgress','step1','step2','studentDestination','link']);
 		if(serviceUpdate['step1']){
 			serviceUpdate['step1']=new Date(serviceUpdate['step1']);
 		}
