@@ -57,6 +57,18 @@ module.exports.routes = {
     controller:'contract',
     action:'getContract'
   },
+  'GET /ShortService/':{
+    controller:'ShortService',
+    action:'find'
+  },
+  'PUT /ShortService/:id':{
+    controller:'ShortService',
+    action:'update'
+  },
+  'DELETE /ShortService/:id':{
+    controller:'ShortService',
+    action:'destroy'
+  },
   'POST /contract/':{
     controller:'contract',
     action:'createContract'

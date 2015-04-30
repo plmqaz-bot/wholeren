@@ -124,8 +124,15 @@ module.exports={
 	            render();
 	            self.afterRender();
 	        });
+
 	        if(options.collectionName)this.collectionName=options.collectionName;
-	        this.collection=new Obiwang.Collections[this.collectionName]();
+	        if(this.collectionUrl){
+				this.collection = new Obiwang.Collections[this.collectionName]([],{url:this.collectionUrl});
+			}else if(this.collectionParam){
+				this.collection = new Obiwang.Collections[this.collectionName]([],this.collectionParam);
+			}else{
+				this.collection = new Obiwang.Collections[this.collectionName]();
+			}
 			this.constructColumns().then(function(data){
 				self.constructTable();
 			}).catch(function(err){

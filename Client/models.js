@@ -498,6 +498,16 @@ Collections={
         model:Models.simpleModel,
         url:'/Role/'
     }),
+    ShortService:Backbone.Collection.extend({
+        model: Models.syncModel,
+        url:function(){
+            return '/ShortService/?contract='+this.contract;
+        },
+        initialize:function(models,options){
+            options=options||{};
+            this.contract=options.contract;
+        }
+    }),
     Service:Backbone.PageableCollection.extend({
         model: Models.syncModel,
         _url:'/Service/',
