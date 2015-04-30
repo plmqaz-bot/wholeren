@@ -5,19 +5,28 @@
 var Backbone = require('./backbone');
 Wholeren.Views=require('./views/');
 module.exports=Backbone.Router.extend({
-	routes: {
-        'settings(/:pane)/' : 'settings',
-        'market(/:pane)/':'market',
-        'contract/(:option)':'contract',
-        'service/(:option)':'service',
-        'comission(/:pane)/':'comission',
-        'accounting/':'accounting',
-        'user/(:option)':'user',
-        'register/'        : 'register',
-        'signup/'          : 'signup',
-        'signin/'          : 'signin',
-        'forgotten/'       : 'forgotten',
-        'reset/:token/'    : 'reset'
+    root:'admin/',
+	routes: function(){
+        //return {'admin/settings(/:pane)/' : 'settings'};
+        var toReturn={};
+        /*
+        * These are admin routes. 
+        */ 
+        toReturn[this.root+'settings(/:pane)/']='settings';
+        toReturn[this.root+'settings(/:pane)/' ]= 'settings',
+        toReturn[this.root+'market(/:pane)/']='market',
+        toReturn[this.root+'contract/(:option)']='contract',
+        toReturn[this.root+'service/(:option)']='service',
+        toReturn[this.root+'comission(/:pane)/']='comission',
+        toReturn[this.root+'accounting/']='accounting',
+        toReturn[this.root+'user/(:option)']='user',
+        toReturn[this.root+'register/'        ]= 'register',
+        toReturn[this.root+'signup/'          ]= 'signup',
+        toReturn[this.root+'signin/'          ]= 'signin',
+        toReturn[this.root+'forgotten/'       ]= 'forgotten',
+        toReturn[this.root+'reset/:token/'    ]= 'reset'
+        return toReturn;
+        // }
     },
     signup: function () {
         Wholeren.currentView = new Wholeren.Views.Auth.signup({ el: '.js-signup-box' });
@@ -38,7 +47,7 @@ module.exports=Backbone.Router.extend({
         if (!pane) {
         	
             // Redirect to settings/general if no pane supplied
-            this.navigate('/settings/user/', {
+            this.navigate(this.root+'settings/user/', {
                 trigger: true,
                 replace: true,
             });
@@ -53,7 +62,7 @@ module.exports=Backbone.Router.extend({
     },
     market:function(pane){
         if(!pane){
-            this.navigate('/market/general/',{trigger:true,replace:true});
+            this.navigate(this.root+'market/general/',{trigger:true,replace:true});
             return;
         }
         Wholeren.currentView=new Wholeren.Views.Market({ el: '#main', pane: pane });
@@ -76,7 +85,7 @@ module.exports=Backbone.Router.extend({
     },
     comission:function(pane){
         if(!pane){
-            this.navigate('/comission/sales/',{trigger:true,replace:true});
+            this.navigate(this.root+'comission/sales/',{trigger:true,replace:true});
             return;
         }
         if(!Wholeren.currentView){

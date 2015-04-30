@@ -195,6 +195,6 @@ setup debug enviroment and utest
 
 setup Lead, sales group, category restrictions for user change
 
-make choose service to be in contract view
+make choose service to be in contract view --DONE
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later

@@ -11,24 +11,30 @@ append jscripts
 block content
 	.container
 		.row.col-md-12.col-lg-12
-			.col-xs-12.col-sm-12.col-md-5.col-lg-5
+			h3.text-center Welcome to Visualization
+		.row.col-md-12.col-lg-12
+			.col-xs-12.col-sm-12.col-md-5.col-lg-5#mapframe
 				#map
 			.col-xs-12.col-sm-12.col-md-7.col-lg-7
 				#piechart
 		.row.col-md-12.col-lg-12
-			.col-xs-12.col-sm-12.col-md-5.col-lg-5
+			.col-xs-12.col-sm-12.col-md-6.col-lg-6
 				#timechart
 			.col-xs-12.col-sm-12.col-md-3.col-lg-3
 				.col.xs-3.col-sm-3.col-md-3.col-lg-3
 					br
-					img(src="../../img/male.png" height=100) 
+					br
+					img(src="../../img/male.png" height=80) 
 				.col.xs-9.col-sm-9.col-md-9.col-lg-9
-					svg#malechart(width="97%" height=150)
+					svg#malechart
 				.col.xs-3.col-sm-3.col-md-3.col-lg-3
 					br
-					img(src="../../img/female.png" height=100) 
+					br
+					img(src="../../img/female.png" height=80) 
 				.col.xs-9.col-sm-9.col-md-9.col-lg-9
-					svg#femalechart(width="97%" height=150)
+					svg#femalechart
+		.row.col-md-12.col-lg-12
+			#reasonchart
 				
 				
 block footer

@@ -4,6 +4,11 @@ var parse=require('csv-parse');
 var fs=require('fs');
 var Promise=require('bluebird');
 loginSecurity = [];
+var partials={
+    //layout:'default',
+    navbar:'partials/navbar',
+    notifications:'partials/notifications'
+}
 adminNavbar = {
     contract: {
         name: 'Contract',
@@ -84,13 +89,18 @@ function setSelected(list, name) {
     });
     return list;
 }
-function comission(req,res,template,selected,body){
+function generateView(req,res,template,selected,body,hideNavbar){
+    if(!hideNavbar) hideNavbar=false;
     body = typeof body !== 'undefined' ? body : 'contract';
-    res.render(template, {
+    res.locals.layout='default';
+    res.render('admin/'+template, {
         bodyClass: body,
+        hideNavbar:hideNavbar,
         adminNav: setSelected(adminNavbar, selected),
-        currentUser:req.session.user
+        currentUser:req.session.user,
+        partials:partials
     });
+
 }
 function handleRank(req){
     if(req.session.manager){
@@ -108,15 +118,15 @@ module.exports={
     },
     'contract':function(req,res){
         handleRank(req);
-        comission(req,res,'contract','contract');
+        generateView(req,res,'contract','contract');
     },
     'service':function(req,res){
         handleRank(req);
-        comission(req,res,'contract','service');
+        generateView(req,res,'contract','service');
     },
     'market':function(req,res){
         handleRank(req);
-        comission(req,res,'settings','market','settings');
+        generateView(req,res,'settings','market','settings');
     },
     'comission':function(req,res){
         // console.log(req.params);
@@ -126,22 +136,22 @@ module.exports={
         // }
         handleRank(req);
        // comission(req,res,'contract',pane+'comission');
-       comission(req,res,'settings','comission','settings');
+       generateView(req,res,'settings','comission','settings');
         
     },
     'accounting':function(req,res){
         handleRank(req);
-        comission(req,res,'contract','accounting');
+        generateView(req,res,'contract','accounting');
     },
     // 'user':function(req,res){
     //     handleRank(req);
-    //     comission(req,res,'contract','user');
+    //     generateView(req,res,'contract','user');
     // },
 
     'settings': function (req, res, next) {
 
         handleRank(req);
-        return comission(req,res,'settings','settings','settings');
+        return generateView(req,res,'settings','settings','settings');
         // return res.render('settings', {
         //     bodyClass: 'settings',
         //     adminNav: setSelected(adminNavbar, 'settings')
@@ -161,19 +171,18 @@ module.exports={
     },
     'signin': function (req, res) {
         /*jslint unparam:true*/
-        return res.render('login', {
-            bodyClass: 'ghost-login',
-            hideNavbar: true,
-            adminNav: setSelected(adminNavbar, 'login')
-        });
+        
+        return generateView(req,res,'signin','login','ghost-login',true);
+        // return res.render('admin/signin',{
+        //     bodyClass: 'ghost-login',
+        //     hideNavbar: true,
+        //     adminNav: setSelected(adminNavbar, 'login'),
+        // });
+        //return res.view('admin/signin');
     },
     'signup': function (req, res) {
         /*jslint unparam:true*/
-        res.render('signup', {
-            bodyClass: 'ghost-signup',
-            hideNavbar: true,
-            adminNav: setSelected(adminNavbar, 'login')
-        });
+        return generateView(req,res,'signup','login','ghost-signup',true);
     },
     'doSignin': function (req, res) {
         var currentTime = process.hrtime()[0],
@@ -272,11 +281,7 @@ module.exports={
     },
     'forgotten': function (req, res) {
         /*jslint unparam:true*/
-        res.render('forgotten', {
-            bodyClass: 'ghost-forgotten',
-            hideNavbar: true,
-            adminNav: setSelected(adminNavbar, 'login')
-        });
+        return generateView(req,res,'forgotten','login','ghost-forgotten',true);
     },
     'doForgotten': function (req, res) {
         var email = req.body.email;

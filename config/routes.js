@@ -85,14 +85,14 @@ module.exports.routes = {
     controller:'service',
     action:'update'
   },
-  'PATCH /userLevel/:id':{
-    controller:'userLevel',
-    action:'update'
-  },
-  'PATCH /serviceType/:id':{
-    controller:'serviceType',
-    action:'update'
-  },
+  // 'PATCH /userLevel/:id':{
+  //   controller:'userLevel',
+  //   action:'update'
+  // },
+  // 'PATCH /serviceType/:id':{
+  //   controller:'serviceType',
+  //   action:'update'
+  // },
   // 'GET /service/':{
   //   controller:'service',
   //   action:'getService'
@@ -153,34 +153,34 @@ module.exports.routes = {
     controller:'accounting',
     action:'update'
   },
-  'PATCH /user/:id':{
-    controller:'user',
-    action:'update'
-  },
-  'PATCH /Invoice/:id':{
-    controller:'invoice',
-    action:'update'
-  },
-  'PATCH /ServiceInvoice/:id':{
-    controller:'ServiceInvoice',
-    action:'update'
-  },
+  // 'PATCH /user/:id':{
+  //   controller:'user',
+  //   action:'update'
+  // },
+  // 'PATCH /Invoice/:id':{
+  //   controller:'invoice',
+  //   action:'update'
+  // },
+  // 'PATCH /ServiceInvoice/:id':{
+  //   controller:'ServiceInvoice',
+  //   action:'update'
+  // },
   'POST /user/changepw/':{
     controller:'user',
     action:'changepw'
   },
-  'PATCH /application/:id':{
-    controller:'application',
-    action:'update'
-  },
-  'PATCH /serviceDetail/:id':{
-    controller:'serviceDetail',
-    action:'update'
-  },
-  'PATCH /ServComissionLookUp/:id':{
-    controller:'ServComissionLookUp',
-    action:'update'
-  },
+  // 'PATCH /application/:id':{
+  //   controller:'application',
+  //   action:'update'
+  // },
+  // 'PATCH /serviceDetail/:id':{
+  //   controller:'serviceDetail',
+  //   action:'update'
+  // },
+  // 'PATCH /ServComissionLookUp/:id':{
+  //   controller:'ServComissionLookUp',
+  //   action:'update'
+  // },
   //'PATCH /WhoOwnsWho/:id':{
   //  controller:'WhoOwnsWho',
   //  action:'update'

@@ -56,7 +56,7 @@ var Sidebar = baseView.extend({
         
         var self = this,
             model;
-        Wholeren.router.navigate('/'+this.submenu+'/' + id + '/');
+        Wholeren.router.navigate(Wholeren.router.root+this.submenu+'/' + id + '/');
         //myApp.trigger('urlchange');
         if (this.pane && id === this.pane.id) {
             return;

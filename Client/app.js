@@ -24,7 +24,7 @@ var init=function(){
 	Backbone.history.start({
 		pushState:true,
 		hashChange:false,
-        root: '/admin/'
+        root: '/'
 	});
     Wholeren.initPageAnimations();
 };
