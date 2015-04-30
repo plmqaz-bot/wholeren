@@ -183,7 +183,7 @@ so is model --DONE
 
 extending view, instance variables should not be object. --DONE
 
-setup debug enviroment and utest
+
 
 auto mysql backup setup --DONE
 
@@ -191,6 +191,10 @@ filter on grid table works on string cells and also select cells --DONE
 
 authorization needs to change, aparently there are more than three layers  of "who owns who" --DONE
 
+setup debug enviroment and utest
 
+setup Lead, sales group, category restrictions for user change
+
+make choose service to be in contract view
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later

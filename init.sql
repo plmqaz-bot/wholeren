@@ -37,22 +37,26 @@ truncate group2service;
 insert into group2service values(1,1,NULL,NOW(),NOW());
 insert into group2service values(1,4,NULL,NOW(),NOW());
 insert into group2service values(1,5,NULL,NOW(),NOW());
+insert into group2service values(1,8,NULL,NOW(),NOW());
 insert into group2service values(2,3,NULL,NOW(),NOW());
 insert into group2service values(2,4,NULL,NOW(),NOW());
 insert into group2service values(2,5,NULL,NOW(),NOW());
 insert into group2service values(2,6,NULL,NOW(),NOW());
 insert into group2service values(2,7,NULL,NOW(),NOW());
+insert into group2service values(2,8,NULL,NOW(),NOW());
 insert into group2service values(3,2,NULL,NOW(),NOW());
 insert into group2service values(3,4,NULL,NOW(),NOW());
 insert into group2service values(3,5,NULL,NOW(),NOW());
 insert into group2service values(3,6,NULL,NOW(),NOW());
 insert into group2service values(3,7,NULL,NOW(),NOW());
+insert into group2service values(3,8,NULL,NOW(),NOW());
 insert into group2service values(4,2,NULL,NOW(),NOW());
 insert into group2service values(4,3,NULL,NOW(),NOW());
 insert into group2service values(4,4,NULL,NOW(),NOW());
 insert into group2service values(4,5,NULL,NOW(),NOW());
 insert into group2service values(4,6,NULL,NOW(),NOW());
 insert into group2service values(4,7,NULL,NOW(),NOW());
+insert into group2service values(4,8,NULL,NOW(),NOW());
 insert into group2service values(5,8,NULL,NOW(),NOW());
 insert into group2service values(5,9,NULL,NOW(),NOW());
 insert into group2service values(5,10,NULL,NOW(),NOW());
@@ -95,6 +99,8 @@ insert into lead values('朋友&员工介绍',6,NOW(),NOW());
 insert into lead values('朋友&员工介绍2',7,NOW(),NOW());
 insert into lead values('博客微博',8,NOW(),NOW());
 insert into lead values('邮件Newsletter',9,NOW(),NOW());
+insert into lead values('渠道机构',10,NOW(),NOW());
+insert into lead values('学校refer',11,NOW(),NOW());
 
 truncate leaddetail;
 insert into leaddetail values('在线咨询',1,NULL,NOW(),NOW());
@@ -117,7 +123,13 @@ insert into leaddetail values('其他',7,NULL,NOW(),NOW());
 insert into leaddetail values('官方博微',8,NULL,NOW(),NOW());
 insert into leaddetail values('官方博客',8,NULL,NOW(),NOW());
 insert into leaddetail values('陈航老师博客',8,NULL,NOW(),NOW());
-insert into leaddetail values('陈航老师微博  ',8,NULL,NOW(),NOW());
+insert into leaddetail values('薛涌留美预科',10,NULL,NOW(),NOW());
+insert into leaddetail values('AHS',10,NULL,NOW(),NOW());
+insert into leaddetail values('NYIS',10,NULL,NOW(),NOW());
+insert into leaddetail values('Feng&Feng律师事务所',10,NULL,NOW(),NOW());
+insert into leaddetail values('ELS',10,NULL,NOW(),NOW());
+insert into leaddetail values('其它',10,NULL,NOW(),NOW());
+	
 #LeadLevel
 insert into leadlevel values('L1：有互动，且信息完整',NULL,NOW(),NOW());
 insert into leadlevel values('L2：有互动，但信息不完整',NULL,NOW(),NOW());
@@ -964,7 +976,8 @@ left join serviceinvoice on serviceinvoice.invoice=invoice.id
 group by invoice.id) as t on serviceinvoice.invoice=t.id
 left join invoice on serviceinvoice.invoice=invoice.id
 group by serviceinvoice.service) as r on r.service=service.id
-where ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
+left join whoownswho w on w.puppet=user.id
+where ((single=false and (user.id=uid or uid=0 or w.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
  and ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)));
 END;;
 delimiter ;
@@ -992,7 +1005,8 @@ left join serviceprogressupdate p1 on x.curMonth=p1.id
 left join serviceprogressupdate p2 on y.lastMonth=p2.id
 left join servcomissionlookup s1 on (((s1.serviceType=service.serviceType and s1.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s1.serviceType=0 and s1.servLevel=st.servLevel) or s1.serviceType=service.serviceType))) and s1.serviceStatus=p2.serviceProgress and s1.servRole=st.servRole)
 left join servcomissionlookup s2 on (((s2.serviceType=service.serviceType and s2.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s2.serviceType=0 and s2.servLevel=st.servLevel) or s2.serviceType=service.serviceType))) and s2.serviceStatus=p1.serviceProgress and s2.servRole=st.servRole)
-where contract.contractPaid is not NULL and serviceprogress.serviceProgress not like 'D%' and ((single=false and (user.id=uid or uid=0 or user.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
+left join whoownswho w on w.puppet=user.id
+where contract.contractPaid is not NULL and serviceprogress.serviceProgress not like 'D%' and ((single=false and (user.id=uid or uid=0 or w.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
 END;;
 delimiter ;
 
