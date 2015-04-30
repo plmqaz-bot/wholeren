@@ -1,0 +1,23 @@
+extends layout
+
+append stylesheets
+	link(rel='stylesheet' href="../../css/welcome.css")
+
+block content
+	video(autoplay poster="../../img/background.jpg" loop)
+		source(src="../../video/background.mp4" type="video/mp4")
+	div.container
+		div.text-center
+			div.welcome
+				h1 Welcome to WholeRen Data Team
+				br
+				h5 The website aims at helping everyone to 
+					strong monitor clients' information for our entire team. 
+					br 
+				h5 For first-time user, please sign up for the page
+				div.icon
+					i.fa.fa-database.fa-5x
+				a.btn.btn-primary.btn-hover.btn-lg(href="/signup" role="button")
+					span.glyphicon.glyphicon-user(aria-hidden="true") SignUp
+				a.btn.btn-default.btn-hover.btn-lg(href="/login" role="button")
+					span.glyphicon.glyphicon-cog(aria-hidden="true") Login

@@ -1,0 +1,28 @@
+extends layout
+
+append stylesheets
+	link(rel='stylesheet', href='../../css/style.css')
+	
+append jscripts
+	script(src="../../js/highcharts.js")
+	script(src="../../js/map.js")
+	script(src="../../js/data.js")
+	script(src="../../js/us-all.js")
+	script(src="../../js/sand-signika.js")
+	
+
+block content
+	body.container(background = "http://www.highcharts.com/samples/graphics/sand.png")
+		.row.col-md-12.col-lg-12
+			.col-xs-12.col-sm-12.col-md-5.col-lg-5
+				#mapchart
+			.col-xs-12.col-sm-12.col-md-7.col-lg-7
+				#schoolchart
+		.row.col-md-12.col-lg-12
+			.col-xs-12.col-sm-12.col-md-6.col-lg-6
+				#timechart
+			.col-xs-12.col-sm-12.col-md-6.col-lg-6
+				#reasonchart
+
+block footer
+	script(src="../../js/clients.js")
