@@ -64,7 +64,9 @@ module.exports.policies = {
     'forgotten':true,
     'doForgotten':true,
     'reset':true,
-    'signout':true
+    'signout':true,
+    'importUser':true,
+    
     //'Import':'managerAuth',
   },
   ContractController:{
