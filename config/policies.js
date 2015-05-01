@@ -27,7 +27,10 @@ module.exports.policies = {
   ***************************************************************************/
 
    '*': 'sessionAuth',
-  //'*':true,
+   ViewController:{
+    '*':true
+   } ,
+    //'*':true,
 
   /***************************************************************************
   *                                                                          *
@@ -50,20 +53,28 @@ module.exports.policies = {
 		// feed : ['isNiceToAnimals', 'hasRabbitFood']
 	// }
   AdminController:{
-    '*':true,
+    '*':'sessionAuth',
     'Contract':'sessionAuth',
     'Service':'sessionAuth',
     'User':'managerAuth',
+    'signin':true,
+    'doSignin':true,
+    'signup':true,
+    'doSignup':true,
+    'forgotten':true,
+    'doForgotten':true,
+    'reset':true,
+    'signout':true
     //'Import':'managerAuth',
   },
   ContractController:{
-    //'*':'sessionAuth',
-    '*':true,
+    '*':'sessionAuth',
+    //'*':true,
     'delete':'managerAuth'
   },
   ServiceController:{
-    //'*':'sessionAuth',
-    '*':true,
+    '*':'sessionAuth',
+    //'*':true,
     'delete':'managerAuth'
   },
   RoleController:{
@@ -72,8 +83,8 @@ module.exports.policies = {
     'findOne':true,
   },
   UserController:{
-   // '*':'managerAuth'
-   '*':true
+    '*':'managerAuth',
+   'find':'sessionAuth',
   }
 
 };
