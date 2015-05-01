@@ -1,0 +1,54 @@
+body {
+  margin: 0;
+  background: #000; 
+}
+video { 
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -100;
+ background: url('../img/background.jpg') no-repeat;
+  background-size: cover;
+  transition: 1s opacity;
+}
+.stopfade { 
+   opacity: .5;
+}
+
+.welcome { 
+  background: rgba(0,0,0,0.3);
+  color: white;
+  padding: 2rem;
+  margin-left:auto;
+  margin-right: auto;
+  margin-top: 10rem;
+  width: 60%;
+}
+
+.register {
+    background: rgba(0,0,0,0.4);
+    padding: 2rem;
+    margin-left:auto;
+    margin-right: auto;
+    margin-top: 1rem;
+}
+
+.btn-hover { 
+  display: inline-block;
+  margin: 2rem auto; 
+}
+.btn-hover:hover { 
+   background: rgba(0,0,0,0.5);
+}
+
+@media screen and (max-width: 500px) { 
+  div{width:70%;} 
+}
+@media screen and (max-device-width: 800px) {
+  html { background: url(../img/background.jpg) #000 no-repeat center center fixed; }
+  #bgvid { display: none; }
+}

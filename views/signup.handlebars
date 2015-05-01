@@ -1,0 +1,66 @@
+{{!<userDefaultLayout }}
+
+<link rel='stylesheet' href="{{asset "css/viewstyle.css"}}"/>
+<div class="container">
+<div class="row">
+	<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+		<form action="{{userUrl}}signup" method="post" id="signUpForm">
+			<h2> Sign Up</h2>
+			<div class="colorgraph"></div>
+			<div class="blank"></div>
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<i class="glyphicon glyphicon-user"></i>
+					</span>
+					<input class="form-control input-lg" type="text" name="username" placeholder="Username" id="username"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<i class="glyphicon glyphicon-user"></i>
+					</span>
+					<input class="form-control input-lg" type="email" name="email" placeholder="Email" id="email"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<i class="glyphicon glyphicon-lock"></i>
+					</span>
+					<input class="form-control input-lg" type="password" name="password" placeholder="Password" id="password"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="input-group">
+					<span class="input-group-addon">
+						<i class="glyphicon glyphicon-lock"></i>
+					</span>
+					<input class="form-control input-lg" type="password" name="password_confirmation" placeholder="Confirm Password" id="password_confirmation"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<div class="checkbox">
+					<label>
+					<input type="checkbox" name="check" id="check"/>
+					<p> Check this to receive professional consulting services from WholeRen</p>
+					</label>
+				</div>
+			</div>
+			<div class="colorgraph"></div>
+			<div class="blank"></div>
+			<div class="row">
+				<div class="col-xs-12 col-md-6">
+					<input class="btn btn-primary btn-block btn-lg" type="submit" value="Register" id="registration_btn"/>
+					<br/>
+				</div>
+				<div class="col-xs-12 col-md-6">
+					<a href="{{userUrl}}" class="btn btn-danger btn-block btn-lg"> Cancel</a>
+				</div>
+			</div>
+		</form>
+		<hr>
+		<a href="{{userUrl}}signup"> Direct to Signup Page</a>
+	</div>
+</div>

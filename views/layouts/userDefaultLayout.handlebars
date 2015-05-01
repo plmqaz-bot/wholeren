@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+	<head>
+		<title>{{title}}</title>
+		<link rel="stylesheet" href="{{asset "css/bootstrap.min.css"}}"/>
+		<link rel="stylesheet" href="{{asset "font-awesome/css/font-awesome.min.css"}}"/>
+		<script src="{{asset "js/jquery.min.js"}}"></script>
+	</head>	
+	<body>
+		{{{body}}}
+		{{#unless hideFooter}}
+			{{> partials/footer}}
+		{{/unless}}
+	</body>
+	
+</html>

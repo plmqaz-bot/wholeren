@@ -4,34 +4,31 @@
  * @description :: Server-side logic for managing Views
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-
+var fs=require('fs');
 module.exports = {
-	'signout': function (req, res) {
-        req.session.destroy();
-
-        var notification = {
-            type: 'success',
-            message: 'You were successfully signed out',
-            status: 'passive',
-            id: 'successlogout'
-        };
-
-        return res.redirect('/admin/signin/');
+    welcomePage: function(req, res) {
+        res.locals.layout='userDefaultLayout';
+        return res.render('welcome',{userUrl:'/View/',title:"Welcome"});
     },
-    'signin': function (req, res) {
-        /*jslint unparam:true*/
-        return res.render('login', {
-            bodyClass: 'ghost-login',
-            hideNavbar: true,
-            adminNav: setSelected(adminNavbar, 'login')
-        });
+
+    'login': function (req, res) {
+        res.locals.layout='userDefaultLayout';
+        return res.render('login',{userUrl:'/View/',title:"Login"});
     },
     'signup': function (req, res) {
         /*jslint unparam:true*/
-        res.render('signup', {
-            bodyClass: 'ghost-signup',
-            hideNavbar: true,
-            adminNav: setSelected(adminNavbar, 'login')
+        res.locals.layout='userDefaultLayout';
+        return res.render('signup',{userUrl:'/View/',title:"Sign Up"});
+    },
+    'visualization':function(req,res){
+        res.locals.layout='userDefaultLayout';
+        return res.render('visualization',{userUrl:'/View/',title:"Visualization"});
+    },
+    getClients : function(req,res) {
+        fs.readFile('assets/data/wholeren.json', function(error, clients){
+            if(error) 
+                return console.warn(error);     
+            return res.json({clients: JSON.parse(clients)});
         });
     },
     'doSignin': function (req, res) {
@@ -128,6 +125,11 @@ module.exports = {
         }).fail(function (err) {
             Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
         });
+    },
+    'signout': function (req, res) {
+        var username = req.session.publicUser.username;
+        req.session.destroy();
+        return res.render('logout',{username:username});
     },
 };
 

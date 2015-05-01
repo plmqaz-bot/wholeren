@@ -1,0 +1,21 @@
+{{!<userDefaultLayout }}
+	<link rel="stylesheet" href="{{asset "css/welcome.css"}}"/>
+	<video autoplay poster="{{asset "img/background.jpg"}}" loop>
+		<source src="{{asset "video/background.mp4"}}" type="video/mp4">
+	</video>
+	<div class="container">
+		<div class="text-center">
+			<div class="welcome">
+				<h1> Welcome to WholeRen Data Team</h1>
+				<br/>
+				<h5> The website aims at helping everyone to 
+					strong monitor clients' information for our entire team. 
+				</h5>
+					<br/>
+				<h5> For first-time user, please sign up for the page</h5>
+				<div class="icon">
+					<i class="fa fa-database fa-5x"/>
+				<a class="btn btn-primary btn-hover btn-lg" href="{{userUrl}}signup" role="button">
+					<span class="glyphicon glyphicon-user" aria-hidden="true"> SignUp</span></a>
+				<a class="btn btn-default btn-hover btn-lg" href="{{userUrl}}login" role="button">
+					<span class="glyphicon glyphicon-cog" aria-hidden="true"> Login</span>

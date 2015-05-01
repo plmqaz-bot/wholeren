@@ -41,6 +41,17 @@ module.exports.routes = {
   '/':function(req,res,next){
     res.redirect('/admin/contract/');
   },
+  '/view':function(req,res,next){
+    res.redirect('/View/welcomePage/');
+  },
+  'POST /view/login':{
+    controller:'View',
+    action:'doSignin'
+  },
+  'POST /view/signup':{
+    controller:'View',
+    action:'doSignup'
+  }
   'POST /admin/doSignin':{
     controller: 'Admin',
     action:'doSignin'

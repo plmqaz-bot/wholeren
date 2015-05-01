@@ -1,0 +1,44 @@
+{{!<userDefaultLayout }}
+
+
+<link rel='stylesheet' href="{{asset "css/viewstyle.css"}}"/>
+
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+				<form action="{{userUrl}}login" method="post" id="loginForm">
+					<h2> Login</h2>
+					<div class="colorgraph"></div>
+					<div class="blank"></div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-user"></i>
+							</span>
+							<input class="form-control input-lg" type="text" name="username" placeholder="Username" id="username"/>
+						</div>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-lock"></i>
+							</span>
+							<input class="form-control input-lg" type="password" name="password" placeholder="Password" id="password"/>
+						</div>
+					</div>
+					<div class="colorgraph"></div>
+					<div class="blank"></div>
+					<div class="row">
+						<div class="col-xs-12 col-md-6">
+							<input type="submit" value="Login" class="btn btn-primary btn-block btn-lg"/>
+							<br/>
+						</div>
+						<div class="col-xs-12 col-md-6">
+							<a href="{{userUrl}}" class="btn btn-danger btn-block btn-lg"> Cancel</a>
+						</div>
+					</div>
+				</form>
+				<hr>
+				<a href="{{userUrl}}signup"> Direct to Signup Page</a>
+			</div>
+		</div>
