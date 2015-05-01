@@ -23,5 +23,12 @@ module.exports={
 		subject : "Thanks for registering",
 		html:"Dear "+options.nickname+"<br> Thank you for registering, please wait for a manager to activate your account."
 		});
+	},
+	'sendEmail':function(emailObj){
+		var email=mailer.createTransport({
+		service:"Gmail",
+		auth:sails.config.emailAuth
+		});
+		return sendMail(email,emailObj);
 	}
 }

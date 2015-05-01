@@ -15,7 +15,7 @@ var reason_catogories = {"0" : ["0","10","18","38"], "1" :["1","2","9","11","13"
 
 //main function to draw all parts of visualization
 $.ajax({
-    url: 'getClients',
+    url: '/view/getClients',
     type: 'GET',
     dataType: 'json'
 }).done(function(data){

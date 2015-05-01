@@ -4,6 +4,7 @@
  * @description :: Server-side logic for managing Views
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
+ var bcrypt=require('bcrypt');
 var fs=require('fs');
 module.exports = {
     welcomePage: function(req, res) {
@@ -41,89 +42,65 @@ module.exports = {
         denied = _.find(loginSecurity, function (ipTime) {
             return (ipTime.ip === remoteAddress);
         });
-        var email=req.body.email;
+        var username=req.body.username;
         var pass=req.body.password;
         var redirect=req.body.redirect;
         if (!denied) {
             loginSecurity.push({ip: remoteAddress, time: currentTime});
-            User.findOneByEmail(email).then(function(ppl){
+            PublicUser.findOne({username:username}).then(function(ppl){
                 if(!ppl){
                     return res.json(400,'no user found');
                 }
                 bcrypt.compare(pass,ppl.password,function(err,valid){
-                    if(err) return res.json(400,'cannot compare password');
-                    if(!valid) return res.json(400,'password incorrect');
-                    if(!ppl.active) return res.json(400, 'not activated, contact superviser');
-                    req.session.user=ppl;
-                    req.session.authenticated=true;
-                    if(ppl.rank>1) req.session.manager=true;
-                    if(!redirect) redirect='/admin/contract/';
+                    if(err){
+                    	return Utilfunctions.errorHandler(err,res,'cannot compare password');
+                    } 
+                    if(!valid){
+                    	return Utilfunctions.errorHandler(err,res,'password incorrect');	
+                    } 
+                    req.session.publicUser=ppl;
+                    req.session.publicAuthenticated=true;
+                    if(!redirect) redirect='/view/visualization/';
                     loginSecurity=_.reject(loginSecurity,function(ipTime){
                         return ipTime.ip===remoteAddress;
                     });
-                    return res.json(200,{redirect:redirect});
+                    return res.redirect('/view/visualization/'); 
                 })
             }).fail(function(err){
-                Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
+                return Utilfunctions.errorHandler(err,res,"Cannot find by username: "+username);
             });
         } else {
-            Utilfunctions.errorHandler({error: 'Slow down, there are way too many login attempts!'},res,"Get Accounting");
+            return Utilfunctions.errorHandler({error: 'Slow down, there are way too many login attempts!'},res,"Log in too fast");
         }
     },
     'doSignup': function (req, res) {
-        var firstname = req.body.firstname,
-            nickname = req.body.nickname,
-            lastname = req.body.lastname,
-            email = req.body.email,
+        var username= req.body.username,
             password = req.body.password,
-            role=req.body.role;
+            password_confirm=req.body.password_confirmation,
+            email = req.body.email,
+            subscribe=req.body.check=='on';
+            console.log(subscribe);
+        if(password!==password_confirm){
+        	return Utilfunctions.errorHandler({error: 'password does not match'},res,"Password ambiguous");
+        }
 
-        User.create({
-            firstname: firstname,
-            lastname: lastname,
-            nickname: nickname,
-            email: email,
+        PublicUser.create({
+            username: username,
             password: password,
-            role:role,
+            email: email,
+            subscribe:subscribe
         }).then(function (user) {
-                // var message = {
-                //     to: email,
-                //     subject: 'Your New Ghost Blog',
-                //     html: '<p><strong>Hello!</strong></p>' +
-                //           '<p>Good news! You\'ve successfully created a brand new Ghost blog over on ' + config().url + '</p>' +
-                //           '<p>You can log in to your admin account with the following details:</p>' +
-                //           '<p> Email Address: ' + email + '<br>' +
-                //           'Password: The password you chose when you signed up</p>' +
-                //           '<p>Keep this email somewhere safe for future reference, and have fun!</p>' +
-                //           '<p>xoxo</p>' +
-                //           '<p>Team Ghost<br>' +
-                //           '<a href="https://ghost.org">https://ghost.org</a></p>'
-                // };
-                // mailer.send(message).otherwise(function (error) {
-                //     errors.logError(
-                //         error.message,
-                //         "Unable to send welcome email, your blog will continue to function.",
-                //         "Please see http://docs.ghost.org/mail/ for instructions on configuring email."
-                //     );
-                // });
-                return EmailService.sendWelcomeEmail({nickname:nickname,email:email});
-                // req.session.regenerate(function (err) {
-                //     if (!err) {
-                //         if (req.session.user === undefined) {
-                //             req.session.user = user;
-                //             req.session.authenticated=true;
-                //         }
-                //         res.json(200, {redirect: '/admin/contract/'});
-                //     }else{
-                //         res.json(401,{error:err});
-                //     }
-                // });
-                
+            return EmailService.sendWelcomeEmail({
+					from: "wholerencontactform@gmail.com",
+			   		to: 'wholerencontactform@gmail.com',
+			   		subject: 'Registration From Data Team Website',
+			   		text: 'Client Name: ' + username + " Client Email Address: " + email
+				});         
         }).then(function(data){
-            return res.json(200, {redirect: '/admin/signin/'});
-            console.log("User created");
+        	console.log("User created");
+            return res.redirect('/view/visualization/');            
         }).fail(function (err) {
-            Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
+            return Utilfunctions.errorHandler(err,res,"Create Public User failed");
         });
     },
     'signout': function (req, res) {

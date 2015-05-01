@@ -191,6 +191,10 @@ filter on grid table works on string cells and also select cells --DONE
 
 authorization needs to change, aparently there are more than three layers  of "who owns who" --DONE
 
+make introduction videos
+
+password reset
+
 setup debug enviroment and utest
 
 setup Lead, sales group, category restrictions for user change
@@ -198,3 +202,5 @@ setup Lead, sales group, category restrictions for user change
 make choose service to be in contract view --DONE
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
+
+raid for data storage
