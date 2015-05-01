@@ -51,7 +51,7 @@ module.exports.routes = {
   'POST /view/signup':{
     controller:'View',
     action:'doSignup'
-  }
+  },
   'POST /admin/doSignin':{
     controller: 'Admin',
     action:'doSignin'
