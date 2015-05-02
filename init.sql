@@ -354,9 +354,9 @@ insert into category2service values(1,16,NULL,NOW(),NOW());
 insert into category2service values(1,17,NULL,NOW(),NOW());
 insert into category2service values(1,18,NULL,NOW(),NOW());
 insert into category2service values(1,19,NULL,NOW(),NOW());
-insert into category2service values(1,20,NULL,NOW(),NOW());
-insert into category2service values(1,21,NULL,NOW(),NOW());
-insert into category2service values(1,22,NULL,NOW(),NOW());
+#insert into category2service values(1,20,NULL,NOW(),NOW());
+#insert into category2service values(1,21,NULL,NOW(),NOW());
+#insert into category2service values(1,22,NULL,NOW(),NOW());
 
 insert into category2service values(2,23,NULL,NOW(),NOW());
 insert into category2service values(2,24,NULL,NOW(),NOW());

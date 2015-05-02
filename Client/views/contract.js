@@ -741,7 +741,7 @@ var ContractEdit = EditForm.extend({
        if(!selected){
             return;
        }
-        var client=new Obiwang.Models.simpleModel({},{_url:'/Client/',id:selected});
+        var client=new Obiwang.Models.simpleModel({id:selected},{_url:'/Client/'});
         var self=this;
         client.fetch({
             reset: true,
