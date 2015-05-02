@@ -20,7 +20,7 @@
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher, s.user)) \
 			left join user u on c.teacher=u.id \
 			left join whoownswho w on w.puppet=user.id where \
-			c.contractsigned is not NULL and (status.status like 'C%' or status.status like 'D%') "+who+" "+where+";"
+			c.contractsigned is not NULL and (status.status like 'E%') "+who+" "+where+";"
 		}
 var Promise=require('bluebird');
 module.exports = {
