@@ -715,7 +715,7 @@ var ContractEdit = EditForm.extend({
         }
 
         $.ajax({
-            url: '/client/find?where='+JSON.stringify(where),
+            url: '/client/?where='+JSON.stringify(where),
             type: 'GET',
             headers: {
                 'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
