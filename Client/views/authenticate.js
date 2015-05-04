@@ -179,7 +179,7 @@ module.exports={
 	forgotten:base.extend({
 	    templateName: "forgotten",
 	    initialize: function () {
-	                this.render();
+	        this.render();
 	    },
 	    afterRender: function () {
 	        var self = this;
@@ -221,5 +221,68 @@ module.exports={
 	                });
 	            }
 	        }
-	})
+	}),
+    reset:base.extend({
+        templateName:"reset",
+        events: {
+            'submit #reset': 'submitHandler'
+        },
+        initialize: function (options) {
+            this.token=options.token
+            this.render();
+        },
+        afterRender: function () {
+            var self = this;
+            this.$el.css({"opacity": 0}).animate({"opacity": 1}, 500, function () {
+                self.$("[name='newpassword']").focus();
+            });
+        },
+        submitHandler: function (ev) {
+            ev.preventDefault();
+
+            var self = this,
+                newPassword = this.$('input[name="newpassword"]').val(),
+                ne2Password = this.$('input[name="ne2password"]').val();
+
+            if (newPassword !== ne2Password) {
+                Wholeren.notifications.clearEverything();
+                Wholeren.notifications.addItem({
+                    type: 'error',
+                    message: "Your passwords do not match.",
+                    status: 'passive'
+                });
+
+                return;
+            }
+
+            this.$('input, button').prop('disabled', true);
+
+            $.ajax({
+                url: Wholeren.paths.subdir + '/admin/reset/' + this.token + '/',
+                type: 'POST',
+                headers: {
+                    'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
+                },
+                data: {
+                    newpassword: newPassword,
+                    ne2password: ne2Password
+                },
+                success: function (msg) {
+                    window.location.href = msg.redirect;
+                },
+                error: function (xhr) {
+                    self.$('input, button').prop('disabled', false);
+
+                    Wholeren.notifications.clearEverything();
+                    Wholeren.notifications.addItem({
+                        type: 'error',
+                        message: util.handleRequestError(xhr);
+                        status: 'passive'
+                    });
+                }
+            });
+
+            return false;
+        }
+    })
 }

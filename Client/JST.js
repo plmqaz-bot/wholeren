@@ -43,6 +43,7 @@ module.exports={
     'commentSingle':require('./template/modals/comment_single.hbs'),
     'comment':require('./template/modals/comment.hbs'),
     'forgotten':require('./template/forgotten.hbs'),
+    'reset':require('./template/reset.hbs'),
     'marketSidebar':require('./template/market/sidebar.hbs'),
     'marketMessage':require('./template/market/marketgeneral.hbs'),
     'settingSidebar':require('./template/settings/sidebar.hbs'),

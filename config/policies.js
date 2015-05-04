@@ -67,6 +67,7 @@ module.exports.policies = {
     'reset':true,
     'signout':true,
     'importUser':true,
+    'import':true,
     
     //'Import':'managerAuth',
   },

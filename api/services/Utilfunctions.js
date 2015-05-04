@@ -66,10 +66,13 @@ module.exports = {
     	return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate();
     },
     importContract:function(filename){
-		var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={},SERVICETYPE={};
+		var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={},SERVICETYPE={},LEADDETAIL={},SALESGROUP={};
 		var options=Lead.find().then(function(data){
 			LEAD=makeHash(data,'lead');
-			return LeadLevel.find();
+			return leadDetail.find();
+	    }).then(function(data){
+	    	LEADDETAIL=makeHash(data,'leadDetail');
+	    	return LeadLevel.find();
 	    }).then(function(data){
 	        LEADLEVEL=makeHash(data,'leadLevel');
 	        return Country.find();
@@ -92,7 +95,10 @@ module.exports = {
 	        return ServiceType.find();
 	    }).then(function(data){
 	        SERVICETYPE=data;
-	        return Promise.resolve(data);
+	        return SalesGroup.find();
+	    }).then(function(data){
+	    	SALESGROUP=makeHash(data,'salesGroup');
+	    	return Promise.resolve(data);
 	    });
 	    var errorLine=[];
 	    var toReturn=Promise.defer();
@@ -148,53 +154,54 @@ module.exports = {
 	        var client={};
 	        var serviceTeachers=[];
 	        client.chineseName=line[1];
-	        contract.contractCategory=stripstring(line[2]); // later get contractcategoryid;
-	        contract.createdAt=new Date(line[3]);
-	        contract.lead=stripstring(line[4]); // Later get the id;
-	        contract.leadName=line[5];
-	        contract.assistant=(line[6]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //Later get user id;
-	        contract.sales=(line[7]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //later get user id;
-	        contract.expert=(line[8]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id;
-	        contract.status=stripstring(line[9]); // later get id of status;
-	        contract.salesFollowup=line[10];
-	        contract.salesRecord=line[11];
-	        contract.leadLevel=stripstring(line[12]); // later get leadlevel id;
-	        contract.expertContactdate=new Date(line[13]);
+	        contract.salesGroup=contractCategory(line[2]);
+	        contract.contractCategory=stripstring(line[3); // later get contractcategoryid;
+	        contract.degree=stripstring(line[4]); // later get degree id
+	        contract.createdAt=new Date(line[5]);
+	        contract.lead=stripstring(line[6]); // Later get the id;
+	        contract.leadDetail=stringcontract(line[7]);
+	        contract.leadName=line[8];
+	        contract.assistant=(line[9]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //Later get user id;
+	        contract.sales=(line[10]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //later get user id;
+	        contract.expert=(line[11]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id;
+	        contract.status=stripstring(line[12]); // later get id of status;
+	        contract.salesFollowup=line[13];
+	        contract.salesRecord=line[14];
+	        //contract.leadLevel=stripstring(line[12]); // later get leadlevel id;
+	        contract.expertContactdate=new Date(line[15]);
 	        //contract.expertFollowup=line[14];
 
-	        contract.expertFollowup=line[14]?line[14]:line[15];
-	        client.lastName=line[16];
-	        client.firstName=line[17];
-	        contract.originalText=line[18];
-	        client.primaryEmail=stripstring(line[19]);
-	        client.primaryPhone=line[20];
+	        contract.expertFollowup=line[16]?line[16]:line[17];
+	        client.lastName=line[18];
+	        client.firstName=line[19];
+	        contract.originalText=line[20];
+	        client.primaryEmail=stripstring(line[21]);
+	        client.primaryPhone=line[22];
 	        //console.log("before getting country",linenum);
-	        contract.country=stripstring(line[22]); // later get country id;
+	        contract.country=stripstring(line[24]); // later get country id;
 	        //console.log("after getting country",linenum);
-	        contract.validI20=line[23]=='是'?true:false;
-	        contract.previousSchool=line[24];
+	        contract.validI20=line[25]=='是'?true:false;
+	        contract.previousSchool=line[26];
 
-	        contract.targetSchool=line[25];
-	        var temp=parseFloat(line[26]);
+	        contract.targetSchool=line[27];
+	        var temp=parseFloat(line[28]);
 	        contract.gpa=temp?temp:0.0;
-	        temp=parseFloat(line[27]);
-
+	        temp=parseFloat(line[29]);
 	        contract.toefl=temp?temp:0.0;
-	        contract.otherScore=line[28];
-	        contract.age=line[29];
-	        contract.degree=stripstring(line[30]); // later get degree id
-	        contract.diagnose=line[31];
-	        contract.contractSigned=new Date(line[32]);
-	        contract.contractPaid=new Date(line[33]);
-	        var Service=line[34]+","+line[35]+","+line[36]+","+line[37]; // Work on service
-	        temp=parseFloat(line[38]);
-	        contract.contractPrice=temp?temp:0.0;
-	        contract.contractDetail=line[39];
-	        contract.endFee=line[40];
-	        contract.paymentOption=stripstring(line[41]); // later get payment id
-	        contract.endFeeDue=line[42]=='是'?true:false;
-	        contract.teacher=(line[43]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id
+	        contract.otherScore=line[30];
+	        contract.age=line[31];
 	        
+	        contract.diagnose=line[33];
+	        contract.contractSigned=new Date(line[32]);
+	        contract.contractPaid=new Date(line[35]);
+	        var Service=line[36]+","+line[37]+","+line[38]+","+line[39]; // Work on service
+	        temp=parseFloat(line[40]);
+	        contract.contractPrice=temp?temp:0.0;
+	        contract.contractDetail=line[41];
+	        contract.endFee=line[42];
+	        contract.paymentOption=stripstring(line[43]); // later get payment id
+	        contract.endFeeDue=line[44]=='是'?true:false;
+	        contract.teacher=(line[45]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id
 	        exchangeOptions(contract);
 	        //var p=Promise.defer();
 	        //console.log("look for stuff");
@@ -261,7 +268,7 @@ module.exports = {
 	            tea=_.reject(tea=tea||[],function(e){return e==null;})
 	            contract.teacher=tea[0];
 	            serviceTeachers=tea;
-	            if(tea.length>1)console.log("weird tea",tea);
+	            if(tea.length>1)console.log("weird teacher",tea);
 	            // add this contract
 	            console.log("look for contract",contract.client,contract.contractCategory);
 	            return Contract.findOne({client:contract.client,contractCategory:contract.contractCategory});
@@ -319,11 +326,15 @@ module.exports = {
 	        //var paymentid=contract.paymentOption?(_.find(PAYMENT,{'paymentOption':contract.paymentOption})).id:0;
 	        var paymentid=PAYMENT[contract.paymentOption];
 	        //console.log(contract.paymentOption," got id ",paymentid);
+	        var salesGroupid=SALESGROUP[contract.salesGroup];
+	        var leadDetailid=LEADDETAIL[contract.leadDetail];
+	        contract.salesGroup=salesGroupid>0?salesGroupid:null;
 	        contract.contractCategory=categoryid>0?categoryid:null;
 	        contract.lead=leadid>0?leadid:null;
+	        contract.leadDetail=leadDetailid>0?leadDetailid:null;
 	        contract.status=statusid>0?statusid:null;
 	        contract.leadLevel=leadLevelid>0?leadLevelid:null;
-	         contract.country = countryid>0?countryid:1;
+	        contract.country = countryid>0?countryid:1;
 	        contract.degree=degreeid>0?degreeid:4;
 	        contract.paymentOption=paymentid>0?paymentid:null;
 	    }

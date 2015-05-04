@@ -41,7 +41,7 @@ module.exports=Backbone.Router.extend({
     },
 
     reset: function (token) {
-        Wholeren.currentView = new Wholeren.Views.ResetPassword({ el: '.js-reset-box', token: token });
+        Wholeren.currentView = new Wholeren.Views.Auth.ResetPassword({ el: '.js-reset-box', token: token });
     },
     settings: function (pane) {
         if (!pane) {
