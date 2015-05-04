@@ -213,7 +213,14 @@ module.exports={
 	                        email: email
 	                    },
 	                    success: function (msg) {
-	                        window.location.href = msg.redirect;
+                            var sucessMsg={responseText:"Please wait to be redirected",redirect:msg.redirect,delay:1};
+                            var notification=msg.notification||{
+                                type: 'success',
+                                message: text,
+                                status: 'passive'
+                            };
+                            Wholeren.notifications.addItem(notification);
+                            util.handleRequestSuccess(sucessMsg);
 	                    },
 	                    error: function (xhr) {
 	                        util.handleRequestError(xhr);
@@ -276,7 +283,7 @@ module.exports={
                     Wholeren.notifications.clearEverything();
                     Wholeren.notifications.addItem({
                         type: 'error',
-                        message: util.handleRequestError(xhr);
+                        message: util.handleRequestError(xhr),
                         status: 'passive'
                     });
                 }

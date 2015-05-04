@@ -215,7 +215,7 @@ module.exports={
                         return ipTime.ip===remoteAddress;
                     });
                     return res.json(200,{redirect:redirect});
-                })
+                });
             }).fail(function(err){
                 Utilfunctions.errorHandler(err,res,"Cannot find by email: "+email);
             });
@@ -285,7 +285,31 @@ module.exports={
     },
     'doForgotten': function (req, res) {
         var email = req.body.email;
-
+        User.generateResetToken(email, Date.now()+3600000,"").then(function(token){
+            var protocol=req.connection.encrypted?'https':'http';
+            resetUrl =  protocol+'://'+req.headers.host+'/admin/reset/' + token + '/';
+            resetLink = '<a href="' + resetUrl + '">' + resetUrl + '</a>',
+            console.log("token is "+token);
+            message = {
+                to: email,
+                subject: 'Reset Password',
+                html: '<p><strong>Hello!</strong></p>' +
+                      '<p>Please follow the link below to reset your password:<br><br>' + resetLink + '</p>' +
+                      '<p>Wholeren Database</p>'
+            };
+            
+            return EmailService.sendEmail(message);
+        }).then(function(){
+            var notification = {
+                type: 'success',
+                message: 'Check your email for further instructions',
+                status: 'passive',
+                id: 'successresetpw'
+            };
+            return res.json(200, {redirect: '/admin/signin/', notification:notification});
+        }).fail(function(err){
+            return res.json(401, {redirect: '/admin/signin/',error:err});
+        });
         // api.users.generateResetToken(email).then(function (token) {
         //     var siteLink = '<a href="' + config().url + '">' + config().url + '</a>',
         //         resetUrl = config().url.replace(/\/$/, '') +  '/ghost/reset/' + token + '/',
@@ -301,13 +325,7 @@ module.exports={
 
         //     return mailer.send(message);
         // }).then(function success() {
-            var notification = {
-                type: 'success',
-                message: 'Check your email for further instructions',
-                status: 'passive',
-                id: 'successresetpw'
-            };
-            res.json(200, {redirect: '/admin/signin/', notification:notification});
+            
             // return api.notifications.add(notification).then(function () {
             //     res.json(200, {redirect: config().paths.subdir + '/ghost/signin/'});
             // });
@@ -325,27 +343,17 @@ module.exports={
         // Validate the request token
         var token = req.params.token;
 
-        api.users.validateToken(token).then(function () {
+        User.validateToken(token,"").then(function () {
             // Render the reset form
-            res.render('reset', {
-                bodyClass: 'ghost-reset',
-                hideNavbar: true,
-                adminNav: setSelected(adminNavbar, 'reset')
-            });
-        }).otherwise(function (err) {
-            // Redirect to forgotten if invalid token
-            var notification = {
-                type: 'error',
-                message: 'Invalid or expired token',
-                status: 'persistent',
-                id: 'errorinvalidtoken'
-            };
+            return generateView(req,res,'reset','reset','ghost-reset',true);
+        }).error(function (err) {// Redirect to forgotten if invalid token
 
-            errors.logError(err, 'admin.js', "Please check the provided token for validity and expiration.");
+            //errors.logError(err, 'admin.js', "Please check the provided token for validity and expiration.");
 
-            return api.notifications.add(notification).then(function () {
-                res.redirect(config().paths.subdir + '/admin/forgotten');
-            });
+            // return api.notifications.add(notification).then(function () {
+            //     res.redirect(config().paths.subdir + '/admin/forgotten');
+            // });
+            return res.json(401,err);
         });
     },
     'import':function(req,res){

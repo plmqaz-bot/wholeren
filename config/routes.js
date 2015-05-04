@@ -64,6 +64,10 @@ module.exports.routes = {
     controller:'Admin',
     action:'doForgotten'
   },
+  'GET /admin/reset/:token/':{
+    controller:'Admin',
+    action:'reset'
+  },
   'GET /contract/':{
     controller:'contract',
     action:'getContract'

@@ -9,7 +9,7 @@ function sendMail(transport,emailObj){
 			toReturn.resolve(responseStatus);
 		}
 	});
-	return toReturn;
+	return toReturn.promise;
 }
 module.exports={
 	'sendWelcomeEmail':function(options){

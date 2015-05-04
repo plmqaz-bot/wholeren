@@ -4,6 +4,9 @@
 * @description :: TODO: You might write a short summary of how this model works and what it represents here.
 * @docs        :: http://sailsjs.org/#!documentation/models
 */
+var Promise=require('bluebird');
+var bcrypt=require('bcrypt');
+var tokenSecurity={};
 
 module.exports = {
 
@@ -45,8 +48,6 @@ module.exports = {
     }
   },
   beforeCreate: function (attrs, next) {
-    var bcrypt = require('bcrypt');
-
     bcrypt.genSalt(10, function(err, salt) {
       if (err) return next(err);
 
@@ -59,7 +60,6 @@ module.exports = {
     });
   },
   beforeUpdate:function(attrs,next){
-    var bcrypt=require('bcrypt');
     if (attrs.password){
       bcrypt.genSalt(10,function(err,salt){
         if(err) return next(err);
@@ -76,19 +76,31 @@ module.exports = {
   generateResetToken: function (email, expires, dbHash) {
     return this.findOne({email:email}).then(function (foundUser) {
         var hashText = "",text = "";
+        var dbHash=dbHash||"";
 
-        hashText=String(expires)+email.toLocaleLowerCase()+foundUser.get('password');
+        hashText=String(expires)+email.toLocaleLowerCase()+foundUser['password']+dbHash;
         // Token:
         // BASE64(TIMESTAMP + email + HASH(TIMESTAMP + email + oldPasswordHash + dbHash ))
 
-        hash.update(String(expires));
-        hash.update(email.toLocaleLowerCase());
-        hash.update(foundUser.get('password'));
-        hash.update(String(dbHash));
+        // hash.update(String(expires));
+        // hash.update(email.toLocaleLowerCase());
+        // hash.update(foundUser.get('password'));
+        // hash.update(String(dbHash));
+        
+        var promise=Promise.defer();
 
-        text += [expires, email, hash.digest('base64')].join('|');
+        bcrypt.genSalt(10,function(err,salt){
+          if(err) return promise.reject("get sailt failed");
+          bcrypt.hash(hashText,salt,function(err,hash){
 
-        return new Buffer(text).toString('base64');
+            if(err) return promise.reject("hash generate failed");
+            text += [expires, email, hash].join('|');
+
+            var toReturn=new Buffer(text).toString('base64');
+            promise.resolve(toReturn);
+          });
+        });
+        return promise.promise;
     });
   },
 
@@ -104,24 +116,24 @@ module.exports = {
 
       // Check if invalid structure
       if (!parts || parts.length !== 3) {
-          return when.reject(new Error("Invalid token structure"));
+          return Promise.reject(new Error("Invalid token structure"));
       }
 
       expires = parseInt(parts[0], 10);
+
       email = parts[1];
 
       if (isNaN(expires)) {
-          return when.reject(new Error("Invalid token expiration"));
+          return Promise.reject(new Error("Invalid token expiration"));
       }
-
       // Check if token is expired to prevent replay attacks
       if (expires < Date.now()) {
-          return when.reject(new Error("Expired token"));
+          return Promise.reject(new Error("Expired token"));
       }
-
+ 
       // to prevent brute force attempts to reset the password the combination of email+expires is only allowed for 10 attempts
       if (tokenSecurity[email + '+' + expires] && tokenSecurity[email + '+' + expires].count >= 10) {
-          return when.reject(new Error("Token locked"));
+          return Promise.reject(new Error("Token locked"));
       }
 
       return this.generateResetToken(email, expires, dbHash).then(function (generatedToken) {
@@ -137,14 +149,15 @@ module.exports = {
           for (i = token.length - 1; i >= 0; i = i - 1) {
               diff |= token.charCodeAt(i) ^ generatedToken.charCodeAt(i);
           }
-
+        console.log(token);
+        console.log(generatedToken)
           if (diff === 0) {
-              return when.resolve(email);
+              return Promise.resolve(email);
           }
 
           // increase the count for email+expires for each failed attempt
           tokenSecurity[email + '+' + expires] = {count: tokenSecurity[email + '+' + expires] ? tokenSecurity[email + '+' + expires].count + 1 : 1};
-          return when.reject(new Error("Invalid token"));
+          return Promise.reject(new Error("Invalid token"));
       });
   },
   
