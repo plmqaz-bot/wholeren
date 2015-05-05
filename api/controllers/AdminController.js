@@ -346,7 +346,7 @@ module.exports={
         User.validateToken(token,"").then(function () {
             // Render the reset form
             return generateView(req,res,'reset','reset','ghost-reset',true);
-        }).error(function (err) {// Redirect to forgotten if invalid token
+        }).fail(function (err) {// Redirect to forgotten if invalid token
 
             //errors.logError(err, 'admin.js', "Please check the provided token for validity and expiration.");
 
@@ -354,6 +354,23 @@ module.exports={
             //     res.redirect(config().paths.subdir + '/admin/forgotten');
             // });
             return res.json(401,err);
+        });
+    },
+    'doReset': function (req, res) {
+        var token = req.params.token,
+            newPassword = req.param('newpassword'),
+            ne2Password = req.param('ne2password');
+
+        User.resetPassword(token, newPassword, ne2Password,"").then(function () {
+            var notification = {
+                type: 'success',
+                message: 'Password changed successfully.',
+                status: 'passive',
+                id: 'successresetpw'
+            };
+            return res.json(200, {redirect:'/admin/signin/',notification:notification,delay:1});
+        }).fail(function (err) {
+            return res.json(401, {error: err});
         });
     },
     'import':function(req,res){

@@ -214,11 +214,7 @@ module.exports={
 	                    },
 	                    success: function (msg) {
                             var sucessMsg={responseText:"Please wait to be redirected",redirect:msg.redirect,delay:1};
-                            var notification=msg.notification||{
-                                type: 'success',
-                                message: text,
-                                status: 'passive'
-                            };
+                            var notification=msg.notification;
                             Wholeren.notifications.addItem(notification);
                             util.handleRequestSuccess(sucessMsg);
 	                    },
@@ -229,7 +225,7 @@ module.exports={
 	            }
 	        }
 	}),
-    reset:base.extend({
+    ResetPassword:base.extend({
         templateName:"reset",
         events: {
             'submit #reset': 'submitHandler'
@@ -265,7 +261,7 @@ module.exports={
             this.$('input, button').prop('disabled', true);
 
             $.ajax({
-                url: Wholeren.paths.subdir + '/admin/reset/' + this.token + '/',
+                url: '/admin/reset/' + this.token + '/',
                 type: 'POST',
                 headers: {
                     'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
@@ -275,17 +271,18 @@ module.exports={
                     ne2password: ne2Password
                 },
                 success: function (msg) {
-                    window.location.href = msg.redirect;
+                    var sucessMsg={responseText:"Please wait to be redirected",redirect:msg.redirect,delay:1};
+                    var notification=msg.notification||{
+                        type: 'success',
+                        message: text,
+                        status: 'passive'
+                    };
+                    Wholeren.notifications.addItem(notification);
+                    util.handleRequestSuccess(sucessMsg);
                 },
                 error: function (xhr) {
                     self.$('input, button').prop('disabled', false);
-
-                    Wholeren.notifications.clearEverything();
-                    Wholeren.notifications.addItem({
-                        type: 'error',
-                        message: util.handleRequestError(xhr),
-                        status: 'passive'
-                    });
+                    util.handleRequestError(xhr);
                 }
             });
 

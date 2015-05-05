@@ -77,8 +77,9 @@ module.exports = {
     return this.findOne({email:email}).then(function (foundUser) {
         var hashText = "",text = "";
         var dbHash=dbHash||"";
-
+        console.log("email is "+email+"expires is ",expires);
         hashText=String(expires)+email.toLocaleLowerCase()+foundUser['password']+dbHash;
+        console.log("Hast Text is :"+hashText);
         // Token:
         // BASE64(TIMESTAMP + email + HASH(TIMESTAMP + email + oldPasswordHash + dbHash ))
 
@@ -95,8 +96,9 @@ module.exports = {
 
             if(err) return promise.reject("hash generate failed");
             text += [expires, email, hash].join('|');
-
+            console.log("Generated token is :"+text);
             var toReturn=new Buffer(text).toString('base64');
+            console.log("bse64 is :"+toReturn);
             promise.resolve(toReturn);
           });
         });
@@ -135,31 +137,36 @@ module.exports = {
       if (tokenSecurity[email + '+' + expires] && tokenSecurity[email + '+' + expires].count >= 10) {
           return Promise.reject(new Error("Token locked"));
       }
-
-      return this.generateResetToken(email, expires, dbHash).then(function (generatedToken) {
-          // Check for matching tokens with timing independent comparison
-          var diff = 0,
-              i;
-
-          // check if the token lenght is correct
-          if (token.length !== generatedToken.length) {
-              diff = 1;
+      return this.findOne({email:email}).then(function(foundUser){
+        var hashText=String(expires)+email.toLocaleLowerCase()+foundUser['password']+dbHash;  
+        // console.log("Hash Text is :"+hashText);
+        // console.log("part 2 is :"+parts[2]);
+        var p=Promise.defer();
+        bcrypt.compare(hashText,parts[2],function(err,valid){
+          if(err) return p.reject('cannot compare token');
+          if(!valid) {
+            tokenSecurity[email + '+' + expires] = {count: tokenSecurity[email + '+' + expires] ? tokenSecurity[email + '+' + expires].count + 1 : 1};
+            return p.reject('token incorrect');
           }
+          return p.resolve(email);
+        });
+        return p.promise;
 
-          for (i = token.length - 1; i >= 0; i = i - 1) {
-              diff |= token.charCodeAt(i) ^ generatedToken.charCodeAt(i);
-          }
-        console.log(token);
-        console.log(generatedToken)
-          if (diff === 0) {
-              return Promise.resolve(email);
-          }
-
-          // increase the count for email+expires for each failed attempt
-          tokenSecurity[email + '+' + expires] = {count: tokenSecurity[email + '+' + expires] ? tokenSecurity[email + '+' + expires].count + 1 : 1};
-          return Promise.reject(new Error("Invalid token"));
       });
   },
+  resetPassword:function(token,newPassword,ne2Password,dbHash){
+    var self = this;
+
+    if (newPassword !== ne2Password) {
+        return Promise.reject(new Error("Your new passwords do not match"));
+    }
+    return this.validateToken(token,dbHash).then(function(email){
+      return User.findOne({email:email});
+    }).then(function(foundUser){
+      if(!foundUser) return Promise.reject("Not found");
+      return User.update({id:foundUser.id},{password:newPassword});
+    });
+  }
   
 };
 

@@ -30,6 +30,8 @@ Settings.user=main.basePaneView.extend({
         var self=this;
         this.model.fetch().then(function(data){
             self.render();
+        }).fail(function(err){
+            self.render();
         });
     },
 

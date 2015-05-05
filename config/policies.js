@@ -55,9 +55,6 @@ module.exports.policies = {
 	// }
   AdminController:{
     '*':'sessionAuth',
-    'Contract':'sessionAuth',
-    'Service':'sessionAuth',
-    'User':'managerAuth',
     'signin':true,
     'doSignin':true,
     'signup':true,
@@ -65,6 +62,7 @@ module.exports.policies = {
     'forgotten':true,
     'doForgotten':true,
     'reset':true,
+    'doReset':true,
     'signout':true,
     'importUser':true,
     'import':true,
@@ -87,8 +85,8 @@ module.exports.policies = {
     'findOne':true,
   },
   UserController:{
-    '*':'managerAuth',
-   'find':'sessionAuth',
+    '*':'sessionAuth',
+   'delete':'managerAuth',
   }
 
 };

@@ -193,7 +193,9 @@ authorization needs to change, aparently there are more than three layers  of "w
 
 make introduction videos
 
-password reset
+password reset --DONE
+
+set permission for update own password, but not change other user's stuff
 
 setup debug enviroment and utest
 

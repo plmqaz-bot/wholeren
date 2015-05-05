@@ -68,6 +68,10 @@ module.exports.routes = {
     controller:'Admin',
     action:'reset'
   },
+  'POST /admin/reset/:token/':{
+    controller:'Admin',
+    action:'doReset'
+  },
   'GET /contract/':{
     controller:'contract',
     action:'getContract'
