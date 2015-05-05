@@ -69,7 +69,7 @@ module.exports = {
 		var LEAD={},STATUS={},LEADLEVEL={},COUNTRY={},DEGREE={},PAYMENT={},CATEGORY={},SERVICETYPE={},LEADDETAIL={},SALESGROUP={};
 		var options=Lead.find().then(function(data){
 			LEAD=makeHash(data,'lead');
-			return leadDetail.find();
+			return LeadDetail.find();
 	    }).then(function(data){
 	    	LEADDETAIL=makeHash(data,'leadDetail');
 	    	return LeadLevel.find();
@@ -154,12 +154,12 @@ module.exports = {
 	        var client={};
 	        var serviceTeachers=[];
 	        client.chineseName=line[1];
-	        contract.salesGroup=contractCategory(line[2]);
+	        contract.salesGroup=stripstring(line[2]);
 	        contract.contractCategory=stripstring(line[3]); // later get contractcategoryid;
 	        contract.degree=stripstring(line[4]); // later get degree id
 	        contract.createdAt=new Date(line[5]);
 	        contract.lead=stripstring(line[6]); // Later get the id;
-	        contract.leadDetail=stringcontract(line[7]);
+	        contract.leadDetail=stripstring(line[7]);
 	        contract.leadName=line[8];
 	        contract.assistant=(line[9]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //Later get user id;
 	        contract.sales=(line[10]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //later get user id;
@@ -458,43 +458,62 @@ module.exports = {
 	            return undefined;
 	        }
 	        servs=servs.toLowerCase();
-	        var start=servs.substring(0,1);
-	            var valid=false;
-	            switch(servs.substring(0,1)){
-	            	case 'd':
-	            	if(servs.indexOf('cc')>-1) start="d1";
-	            	else if(servs.indexOf('u')>-1) start="d3";
-	            	else if(servs.indexOf('高')>-1) start='d2';
-	            	else console.log("error servicetype",servs);
-	            	break;
-	            	case 'i':
-	            	if(servs.indexOf('cc')>-1) start="i1";
-	            	else if(servs.indexOf('u')>-1) start="i3";
-	            	else if(servs.indexOf('高')>-1) start='i2';
-	            	else if(servs.indexOf('国会')>-1) start='i4';
-	            	else console.log("error servicetype",servs);
-	            	break;
-	            	case 'f':
-	            	if(servs.indexOf('vip')>-1) start="f2";
-	            	else start="f1";
-	            	break;
-	            	case 'h':
-	            	if(servs.indexOf('学术')>-1) start="h1";
-	            	else if(servs.indexOf('早起')>-1) start="h2";
-	            	else if(servs.indexOf('单科')>-1) start="h3";
-	            	else if(servs.indexOf('托福')>-1) start="h4";
-	            	else if(servs.indexOf('1')>-1) start="h5";
-	            	else if(servs.indexOf('2')>-1) start="h6";
-	            	else if(servs.indexOf('选课')>-1) start="h7";
-	            	else console.log("error servicetype",servs);
-	            	break;
-	            }
-	        var theone=_.find(SERVICETYPE,function(ele){
-	            var eachone=ele['serviceType'].toLowerCase();
-	            if(eachone.indexOf(start)>=0){
-	                return true;
-	            }
-	        });
+	        var start="";
+	        var theone="";
+	        if(servs.indexOf('.')<0){
+	        	if(servs.length>2){
+	        		start=servs.substring(0,2);
+	        		theone=_.find(SERVICETYPE,function(ele){
+		            var eachone=ele['serviceType'].toLowerCase();
+		            if(eachone.indexOf(start)>=0){
+		                return true;
+		            }
+		        	});
+	        	}else{
+	        		return undefined;	
+	        	}	        	
+	        }else{
+	        	start=servs.substring(0,servs.indexOf('.')).trim();
+	        	theone=_.find(SERVICETYPE,function(ele){
+		            var eachone=ele['alias'].toLowerCase();
+		            if(eachone.indexOf(start)>=0){
+		                return true;
+		            }
+	        	});
+	        }
+	        
+	        // var start=servs.substring(0,1);
+         //    var valid=false;
+         //    switch(servs.substring(0,1)){
+         //    	case 'd':
+         //    	if(servs.indexOf('cc')>-1) start="d1";
+         //    	else if(servs.indexOf('u')>-1) start="d3";
+         //    	else if(servs.indexOf('高')>-1) start='d2';
+         //    	else console.log("error servicetype",servs);
+         //    	break;
+         //    	case 'i':
+         //    	if(servs.indexOf('cc')>-1) start="i1";
+         //    	else if(servs.indexOf('u')>-1) start="i3";
+         //    	else if(servs.indexOf('高')>-1) start='i2';
+         //    	else if(servs.indexOf('国会')>-1) start='i4';
+         //    	else console.log("error servicetype",servs);
+         //    	break;
+         //    	case 'f':
+         //    	if(servs.indexOf('vip')>-1) start="f2";
+         //    	else start="f1";
+         //    	break;
+         //    	case 'h':
+         //    	if(servs.indexOf('学术')>-1) start="h1";
+         //    	else if(servs.indexOf('早起')>-1) start="h2";
+         //    	else if(servs.indexOf('单科')>-1) start="h3";
+         //    	else if(servs.indexOf('托福')>-1) start="h4";
+         //    	else if(servs.indexOf('1')>-1) start="h5";
+         //    	else if(servs.indexOf('2')>-1) start="h6";
+         //    	else if(servs.indexOf('选课')>-1) start="h7";
+         //    	else console.log("error servicetype",servs);
+         //    	break;
+         //    }
+	        
 	        if(theone){
 	        	return theone.id;
 	        }else{

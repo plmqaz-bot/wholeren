@@ -131,6 +131,7 @@ insert into leaddetail values('ELS',10,NULL,NOW(),NOW());
 insert into leaddetail values('其它',10,NULL,NOW(),NOW());
 	
 #LeadLevel
+truncate leadlevel;
 insert into leadlevel values('L1：有互动，且信息完整',NULL,NOW(),NOW());
 insert into leadlevel values('L2：有互动，但信息不完整',NULL,NOW(),NOW());
 insert into leadlevel values('L0：老客户、二次签约、关系户',NULL,NOW(),NOW());
@@ -150,10 +151,12 @@ insert into status values('G. 公益完结',NULL,NOW(),NOW());
 #insert into status values('H. 未联系上',NULL,NOW(),NOW());
 
 #国家
+truncate country;
 insert into country values('中国',NULL,NOW(),NOW());
 insert into country values('美国',NULL,NOW(),NOW());
 
 #就读学位
+truncate degree;
 insert into degree values('无学校',NULL,NOW(),NOW());
 insert into degree values('高中',NULL,NOW(),NOW());
 insert into degree values('社区',NULL,NOW(),NOW());
@@ -163,16 +166,19 @@ insert into degree values('硕士',NULL,NOW(),NOW());# 硕博
 insert into degree values('博士',NULL,NOW(),NOW());# 硕博
 #insert into degree values('硕博',NULL,NOW(),NOW());
 #付款方式
+truncate paymentoption;
 insert into paymentoption values('中国汇款',NULL,NOW(),NOW());
 insert into paymentoption values('美国汇款',NULL,NOW(),NOW());
 insert into paymentoption values('BrainTree',NULL,NOW(),NOW());
 insert into paymentoption values('Paypal',NULL,NOW(),NOW());
 
 #收款账户
+truncate depositaccount;
 insert into depositaccount values('北京BEIJING',NULL,NOW(),NOW());
 insert into depositaccount values('美国US',NULL,NOW(),NOW());
 
 #人员角色
+truncate role;
 insert into role values('销售',NULL,NOW(),NOW());
 insert into role values('申请',NULL,NOW(),NOW());
 insert into role values('市场',NULL,NOW(),NOW());
@@ -455,6 +461,7 @@ insert into serviceprogress values('交接出去了',NULL,NOW(),NOW());
 
 
 #服务进度
+truncate servicestatus;
 insert into servicestatus values('无',1,NOW(),NOW());
 insert into servicestatus values('进入服务',2,NOW(),NOW());
 insert into servicestatus values('选校确定',3,NOW(),NOW());
@@ -465,6 +472,7 @@ insert into servicestatus values('文书启动',7,NOW(),NOW());
 insert into servicestatus values('提交文书',8,NOW(),NOW());
 insert into servicestatus values('拿到录取',9,NOW(),NOW());
 #销售角色
+truncate salesrole;
 insert into salesrole values('紧急销售',0.06,0,NULL,NOW(),NOW());
 insert into salesrole values('紧急专家',0.035,0,NULL,NOW(),NOW());
 insert into salesrole values('转学销售',0.08,0,NULL,NOW(),NOW());
@@ -510,6 +518,7 @@ insert into servrole values('文书',4,NOW(),NOW());
 insert into servrole values('文书编辑',5,NOW(),NOW());
 insert into servrole values('无角色',9,NOW(),NOW());
 #文书LEVEL
+truncate servlevel;
 insert into servlevel values('H1',1,NOW(),NOW());
 insert into servlevel values('H2',2,NOW(),NOW());
 insert into servlevel values('U1',3,NOW(),NOW());
@@ -526,11 +535,13 @@ insert into servlevel values('D4',13,NOW(),NOW());
 insert into servlevel values('DR',14,NOW(),NOW());
 
 #UserLevel
+truncate userlevel;
 insert into userlevel values('C1',1,NULL,NOW(),NOW());
 insert into userlevel values('C2',1,NULL,NOW(),NOW());
 insert into userlevel values('C3',1,NULL,NOW(),NOW());
 
 #Notification interval
+truncate notifyinterval;
 insert into notifyinterval values(1,'Day 1 ',NULL,NOW(),NOW());
 insert into notifyinterval values(3,'Day 3 ',NULL,NOW(),NOW());
 insert into notifyinterval values(6,'Day 6 ',NULL,NOW(),NOW());
