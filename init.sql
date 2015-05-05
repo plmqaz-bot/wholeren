@@ -9,16 +9,22 @@ insert into salesgroup values('其它',5,NOW(),NOW());
 
 #合同类型
 truncate contractcategory;
-insert into contractcategory values('紧急',1,NOW(),NOW());
-insert into contractcategory values('升学',2,NOW(),NOW());
-insert into contractcategory values('转学',3,NOW(),NOW());
+insert into contractcategory values('紧急服务',1,NOW(),NOW());
+insert into contractcategory values('普通升学',2,NOW(),NOW());
+insert into contractcategory values('普通转学',3,NOW(),NOW());
 insert into contractcategory values('学术辅导',4,NOW(),NOW());
-insert into contractcategory values('文书修改',5,NOW(),NOW());
+insert into contractcategory values('文书服务',5,NOW(),NOW());
 insert into contractcategory values('签证服务',6,NOW(),NOW());
 insert into contractcategory values('国会奖',7,NOW(),NOW());
 insert into contractcategory values('合作机构',8,NOW(),NOW());
 insert into contractcategory values('其它',9,NOW(),NOW());
 insert into contractcategory values('大客户',10,NOW(),NOW());
+insert into contractcategory values('薛涌留美预科',11,NOW(),NOW());
+insert into contractcategory values('ELS',12,NOW(),NOW());
+insert into contractcategory values('中信',13,NOW(),NOW());
+insert into contractcategory values('游学营',14,NOW(),NOW());
+insert into contractcategory values('AHS',15,NOW(),NOW());
+insert into contractcategory values('其它',16,NOW(),NOW());
 #insert into contractcategory values('紧急服务',NULL,NOW(),NOW());
 #insert into contractcategory values('社区转学/直升',NULL,NOW(),NOW());
 #insert into contractcategory values('高中转学/直升',NULL,NOW(),NOW());

@@ -304,6 +304,7 @@ module.exports = {
 	        //var categoryid=contract.contractCategory?(_.find(CATEGORY,{'contractCategory':contract.contractCategory})).id:0;
 	       // console.log(CATEGORY);
 	        var categoryid=CATEGORY[contract.contractCategory];
+	        if(!categoryid) console.log("unknown category :"+contract.contractCategory);
 	        //console.log(contract.contractCategory," got id ",categoryid);
 	        //var leadid=contract.lead?(_.find(LEAD,{'lead':contract.lead})).id:0;
 	        //console.log(LEAD);
@@ -455,6 +456,7 @@ module.exports = {
 	    }
 	    function findID(servs){
 	        if(!servs){
+	        	console.log("service is empty string ");
 	            return undefined;
 	        }
 	        servs=servs.toLowerCase();
@@ -469,13 +471,23 @@ module.exports = {
 		                return true;
 		            }
 		        	});
+	        	}else if (servs.length>0){
+	        		start=servs;
+	        		theone=_.find(SERVICETYPE,function(ele){
+			            var eachone=ele['serviceType'].toLowerCase();
+			            if(eachone.indexOf(start)>=0){
+			                return true;
+			            }
+		        	});
+	        		
 	        	}else{
+	        		console.log("service is empty ");
 	        		return undefined;	
 	        	}	        	
 	        }else{
 	        	start=servs.substring(0,servs.indexOf('.')).trim();
 	        	theone=_.find(SERVICETYPE,function(ele){
-		            var eachone=ele['alias'].toLowerCase();
+		            var eachone=ele['serviceType'].toLowerCase();
 		            if(eachone.indexOf(start)>=0){
 		                return true;
 		            }
