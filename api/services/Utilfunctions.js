@@ -103,6 +103,8 @@ module.exports = {
 	    var errorLine=[];
 	    var toReturn=Promise.defer();
 	    var problem_user=[];
+        var unknownItems=[];
+        var unknownStatus=[];
 	    fs.readFile(filename,'utf8',function(err,data){
 	        if(err) throw err;
 	        parse(data,{comment:'#'},function(err,output){
@@ -140,7 +142,11 @@ module.exports = {
 	            })
 				 .then(function(data){
 	             	problem_user=_.uniq(problem_user);
+                    unknownItems= _.uniq(unknownItems);
+                    unknownStatus= _.unique(unknownStatus);
 	             	console.log(problem_user,"unknown user names");
+                    console.log("Unknown items :",unknownItems);
+                    console.log("Unknown status :",unknownStatus);
 	                 	toReturn.resolve("done");
                  }).fail(function(err){
 	             	console.log('finished with errors',err);
@@ -167,32 +173,33 @@ module.exports = {
 	        contract.status=stripstring(line[12]); // later get id of status;
 	        contract.salesFollowup=line[13];
 	        contract.salesRecord=line[14];
-	        //contract.leadLevel=stripstring(line[12]); // later get leadlevel id;
-	        contract.expertContactdate=new Date(line[15]);
+	        contract.leadLevel=stripstring(line[15]); // later get leadlevel id;
+	        contract.expertContactdate=new Date(line[16]);
 	        //contract.expertFollowup=line[14];
 
-	        contract.expertFollowup=line[16]?line[16]:line[17];
-	        client.lastName=line[18];
-	        client.firstName=line[19];
-	        contract.originalText=line[20];
-	        client.primaryEmail=stripstring(line[21]);
-	        client.primaryPhone=line[22];
+	        contract.expertFollowup=line[17]?line[17]:line[18];
+	        client.lastName=line[19];
+	        client.firstName=line[20];
+	        contract.originalText=line[21];
+	        client.primaryEmail=stripstring(line[22]);
+	        client.primaryPhone=line[23];
 	        //console.log("before getting country",linenum);
-	        contract.country=stripstring(line[24]); // later get country id;
+	        client.otherInfo=line[24];
+	        contract.country=stripstring(line[25]); // later get country id;
 	        //console.log("after getting country",linenum);
-	        contract.validI20=line[25]=='是'?true:false;
-	        contract.previousSchool=line[26];
+	        contract.validI20=line[26]=='是'?true:false;
+	        contract.previousSchool=line[27];
 
-	        contract.targetSchool=line[27];
-	        var temp=parseFloat(line[28]);
+	        contract.targetSchool=line[28];
+	        var temp=parseFloat(line[29]);
 	        contract.gpa=temp?temp:0.0;
-	        temp=parseFloat(line[29]);
+	        temp=parseFloat(line[30]);
 	        contract.toefl=temp?temp:0.0;
-	        contract.otherScore=line[30];
-	        contract.age=line[31];
+	        contract.otherScore=line[31];
+	        contract.age=line[32];
 	        
 	        contract.diagnose=line[33];
-	        contract.contractSigned=new Date(line[32]);
+	        contract.contractSigned=new Date(line[34]);
 	        contract.contractPaid=new Date(line[35]);
 	        var Service=line[36]+","+line[37]+","+line[38]+","+line[39]; // Work on service
 	        temp=parseFloat(line[40]);
@@ -209,7 +216,7 @@ module.exports = {
 	            contract.client=cid.id;
 	            console.log("client id is ",contract.client);
 	            var leadnames=(contract.leadName||"").replace("transfer","").replace(/\d\"/g,'').toLowerCase().split(/[\s,\/+]+/);
-	            return getUser(leadnames);
+	            return getUser(leadnames,false,'leadname');
 	        }).then(function(assisCons){
 	        	assisCons=_.reject(assisCons=assisCons||[],function(e){return e==null;})
 	            var count=1;
@@ -303,32 +310,47 @@ module.exports = {
 	        //get the id of category
 	        //var categoryid=contract.contractCategory?(_.find(CATEGORY,{'contractCategory':contract.contractCategory})).id:0;
 	       // console.log(CATEGORY);
+            if(contract.contractCategory.indexOf('AHS')>=0||contract.contractCategory.indexOf('ELS')>=0||contract.contractCategory.indexOf('薛涌')>=0){
+                contract.contractCategory='合作机构';
+            }else if(contract.contractCategory.indexOf('中信')>=0||contract.contractCategory.indexOf('游学')>=0){
+                contract.contractCategory='大客户';
+            }
 	        var categoryid=CATEGORY[contract.contractCategory];
 	        if(!categoryid) console.log("unknown category :"+contract.contractCategory);
 	        //console.log(contract.contractCategory," got id ",categoryid);
 	        //var leadid=contract.lead?(_.find(LEAD,{'lead':contract.lead})).id:0;
 	        //console.log(LEAD);
 	        var leadid=LEAD[contract.lead];
+			if(!leadid&&contract.lead) console.log('unknown lead :'+contract.lead);
 	        //console.log(contract.lead," got id ",leadid);
 	        //var statusid=contract.status?(_.find(STATUS,{'status':contract.status})).id:0;
 	        //console.log(STATUS);
 	        var statusid=STATUS[contract.status];
+			if(!statusid&&contract.status){
+				unknownStatus.push(contract.status);
+			} 
 	        //if(!statusid&&contract.status) console.log(contract.status," got id ",statusid);
 	        //var leadLevelid=contract.leadLevel?(_.find(LEADLEVEL,{'leadLevel':contract.leadLevel})).id:0;
 	        var leadLevelid=LEADLEVEL[contract.leadLevel];
+			if(!leadLevelid&&contract.leadLevel) console.log('unknown leadLevel :'+contract.leadLevel);
 	        //console.log(contract.leadLevel," got id ",leadLevelid);
 	        //var countryid=contract.country?(_.find(COUNTRY,{'country':contract.country})).id:0;
 	        var countryid=COUNTRY[contract.country];
+			if(!countryid&&contract.country) console.log('unknown country :'+contract.country);
 	         //console.log(contract.country," got id ",countryid);
 	        //var degreeid=contract.degree?(_.find(DEGREE,{'degree':contract.degree})).id:0;
 	        //console.log(DEGREE);
 	        var degreeid=DEGREE[contract.degree];
+			if(!degreeid&&contract.degree) console.log('unknown degree :'+contract.degree);
 	        //console.log(contract.degree," got id ",degreeid);
 	        //var paymentid=contract.paymentOption?(_.find(PAYMENT,{'paymentOption':contract.paymentOption})).id:0;
 	        var paymentid=PAYMENT[contract.paymentOption];
+			if(!paymentid&&contract.paymentOption) console.log('unknown paymentOption :'+contract.paymentOption);
 	        //console.log(contract.paymentOption," got id ",paymentid);
 	        var salesGroupid=SALESGROUP[contract.salesGroup];
+			if(!salesGroupid&&contract.salesGroup) console.log('unknown salesGroup :'+contract.salesGroup);
 	        var leadDetailid=LEADDETAIL[contract.leadDetail];
+			if(!leadDetailid&&contract.leadDetail) console.log('unknown leadDetail :'+contract.leadDetail);
 	        contract.salesGroup=salesGroupid>0?salesGroupid:null;
 	        contract.contractCategory=categoryid>0?categoryid:null;
 	        contract.lead=leadid>0?leadid:null;
@@ -355,8 +377,8 @@ module.exports = {
 	            }
 	        });
 	    };
-	    function getUser(users,defaultUser){
-			users=_.reject(users,function(e){return e==''})
+	    function getUser(users,defaultUser,field){
+			users=_.reject(users,function(e){return e==''||e==undefined})
 	        var allprom=_.map(users,function(user){
 				if (user.length<1) {
 					console.log(users,"weird users");
@@ -371,7 +393,13 @@ module.exports = {
 	                if (data) {
 	                    return Promise.resolve(data.id);
 	                } else { 
-	                	if(user!='na') problem_user.push(user);
+	                	if(user!='na'){
+                            if(field){
+                                problem_user.push(field+" :"+user);
+                            }else{
+                                problem_user.push(user);
+                            }
+                        }
 	                	return Promise.resolve(null);
 	                	
 	                	// if(user=='na'){
@@ -440,7 +468,7 @@ module.exports = {
 	                });
 	                insertPs.push(curPromise);
 	             }else{
-	             	console.log("unknown service type ",ele);
+	             	//console.log("unknown service type ",ele);
 	             }
 	        });
 	          
@@ -460,6 +488,10 @@ module.exports = {
 	            return undefined;
 	        }
 	        servs=servs.toLowerCase();
+            if(servs=='na'||servs=='undefined'){
+                console.log("service is empty string ");
+                return undefined;
+            }
 	        var start="";
 	        var theone="";
 	        if(servs.indexOf('.')<0){
@@ -471,8 +503,18 @@ module.exports = {
 		                return true;
 		            }
 		        	});
+                    if(!theone){
+                        console.log("first two digit does not match service, try first digit",servs);
+                        start=servs.substring(0,1);
+                        theone=_.find(SERVICETYPE,function(ele){
+                            var eachone=ele['serviceType'].toLowerCase();
+                            if(eachone.indexOf(start)>=0){
+                                return true;
+                            }
+                        });
+                    }
 	        	}else if (servs.length>0){
-	        		start=servs;
+	        		start=servs.trim();
 	        		theone=_.find(SERVICETYPE,function(ele){
 			            var eachone=ele['serviceType'].toLowerCase();
 			            if(eachone.indexOf(start)>=0){
@@ -530,6 +572,7 @@ module.exports = {
 	        	return theone.id;
 	        }else{
 	        	console.log("service not found ",servs);
+                unknownItems.push(servs);
 	        	return undefined;
 	        }
 	    }

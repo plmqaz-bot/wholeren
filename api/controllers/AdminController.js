@@ -374,7 +374,7 @@ module.exports={
         });
     },
     'import':function(req,res){
-        var filename='60EM.csv';
+        var filename='60TR2.csv';
         Utilfunctions.importContract(filename)
          .then(function(data){
              console.log('import done');
