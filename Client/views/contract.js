@@ -18,7 +18,7 @@ var ContractView=main.baseDataView.extend({
 	collectionName:'Contract',
 	title:'合同列表',
 	paginator:true,
-	filterFields:['clientName','contractCategory','lead','leadName','status','major','country','degree'],
+	filterFields:['clientName','contractCategory','lead','leadName','status','major','country','degree',status],
 	renderOptions:{date:true,deleted:true},
     constructColumns:function(){
     	var self=this;
@@ -142,7 +142,8 @@ var ContractView=main.baseDataView.extend({
             {name:'',label:'Comment',cell:comment},
             {name:'',label:'Delete/Undelete',cell:BackgridCells.DeleteCell}
             ];
-            self.selectFields=[{name:'lead',options:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})}];
+            self.selectFields=[{name:'lead',options:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})},
+            {name:'status',options:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})}];
             return Promise.resolve({});
         });
 	},

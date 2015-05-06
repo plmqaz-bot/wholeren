@@ -105,7 +105,7 @@ insert into lead values('5. 二次销售',5,NOW(),NOW());
 insert into lead values('6. 朋友&员工介绍',6,NOW(),NOW());
 #insert into lead values('3. 朋友&员工介绍2',7,NOW(),NOW());
 insert into lead values('7. 博客微博',7,NOW(),NOW());
-insert into lead values('8. 邮件Newsletter',9,NOW(),NOW());
+insert into lead values('8. 邮件Newsletter',8,NOW(),NOW());
 insert into lead values('9. 学生客户介绍',9,NOW(),NOW());
 insert into lead values('10. 渠道机构',10,NOW(),NOW());
 insert into lead values('11. 学校refer',11,NOW(),NOW());
@@ -293,6 +293,7 @@ insert into servicetype values('M1.夏校申请','M1','Transfer',true,0.9,80,NOW
 
 
 #紧急打包
+truncate servicetypegroup;
 insert into servicetypegroup values(14,2,NULL,NOW(),NOW());
 insert into servicetypegroup values(14,6,NULL,NOW(),NOW());
 insert into servicetypegroup values(15,1,NULL,NOW(),NOW());
@@ -350,6 +351,7 @@ insert into servicetypegroup values(51,65,NULL,NOW(),NOW());
 insert into servicetypegroup values(51,46,NULL,NOW(),NOW());
 
 #合同类型--服务类别
+truncate category2service;
 insert into category2service values(1,1,NULL,NOW(),NOW());
 insert into category2service values(1,2,NULL,NOW(),NOW());
 insert into category2service values(1,3,NULL,NOW(),NOW());
