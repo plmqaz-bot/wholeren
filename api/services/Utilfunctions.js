@@ -105,6 +105,36 @@ module.exports = {
 	    var problem_user=[];
         var unknownItems=[];
         var unknownStatus=[];
+        var replaceValues=[
+	     {old:'paulaguosa',newname:'paula,guosa'},
+	     {old:'qiqiguosa',newname:'qiqi,guosa'},
+	     ];
+	     var old2Newname=[{old:'tingting',newname:'ting'},
+	     {old:'cliff',newname:'ting'},
+	     {old:'tingting',newname:'ting'},
+	     {old:'paupa',newname:'paula'},
+	     {old:'王老师',newname:'alexwang'},
+	     {old:'婷老',newname:'ting'},
+	     {old:'星仔',newname:'xing'},
+	     {old:'北京盼盼',newname:'paula'},
+	     {old:'cao',newname:'ting'},
+	     {old:'yubing',newname:'patrick'},
+	     {old:'brain',newname:'ting'},
+	     {old:'green',newname:'ting'},
+	     {old:'renee',newname:'xiaoya'},
+	     {old:'shang',newname:'ting'},
+	     {old:'lisa',newname:'ting'},
+	     {old:'设计师',newname:'ting'},
+	     {old:'yagyangyang',newname:'yangyang'},
+	     {old:'sasa',newname:'guosa'},
+	     {old:'嘉宁',newname:'janine'},
+	     {old:'王曾安琪',newname:'serenewang'},
+	     {old:'王芾',newname:'alexwang'},
+	     {old:'chechen',newname:'chenchen'},
+	     {old:'yihong',newname:'yirong'},
+	     {old:'kelly',newname:'yirong'},
+	     {old:'chole',newname:'chloe'},
+	     ];
 	    fs.readFile(filename,'utf8',function(err,data){
 	        if(err) throw err;
 	        parse(data,{comment:'#'},function(err,output){
@@ -155,6 +185,15 @@ module.exports = {
 	        });
 	    });
 	     return toReturn.promise;
+	     
+	     function processUserNames(string){
+	     	var toReturn=string;
+	     	replaceValues.forEach(function(ele){
+	     		toReturn=toReturn.replace(ele['old'],ele['newname']);
+	     	})
+	     	toReturn=toReturn.replace(" ","");
+	     	return toReturn;
+	     }
 	    function oneline(line,linenum){
 	        var contract={};
 	        var client={};
@@ -167,9 +206,9 @@ module.exports = {
 	        contract.lead=stripstring(line[6]); // Later get the id;
 	        contract.leadDetail=stripstring(line[7]);
 	        contract.leadName=line[8];
-	        contract.assistant=(line[9]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //Later get user id;
-	        contract.sales=(line[10]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); //later get user id;
-	        contract.expert=(line[11]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id;
+	        contract.assistant=processUserNames((line[9]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); //Later get user id;
+	        contract.sales=processUserNames((line[10]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); //later get user id;
+	        contract.expert=processUserNames((line[11]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); // later get user id;
 	        contract.status=stripstring(line[12]); // later get id of status;
 	        contract.salesFollowup=line[13];
 	        contract.salesRecord=line[14];
@@ -208,7 +247,7 @@ module.exports = {
 	        contract.endFee=line[42];
 	        contract.paymentOption=stripstring(line[43]); // later get payment id
 	        contract.endFeeDue=line[44]=='是'?true:false;
-	        contract.teacher=(line[45]||"").replace(/\d/g,'').toLowerCase().split(/[\s,\/]+/); // later get user id
+	        contract.teacher=processUserNames((line[45]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); // later get user id
 	        exchangeOptions(contract);
 	        //var p=Promise.defer();
 	        //console.log("look for stuff");
@@ -387,6 +426,10 @@ module.exports = {
 		        	else
 		        		return Promise.resolve(null);
 	        	}
+	        	// Preprocess the username, some are not in database
+	        	old2Newname.forEach(function(ele){
+	        		user=user.replace(ele['old'],ele['newname']);
+	        	})
 	        	user=user.trim();
 	        	user=user.replace(/\"/g,'');
 	        	return User.findOne({ or:[{nickname: {'contains':user}},{firstname: {'contains':user}},{lastname: {'contains':user}}] }).then(function (data){

@@ -191,7 +191,7 @@ filter on grid table works on string cells and also select cells --DONE
 
 authorization needs to change, aparently there are more than three layers  of "who owns who" --DONE
 
-make introduction videos
+make introduction videos --DONE
 
 password reset --DONE
 
@@ -200,6 +200,8 @@ set permission for update own password, but not change other user's stuff
 setup debug enviroment and utest
 
 setup Lead, sales group, category restrictions for user change
+
+add a rank to be able to see all contract,service, but not all comission. 
 
 make choose service to be in contract view --DONE
 
