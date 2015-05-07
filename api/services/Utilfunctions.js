@@ -168,6 +168,11 @@ module.exports = {
 		 {old:'panpan',newname:'paula'},
 		 {old:'taoyan',newname:'michelle'},
 		 {old:'吕海琳',newname:'hailin'},
+		 {old:'xianxinzan',newname:'xiaoxin'},
+		 {old:'zhenli',newname:'lydia'},
+		 {old:'李祯',newname:'lydia'},
+		 {old:'ertaicai',newname:'lydia'},
+		 {old:'wanyin',newname:'ting'},
 	     ];
 	    fs.readFile(filename,'utf8',function(err,data){
 	        if(err) throw err;
@@ -399,6 +404,17 @@ module.exports = {
 	        //console.log(contract.lead," got id ",leadid);
 	        //var statusid=contract.status?(_.find(STATUS,{'status':contract.status})).id:0;
 	        //console.log(STATUS);
+	        if(contract.status.indexOf('未咨询')>=0){
+	        	contract.status='A. 无效-联系不上';
+	        }else if(contract.status.indexOf('Done')>=0||contract.status.indexOf('C1')>=0||contract.status.indexOf('WIP')){
+	        	contract.status='E. WIP-进入服务';
+	        }else if(contract.status.indexOf('放弃治疗')>=0){
+	        	contract.status='F. 放弃治疗';
+	        }else if(contract.status.indexOf('A. 未签约')>=0){
+	        	contract.status='B. 未咨询-约咨询前&中';
+	        }else if(contract.status.indexOf('放弃并转至其他服务')){
+	        	contract.status='G. 公益完结';
+	        }
 	        var statusid=STATUS[contract.status];
 			if(!statusid&&contract.status){
 				unknownStatus.push(contract.status);
@@ -527,7 +543,7 @@ module.exports = {
 	        //console.log(servs);
 	        _.forEach(servs,function(ele){
 	            if(!ele) return;
-	            var id=findID(ele);
+	            var id=findID(ele,contID);
 	           if(id){
 	                var curPromise=Service.findOne({contract:contID,serviceType:id}).then(function(data){
 	                	data=data||{};
@@ -560,6 +576,7 @@ module.exports = {
 	                });
 	                insertPs.push(curPromise);
 	             }else{
+	             	return Comment.create({contract:contractID,comment:servs});
 	             	//console.log("unknown service type ",ele);
 	             }
 	        });
@@ -574,7 +591,7 @@ module.exports = {
 	        //});
 	        
 	    }
-	    function findID(servs){
+	    function findID(servs,contractID){
 	        if(!servs){
 	        	console.log("service is empty string ");
 	            return undefined;
@@ -586,6 +603,14 @@ module.exports = {
             }
 	        var start="";
 	        var theone="";
+	        // Preprocess servs
+	        if(servs.indexOf('帮找当地律师')>=0){
+	        	servs='c1';
+	        }else if(servs.indexOf('礼包一')>=0){
+	        	servs='pack1:b';
+	        }else if(servs.indexOf('仅申诉文书修改')>=0){
+	        	servs='p2';
+	        }
 	        if(servs.indexOf('.')<0){
 	        	if(servs.length>2){
 	        		start=servs.substring(0,2);
