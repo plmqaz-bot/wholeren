@@ -64,10 +64,9 @@ module.exports.policies = {
     'reset':true,
     'doReset':true,
     'signout':true,
-    'importUser':true,
-    'import':true,
-    
-    //'Import':'managerAuth',
+    //'importUser':true,
+    //'import':true,
+    'import':'managerAuth',
   },
   ContractController:{
     '*':'sessionAuth',
