@@ -108,6 +108,16 @@ module.exports = {
         var replaceValues=[
 	     {old:'paulaguosa',newname:'paula,guosa'},
 	     {old:'qiqiguosa',newname:'qiqi,guosa'},
+	     {old:'zhiminpaula',newname:'zhimin,paula'},
+	     {old:'qiqiguosa',newname:'qiqi,guosa'},
+	     {old:'patrickguosa',newname:'patrick,guosa'},
+	     {old:'paulaalex',newname:'paula,alexwang'},
+	     {old:'chenchenpaula',newname:'chenchen,paula'},
+	     {old:'paulaguosa',newname:'paula,guosa'},
+	     {old:'tingmengye',newname:'ting,mengye'},
+	     {old:'mengyeting',newname:'mengye,ting'},
+	     {old:'yirongxuejing',newname:'yirong,xuejing'},
+
 	     ];
 	     var old2Newname=[{old:'tingting',newname:'ting'},
 	     {old:'cliff',newname:'ting'},
@@ -134,6 +144,30 @@ module.exports = {
 	     {old:'yihong',newname:'yirong'},
 	     {old:'kelly',newname:'yirong'},
 	     {old:'chole',newname:'chloe'},
+	     {old:'chengzhi',newname:'chenzhi'},
+	     {old:'楚卉',newname:'chuhui'},
+	     {old:'angelatan',newname:'angela'},
+	     {old:'tingtingting',newname:'ting'},
+	     {old:'yolandali',newname:'yolanda'},
+	     {old:'shiyuliu',newname:'shiyu'},
+	     {old:'chenzhili',newname:'chenzhi'},
+	     {old:'lichenzhi',newname:'chenzhi'},
+	     {old:'qiyao',newname:'qiyao'},
+	     {old:'alex王',newname:'alexwang'},
+	     {old:'yaoqi',newname:'qiyao'},
+	     {old:'xueqiwang',newname:'xueqi'},
+	     {old:'gindu',newname:'gin'},
+	     {old:'张然',newname:'糯米'},
+	     {old:'zhangran',newname:'糯米'},
+		 {old:'nancyzhang',newname:'nancy'},
+		 {old:'chenjie',newname:'judy'},
+		 {old:'mary申诉',newname:'mary'},
+		 {old:'wangxinyi',newname:'xinyiwang'},
+		 {old:'zixichen',newname:'zixi'},
+		 {old:'盼盼',newname:'paula'},
+		 {old:'panpan',newname:'paula'},
+		 {old:'taoyan',newname:'michelle'},
+		 {old:'吕海琳',newname:'hailin'},
 	     ];
 	    fs.readFile(filename,'utf8',function(err,data){
 	        if(err) throw err;
@@ -188,6 +222,7 @@ module.exports = {
 	     
 	     function processUserNames(string){
 	     	var toReturn=string;
+			 toReturn=toReturn.replace(/\"/g,'');
 	     	replaceValues.forEach(function(ele){
 	     		toReturn=toReturn.replace(ele['old'],ele['newname']);
 	     	})
@@ -206,9 +241,9 @@ module.exports = {
 	        contract.lead=stripstring(line[6]); // Later get the id;
 	        contract.leadDetail=stripstring(line[7]);
 	        contract.leadName=line[8];
-	        contract.assistant=processUserNames((line[9]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); //Later get user id;
-	        contract.sales=processUserNames((line[10]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); //later get user id;
-	        contract.expert=processUserNames((line[11]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); // later get user id;
+	        contract.assistant=processUserNames((line[9]||"").replace(/\d/g,'').toLowerCase()).split(/[\s和\+,\/&]+/); //Later get user id;
+	        contract.sales=processUserNames((line[10]||"").replace(/\d/g,'').toLowerCase()).split(/[\s和\+,\/&]+/); //later get user id;
+	        contract.expert=processUserNames((line[11]||"").replace(/\d/g,'').toLowerCase()).split(/[\s和\+,\/&]+/); // later get user id;
 	        contract.status=stripstring(line[12]); // later get id of status;
 	        contract.salesFollowup=line[13];
 	        contract.salesRecord=line[14];
@@ -247,7 +282,7 @@ module.exports = {
 	        contract.endFee=line[42];
 	        contract.paymentOption=stripstring(line[43]); // later get payment id
 	        contract.endFeeDue=line[44]=='是'?true:false;
-	        contract.teacher=processUserNames((line[45]||"").replace(/\d/g,'')).toLowerCase().split(/[\s和\+,\/&]+/); // later get user id
+	        contract.teacher=processUserNames((line[45]||"").replace(/\d/g,'').toLowerCase()).split(/[\s和\+,\/&]+/); // later get user id
 	        exchangeOptions(contract);
 	        //var p=Promise.defer();
 	        //console.log("look for stuff");
@@ -417,8 +452,22 @@ module.exports = {
 	        });
 	    };
 	    function getUser(users,defaultUser,field){
-			users=_.reject(users,function(e){return e==''||e==undefined})
-	        var allprom=_.map(users,function(user){
+			users=_.reject(users,function(e){return e==''||e==undefined});
+			// Preprocess the username, some are not in database
+			var modifyusers=[];
+			users.forEach(function(user){
+				old2Newname.forEach(function(ele){
+	        		user=user.replace(ele['old'],ele['newname']);
+	        	});
+	        	replaceValues.forEach(function(ele){
+	        		user=user.replace(ele['old'],ele['newname']);
+	        	});
+	        	user=user.split(',');
+	        	user.forEach(function(e){
+	        		modifyusers.push(e);
+	        	});
+			});
+	        var allprom=_.map(modifyusers,function(user){
 				if (user.length<1) {
 					console.log(users,"weird users");
 		        	if(defaultUser)
@@ -426,10 +475,10 @@ module.exports = {
 		        	else
 		        		return Promise.resolve(null);
 	        	}
-	        	// Preprocess the username, some are not in database
-	        	old2Newname.forEach(function(ele){
-	        		user=user.replace(ele['old'],ele['newname']);
-	        	})
+	        	if(user=='tingting'){
+	        		user='ting';
+	        	}
+	        	
 	        	user=user.trim();
 	        	user=user.replace(/\"/g,'');
 	        	return User.findOne({ or:[{nickname: {'contains':user}},{firstname: {'contains':user}},{lastname: {'contains':user}}] }).then(function (data){

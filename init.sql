@@ -148,15 +148,15 @@ insert into leadlevel values('L3：无回复',NULL,NOW(),NOW());
 
 #签约状态
 truncate status;
-insert into status values('A. 无效-联系不上',NULL,NOW(),NOW());
-insert into status values('B. 未咨询-约咨询前&中',NULL,NOW(),NOW());
-insert into status values('C. 付费咨询-无法推服务',NULL,NOW(),NOW());
+insert into status values('A. 无效-联系不上',1,NOW(),NOW());
+insert into status values('B. 未咨询-约咨询前&中',2,NOW(),NOW());
+insert into status values('C. 付费咨询-无法推服务',3,NOW(),NOW());
 #insert into status values('C1. 退款',NULL,NOW(),NOW());
 #insert into status values('C2. 签约未付款',NULL,NOW(),NOW());
-insert into status values('D.未签约-咨询后跟进',NULL,NOW(),NOW());
-insert into status values('E. WIP-进入服务',NULL,NOW(),NOW());
-insert into status values('F. 放弃治疗',NULL,NOW(),NOW());
-insert into status values('G. 公益完结',NULL,NOW(),NOW());
+insert into status values('D.未签约-咨询后跟进',4,NOW(),NOW());
+insert into status values('E. WIP-进入服务',5,NOW(),NOW());
+insert into status values('F. 放弃治疗',6,NOW(),NOW());
+insert into status values('G. 公益完结',7,NOW(),NOW());
 #insert into status values('H. 未联系上',NULL,NOW(),NOW());
 
 #国家
