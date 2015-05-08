@@ -6,6 +6,7 @@ Backgrid=require('./backgrid-text-cell')(_,Backgrid);
 Backgrid=require('./backgrid-responsiveGrid')($,_,Backbone,Backgrid);
 Backgrid=require('./backgrid-paginator')(_,Backbone,Backgrid);
 Backgrid=require('./backgrid-filter')(_,Backbone,Backgrid,require('lunr'));
+Backgrid=require('./backgrid-moment-cell')(_,Backgrid,require('moment'));
 Backgrid.Extension.AlmightyFilter=Backgrid.Extension.ClientSideFilter.extend({
 	selectFields:[],
 	makeMatcher: function (query) {

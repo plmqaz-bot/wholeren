@@ -280,6 +280,7 @@ module.exports = {
 			//generateComment(attribs,'teacher');
 			delete attribs["createAt"];
 			delete attribs["updateAt"];
+			console.log(attribs);
 			Contract.update({id:req.params.id},attribs,function(err,data){
 				if(err){
 					return res.json(400,err);

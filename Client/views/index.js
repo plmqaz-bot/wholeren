@@ -17,7 +17,7 @@ Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
         Backbone.Form.editors.Text.prototype.render.call(this);
         // Then make the editor's element a datepicker.
         this.$el.datepicker({
-            format: 'yyyy-mm-dd',
+            format: 'dd/mm/yyyy',
             autoclose: true,
             weekStart: 1
         });
@@ -27,11 +27,11 @@ Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
 
     // The set value must correctl
     setValue: function(value) {
-        var d=new Date(value);
-        if(isNaN(d.getTime())){
+        var d=moment(value);
+        if(isNaN(d.format('MM/DD/YYYY'))){
             this.$el.val("");    
         }else{
-            this.$el.val(d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate());
+            this.$el.val(d.format('MM/DD/YYYY'));
         }        
     }
 });

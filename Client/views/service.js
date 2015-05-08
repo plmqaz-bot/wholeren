@@ -256,8 +256,7 @@ var ApplicationPopup=ServicePopup.extend({
         this.collection.setSID(this.serviceID);
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.simpleModel({},{_url:'/Application/'});
-        toAdd.set('service',this.serviceID);
+        var toAdd=new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/Application/'});
         var self=this;
         toAdd.save(null,{
             success:function(d){
@@ -289,12 +288,18 @@ var ApplicationPopup=ServicePopup.extend({
             var DateCell=Backgrid.DateCell.extend({
                 formatter:{
                     fromRaw:function(rawValue,model){
+                        if(rawValue==null||rawValue=="") return '';
                         var d=moment(rawValue);
                         return d.format('YYYY-MM');
                     },
                     toRaw:function(formattedData, model){
+                        if(formattedData=="") return null;
                         var d=moment(formattedData,'YYYY-MM');
-                        return d;
+                        if(d.isValid()){
+                            return d
+                        }else{
+                            return
+                        } ;
                     }
                 }
             });
