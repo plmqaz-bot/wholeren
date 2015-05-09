@@ -145,6 +145,8 @@ Settings.allUsers=main.baseDataView.extend({
     title:'Users',
     paginator:true,
     renderOptions:{},
+    minScreenSize:0,
+    filterFields:['email','nickname'],
     templateName:'default',
     constructColumns:function(){
         var self=this;

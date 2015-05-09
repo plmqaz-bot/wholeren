@@ -18,7 +18,7 @@ var ContractView=main.baseDataView.extend({
 	collectionName:'Contract',
 	title:'合同列表',
 	paginator:true,
-	filterFields:['clientName','contractCategory','lead','leadName','status','major','country','degree',status],
+	filterFields:['clientName','contractCategory','lead','leadName','status','major','country','degree'],
 	renderOptions:{date:true,deleted:true},
     constructColumns:function(){
     	var self=this;

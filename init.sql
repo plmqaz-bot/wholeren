@@ -977,30 +977,67 @@ END$$
 DELIMITER ;
 
 # SALES COMISSION whole table or single 
+-- DROP PROCEDURE IF EXISTS SalesComission;
+-- delimiter ;;
+-- create PROCEDURE SalesComission (uid int,sid int, year int, month int,single bool)
+-- COMMENT ''
+-- BEGIN
+-- select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,r.realPaid,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,IFNULL(r.realPaid,0)*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
+-- inner join contract on (contract.sales1=user.id or contract.assisCont1=user.id or contract.expert1=user.id or contract.sales2=user.id or contract.assisCont2=user.id or contract.expert2=user.id)
+-- inner join client on contract.client=client.id
+-- inner join service on (service.contract=contract.id)
+-- left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
+-- left join salesrole on (contractcomission.salesRole=salesrole.id)
+-- left join servicetype on (service.serviceType=servicetype.id)
+-- left join userlevel on (user.userlevel=userlevel.id)
+-- left join 
+-- (select serviceinvoice.service, IFNULL(paidAmount,0)/totalpay*(IFNULL(invoice.receivedTotal,0)-IFNULL(invoice.receivedNontaxable,0)-IFNULL(invoice.receivedOther,0)-IFNULL(invoice.receivedRemittances,0)) as realPaid from serviceinvoice 
+-- left join
+-- (select invoice.id,sum(IFNULL(paidAmount,0)) as totalpay from invoice
+-- left join serviceinvoice on serviceinvoice.invoice=invoice.id
+-- group by invoice.id) as t on serviceinvoice.invoice=t.id
+-- left join invoice on serviceinvoice.invoice=invoice.id
+-- group by serviceinvoice.service) as r on r.service=service.id
+-- left join whoownswho w on w.puppet=user.id
+-- where ((single=false and (user.id=uid or uid=0 or w.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
+--  and ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)));
+-- END;;
+-- delimiter ;
+
+drop function if exists countUser;
+delimiter ;;
+create function countUser(sales1 int,sales2 int ,expert1 int,expert2 int) returns int deterministic
+begin
+ return 0+if(sales1 is null,0,1)+if(sales2 is null,0,1)+if(expert1 is null,0,1)+if(expert2 is null,0,1);
+end;;
+delimiter ;
+drop function if exists salesRole;
+delimiter ;;
+create function salesRole(id int, sales1 int,sales2 int ,expert1 int,expert2 int) returns varchar(30) 
+begin
+declare role varchar(30);
+SET role='';
+if sales1=id or sales2=id then
+SET role='sales';
+elseif expert1=id or expert2=id then 
+SET role='expert';
+end if;
+ return role;
+end;;
+delimiter ;
+
+
 DROP PROCEDURE IF EXISTS SalesComission;
 delimiter ;;
-create PROCEDURE SalesComission (uid int,sid int, year int, month int,single bool)
-COMMENT ''
+create PROCEDURE SalesComission (uid int, year int, month int)
 BEGIN
-select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,r.realPaid,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,IFNULL(r.realPaid,0)*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 
-inner join contract on (contract.sales1=user.id or contract.assisCont1=user.id or contract.expert1=user.id or contract.sales2=user.id or contract.assisCont2=user.id or contract.expert2=user.id)
+select client.chineseName, contract.id as 'contract',contract.salesGroup, contract.lead, salesRole(user.id,sales1,sales2,expert1,expert2) as 'role',contract.leadDetail, contract.contractPrice, sum(service.price) as 'altPrice',contract.contractSigned,user.nickname,countUser(sales1,sales2,expert1,expert2) as 'UserCount',IFNULL(s.goal,0) as 'goal' from contract 
 inner join client on contract.client=client.id
-inner join service on (service.contract=contract.id)
-left join contractcomission on (user.id=contractcomission.user and service.id=contractcomission.service)
-left join salesrole on (contractcomission.salesRole=salesrole.id)
-left join servicetype on (service.serviceType=servicetype.id)
-left join userlevel on (user.userlevel=userlevel.id)
-left join 
-(select serviceinvoice.service, IFNULL(paidAmount,0)/totalpay*(IFNULL(invoice.receivedTotal,0)-IFNULL(invoice.receivedNontaxable,0)-IFNULL(invoice.receivedOther,0)-IFNULL(invoice.receivedRemittances,0)) as realPaid from serviceinvoice 
-left join
-(select invoice.id,sum(IFNULL(paidAmount,0)) as totalpay from invoice
-left join serviceinvoice on serviceinvoice.invoice=invoice.id
-group by invoice.id) as t on serviceinvoice.invoice=t.id
-left join invoice on serviceinvoice.invoice=invoice.id
-group by serviceinvoice.service) as r on r.service=service.id
+inner join user on user.id in (contract.sales1,contract.sales2,contract.expert1,contract.expert2) 
+left join salescomissiongoal s on (s.year=year and s.month=month and user.id=s.user)
+left join service on service.contract=contract.id
 left join whoownswho w on w.puppet=user.id
-where ((single=false and (user.id=uid or uid=0 or w.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid))
- and ((year is null or month is null) or (DateInRange(contract.contractPaid,year,month)));
+where contractSigned is not null and contractPrice is not null and (uid=user.id or uid=w.boss or uid=0) and (DateInRange(contract.contractSigned,year,month)) group by contract.id order by user.nickname, contractSigned ;
 END;;
 delimiter ;
 

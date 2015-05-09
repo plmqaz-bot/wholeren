@@ -14,9 +14,42 @@ module.exports = {
 		var year=parseInt(req.param('year'));
 		var month=parseInt(req.param('month'));
 		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});
-		var sql="call SalesComission("+id+",0,"+year+","+month+",false);";
-		Utilfunctions.nativeQuery(sql).then(function(data){
-			return res.json(data[0]);
+		var sql="call SalesComission("+id+","+year+","+month+");";
+		Promise.all([Utilfunctions.nativeQuery(sql),ComissionLookup.find()]).spread(function(data,cl){
+			var comission=data[0];
+			var curUser='';
+			var goal=0;
+			var toReturn = _.map(comission,function(ele){
+				if(curUser!=ele['nickname']){
+					curUser=ele['nickname'];
+					goal=ele['goal'];
+				}
+				
+				var towardGoal=Math.max(ele['contractPrice'],ele['altPrice'])/ele['UserCount'];
+				ele.amountBeforeGoal=Math.min(towardGoal,goal);
+				ele.amountAfterGoal=Math.max(towardGoal-goal,0);
+				ele.goal=goal=Math.max(goal-towardGoal,0);
+				// if(towardGoal<goal){
+				// 	var amountBeforeGoal=towardGoal;
+				// 	var amountAfterGoal=0;
+				// 	goal=goal-towardGoal;
+				// }else{
+				// 	var amountBeforeGoal=goal;
+				// 	var amountAfterGoal=towardGoal-goal;
+				// 	goal=0;
+				// }
+				if((cl||[]).length>0){
+					ele.percent=(_.max(cl,function(e){
+						if(e.rolename==ele['role']&&e.salesGroup==ele.salesGroup){
+							return e.comission;
+						}
+						return 0;
+					})||{}).comission;
+				}
+				ele.comission=ele.percent*ele.amountAfterGoal*ele.UserCount+0.01*ele.amountBeforeGoal;
+				return ele;
+			});
+			return res.json(toReturn);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Getting SailesComission failed");
 		});		

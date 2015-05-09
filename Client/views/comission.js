@@ -24,22 +24,24 @@ var sales=main.baseDataView.extend({
     templateName:'default',
     constructColumns:function(){
         var self=this;
-        return util.ajaxGET('/SalesComission/roles/').then(function(data){
-            var myselect=BackgridCells.SelectCell({name:'Roles',values:[{name:"role",values:data}]});
+        return util.ajaxGET('/salesGroup/').then(function(data){
+            var myselect=BackgridCells.SelectCell({name:'销售组',values:_.map(data,function(e){return [e.salesGroup,e.id]})});
             self.columns=[
-            {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+            {name:'chineseName',label:'学生名字',editable:false,cell:'string'},
             {name:'nickname',label:'销售名字',editable: false,cell:'string'},
-            {name:'serviceType',label:'服务类型',cell:'string'},
-            {name:'contractPaid',label:'付款时间',editable:false,cell:'date'},
-            {name:'price',label:'服务价格',editable:false,cell:'number'},
-            {name:'realPaid',label:'实际收入',editable:false,cell:'number'},
-            {name:'salesRole',label:'销售任务',cell:myselect},
-            {name:'comissionPercent',label:'佣金百分比',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
-            {name:'flatComission',label:'佣金非百分比',editable: false,cell:'number'},
-            {name:'comission',label:'服务佣金百分比',editable: false,cell:'number'},
-            {name:'extra',label:'其他',cell:'number'},
-            {name:'final',label:'总佣金',cell:'number'}
+            {name:'UserCount',label:'老师人数',editable:false,cell:'integer'},
+            {name:'contractSigned',label:'签约时间',editable:false,cell:'date'},
+            {name:'contractPrice',label:'签约金额',editable:false,cell:'number'},
+            {name:'altPrice',label:'服务总价',editable:false,cell:'number'},
+            {name:'amountBeforeGoal',label:'完成目标金额',editable:false,cell:'number'},
+            {name:'goal',label:'离目标还剩',editable:false,cell:'number'},
+            {name:'amountAfterGoal',label:'超过目标金额',editable: false,cell:'number'},
+            {name:'role',label:'销售/专家',editable:false,cell:'string'},
+            {name:'salesGroup',label:'销售组',editable:false,cell:myselect},
+            {name:'percent',label:'超过目标佣金百分比',editable: false,cell:Backgrid.NumberCell.extend({decimals:3})},
+            {name:'comission',label:'合同佣金',editable:false,cell:'number'},
             ];
+
             return Promise.resolve({});
         }); 
     },
