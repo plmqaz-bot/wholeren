@@ -46,7 +46,7 @@ module.exports = {
 						return 0;
 					})||{}).comission;
 				}
-				ele.comission=ele.percent*ele.amountAfterGoal*ele.UserCount+0.01*ele.amountBeforeGoal;
+				ele.comission=ele.percent*ele.amountAfterGoal*ele.UserCount+0.01*ele.amountBeforeGoal*ele.UserCount;
 				return ele;
 			});
 			return res.json(toReturn);

@@ -97,21 +97,14 @@ Market.view3=main.baseDataView.extend({
     title:'每月销量',
     paginator:true,
     collectionName:'General',
+    minScreenSize:0,
     renderOptions:{month:true},
-    collectionParam:{url:'/Market/MonthlyGoal/',model:Backbone.Model.extend({url:'/MonthlyGoal/'})},
+    collectionParam:{url:'/Market/MonthlyGoal/'},
     templateName:'default',
     constructColumns:function(){
          this.columns=[
         {name:'nickname',label:'老师名字',editable:false,cell:'string'},
-        {name:'transferSaleGoal',label:'转学销售目标',cell:'integer'},
-        {name:'transferExpGoal',label:'转学专家目标',cell:'integer'},
-        {name:'emergSaleGoal',label:'紧急销售目标',cell:'integer'},
-        {name:'emergExpGoal',label:'紧急专家目标',cell:'integer'},
-        {name:'highSaleGoal',label:'高中销售目标',cell:'integer'},
-        {name:'highExpGoal',label:'高中专家目标',cell:'integer'},
-        {name:'studySaleGoal',label:'学术销售目标',cell:'integer'},
-        {name:'studyExpGoal',label:'学术专家目标',cell:'integer'},
-        {name:'leadGoal',label:'lead',cell:'integer'},
+        {name:'goal',label:'目标金额',cell:'number'}
         ];
         return Promise.resolve({});
     },
