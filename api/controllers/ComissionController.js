@@ -24,8 +24,8 @@ module.exports = {
 					curUser=ele['nickname'];
 					goal=ele['goal'];
 				}
-				
-				var towardGoal=Math.max(ele['contractPrice'],ele['altPrice'])/ele['UserCount'];
+				var ratio=ele['salesGroup']==1?0.8:1;
+				var towardGoal=Math.max(ele['contractPrice'],ele['altPrice'])/ele['UserCount']*ratio;
 				ele.amountBeforeGoal=Math.min(towardGoal,goal);
 				ele.amountAfterGoal=Math.max(towardGoal-goal,0);
 				ele.goal=goal=Math.max(goal-towardGoal,0);
@@ -46,7 +46,7 @@ module.exports = {
 						return 0;
 					})||{}).comission;
 				}
-				ele.comission=ele.percent*ele.amountAfterGoal*ele.UserCount+0.01*ele.amountBeforeGoal*ele.UserCount;
+				ele.comission=(ele.percent*ele.amountAfterGoal+0.01*ele.amountBeforeGoal)*ele.UserCount/ratio;
 				return ele;
 			});
 			return res.json(toReturn);
