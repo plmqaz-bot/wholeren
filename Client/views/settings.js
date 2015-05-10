@@ -337,6 +337,7 @@ Settings.hierarchy=main.baseDataView.extend({
                 {name:'id',label:'id',editable:false,cell:'integer'},
                 {name:'puppet',label:'被偷窥',editable:editable,cell:userselect},
                 {name:'boss',label:'主动偷窥',editable:editable,cell:userselect},
+                {name:'',label:'Delete',cell:BackgridCells.DeleteCell}
             ];
             self.selectFields=[
             {name:'puppet',options:_.map(user,function(e){return [e.nickname,e.id]})},
@@ -363,7 +364,7 @@ Settings.hierarchy=main.baseDataView.extend({
         // var popUpView = new LookupForm({collection:this.collection});
         // popUpView.render()
         // $('.app').html(popUpView.el);
-        var toAdd=new Obiwang.Models.syncModel(null,{_url:collectionUrl});
+        var toAdd=new Obiwang.Models.syncModel(null,{_url:this.collectionUrl});
         var self=this;
         toAdd.save(null,{
             success:function(model){
@@ -410,6 +411,7 @@ Settings.comissionLookup=Settings.hierarchy.extend({
                 {name:'salesGroup',label:'销售组',editable:editable,cell:salesgroup},
                 {name:'rolename',label:'销售角色',editable:editable,cell:'string'},
                 {name:'comission',label:'佣金百分比',editable:editable,cell:Backgrid.NumberCell.extend({decimals:3})},
+                {name:'',label:'Delete',cell:BackgridCells.DeleteCell}
             ];
             // self.selectFields=[
             // {name:'puppet',options:_.map(user,function(e){return [e.nickname,e.id]})},
