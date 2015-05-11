@@ -6,6 +6,7 @@
  */
 var Promise=require('bluebird');
 var fs=require('fs');
+var path=require('path');
 module.exports = {
 	create:function(req,res){
 		var userid=req.session.user.id;
@@ -13,7 +14,7 @@ module.exports = {
 		if(!userid) return res.json(401, 'no valid user id');
 		console.log(sails.config.appPath);
 		req.file('file').upload({
-		  dirname: require('path').resolve(sails.config.appPath, sails.config.filePath)
+		  dirname: path.resolve(sails.config.appPath, sails.config.filePath)
 		},function (err, uploadedFiles) {
 		  if (err) return Utilfunctions.errorHandler(err,res,"file upload filed");
 		  if(uploadedFiles.length===0){
@@ -22,8 +23,8 @@ module.exports = {
 		  //console.log("uploaded file : ",uploadedFiles);
 		  var promises=_.map(uploadedFiles,function(f){
 		  	console.log(f.fd);
-		  	f.fd=f.fd.substring(f.fd.lastIndexOf(/[\\/]/)+1);
-		  	console.log(f.fd.lastIndexOf(/[\\/]/),f.fd);
+		  	f.fd=path.basename(f.fd);
+		  	console.log(f.fd);
 		  	return PublicFiles.create({uploadedBy:userid,filename:f.filename,path:f.fd,category:req.body.category}).then(function(data){
 		  		return {filename:data.filename,status:'success',detail:f};
 		  	}).error(function(err){
