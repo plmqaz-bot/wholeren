@@ -22,7 +22,7 @@ module.exports = {
 		  //console.log("uploaded file : ",uploadedFiles);
 		  var promises=_.map(uploadedFiles,function(f){
 		  	console.log(f.fd);
-		  	f.fd=f.fd.substring(f.fd.lastIndexOf('\\')+1);
+		  	f.fd=f.fd.substring(f.fd.lastIndexOf(/[\\/]/)+1);
 		  	return PublicFiles.create({uploadedBy:userid,filename:f.filename,path:f.fd,category:req.body.category}).then(function(data){
 		  		return {filename:data.filename,status:'success',detail:f};
 		  	}).error(function(err){
