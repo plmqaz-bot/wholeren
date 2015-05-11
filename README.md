@@ -205,6 +205,7 @@ add a rank to be able to see all contract,service, but not all comission.
 
 make choose service to be in contract view --DONE
 
+
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
 
 raid for data storage

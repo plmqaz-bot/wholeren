@@ -42,7 +42,8 @@
     "underscore": "*",
     "backbone-forms": "*",
     "jquery-ui": "*",
-    "moment": "*"
+    "moment": "*",
+    "skipper-disk":"*"
   },
   "scripts": {
     "start": "node main.js",

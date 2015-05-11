@@ -80,7 +80,14 @@ adminNavbar = {
         key: 'admin.navbar.settings',
         path: '/settings/',
         display:true
-    }
+    },
+    // accountinfo:{
+    //     name: 'Account',
+    //     navClass: 'contract',
+    //     key: 'admin.navbar.settings',
+    //     path: '/Account/',
+    //     display:true  
+    // }
 };
 loginSecurity=[];
 function setSelected(list, name) {

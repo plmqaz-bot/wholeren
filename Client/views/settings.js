@@ -14,6 +14,7 @@ var JST=require('../JST');
 var main=require('./data.js');
 var base=require('./base');
 var Sidebar=require('./sidebar');
+var Dropzone=require('dropzone');
 
 var Settings={};
     // ### General settings
@@ -381,6 +382,7 @@ Settings.hierarchy=main.baseDataView.extend({
 Settings.comissionLookup=Settings.hierarchy.extend({
     collectionUrl:'/ComissionLookup/',
     title:'销售佣金设定',
+    filterFields:['rolename'],
    // filterFields:['puppet','boss'],
     constructColumns:function(){
         var self=this;
@@ -422,12 +424,74 @@ Settings.comissionLookup=Settings.hierarchy.extend({
     },
 
 });
+Settings.fileupload=main.baseDataView.extend({
+    collectionName:'SyncCollection',
+    collectionUrl:'/Publicfiles/',
+    title:'共享文件',
+    filterFields:['filename'],
+    paginator:true,
+    minScreenSize:0,
+    renderOptions:{},
+    templateName:'default',
+   // filterFields:['puppet','boss'],
+    constructColumns:function(){
+        var self=this;
+        var editable=false;
+        if(parseInt(this.rank||"1")==3){
+            editable=true;
+        }
+        return util.ajaxGET('/User/').then(function(user){
+            var userselect=BackgridCells.SelectCell({name:"老师们",values:_.map(user,function(e){return [e.nickname,e.id]})});
+            var uri=BackgridCells.Cell.extend({
+                cellText:'download',
+                action:function(e){
+                    window.open("/PublicFiles/getFile/"+this.model.get('id'));
+                },
+                render: function () {
+                    this.$el.html('<a src="/PublicFiles/getFile/'+this.model.get('id')+'">download</a>');
+                    this.delegateEvents();
+                    return this;
+                }
+            });
+
+            self.columns=[
+                {name:'filename',label:'文件名',editable:false,cell:'string'},
+                {name:'createdAt',label:'上传时间',editable:false,cell:'datetime'},
+                {name:'类型',label:'上传的老师',editable:false,cell:userselect},
+                {name:'fileCategory',label:'归类',editable:false,cell:'string'},
+                {name:'',label:'下载',editable:false,cell:uri},
+                {name:'',label:'Delete',cell:BackgridCells.DeleteCell}
+            ];
+            // self.selectFields=[
+            // {name:'puppet',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            // {name:'boss',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            // ];
+            return Promise.resolve({});
+        });
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+        $('.content').prepend('<div id="uploader" style="margin:auto;border-style:solid;width:100px;text-align:center;height:50px">Drop Files here</div>');
+        var myDropzone = new Dropzone("div#uploader", { url: "/PublicFiles/"});
+        myDropzone.on("complete", function(file) {
+            util.handleRequestSuccess({responseText:"Upload Successful"});
+            myDropzone.removeFile(file);
+        });
+    },
+
+});
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl',
     lookup:'Comission机制',
     hierarchy:'老师等级机制',
-    comissionLookup:'销售佣金设定'
+    comissionLookup:'销售佣金设定',
+    fileupload:'文件下载'
 }
 
 
