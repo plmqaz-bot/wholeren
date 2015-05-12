@@ -128,7 +128,7 @@ insert into leaddetail values('Dealmoon北美微论坛',7,NULL,NOW(),NOW());
 insert into leaddetail values('洛杉矶华人资讯网',7,NULL,NOW(),NOW());
 insert into leaddetail values('Gesoo',7,NULL,NOW(),NOW());
 insert into leaddetail values('其他',7,NULL,NOW(),NOW());
-insert into leaddetail values('官方博微',8,NULL,NOW(),NOW());
+insert into leaddetail values('官方微博',8,NULL,NOW(),NOW());
 insert into leaddetail values('官方博客',8,NULL,NOW(),NOW());
 insert into leaddetail values('陈航老师博客',8,NULL,NOW(),NOW());
 insert into leaddetail values('陈航老师微博',8,NULL,NOW(),NOW());
@@ -1037,7 +1037,7 @@ inner join user on user.id in (contract.sales1,contract.sales2,contract.expert1,
 left join salescomissiongoal s on (s.year=year and s.month=month and user.id=s.user)
 left join service on service.contract=contract.id
 left join whoownswho w on w.puppet=user.id
-where contractSigned is not null and contractPrice is not null and (uid=user.id or uid=w.boss or uid=0) and (DateInRange(contract.contractSigned,year,month)) group by contract.id order by user.nickname, contractSigned ;
+where contractSigned is not null and contractPrice is not null and (uid=user.id or uid=w.boss or uid=0) and (DateInRange(contract.contractSigned,year,month)) group by contract.id,user.id order by user.nickname, contractSigned ;
 END;;
 delimiter ;
 

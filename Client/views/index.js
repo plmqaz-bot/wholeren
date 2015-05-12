@@ -27,12 +27,12 @@ Backbone.Form.editors.DatePicker =Backbone.Form.editors.Text.extend({
 
     // The set value must correctl
     setValue: function(value) {
-        var d=moment(value);
-        if(isNaN(d.format('MM/DD/YYYY'))){
-            this.$el.val("");    
+        var d=moment(value).format('MM/DD/YYYY');
+        if(d=='Invalid date'){
+            this.$el.val("");  
         }else{
-            this.$el.val(d.format('MM/DD/YYYY'));
-        }        
+            this.$el.val(d);  
+        }
     }
 });
 Backbone.Form.Field.template=_.template('<div class="form-group">\

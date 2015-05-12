@@ -4,8 +4,8 @@
     <h1 class="title">{{title}}</h1>
     <section class="page-actions" style="float:right">
         {{#if options.deleted}}
-        <label>Deleted</label>
         <input type="checkbox" id="deleted"></input>
+        <label>Show Only Deleted</label>        
         {{/if}}
         {{#if options.date}}
         <label>Start Date</label><input id="startDate" value="09-01-2014"></input>

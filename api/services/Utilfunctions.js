@@ -71,10 +71,12 @@ module.exports = {
 			LEAD=makeHash(data,'lead');
 			return LeadDetail.find();
 	    }).then(function(data){
-	    	LEADDETAIL=makeHash(data,'leadDetail');
+	    	 LEADDETAIL=makeHash(data,'leadDetail');
+	    	//LEADDETAIL=data;
 	    	return LeadLevel.find();
 	    }).then(function(data){
-	        LEADLEVEL=makeHash(data,'leadLevel');
+	        //LEADLEVEL=makeHash(data,'leadLevel');
+	        LEADLEVEL=data;
 	        return Country.find();
 	    }).then(function(data){
 	        COUNTRY=makeHash(data,'country');
@@ -181,7 +183,7 @@ module.exports = {
 	        if(err) throw err;
 	        parse(data,{comment:'#'},function(err,output){
 	            options.then(function(data){
-	                    var firstline = false;
+	                    var firstline = true;
 	                var linepromises = [];
 	                var i=0;
 	                var allPromises=[];
@@ -241,6 +243,7 @@ module.exports = {
 	        var contract={};
 	        var client={};
 	        var serviceTeachers=[];
+	        //if(line[0]=='新表格')return Promise.resolve("already")
 	        client.chineseName=line[1];
 	        contract.salesGroup=stripstring(line[2]);
 	        contract.contractCategory=stripstring(line[3]); // later get contractcategoryid;
@@ -256,7 +259,11 @@ module.exports = {
 	        contract.salesFollowup=line[13];
 	        contract.salesRecord=line[14];
 	        contract.leadLevel=stripstring(line[15]); // later get leadlevel id;
-	        contract.expertContactdate=new Date(line[16]);
+	        if(line[16]){
+	        	contract.expertContactdate=new Date(line[16].split('\n')[0]);
+	        }else{
+	        	contract.expertContactdate=null;
+	        }
 	        //contract.expertFollowup=line[14];
 
 	        contract.expertFollowup=line[17]?line[17]:line[18];
@@ -281,8 +288,29 @@ module.exports = {
 	        contract.age=line[32];
 	        
 	        contract.diagnose=line[33];
-	        contract.contractSigned=new Date(line[34]);
-	        contract.contractPaid=new Date(line[35]);
+	        //contract.contractSigned=line[34]==""?null:new Date(line[34].split('\n')[0]);
+	        if(line[34]){
+	        	contract.contractSigned=new Date(line[34].split('\n')[0]);
+	        }else{
+	        	contract.contractSigned=null;
+	        }
+	        //contract.contractPaid=line[35]==""?null:new Date(line[35].split('\n')[0]);
+	        if(line[34]){
+	        	contract.contractPaid=new Date(line[35].split('\n')[0]);
+	        }else{
+	        	contract.contractPaid=null;
+	        }
+	        if(contract.contractSigned){
+	        	if(isNaN(contract.contractSigned.getTime())){
+	        		console.log("Invalid date :",line[34])
+	        	}	
+	        }
+	        if(contract.contractPaid){
+	        	if(isNaN(contract.contractPaid.getTime())){
+	        		console.log("Invalid date :",line[35])
+	        	}	
+	        }
+	        
 	        var Service=line[36]+","+line[37]+","+line[38]+","+line[39]; // Work on service
 	        temp=parseFloat(line[40]);
 	        contract.contractPrice=temp?temp:0.0;
@@ -360,7 +388,7 @@ module.exports = {
 	            if(tea.length>1)console.log("weird teacher",tea);
 	            // add this contract
 	            console.log("look for contract",contract.client,contract.contractCategory);
-	            return Contract.findOne({client:contract.client,contractCategory:contract.contractCategory});
+	            return Contract.findOne({client:contract.client,contractCategory:contract.contractCategory,lead:contract.lead,leadDetail:contract.leadDetail,contractSigned:contract.contractSigned,contractPaid:contract.contractPaid});
 	        }).then(function(cont){
 	        	cont=cont||{};
 	          if(cont.id){
@@ -376,9 +404,9 @@ module.exports = {
 	            }
 	        }).then(function(data){
 	        	data=data||{};
-	            var contractID=data.id;
-	            console.log("creating service for contract ",contractID);
-	            return getService(Service,contractID,serviceTeachers);     
+	            var contractID1=data.id;
+	            console.log("creating service for contract ",contractID1);
+	            return getService(Service,contractID1,serviceTeachers);     
 	               // p.resolve("current");
 	        }).then(function(data){
 	            return Promise.resolve(linenum);
@@ -424,8 +452,19 @@ module.exports = {
 			} 
 	        //if(!statusid&&contract.status) console.log(contract.status," got id ",statusid);
 	        //var leadLevelid=contract.leadLevel?(_.find(LEADLEVEL,{'leadLevel':contract.leadLevel})).id:0;
-	        var leadLevelid=LEADLEVEL[contract.leadLevel];
-			if(!leadLevelid&&contract.leadLevel) console.log('unknown leadLevel :'+contract.leadLevel);
+	        //var leadLevelid=LEADLEVEL[contract.leadLevel];
+	        var leadLevelid=null;
+	        if(contract.leadLevel){
+	        	leadLevelid=_.find(LEADLEVEL,function(e){
+	        		if(contract.leadLevel.substring(0,2)==e.leadLevel.substring(0,2)) return true;
+	        	});
+	        	if(!leadLevelid){
+	        		console.log('unknown leadLevel :'+contract.leadLevel);	
+	        	}else{
+	        		leadLevelid=leadLevelid.id;
+	        	}
+	        }
+			//if(!leadLevelid&&contract.leadLevel) console.log('unknown leadLevel :'+contract.leadLevel);
 	        //console.log(contract.leadLevel," got id ",leadLevelid);
 	        //var countryid=contract.country?(_.find(COUNTRY,{'country':contract.country})).id:0;
 	        var countryid=COUNTRY[contract.country];
@@ -442,6 +481,8 @@ module.exports = {
 	        //console.log(contract.paymentOption," got id ",paymentid);
 	        var salesGroupid=SALESGROUP[contract.salesGroup];
 			if(!salesGroupid&&contract.salesGroup) console.log('unknown salesGroup :'+contract.salesGroup);
+			if(contract.leadDetail=='新介绍lead')contract.leadDetail='陌生leads';
+			if(contract.leadDetail=='在服务的学生')contract.leadDetail='服务中的学生再次签约';
 	        var leadDetailid=LEADDETAIL[contract.leadDetail];
 			if(!leadDetailid&&contract.leadDetail) console.log('unknown leadDetail :'+contract.leadDetail);
 	        contract.salesGroup=salesGroupid>0?salesGroupid:null;
@@ -579,7 +620,7 @@ module.exports = {
 	                });
 	                insertPs.push(curPromise);
 	             }else{
-	             	return Comment.create({contract:contractID,comment:servs});
+	             	return Comment.create({contract:contID,comment:servs});
 	             	//console.log("unknown service type ",ele);
 	             }
 	        });
