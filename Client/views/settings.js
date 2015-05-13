@@ -45,9 +45,16 @@ Settings.user=main.basePaneView.extend({
                 firstName = this.$('#user-firstname').val(),
                 lastName = this.$('#user-lastname').val(),
                 nickname = this.$('#user-nickname').val(),
-                email = this.$('#user-email').val(),
+                personalemail = this.$('#user-personalemail').val(),
                 phone = this.$('#user-phone').val(),
                 skype = this.$('#user-skype').val(),
+                wechat = this.$('#user-wechat').val(),
+                dropbox= this.$('#user-dropbox').val(),
+                evernote= this.$('#user-evernote').val(),
+                address= this.$('#user-address').val(),
+                city= this.$('#user-city').val(),
+                state= this.$('#user-state').val(),
+                zipcode= this.$('#user-zipcode').val(),
                 bio=this.$('#user-bio').val(),
                 validationErrors = [];
 
@@ -64,7 +71,7 @@ Settings.user=main.basePaneView.extend({
                 validationErrors.push({message: "Bio is too long", el: $('#user-bio')});
             }
 
-            if (!validator.isEmail(email)) {
+            if (!validator.isEmail(personalemail)) {
                 validationErrors.push({message: "Please supply a valid email address", el: $('#user-email')});
             }
 
@@ -76,14 +83,21 @@ Settings.user=main.basePaneView.extend({
                     'firstname':             firstName,
                     'lastname':             lastName,
                     'nickname':             nickname,
-                    'email':            email,
+                    'personalemail':            personalemail,
                     'phone':         phone,
                     'skype':          skype,
+                    'wechat':wechat,
+                    'dropbox':dropbox,
+                    'evernote':evernote,
+                    'address':address,
+                    'city':city,
+                    'state':state,
+                    'zipcode':zipcode,
                     'bio':              bio
                 }, {
                     patch:true,
-                    success: this.saveSuccess,
-                    error: this.saveError
+                    success: function(data){util.handleRequestSuccess({responseText:"Save Successful"})},
+                    error: function(err){util.handleRequestError({responseText:"Save Failed",error:err})},
                 }).then(function () {
                     self.render();
                 });
@@ -155,10 +169,18 @@ Settings.allUsers=main.baseDataView.extend({
         if(parseInt(this.rank||"1")==3){
             editable=true;
         }
-        return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/')]).spread(function(role,user,level){
+        return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/'),util.ajaxGET('/SubRole/')]).spread(function(role,user,level,subrole){
             var roleselect=BackgridCells.SelectCell({name:"Role",values:_.map(role,function(e){return [e.role,e.id]})});
             var userselect=BackgridCells.SelectCell({name:"User",values:_.map(user,function(e){return [e.nickname,e.id]})});
-            var levelselect=BackgridCells.SelectCell({name:"UserLevel",values:_.map(level,function(e){return [e.userLevel,e.id]})});      
+            var levelselect=BackgridCells.SelectCell({name:"UserLevel",values:_.map(level,function(e){return [e.userLevel,e.id]})});
+            var subroleselect=roleselect.extend({
+                optionValues:function(){
+                    var r=this.model.get('role')||0;
+                    var shrunk=_.where(subrole,{role:r});
+                    var toadd=_.map(shrunk,function(e){return [e.roleName,e.id]});
+                    return [{name:'SubRole',values:toadd}];
+                }
+            });      
             
             self.columns=[
             {name:'nickname',label:'称呼',editable: false,cell:'string'},
@@ -166,6 +188,7 @@ Settings.allUsers=main.baseDataView.extend({
             {name:'lastname',label:'名',editable:false,cell:'string'},
             {name:'email',label:'邮箱',editable:false,cell:'string'},
             {name:'role',label:'职位',editable:editable,cell:roleselect},
+            {name:'subRole',label:'细分职位',editable:editable,cell:subroleselect},
             {name:'userLevel',label:'佣金等级',editable:editable,cell:levelselect},
             {name:'rank',label:'职位等级',editable:editable,cell:'number'},
             //{name:'boss',label:'主管',editable:editable,cell:userselect},
@@ -440,7 +463,7 @@ Settings.fileupload=main.baseDataView.extend({
         if(parseInt(this.rank||"1")==3){
             editable=true;
         }
-        return util.ajaxGET('/User/').then(function(user){
+        return Promise.all([util.ajaxGET('/User/'),util.ajaxGET('/Role/'),util.ajaxGET('/DocType/')]).spread(function(user,role,type){
             var userselect=BackgridCells.SelectCell({name:"老师们",values:_.map(user,function(e){return [e.nickname,e.id]})});
             var uri=BackgridCells.Cell.extend({
                 cellText:'download',
@@ -453,12 +476,14 @@ Settings.fileupload=main.baseDataView.extend({
                     return this;
                 }
             });
-
+            var typeselect=BackgridCells.SelectCell({name:'文件归类',values:_.map(type,function(e){return [e.docType,e.id]})});
+            var roleselect=BackgridCells.SelectCell({name:'部门',values:_.map(role,function(e){return [e.role,e.id]})});
             self.columns=[
                 {name:'filename',label:'文件名',editable:false,cell:'string'},
                 {name:'createdAt',label:'上传时间',editable:false,cell:'datetime'},
-                {name:'类型',label:'上传的老师',editable:false,cell:userselect},
-                {name:'fileCategory',label:'归类',editable:false,cell:'string'},
+                {name:'uploadedBy',label:'上传的老师',editable:false,cell:userselect},
+                {name:'fileCategory',label:'归类',cell:typeselect},
+                {name:'role',label:'部门',cell:roleselect},
                 {name:'',label:'下载',editable:false,cell:uri},
                 {name:'',label:'Delete',cell:BackgridCells.DeleteCell}
             ];
@@ -485,13 +510,82 @@ Settings.fileupload=main.baseDataView.extend({
     },
 
 });
+Settings.link=main.baseDataView.extend({
+    collectionName:'SyncCollection',
+    collectionUrl:'/StaticLink/',
+    title:'有用的链接',
+    //filterFields:['filename'],
+    paginator:true,
+    minScreenSize:0,
+    renderOptions:{},
+    templateName:'default',
+   // filterFields:['puppet','boss'],
+    constructColumns:function(){
+        var self=this;
+        var editable=false;
+        if(parseInt(this.rank||"1")==3){
+            editable=true;
+        }
+        return Promise.all([util.ajaxGET('/User/'),util.ajaxGET('/Role/'),util.ajaxGET('/DocType/')]).spread(function(user,role,type){
+            var userselect=BackgridCells.SelectCell({name:"老师们",values:_.map(user,function(e){return [e.nickname,e.id]})});
+            var typeselect=BackgridCells.SelectCell({name:'文件归类',values:_.map(type,function(e){return [e.docType,e.id]})});
+            var roleselect=BackgridCells.SelectCell({name:'部门',values:_.map(role,function(e){return [e.role,e.id]})});
+            self.columns=[
+                {name:'name',label:'名称',editable:editable,cell:'string'},
+                {name:'createdAt',label:'设置时间',editable:false,cell:'datetime'},
+                {name:'user',label:'负责老师',editable:false,cell:userselect},
+                {name:'fileCategory',label:'归类',editable:editable,cell:typeselect},
+                {name:'role',label:'部门',editable:editable,cell:roleselect},
+                {name:'link',label:'链接',editable:editable,cell:'uri'},
+                {name:'',label:'Delete',editable:false,cell:BackgridCells.DeleteCell}
+            ];
+            // self.selectFields=[
+            // {name:'puppet',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            // {name:'boss',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            // ];
+            return Promise.resolve({});
+        });
+    },
+    events:{
+        'click  button.button-alt': 'refetch',
+        'click .button-add':'addnew'
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+        $('.page-actions').prepend('<button class="button-add">Add New</button>');
+    },
+    addnew:function(e){
+        e.preventDefault();
+        // var popUpView = new LookupForm({collection:this.collection});
+        // popUpView.render()
+        // $('.app').html(popUpView.el);
+        var toAdd=new Obiwang.Models.syncModel(null,{_url:this.collectionUrl});
+        var self=this;
+        toAdd.save(null,{
+            success:function(model){
+                self.collection.add(toAdd);
+            },
+            error:function(model,response){
+                util.handleRequestError(response);
+            },
+            save:false
+        });  
+    },
+
+});
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl',
     lookup:'Comission机制',
     hierarchy:'老师等级机制',
     comissionLookup:'销售佣金设定',
-    fileupload:'文件下载'
+    fileupload:'文件下载',
+    link:'有用的链接'
 }
 
 

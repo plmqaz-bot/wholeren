@@ -7,6 +7,11 @@ insert into salesgroup values('升学',3,NOW(),NOW());
 insert into salesgroup values('高中',4,NOW(),NOW());
 insert into salesgroup values('其它',5,NOW(),NOW());
 
+#文件类型
+truncate doctype
+insert into doctype values('新人必读',NULL,NOW(),NOW());
+insert into doctype values('SOP',NULL,NOW(),NOW());
+
 #合同类型
 truncate contractcategory;
 insert into contractcategory values('紧急服务',1,NOW(),NOW());
@@ -188,14 +193,26 @@ insert into depositaccount values('美国US',NULL,NOW(),NOW());
 
 #人员角色
 truncate role;
-insert into role values('销售',NULL,NOW(),NOW());
-insert into role values('申请',NULL,NOW(),NOW());
-insert into role values('市场',NULL,NOW(),NOW());
-insert into role values('文书',NULL,NOW(),NOW());
-insert into role values('专家',NULL,NOW(),NOW());
-insert into role values('人事',NULL,NOW(),NOW());
-insert into role values('加州',NULL,NOW(),NOW());
-insert into role values('学术',NULL,NOW(),NOW());
+insert into role values('销售',1,NOW(),NOW());
+insert into role values('申请',2,NOW(),NOW());
+insert into role values('市场',3,NOW(),NOW());
+#insert into role values('文书',NULL,NOW(),NOW());
+#insert into role values('专家',NULL,NOW(),NOW());
+insert into role values('人事',6,NOW(),NOW());
+#insert into role values('加州',NULL,NOW(),NOW());
+insert into role values('学术',8,NOW(),NOW());
+
+truncate subrole;
+insert into subrole values('高中',1,NOW(),NOW());
+insert into subrole values('紧急销售',1,NOW(),NOW());
+insert into subrole values('转升',1,NOW(),NOW());
+insert into subrole values('大客户',1,NOW(),NOW());
+insert into subrole values('紧急申请',2,NOW(),NOW());
+insert into subrole values('大申请',2,NOW(),NOW());
+insert into subrole values('转学',2,NOW(),NOW());
+insert into subrole values('文书',2,NOW(),NOW());
+insert into subrole values('广告',3,NOW(),NOW());
+insert into subrole values('渠道',3,NOW(),NOW());
 	
 #服务 TODO: add the recommended price and also base comission
 truncate servicetype;

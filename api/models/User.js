@@ -31,6 +31,8 @@ module.exports = {
 
   	role:{model:'Role',required:true,defaultsTo:1},
 
+    subRole:{model:'SubRole'},
+
     active:{type:'boolean',required:true,defaultsTo:false},
 
     rank:{type:'integer',required:true,defaultsTo:1,max:3},
@@ -38,6 +40,21 @@ module.exports = {
     boss:{model:'User'},
 
     userLevel:{model:'UserLevel',required:true,defaultsTo:1},
+
+    dropbox:{type:'string'},
+
+    evernote:{type:'string'},
+
+    address:{type:'string'},
+
+    city:{type:'string'},
+
+    state:{type:'string'},
+
+    zipcode:{type:'int'},
+
+    bio:{type:'string',maxLength: 512, size:512},
+
   	//contractUserRole:{collection:'ContractUserRole',via:'user',required:true},
 
   	//service:{collection:'Service',via:'serviceTeacher',dominant:true}

@@ -65,6 +65,18 @@ module.exports = {
 	            return res.json({message:"success"});
         	});
 		})
+	},
+	update:function(req,res){
+		req.validate({id:'string'});
+		var toUp=Utilfunctions.prepareUpdate(req.body,['fileCategory','role']);
+		PublicFiles.update(req.param('id'),toUp).then(function(file){
+			if(file.length>0){
+				return res.json(file[0]);
+			}
+			return res.json(401,"Not found");
+		}).error(function(err){
+			return Utilfunctions.errorHandler(err,res,"Update failed");
+		});
 	}
 };
 

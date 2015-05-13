@@ -205,6 +205,8 @@ add a rank to be able to see all contract,service, but not all comission.
 
 make choose service to be in contract view --DONE
 
+added contact info, address for user, set up static link info table. --DONE
+
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
 
