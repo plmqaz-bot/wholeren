@@ -79,6 +79,9 @@ module.exports={
         }
       })
     });
-  }
+  },
+  MomentCell:Backgrid.Extension.MomentCell.extend({
+    formatter:_.extend(Backgrid.Extension.MomentFormatter,{displayFormat:'MM/DD/YYYY',displayInUTC: false})
+  })
 
 };

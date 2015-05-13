@@ -105,9 +105,7 @@ var ContractView=main.baseDataView.extend({
                     $('.app').html(popUpView.render().el);
                 }
             })
-            var momentcell=Backgrid.Extension.MomentCell.extend({
-                formatter:_.extend(Backgrid.Extension.MomentFormatter,{displayFormat:'MM/DD/YYYY'})
-            });
+            var momentcell=BackgridCells.MomentCell;
             self.columns=[
             {name:'clientName',label:'Name',cell:edit},
             {name:'salesGroup',label:'销售组',cell:salesgroup},
@@ -116,12 +114,12 @@ var ContractView=main.baseDataView.extend({
             {name:'leadDetail',label:'LeadDetail',cell:leadDetail},
             {name:'leadName',label:'Lead介绍人',cell:'string'},
             {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
-            {name:'createdAt',label:'咨询日期',editable:false,cell:'date'},
+            {name:'createdAt',label:'咨询日期',editable:false,cell:momentcell},
             {name:'status',label:'签约状态',cell:sign},
             {name:'',label:'人员分配',cell:agent},
             {name:'salesFollowup',label:'销售跟进记录',cell:'text'},
             {name:'salesRecord',label:'销售跟进摘要',cell:'text'},
-            {name:'expertContactDate',label:'专家咨询日期',cell:'moment'},
+            {name:'expertContactDate',label:'专家咨询日期',cell:momentcell},
             {name:'expertFollowup',label:'专家跟进记录',cell:'text'},
             {name:'originalText',label:'求助原文',cell:'text'},
             {name:'country',label:'当前所在地',cell:country},                    

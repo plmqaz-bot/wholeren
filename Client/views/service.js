@@ -68,7 +68,7 @@ var ServiceView=main.baseDataView.extend({
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
             {name:'nickname',label:'总负责老师',editable: false,cell:'string'},
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
-            {name:'contractSigned',label:'进入服务时间',editable:false,cell:'date'},
+            {name:'contractSigned',label:'进入服务时间',editable:false,cell:BackgridCells.MomentCell},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
             {name:'realnickname',label:'具体负责老师',editable:false,cell:'string'},
             {name:'servRole',label:'具体负责任务',editable:false,cell:'string'},
@@ -284,7 +284,7 @@ var ApplicationPopup=ServicePopup.extend({
                 }
             });
             var DeleteCell = BackgridCells.DeleteCell;
-            var UpdateCell=BackgridCells.UpdateCell;
+            //var UpdateCell=BackgridCells.UpdateCell;
             var DateCell=Backgrid.DateCell.extend({
                 formatter:{
                     fromRaw:function(rawValue,model){
