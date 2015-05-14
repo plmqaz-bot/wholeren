@@ -10,7 +10,9 @@ module.exports = {
   attributes: {
   	userLevel:{type:'string',unique:true},
 
-  	userComission:{type:'float',required:true,defaultsTo:1}
+  	userComission:{type:'float',required:true,defaultsTo:1},
+
+  	baseSalary:{type:'float',required:true,defaultsTo:0},
   }
 };
 

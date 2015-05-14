@@ -78,6 +78,7 @@ module.exports={
 
 				});
 				clientSideFilter.selectFields=this.selectFields||[];
+				clientSideFilter.columns=this.columns;
 				$('.table-wrapper').prepend(clientSideFilter.render().el);    
 			}
 			this.ready=true;

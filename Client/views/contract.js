@@ -18,7 +18,7 @@ var ContractView=main.baseDataView.extend({
 	collectionName:'Contract',
 	title:'合同列表',
 	paginator:true,
-	filterFields:['clientName','contractCategory','lead','leadName','status','major','country','degree'],
+	filterFields:['clientName','salesGroup','contractCategory','lead','leadDetail','leadLevel','status','assistant1','assistant2','assistant3','assistant4','assisCont1','assisCont2','sales1','sales2','expert1','expert2','degree'],
 	renderOptions:{date:true,deleted:true},
     constructColumns:function(){
     	var self=this;
@@ -137,14 +137,32 @@ var ContractView=main.baseDataView.extend({
             {name:'age',label:'年龄',cell:'string'},
             {name:'major',label:'就读专业',cell:'string'},
             {name:'diagnose',label:'何弃疗',cell:'string'},
+            {name:'price',label:'签约价格',editable:false,cell:'number'},
             {name:'endFeeDue',label:'是否应收尾款',cell:'boolean'},
             {name:'endFee',label:'是否已收尾款',cell:'boolean'},
             {name:'',label:'费用详细',cell:payment},
             {name:'',label:'Comment',cell:comment},
             {name:'',label:'Delete/Undelete',cell:BackgridCells.DeleteCell}
             ];
-            self.selectFields=[{name:'lead',options:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})},
-            {name:'status',options:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})}];
+            var user_options=_.map(Users,function(e){return [e.nickname,e.id]});
+            self.selectFields=[{name:'salesGroup',label:'销售组',options:_.map(AllOptions['SalesGroup'],function(e){return [e.salesGroup,e.id]})},
+            {name:'contractCategory',label:'咨询服务类别',options:_.map(AllOptions['ContractCategory'],function(e){return [e.contractCategory,e.id]})},
+            {name:'status',label:'签约状态',options:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})},
+            {name:"lead",label:'Lead种类',options:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})},
+            {name:"leadDetail",label:'LeadDetail',options:_.map(AllOptions['LeadDetail'],function(e){return [e.leadDetail,e.id]})},
+            {name:"leadLevel",label:'LeadLevel',options:_.map(AllOptions['LeadLevel'],function(e){return [e.leadLevel,e.id]})},
+            {name:"degree",label:'原学校类型',options:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})},
+            {name:"assistant1",label:'助理1',options:user_options},
+            {name:"assistant2",label:'助理2',options:user_options},
+            {name:"assistant3",label:'助理3',options:user_options},
+            {name:"assistant4",label:'助理4',options:user_options},
+            {name:"assisCont1",label:'助签1',options:user_options},
+            {name:"assisCont2",label:'助签2',options:user_options},
+            {name:"sales1",label:'销售1',options:user_options},
+            {name:"sales2",label:'销售2',options:user_options},
+            {name:"expert1",label:'专家1',options:user_options},
+            {name:"expert2",label:'专家2',options:user_options},
+            ];
             return Promise.resolve({});
         });
 	},

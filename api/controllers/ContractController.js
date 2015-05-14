@@ -110,6 +110,12 @@ module.exports = {
 				 		r.client=Hashs[8][r.client]||{};
 				 		r.clientName=r.client['chineseName'];
 				 	} 
+				 	var services=Hashs[9][r.id]||[];
+				 	var totalprice=0;
+				 	for(var i=0;i<services.length;i++){
+				 		totalprice+=services[i].price||0;
+				 	}
+				 	r.price=r.price||totalprice;
 				// 	r.service=Hashs[9][r.id]||[];
 				 	return r;
 				 });
