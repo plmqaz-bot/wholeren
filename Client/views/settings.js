@@ -578,6 +578,58 @@ Settings.link=main.baseDataView.extend({
     },
 
 });
+Settings.message=main.baseDataView.extend({
+    collectionName:'SyncCollection',
+    collectionUrl:'/Message/',
+    title:'内部消息',
+    //filterFields:['filename'],
+    paginator:true,
+    minScreenSize:0,
+    renderOptions:{},
+    templateName:'default',
+   // filterFields:['puppet','boss'],
+    constructColumns:function(){
+        var self=this;
+        var editable=false;
+        if(parseInt(this.rank||"1")==3){
+            editable=true;
+        }
+        return util.ajaxGET('/User/').then(function(user){
+            var userselect=BackgridCells.SelectCell({name:"老师们",values:_.map(user,function(e){return [e.nickname,e.id]})});
+            self.columns=[
+                {name:'from',label:'发件人',editable:false,cell:userselect},
+                {name:'to',label:'收件人',editable:false,cell:userselect},
+                {name:'createdAt',label:'发送时间',editable:false,cell:BackgridCells.MomentCell},
+                {name:'subject',label:'主题',editable:false,cell:'string'},
+                {name:'text',label:'内容',editable:false,cell:'string'},
+                {name:'read',label:'已读',editable:true,cell:'boolean'},
+                {name:'',label:'Delete',editable:false,cell:BackgridCells.DeleteCell}
+            ];
+            // self.selectFields=[
+            // {name:'puppet',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            // {name:'boss',options:_.map(user,function(e){return [e.nickname,e.id]})},
+            // ];
+            return Promise.resolve({});
+        });
+    },
+    events:{
+        'click  button.button-alt': 'refetch',
+        'click .button-add':'addnew'
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+        $('.page-actions').prepend('<button class="button-add">Compose</button>');
+    },
+    addnew:function(e){
+        e.preventDefault();
+    },
+
+});
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl',
@@ -585,7 +637,8 @@ var MenuTitle={
     hierarchy:'老师等级机制',
     comissionLookup:'销售佣金设定',
     fileupload:'文件下载',
-    link:'有用的链接'
+    link:'有用的链接',
+    message:'内部消息'
 }
 
 
