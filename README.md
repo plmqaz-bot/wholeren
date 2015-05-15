@@ -195,6 +195,19 @@ make introduction videos --DONE
 
 password reset --DONE
 
+
+
+make choose service to be in contract view --DONE
+
+added contact info, address for user, set up static link info table. --DONE
+
+display Count --DONE
+
+added nullable selections, the select box in grid view now have an "unknown" option --DONE
+
+used cookie now, so server restart won't cause ppl to relog in --DONE
+
+
 set permission for update own password, but not change other user's stuff
 
 setup debug enviroment and utest
@@ -203,11 +216,11 @@ setup Lead, sales group, category restrictions for user change
 
 add a rank to be able to see all contract,service, but not all comission. 
 
-make choose service to be in contract view --DONE
 
-added contact info, address for user, set up static link info table. --DONE
 
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
 
 raid for data storage
+
+

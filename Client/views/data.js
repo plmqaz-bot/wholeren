@@ -24,7 +24,7 @@ module.exports={
 		templateName:'dateTableView',
 		minScreenSize:4000,
 		initialize: function (options) {
-		_.bindAll(this,'constructColumns','constructTable');
+		_.bindAll(this,'constructColumns','constructTable','reRenderCount');
 		this.rank=$('#rank').text();
 		this.el=options.el;
 		if(options.renderOptions)this.renderOptions=options.renderOptions;
@@ -38,7 +38,7 @@ module.exports={
 		}else{
 			this.collection = new Obiwang.Collections[this.collectionName]();
 		}
-
+		this.collection.on("reset",this.reRenderCount);
 		this.render({title:this.title,options:this.renderOptions});
 
 		//$('.page-actions').prepend('<button class="button-add">Add New</button>'); 
@@ -87,6 +87,9 @@ module.exports={
 			'click  button.button-alt': 'refetch',
 			'click  button.button-save': 'save',
 		},
+	    reRenderCount:function(e){
+        	$('#count').text((this.collection.fullCollection||this.collection).length);
+    	},  
 		refetch:function(e){
 			if(!this.ready) return;
 			if(this.renderOptions['date']){

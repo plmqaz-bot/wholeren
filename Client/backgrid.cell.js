@@ -68,10 +68,13 @@ module.exports={
   }),
   SelectCell:function(options){
     options=options||{};
+    var touse=_.clone(options.values||[]);
+    if(options.nullable!=false){
+      touse.push(["unknown",null]);
+    }
     return Backgrid.SelectCell.extend({
-      
       optionValues:function(){
-        return [options];
+        return touse;
       },
       formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
         toRaw: function (formattedValue, model) {

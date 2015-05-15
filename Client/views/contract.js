@@ -21,6 +21,7 @@ var ContractView=main.baseDataView.extend({
 	filterFields:['clientName','salesGroup','contractCategory','lead','leadDetail','leadLevel','status','assistant1','assistant2','assistant3','assistant4','assisCont1','assisCont2','sales1','sales2','expert1','expert2','degree'],
 	renderOptions:{date:true,deleted:true},
     constructColumns:function(){
+        
     	var self=this;
     	var comment=BackgridCells.Cell.extend({
             cellText:'Comments',
@@ -42,7 +43,7 @@ var ContractView=main.baseDataView.extend({
             } 
         });
         return Promise.all([util.ajaxGET('/contract/getAllOptions/'),util.ajaxGET('/User/')]).spread(function(AllOptions,Users){
-        	var salesgroup=BackgridCells.SelectCell({name:"SalesGroup",values:_.map(AllOptions['SalesGroup'],function(e){return [e.salesGroup,e.id]})});
+        	var salesgroup=BackgridCells.SelectCell({nullable:true,name:"SalesGroup",values:_.map(AllOptions['SalesGroup'],function(e){return [e.salesGroup,e.id]})});
             //var category=BackgridCells.SelectCell({name:"ContractCategory",values:_.map(AllOptions['ContractCategory'],function(e){return [e.contractCategory,e.id]})});
             var category=salesgroup.extend({
                 optionValues:function(){
@@ -55,15 +56,17 @@ var ContractView=main.baseDataView.extend({
                     //toadd.push(["No Category",null]);
                     //cell._optionValues=[{name:'ContractCategory',values:toadd}];
                     //return cell._optionValues;
+                    toadd.push(['unknown',null]);
                     return [{name:'ContractCategory',values:toadd}];
                 } 
             });
-            var lead=BackgridCells.SelectCell({name:"Lead",values:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})});
+            var lead=BackgridCells.SelectCell({nullable:true,name:"Lead",values:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})});
             var leadDetail=lead.extend({
                 optionValues:function(){
                     var l=this.model.get('lead')||0;
                     var shrunk=_.where(AllOptions['LeadDetail'],{lead:l});
                     var toadd=_.map(shrunk,function(e){return [e.leadDetail,e.id]});
+                    toadd.push(['unknown',null]);
                     return [{name:'LeadDetail',values:toadd}];
                 }
             });
@@ -183,7 +186,8 @@ var ContractView=main.baseDataView.extend({
     'click  button.button-alt': 'refetch',
     'click  button.button-save': 'save',
     'click button.button-add':'add'
-    },    
+    }, 
+ 
     add:function(e){
         var popUpView = new ContractEdit({view:this});
         $('.app').html(popUpView.render().el);

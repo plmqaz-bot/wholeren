@@ -90,7 +90,7 @@ module.exports = {
 				Hashs.push(Utilfunctions.makeO2MHash(data[data.length-1],'contract'));
 				//console.log("manuall hashing",Hashs.length);
 				 toReturn=toReturn.map(function(ele){
-				 	var r=_.clone(ele);
+				 	var r=ele;
 				// 	if(r.contractCategory) r.contractCategory=Hashs[0][r.contractCategory];
 				// 	if(r.country) r.country=Hashs[1][r.country];
 				// 	if(r.degree) r.degree=Hashs[2][r.degree];

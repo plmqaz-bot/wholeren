@@ -215,8 +215,11 @@ module.exports={
                     if(!valid) return res.json(400,'password incorrect');
                     if(!ppl.active) return res.json(400, 'not activated, contact superviser');
                     req.session.user=ppl;
-                    req.session.authenticated=true;
-                    if(ppl.rank>1) req.session.manager=true;
+                    res.cookie('user',ppl);
+                    if(ppl.rank>1) {
+                        req.session.manager=true;
+                        res.cookie('manager',true);
+                    }
                     if(!redirect) redirect='/admin/contract/';
                     loginSecurity=_.reject(loginSecurity,function(ipTime){
                         return ipTime.ip===remoteAddress;
