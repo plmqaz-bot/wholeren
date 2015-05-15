@@ -595,6 +595,7 @@ Settings.message=main.baseDataView.extend({
             editable=true;
         }
         return util.ajaxGET('/User/').then(function(user){
+            self.userOptions=user;
             var userselect=BackgridCells.SelectCell({name:"老师们",values:_.map(user,function(e){return [e.nickname,e.id]})});
             self.columns=[
                 {name:'from',label:'发件人',editable:false,cell:userselect},
@@ -627,9 +628,76 @@ Settings.message=main.baseDataView.extend({
     },
     addnew:function(e){
         e.preventDefault();
+        var popup=new ComposeEmail({users:this.userOptions});
+        popup.render();
+        $('.app').html(popup.el);
     },
 
 });
+var ComposeEmail=Backbone.Modal.extend({
+    prefix:"bbm",
+    template: JST['editbox'],
+    submitEl: '.ok',
+    cancelEl:'.cancel',
+    initialize: function (options){
+        _.bindAll(this,  'render', 'afterRender');
+        var self=this;
+        this.render=_.wrap(this.render,function(render){
+            render();
+            self.afterRender();
+        });
+        this.users=_.map(options.users,function(e){
+            return {label:e.nickname,value:e.id};
+        });
+        this.users.push({label:'No User',value:null});
+        this.model=options.model||new Obiwang.Models.simpleModel({},{_url:'/Message/'});
+    },
+    afterRender:function(){
+        var container=this.$el.find('.bbm-modal__section');
+        var self=this;
+        var fields=[
+        {name:'to',label:'收件人',control:'select',options:this.users},
+        {name:'subject',label:'主题',control:'input'},
+        {name:'text',label:'内容',control:'textarea'}];
+        this.form=new Backform.Form({
+            el:container,
+            model:self.model,
+            fields:fields,
+        });
+        this.form.render();
+        //var fields=[
+        // {name:'status',label:'Status',control:'select',options:this.options},
+        // {name:'contractSigned',label:'Signed',control:'datepicker',options:{format:"yyyy-mm-dd"}},
+        // {name:'contractPaid',label:'Paid',control:'datepicker',options:{format:"yyyy-mm-dd"}}];
+        // this.form=new Backform.Form({
+        //     el:self.$el.find('.bbm-modal__section'),
+        //     model:self.model,
+        //     fields:fields,
+        // });
+        // this.form.render();
+        //container.append(this.form.el);
+        return this;
+    },
+    submit:function(e){
+        var self=this;
+        this.model.save(null,{
+            success:function(d){
+                util.handleRequestSuccess({responseText:"Message Sent Successful"});   
+                self.close();
+            },
+            error:function(model,response){
+                util.handleRequestError(response);                       
+            },
+            save:false,
+        });
+    },
+    checkKey:function(e){
+        if (this.active) {
+            if (e.keyCode==27) return this.triggerCancel();
+        }
+    }
+});
+
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl',
