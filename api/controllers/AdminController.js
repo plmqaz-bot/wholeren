@@ -384,7 +384,7 @@ module.exports={
         });
     },
     'import':function(req,res){
-        var filename='60.csv';
+        var filename='603.csv';
         Utilfunctions.importContract(filename)
          .then(function(data){
              console.log('import done');

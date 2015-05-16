@@ -3,6 +3,8 @@ var parse=require('csv-parse');
 var fs=require('fs');
 var Promise=require('bluebird');
 var _=require('lodash');
+var csv=require('fast-csv');
+var moment=require('moment');
  function makeHash(data,name){
         var hash={};
         data.forEach(function(ele){
@@ -202,12 +204,14 @@ module.exports = {
 	                    } else {
 	                        console.log("start line ",i);
 	                       var curP = oneline(line,i).then(function(data){
-	                            console.log("finish line ",data);
-	                        }).fail(function(err){
-	                            console.log(err);
-	                            errorLine.push(err);
-	                        });
-	                        allPromises.push(Promise.resolve(curP));
+		                       	if(data.success){
+		                       		console.log("finish line ",data.line);
+		                       	}else{
+		                       		errorLine.push(data.data);
+		                       		console.log("error on line ",data.line);	
+		                       	}
+	                        })
+	                        allPromises.push(curP);
 	                        i++;
 	                    }
 	                });
@@ -221,7 +225,10 @@ module.exports = {
 	             	console.log(problem_user,"unknown user names");
                     console.log("Unknown items :",unknownItems);
                     console.log("Unknown status :",unknownStatus);
-	                 	toReturn.resolve("done");
+					
+					var fsstream=fs.createWriteStream("error.csv");
+					csv.write(errorLine,{header:false}).pipe(fsstream);
+					toReturn.resolve("done");
                  }).fail(function(err){
 	             	console.log('finished with errors',err);
 	             	toReturn.reject("finished with errors");
@@ -248,7 +255,15 @@ module.exports = {
 	        contract.salesGroup=stripstring(line[2]);
 	        contract.contractCategory=stripstring(line[3]); // later get contractcategoryid;
 	        contract.degree=stripstring(line[4]); // later get degree id
-	        contract.createdAt=new Date(line[5]);
+	        if(line[5]){
+	        	contract.createdAt=new Date(line[5].split('\n')[0]);
+		        if(isNaN(contract.createdAt.getTime())){
+	        		return Promise.resolve({success:false,data:line,line:linenum});
+	        	}
+	        }else{
+	        	contract.createdAt=null;
+	        }
+	        
 	        contract.lead=stripstring(line[6]); // Later get the id;
 	        contract.leadDetail=stripstring(line[7]);
 	        contract.leadName=line[8];
@@ -261,6 +276,9 @@ module.exports = {
 	        contract.leadLevel=stripstring(line[15]); // later get leadlevel id;
 	        if(line[16]){
 	        	contract.expertContactdate=new Date(line[16].split('\n')[0]);
+	        	if(isNaN(contract.expertContactdate.getTime())){
+	        		//return Promise.resolve({success:false,data:line,line:linenum});
+	        	}
 	        }else{
 	        	contract.expertContactdate=null;
 	        }
@@ -291,24 +309,22 @@ module.exports = {
 	        //contract.contractSigned=line[34]==""?null:new Date(line[34].split('\n')[0]);
 	        if(line[34]){
 	        	contract.contractSigned=new Date(line[34].split('\n')[0]);
+		        if(isNaN(contract.contractSigned.getTime())){
+		        	console.log("Invalid date :",line[34]);
+	        		//return Promise.resolve({success:false,data:line,line:linenum});
+	        	}
 	        }else{
 	        	contract.contractSigned=null;
 	        }
 	        //contract.contractPaid=line[35]==""?null:new Date(line[35].split('\n')[0]);
 	        if(line[34]){
 	        	contract.contractPaid=new Date(line[35].split('\n')[0]);
+	        	if(isNaN(contract.contractPaid.getTime())){
+		        	console.log("Invalid date :",line[35]);
+	        		//return Promise.resolve({success:false,data:line,line:linenum});
+	        	}
 	        }else{
 	        	contract.contractPaid=null;
-	        }
-	        if(contract.contractSigned){
-	        	if(isNaN(contract.contractSigned.getTime())){
-	        		console.log("Invalid date :",line[34])
-	        	}	
-	        }
-	        if(contract.contractPaid){
-	        	if(isNaN(contract.contractPaid.getTime())){
-	        		console.log("Invalid date :",line[35])
-	        	}	
 	        }
 	        
 	        var Service=line[36]+","+line[37]+","+line[38]+","+line[39]; // Work on service
@@ -409,11 +425,11 @@ module.exports = {
 	            return getService(Service,contractID1,serviceTeachers);     
 	               // p.resolve("current");
 	        }).then(function(data){
-	            return Promise.resolve(linenum);
+	            return Promise.resolve({data:line,line:linenum,success:true});
 	        }).fail(function(err){
 	        	console.log(err);
 	        	console.log("error in line ",linenum);
-	        	return Promise.reject(err);
+	        	return Promise.resolve({data:line,line:linenum,success:false});
 	        });
 	    };
 	    function exchangeOptions(contract){
