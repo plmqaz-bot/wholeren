@@ -208,7 +208,7 @@ added nullable selections, the select box in grid view now have an "unknown" opt
 used cookie now, so server restart won't cause ppl to relog in --DONE
 
 
-set permission for update own password, but not change other user's stuff
+set permission for update own password, but not change other user's stuff --DONE
 
 setup debug enviroment and utest
 

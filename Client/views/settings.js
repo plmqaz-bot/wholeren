@@ -159,7 +159,7 @@ Settings.allUsers=main.baseDataView.extend({
     collectionName:'User',
     title:'Users',
     paginator:true,
-    renderOptions:{},
+    renderOptions:{nofield:true},
     minScreenSize:0,
     filterFields:['email','nickname'],
     templateName:'default',
@@ -212,7 +212,7 @@ Settings.lookup=main.baseDataView.extend({
     title:'申请老师Comission机制',
     paginator:true,
     minScreenSize:0,
-    renderOptions:{},
+    renderOptions:{nofield:true},
     filterFields:['serviceType'],
     templateName:'default',
     constructColumns:function(){
@@ -346,7 +346,7 @@ Settings.hierarchy=main.baseDataView.extend({
     title:'老师等级机制',
     paginator:true,
     minScreenSize:0,
-    renderOptions:{},
+    renderOptions:{nofield:true},
     filterFields:['puppet','boss'],
     templateName:'default',
     constructColumns:function(){
@@ -454,7 +454,7 @@ Settings.fileupload=main.baseDataView.extend({
     filterFields:['filename'],
     paginator:true,
     minScreenSize:0,
-    renderOptions:{},
+    renderOptions:{nofield:true},
     templateName:'default',
    // filterFields:['puppet','boss'],
     constructColumns:function(){
@@ -517,7 +517,7 @@ Settings.link=main.baseDataView.extend({
     //filterFields:['filename'],
     paginator:true,
     minScreenSize:0,
-    renderOptions:{},
+    renderOptions:{nofield:true},
     templateName:'default',
    // filterFields:['puppet','boss'],
     constructColumns:function(){
@@ -585,7 +585,7 @@ Settings.message=main.baseDataView.extend({
     //filterFields:['filename'],
     paginator:true,
     minScreenSize:0,
-    renderOptions:{},
+    renderOptions:{nofield:true},
     templateName:'default',
    // filterFields:['puppet','boss'],
     constructColumns:function(){
@@ -698,6 +698,19 @@ var ComposeEmail=Backbone.Modal.extend({
     }
 });
 
+Settings.tableEditor=main.basePaneView.extend({
+    templateName:'dateTableView',
+    title:'表格修改',
+    initialize: function (options) {
+        this.rank=$('#rank').text();
+        this.render({title:this.title,options:this.renderOptions});
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    },
+});
+
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl',
@@ -706,7 +719,8 @@ var MenuTitle={
     comissionLookup:'销售佣金设定',
     fileupload:'文件下载',
     link:'有用的链接',
-    message:'内部消息'
+    message:'内部消息',
+    tableEditor:'表格修改'
 }
 
 

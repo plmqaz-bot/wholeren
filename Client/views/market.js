@@ -119,7 +119,7 @@ Market.view3=main.baseDataView.extend({
 });
 Market.view4=Market.view3.extend({
     title:'Sales Role ',
-    renderOptions:{},
+    renderOptions:{nofield:true},
     minScreenSize:0,
     collectionParam:{url:'/SalesRole/'},
     constructColumns:function(){

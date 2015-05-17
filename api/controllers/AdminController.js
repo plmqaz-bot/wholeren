@@ -166,6 +166,8 @@ module.exports={
     },
     'signout': function (req, res) {
         req.session.destroy();
+        res.clearCookie('user');
+        res.clearCookie('manager');
 
         var notification = {
             type: 'success',

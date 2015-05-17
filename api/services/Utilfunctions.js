@@ -754,6 +754,120 @@ module.exports = {
 	        }
 	    }
     },
+    importService:function(filename){
+    	var errorLine=[];
+	    var toReturn=Promise.defer();
+	    fs.readFile(filename,'utf8',function(err,data){
+	        if(err) throw err;
+	        parse(data,{comment:'#'},function(err,output){
+                var firstline = false;
+                var linepromises = [];
+                var i=0;
+                var allPromises=[];
+                allPromises=_.map(output,function(line){
+                	line=_.map(line,function (element) {
+                        element = element.replace(/\"/g, '');
+                        element = element.replace(/\'/g, '');
+                        element=element.replace(new RegExp(String.fromCharCode(65292),'g'),",");
+                        element=element.replace(new RegExp(String.fromCharCode(65295),'g'),"/");
+                        element=element.replace(new RegExp(String.fromCharCode(65291),'g'),"+");
+                        //if(element.indexOf('紧急二次购买')>-1) console.log(element);
+                        return element;
+                    });
+                    if(firstline){
+                    	firstline=false;
+                    	return Promise.resolve("empty");
+                    }else{
+                    	return oneline(line);
+                    }
+                });
+				Promise.all(allPromises).then(function(data){
+	             	console.log(data);
+                }).error(function(err){
+	             	console.log('finished with errors',err);
+	             	toReturn.reject("finished with errors");
+	            });
+	        });
+	    });
+	    return toReturn.promise;
+	    function oneline(line){
+	    	var service={};
+	    	var client={};
+	    	var contract={};
+	    	var application={};
+	    	service['serviceProgress']=line[0];
+	    	contract.teacher=line[1];
+	    	client.name=line[2];
+	    	client.firstName=line[3];
+	    	client.lastName=line[4];
+	    	contract.contractSigned=null;
+	    	if(line[5]){
+	        	contract.contractSigned=new Date(line[5].split('\n')[0]);
+	        	if(isNaN(contract.contractSigned.getTime())){
+	        		return Promise.resolve("invalid datetime"+line[5]);
+	        	}
+	        }
+	        service.serviceType=line[6];
+	        contract.gpa=line[7];
+	        contract.toefl=line[8];
+	        contract.sat=line[9];
+	        contract.gre=line[10];
+	        contract.gmat=line[11];
+	        contract.previousSchool=line[12];
+	        contract.major=line[13];
+	        application.collageName=line[14];
+	        application.appliedMajor=line[15];
+	        application.appliedSemester=line[16];
+	        var level=line[17];
+	        var writer=line[18];
+	        application.succeed=line[19];
+	        application.studentCondition=line[20];
+	        client.chineseName=line[21];
+	        service.link=line[23];
+	        var result={};
+	        var contractid;
+	        return Client.find({chineseName:client.chineseName}).then(function(data){
+	        	if(data.length>0){
+	        		result.client="found"+data.length;
+	        		return Contract.find({client:_.pluck(data,"id"),contractSigned:service.contractSigned});
+	        	}else{
+	        		result.client="not found"+client.chineseName;
+	        		return Promise.reject("client not found");
+	        	}
+	        }).then(function(data){
+	        	if(data.length>0){
+	        		result.contract=data.length;
+	        		contractid=data[0].id;
+	        		return ServiceType.find({alias:{contains:service.serviceType}});
+	        	}else{
+	        		result.contract="not found";
+	        		return Promise.reject("contract not found");
+	        	}
+	        }).then(function(data){
+	        	if(data.length>0){
+	        		result.serviceType="found";
+	        		var ids=_.pluck(data,"id");
+	        		//console.log(ids);
+	        		return Service.findOne({contract:contractid,serviceType:ids});
+	        	}else{
+	        		result.serviceType="not found";
+	        		return Promise.reject("serviceType not found");
+	        	}
+	        }).then(function(data){
+	        	data=data||{};
+	        	if(data.id){
+	        		result.service="found";
+	        		return Promise.resolve(result);
+	        	}else{
+	        		result.service="not found";
+	        		return Promise.reject("service not found");
+	        	}
+	        }).catch(function(err){
+	        	console.log("line finished");
+	        	return Promise.resolve([err,result]);
+	        });
+	    }
+    },
     'importUser':function(){
     	var filename='user.csv';
     	var roleProm=Role.find();
