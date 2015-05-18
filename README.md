@@ -210,13 +210,13 @@ used cookie now, so server restart won't cause ppl to relog in --DONE
 
 set permission for update own password, but not change other user's stuff --DONE
 
+Text box click X close 
+
 setup debug enviroment and utest
 
 setup Lead, sales group, category restrictions for user change
 
 add a rank to be able to see all contract,service, but not all comission. 
-
-
 
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
