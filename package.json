@@ -43,7 +43,8 @@
     "backbone-forms": "*",
     "jquery-ui": "*",
     "moment": "*",
-    "skipper-disk":"*"
+    "skipper-disk":"*",
+    "fast-csv":"*"
   },
   "scripts": {
     "start": "node main.js",

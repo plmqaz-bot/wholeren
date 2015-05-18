@@ -212,6 +212,8 @@ set permission for update own password, but not change other user's stuff --DONE
 
 Text box click X close 
 
+contract status is outside
+
 setup debug enviroment and utest
 
 setup Lead, sales group, category restrictions for user change
@@ -223,4 +225,4 @@ chagne one contract field, other service should also update --Sync subscribe and
 
 raid for data storage
 
-
+z

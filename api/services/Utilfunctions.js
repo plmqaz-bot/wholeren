@@ -782,7 +782,12 @@ module.exports = {
                     }
                 });
 				Promise.all(allPromises).then(function(data){
+	             	data=_.filter(data,{succeed:false});
 	             	console.log(data);
+	             	var fsstream=fs.createWriteStream("service_error.csv");
+	             	
+					csv.write(errorLine,{header:false}).pipe(fsstream);
+					toReturn.resolve("done");
                 }).error(function(err){
 	             	console.log('finished with errors',err);
 	             	toReturn.reject("finished with errors");
@@ -807,7 +812,7 @@ module.exports = {
 	        		return Promise.resolve("invalid datetime"+line[5]);
 	        	}
 	        }
-	        service.serviceType=line[6];
+	        service.serviceType=line[6].substring(0,1);
 	        contract.gpa=line[7];
 	        contract.toefl=line[8];
 	        contract.sat=line[9];
@@ -822,50 +827,102 @@ module.exports = {
 	        var writer=line[18];
 	        application.succeed=line[19];
 	        application.studentCondition=line[20];
-	        client.chineseName=line[21];
+	        client.chineseName=line[21].trim().toLowerCase();
 	        service.link=line[23];
 	        var result={};
 	        var contractid;
-	        return Client.find({chineseName:client.chineseName}).then(function(data){
-	        	if(data.length>0){
-	        		result.client="found"+data.length;
-	        		return Contract.find({client:_.pluck(data,"id"),contractSigned:service.contractSigned});
-	        	}else{
-	        		result.client="not found"+client.chineseName;
-	        		return Promise.reject("client not found");
+	        var clientId,sTypeid,contId,p;
+	        if(client.chineseName=='y'||client.chineseName=='n'||client.chineseName=='不适用'||client.chineseName==''){
+	        	contract.country=line[12];
+	        	contract.degree=line[13];
+	        	contract.previousSchool=line[14];
+	        	contract.major=line[15];
+	        	contract.targetSchoolDegree=line[16];
+	        	application.collageName=line[17];
+	        	application.appliedMajor=line[18];
+	        	application.appliedSemester=line[19];
+	        	level=line[20];
+	        	writer=line[21];
+	        	application.succeed=line[22];
+	        	application.studentCondition=line[23];
+	        	client.chineseName=line[24].trim().toLowerCase();
+	        	//contract.targetMajor=line[18];
+	        }
+	        if(client.chineseName.length>0&&client.chineseName!='y'&&client.chineseName!='n'&&client.chineseName!='n/a'){
+	        	p=Client.find({chineseName:{contains:client.chineseName}});
+	        }else{
+	        	p=Client.find({firstName:{contains:client.firstName},lastName:{contains:client.lastName}});
+	        }
+	        return Promise.all([p,ServiceType.find({alias:{contains:service.serviceType}})]).spread(function(data_client,data_serviceType){
+	        	if(data_client.length>0){
+	        		clientId=_.pluck(data_client,'id');
 	        	}
-	        }).then(function(data){
-	        	if(data.length>0){
-	        		result.contract=data.length;
-	        		contractid=data[0].id;
-	        		return ServiceType.find({alias:{contains:service.serviceType}});
-	        	}else{
-	        		result.contract="not found";
-	        		return Promise.reject("contract not found");
+	        	if(data_serviceType.length>0){
+	        		sTypeid=_.pluck(data_serviceType,'id');
 	        	}
-	        }).then(function(data){
-	        	if(data.length>0){
-	        		result.serviceType="found";
-	        		var ids=_.pluck(data,"id");
-	        		//console.log(ids);
-	        		return Service.findOne({contract:contractid,serviceType:ids});
-	        	}else{
-	        		result.serviceType="not found";
-	        		return Promise.reject("serviceType not found");
+	        	if(!clientId||!sTypeid){
+	        		return Promise.reject(client.chineseName+" "+client.firstName+","+client.lastName+" "+service.serviceType+" are  not found");
 	        	}
-	        }).then(function(data){
-	        	data=data||{};
-	        	if(data.id){
-	        		result.service="found";
-	        		return Promise.resolve(result);
-	        	}else{
-	        		result.service="not found";
-	        		return Promise.reject("service not found");
+	        	console.log("look for contract"+clientId);
+	        	return Contract.find({client:clientId});
+	        }).then(function(Conts){
+	        	if(Conts.length<1){
+	        		return Promise.reject("Contract not found for client "+clientId);
 	        	}
+	        	contId=_.pluck(Conts,'id');
+	        	console.log("found contract");
+	        	return Service.find({contract:contId});
+	        }).then(function(servs){
+	        	if(servs.length<1){
+	        		return Promise.resolve({succeed:true,length:0,data:client.chineseName+" "+contId.length+" contracts but no service found"});	
+	        	}
+	        	return Promise.resolve({succeed:true,length:servs.length});
 	        }).catch(function(err){
-	        	console.log("line finished");
-	        	return Promise.resolve([err,result]);
-	        });
+	        	//console.log('finished line');
+	        	console.log(err);
+	        	errorLine.push(line);
+	        	return Promise.resolve({succeed:false,error:err});
+	        })
+	        // return Client.find({chineseName:client.chineseName}).then(function(data){
+	        // 	if(data.length>0){
+	        // 		result.client="found"+data.length;
+	        // 		return Contract.find({client:_.pluck(data,"id"),contractSigned:service.contractSigned});
+	        // 	}else{
+	        // 		result.client="not found"+client.chineseName;
+	        // 		return Promise.reject("client not found");
+	        // 	}
+	        // }).then(function(data){
+	        // 	if(data.length>0){
+	        // 		result.contract=data.length;
+	        // 		contractid=data[0].id;
+	        // 		return ServiceType.find({alias:{contains:service.serviceType}});
+	        // 	}else{
+	        // 		result.contract="not found";
+	        // 		return Promise.reject("contract not found");
+	        // 	}
+	        // }).then(function(data){
+	        // 	if(data.length>0){
+	        // 		result.serviceType="found";
+	        // 		var ids=_.pluck(data,"id");
+	        // 		//console.log(ids);
+	        // 		return Service.findOne({contract:contractid,serviceType:ids});
+	        // 	}else{
+	        // 		result.serviceType="not found";
+	        // 		return Promise.reject("serviceType not found");
+	        // 	}
+	        // }).then(function(data){
+	        // 	data=data||{};
+	        // 	if(data.id){
+	        // 		result.service="found";
+	        // 		return Promise.resolve(result);
+	        // 	}else{
+	        // 		result.service="not found";
+	        // 		return Promise.reject("service not found");
+	        // 	}
+	        // }).catch(function(err){
+	        // 	console.log("line finished");
+	        // 	return Promise.resolve([err,result]);
+	        // });
 	    }
     },
     'importUser':function(){

@@ -39,7 +39,7 @@ var loo=function () {
 	});
 };
 loo();
-// Utilfunctions.importService("62.csv").then(function(data){
+// Utilfunctions.importService("1service_error.csv").then(function(data){
 // 	console.log("import service done");
 // }).error(function(err){
 // 	console.log("import service with error ",err);
