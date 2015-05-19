@@ -212,7 +212,9 @@ set permission for update own password, but not change other user's stuff --DONE
 
 Text box click X close 
 
-contract status is outside
+contract status is outside --DONE
+
+import from S61
 
 setup debug enviroment and utest
 

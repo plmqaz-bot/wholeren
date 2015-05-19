@@ -755,6 +755,13 @@ module.exports = {
 	    }
     },
     importService:function(filename){
+    	function preProcess(lines){
+    		var toReturn={};
+    		var currentClient="";
+    		for(var i=0;i<lines.length;i++){
+    			var line=lines[i];
+    		}
+    	}
     	var errorLine=[];
 	    var toReturn=Promise.defer();
 	    fs.readFile(filename,'utf8',function(err,data){
