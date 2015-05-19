@@ -8,7 +8,11 @@
 module.exports = {
 
   attributes: {  	
-  	contract:{model:'Contract',required:true},
+    chineseName:{type:'string'},
+    lastName:{type:'string'},
+    firstName:{type:'string'},
+    generated:{type:'boolean',defaultsTo:false},
+  	contract:{model:'Contract',required:true,defaultsTo:0},
 
   	serviceType:{model:'ServiceType'},
 

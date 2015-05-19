@@ -39,11 +39,11 @@ var loo=function () {
 	});
 };
 loo();
-// Utilfunctions.importService("1service_error.csv").then(function(data){
-// 	console.log("import service done");
-// }).error(function(err){
-// 	console.log("import service with error ",err);
-// });
+Utilfunctions.importService("S61.csv").then(function(data){
+	console.log("import service done");
+}).error(function(err){
+	console.log("import service with error ",err);
+});
 setInterval(loo, 1000*60*60*24);
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)

@@ -755,50 +755,221 @@ module.exports = {
 	    }
     },
     importService:function(filename){
+    	var errorLine=[];
+
+        var unknownNames=[];
     	function preProcess(lines){
     		var toReturn={};
     		var currentClient="";
     		for(var i=0;i<lines.length;i++){
     			var line=lines[i];
+    			line=_.map(line,function (element) {
+                    element = element.replace(/\"/g, '');
+                    element = element.replace(/\'/g, '');
+                    element=element.replace(new RegExp(String.fromCharCode(65292),'g'),",");
+                    element=element.replace(new RegExp(String.fromCharCode(65295),'g'),"/");
+                    element=element.replace(new RegExp(String.fromCharCode(65291),'g'),"+");
+                    //if(element.indexOf('紧急二次购买')>-1) console.log(element);
+                    return element;
+            	});
+    			var service={};
+		    	var client={};
+		    	var contract={};
+		    	var application={};
+		    	service['serviceProgress']=line[0];
+		    	contract.teacher=line[1];
+		    	client.name=line[2]||"";
+		    	if(client.name.length<1){
+		    		errorLine.push(line);
+		    	}
+		    	client.firstName=line[3]||"";
+		    	client.lastName=line[4]||"";
+		    	contract.contractSigned=null;
+		    	if(line[5]){
+		        	contract.contractSigned=new Date(line[5].split('\n')[0]);
+		        }
+		        service.serviceType=(line[6]||"").trim();
+		        contract.gpa=line[7];
+		        contract.toefl=line[8];
+		        contract.sat=line[9];
+		        contract.gre=line[10];
+		        contract.gmat=line[11];
+		        contract.previousSchool=line[12];
+		        contract.major=line[13];
+		        application.collageName=line[14];
+		        application.appliedMajor=line[15];
+		        application.appliedSemester=line[16];
+		        var level=line[17];
+		        var writer=line[18];
+		        application.succeed=line[19]=='Y'?true:null;
+		        application.studentCondition=line[20];
+		        client.chineseName=(line[21]||"").trim().toLowerCase();
+		        service.link=line[23];
+		        var key=client.name+client.firstName+client.lastName+client.chineseName+line[5];
+		        toReturn[key]=toReturn[key]||{};
+		        toReturn[key]['client']=client;
+		        toReturn[key]['contract']=contract;
+		        toReturn[key]['service']=toReturn[key]['service']||{};
+		        if(!toReturn[key]['service'][service.serviceType]){
+		        	toReturn[key]['service'][service.serviceType]=service;
+		        }
+		        if(application.collageName){
+		        	toReturn[key]['service'][service.serviceType]['application']=toReturn[key]['service'][service.serviceType]['application']||[];
+		        	toReturn[key]['service'][service.serviceType]['application'].push(application);
+		        }
     		}
+    		return toReturn;
     	}
-    	var errorLine=[];
+
+    	function string2IDs(serv){
+    		var prog=serv.serviceProgress;
+    		serv.serviceType=serv.serviceType||"";
+    		switch(serv.serviceType){
+    			case 'd3':serv.serviceType='d2';break;
+    			case 'd2':serv.serviceType='d0';break;
+    			case 'd1':serv.serviceType='d';break;
+    			case 'f2':serv.serviceType='f';break;
+    			case 'c2':serv.serviceType='c';break;
+    			case 'h1':serv.serviceType='h';break;
+    			case 'i3':serv.serviceType='i';break;
+    			default:break;
+    		}
+    		serv.serviceType=SERVICETYPE[serv.serviceType];
+    		if(serv.serviceProgress=='X放弃/退款X'){
+    			serv.serviceProgress='X自我放弃X';
+    		}
+    		serv.serviceProgress=_.find(SERVICEPROGRESS,function(e){
+    			var t=serv.serviceProgress;
+
+    			if(e.serviceProgress.indexOf(t)>=0){
+    				return e.id;
+    			}
+    		})
+			if(!serv.serviceProgress){
+				console.log(serv,prog);
+			}
+    		return serv;
+    	}
+    	var SERVICETYPE={};
+    	var SERVICEPROGRESS={};
+    	function serviceTypehash(){
+    		return ServiceType.find().then(function(data){
+    			var toReturn={};
+    			data.forEach(function(e){
+    				toReturn[e.alias]=e.id;
+    			});
+    			SERVICETYPE=toReturn;
+    			return Promise.resolve({});
+    		})
+    	}
+    	function progressHash(){
+    		return ServiceProgress.find().then(function(data){
+				SERVICEPROGRESS=data;
+    		})
+    	}
 	    var toReturn=Promise.defer();
 	    fs.readFile(filename,'utf8',function(err,data){
 	        if(err) throw err;
-	        parse(data,{comment:'#'},function(err,output){
-                var firstline = false;
-                var linepromises = [];
-                var i=0;
-                var allPromises=[];
-                allPromises=_.map(output,function(line){
-                	line=_.map(line,function (element) {
-                        element = element.replace(/\"/g, '');
-                        element = element.replace(/\'/g, '');
-                        element=element.replace(new RegExp(String.fromCharCode(65292),'g'),",");
-                        element=element.replace(new RegExp(String.fromCharCode(65295),'g'),"/");
-                        element=element.replace(new RegExp(String.fromCharCode(65291),'g'),"+");
-                        //if(element.indexOf('紧急二次购买')>-1) console.log(element);
-                        return element;
-                    });
-                    if(firstline){
-                    	firstline=false;
-                    	return Promise.resolve("empty");
-                    }else{
-                    	return oneline(line);
-                    }
-                });
-				Promise.all(allPromises).then(function(data){
-	             	data=_.filter(data,{succeed:false});
-	             	console.log(data);
-	             	var fsstream=fs.createWriteStream("service_error.csv");
+	        parse(data,{comment:'#',relax:true},function(err,output){
+				if(err) throw err;
+	        	var allData=preProcess(output);
+	        	//console.log(allData);
+	        	var allPromises=[]
+	        	Promise.all([serviceTypehash(),progressHash()]).then(function(){
+	        		_.each(allData,function(eachContract){
+	        		var promise;
+	        		//console.log(eachContract);
+	        		if(eachContract.client.chineseName.length<1){
+	        			promise=Client.find({firstName:eachContract.client.firstName,lastName:eachContract.client.lastName});
+	        		}else{
+	        			promise=Client.find({firstName:eachContract.client.firstName,lastName:eachContract.client.lastName});
+	        		}
+	        		var eachPromise=promise.then(function(data){
+		        			if(data.length>0){
+		        				var clientId=_.pluck(data,'id');
+		        				return Contract.find({client:clientId,contractSigned:eachContract.contract.contractSigned});
+		        			}else{
+		        				return Promise.resolve([{id:0}]);
+		        			}
+	        			}).then(function(cont){
+	        				var contractid=0;
+	        				if(cont.length>0){
+	        					var contid=_.pluck(cont,'id');
+	        					contractid=contid[0]
+	        				}
+	        				var sPs=[]
+        					_.each(eachContract.service,function(e){
+        						var serv=string2IDs(e);
+        						var app=serv.application;
+        						serv.contract=contractid;
+        						serv.generated=true;
+        						serv.chineseName=eachContract.client.chineseName;
+        						serv.lastName=eachContract.client.lastName;
+        						serv.firstName=eachContract.client.firstName;
+        						delete serv['application'];
+								var sp=Service.create(serv).then(function(data){
+									var servId=data.id;
+									var ps=[]
+									if(app){
+										app.forEach(function(a){
+											a.service=servId;
+											p.push(Application.create(a));
+										})
+										return Promise.all(ps);
+									}else{
+										return Promise.resolve("create service done");
+									}
+								});
+								sPs.push(sp);
+        					})	
+        					return Promise.all(sPs);
+	        			}).error(function(err){
+	        				console.log(err);
+	        			});	        		
+	        		allPromises.push(eachPromise);
+	        	})
+	        	Promise.all(allPromises).then(function(data){
+	        		console.log(data);
+	        		var fsstream=fs.createWriteStream("service_error.csv");
+				 	csv.write(errorLine,{header:false}).pipe(fsstream);
+	        	}).error(function(err){
+	        		console.log(err);
+	        	});
+	        	})
+	        	
+
+    //             var firstline = false;
+    //             var linepromises = [];
+    //             var i=0;
+    //             var allPromises=[];
+    //             allPromises=_.map(output,function(line){
+    //             	line=_.map(line,function (element) {
+    //                     element = element.replace(/\"/g, '');
+    //                     element = element.replace(/\'/g, '');
+    //                     element=element.replace(new RegExp(String.fromCharCode(65292),'g'),",");
+    //                     element=element.replace(new RegExp(String.fromCharCode(65295),'g'),"/");
+    //                     element=element.replace(new RegExp(String.fromCharCode(65291),'g'),"+");
+    //                     //if(element.indexOf('紧急二次购买')>-1) console.log(element);
+    //                     return element;
+    //                 });
+    //                 if(firstline){
+    //                 	firstline=false;
+    //                 	return Promise.resolve("empty");
+    //                 }else{
+    //                 	return oneline(line);
+    //                 }
+    //             });
+				// Promise.all(allPromises).then(function(data){
+	   //           	data=_.filter(data,{succeed:false});
+	   //           	console.log(_.unique(_.pluck(data,'name')));
+	   //           	var fsstream=fs.createWriteStream("service_error.csv");
 	             	
-					csv.write(errorLine,{header:false}).pipe(fsstream);
-					toReturn.resolve("done");
-                }).error(function(err){
-	             	console.log('finished with errors',err);
-	             	toReturn.reject("finished with errors");
-	            });
+				// 	csv.write(errorLine,{header:false}).pipe(fsstream);
+				// 	toReturn.resolve("done");
+    //             }).error(function(err){
+	   //           	console.log('finished with errors',err);
+	   //           	toReturn.reject("finished with errors");
+	   //          });
 	        });
 	    });
 	    return toReturn.promise;
@@ -810,8 +981,8 @@ module.exports = {
 	    	service['serviceProgress']=line[0];
 	    	contract.teacher=line[1];
 	    	client.name=line[2];
-	    	client.firstName=line[3];
-	    	client.lastName=line[4];
+	    	client.firstName=(line[3]||"");
+	    	client.lastName=(line[4]||"");
 	    	contract.contractSigned=null;
 	    	if(line[5]){
 	        	contract.contractSigned=new Date(line[5].split('\n')[0]);
@@ -819,7 +990,7 @@ module.exports = {
 	        		return Promise.resolve("invalid datetime"+line[5]);
 	        	}
 	        }
-	        service.serviceType=line[6].substring(0,1);
+	        service.serviceType=(line[6]||"").substring(0,1);
 	        contract.gpa=line[7];
 	        contract.toefl=line[8];
 	        contract.sat=line[9];
@@ -834,31 +1005,22 @@ module.exports = {
 	        var writer=line[18];
 	        application.succeed=line[19];
 	        application.studentCondition=line[20];
-	        client.chineseName=line[21].trim().toLowerCase();
+	        client.chineseName=(line[21]||"").trim().toLowerCase();
 	        service.link=line[23];
 	        var result={};
 	        var contractid;
 	        var clientId,sTypeid,contId,p;
-	        if(client.chineseName=='y'||client.chineseName=='n'||client.chineseName=='不适用'||client.chineseName==''){
-	        	contract.country=line[12];
-	        	contract.degree=line[13];
-	        	contract.previousSchool=line[14];
-	        	contract.major=line[15];
-	        	contract.targetSchoolDegree=line[16];
-	        	application.collageName=line[17];
-	        	application.appliedMajor=line[18];
-	        	application.appliedSemester=line[19];
-	        	level=line[20];
-	        	writer=line[21];
-	        	application.succeed=line[22];
-	        	application.studentCondition=line[23];
-	        	client.chineseName=line[24].trim().toLowerCase();
-	        	//contract.targetMajor=line[18];
-	        }
 	        if(client.chineseName.length>0&&client.chineseName!='y'&&client.chineseName!='n'&&client.chineseName!='n/a'){
 	        	p=Client.find({chineseName:{contains:client.chineseName}});
 	        }else{
-	        	p=Client.find({firstName:{contains:client.firstName},lastName:{contains:client.lastName}});
+	        	if(client.firstName.length>0&&client.lastName.length>0){
+	        		p=Client.find({firstName:client.firstName,lastName:client.lastName});	
+	        	}else{
+	        		errorLine.push(line);
+	        		unknownNames.push(client);
+	        		return Promise.resolve({succeed:false,name:"no name"});
+	        	}
+	        	
 	        }
 	        return Promise.all([p,ServiceType.find({alias:{contains:service.serviceType}})]).spread(function(data_client,data_serviceType){
 	        	if(data_client.length>0){
@@ -867,7 +1029,8 @@ module.exports = {
 	        	if(data_serviceType.length>0){
 	        		sTypeid=_.pluck(data_serviceType,'id');
 	        	}
-	        	if(!clientId||!sTypeid){
+	        	if(!clientId){
+	        		unknownNames.push(client);
 	        		return Promise.reject(client.chineseName+" "+client.firstName+","+client.lastName+" "+service.serviceType+" are  not found");
 	        	}
 	        	console.log("look for contract"+clientId);
@@ -888,7 +1051,7 @@ module.exports = {
 	        	//console.log('finished line');
 	        	console.log(err);
 	        	errorLine.push(line);
-	        	return Promise.resolve({succeed:false,error:err});
+	        	return Promise.resolve({succeed:false,name:client.chineseName});
 	        })
 	        // return Client.find({chineseName:client.chineseName}).then(function(data){
 	        // 	if(data.length>0){
