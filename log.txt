@@ -2928,3 +2928,4 @@ Invalid attributes sent to Service:
  • serviceProgress
    • "required" validation rule failed for input: null
 
+Terminate batch job (Y/N)? 
