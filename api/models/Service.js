@@ -8,9 +8,11 @@
 module.exports = {
 
   attributes: {  	
-    chineseName:{type:'string'},
-    lastName:{type:'string'},
-    firstName:{type:'string'},
+    client:{model:'Client'},
+    cName:{type:'string'},
+    lName:{type:'string'},
+    fName:{type:'string'},
+    namekey:{type:'string'},
     generated:{type:'boolean',defaultsTo:false},
   	contract:{model:'Contract',required:true,defaultsTo:0},
 

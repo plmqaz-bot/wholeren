@@ -284,7 +284,7 @@ module.exports = {
 			//generateComment(attribs,'assisCont');
 			//generateComment(attribs,'expert');
 			//generateComment(attribs,'teacher');
-			delete attribs["createAt"];
+//			delete attribs["createAt"];
 			delete attribs["updateAt"];
 			console.log(attribs);
 			Contract.update({id:req.params.id},attribs,function(err,data){

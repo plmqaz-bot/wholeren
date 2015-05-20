@@ -117,7 +117,7 @@ var ContractView=main.baseDataView.extend({
             {name:'leadDetail',label:'LeadDetail',cell:leadDetail},
             {name:'leadName',label:'Lead介绍人',cell:'string'},
             {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
-            {name:'createdAt',label:'咨询日期',editable:false,cell:momentcell},
+            {name:'createdAt',label:'咨询日期',editable:true,cell:momentcell},
             //{name:'status',label:'签约状态',cell:sign},
             {name:'status',label:'签约状态',cell:status},
             {name:'contractSigned',label:'签约日期',cell:momentcell},
