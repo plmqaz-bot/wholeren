@@ -2,6 +2,7 @@ import mysql.connector;
 import csv;
 import codecs;
 from collections import OrderedDict;
+import re;
 
 add_application=("INSERT INTO application (collageName,appliedMajor,service,succeed,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s,%s)")
 add_service=("INSERT INTO service (cName,lName,fName,namekey,generated,serviceType,serviceProgress,link) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
@@ -13,6 +14,10 @@ cursor=cnx.cursor();
 
 SERVICEPROGRESS={};
 SERVICETYPE={};
+UNKNOWNPROGRESS=[];
+UNKNOWNTYPE=[];
+
+UNKNOWNUSER=[];
 cursor.execute('select serviceProgress,id from serviceprogress;');
 for row in cursor:
 	#print unicode(row[0]).encode('utf-8');
@@ -21,16 +26,39 @@ for row in cursor:
 cursor.execute('select alias,id from servicetype;');
 for row in cursor:
 	SERVICETYPE[unicode(row[0]).encode('utf-8')]=row[1];
-UNKNOWNPROGRESS=[];
-UNKNOWNTYPE=[];
-UNKNOWNUSER=[];
+
 outfile=open("incompleteServiceImport.csv","wb");
 errorfile=csv.writer(outfile,delimiter=',',quotechar='\"');
 
+def addUserToService(sid,username):
+	global UNKNOWNUSER;
+	global errorfile;
+	username=username.lower();
+	if username!='' and username!='na':
+		print "look for User "+username;
+		userArray=re.findall(r"[\w' ]+",username);
+		for cw in userArray:
+			tok=cw.split(" ");
+			if len(tok)==1:
+				cursor.execute("select id from user where lower(firstName) like '%%"+tok[0]+"%%' or lower(lastName) like '%%"+tok[0]+"%%' or lower(nickname) like '%%"+tok[0]+"%%' limit 1");
+			else:
+				cursor.execute("select id from user where lower(firstName) like '%%"+tok[0]+"%%' and lower(lastName) like '%%"+tok[1]+"%%' limit 1");
+			urow=cursor.fetchone();
+			if urow is None:
+				print "User not found "+cw;
+				UNKNOWNUSER+=[cw];
+				errorfile.writerow(line);
+				continue;
+			else:
+				uid=urow[0];
+				cursor.execute("select id from servicedetail where service=%s and user=%s limit 1",(sid,uid));
+				sdrow=cursor.fetchone();
+				if sdrow is None:
+					cursor.execute(add_servicedetail,(sid,uid));
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61.csv','rb') as csvfile:
+with open('S61_3.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
 		serviceProgress=line[0].strip();
@@ -42,19 +70,20 @@ with open('S61.csv','rb') as csvfile:
 			UNKNOWNPROGRESS+=[serviceProgress];
 			errorfile.writerow(line);
 			continue;
-		serviceType=line[6].strip();
+		serviceType=line[7].strip();
 		if serviceType in SERVICETYPE:
 			serviceType=SERVICETYPE[serviceType];
 		else:
 			UNKNOWNTYPE+=[serviceType];
 			errorfile.writerow(line);
 			continue;
-		name=line[2].strip().replace("\'","\\'");
-		fName=line[3].strip().replace("\'","\\'");
-		lName=line[4].strip().replace("\'","\\'");
-		cName=line[21].strip().replace("\'","\\'");
-		link=line[23].strip().replace("\'","\\'");
-		curkey=fName+lName+cName+name+line[5].strip()+line[6].strip();
+		uniqID=line[2].strip().replace("\'","\\'");
+		name=line[3].strip().replace("\'","\\'");
+		fName=line[4].strip().replace("\'","\\'");
+		lName=line[5].strip().replace("\'","\\'");
+		cName=line[22].strip().replace("\'","\\'");
+		link=line[24].strip().replace("\'","\\'");
+		curkey=fName+lName+cName+name+line[6].strip()+line[7].strip();
 		curteacher=line[1];
 		query=("select id from service where namekey='"+curkey+"';");
 		cursor.execute(query);
@@ -66,47 +95,20 @@ with open('S61.csv','rb') as csvfile:
 			cursor.execute(add_service,(cName,lName,fName,curkey,1,serviceType,serviceProgress,link));
 			sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
-		if curteacher!='':
-			print "look for user "+curteacher;
-			cursor.execute("select id from user where firstName =%s or lastName=%s or nickname=%s limit 1",(curteacher,curteacher,curteacher));
-			urow=cursor.fetchone();
-			if urow is None:
-				print 'user not found';
-				UNKNOWNUSER+=[curteacher];
-				errorfile.writerow(line);
-				continue;
-			else:
-				uid=urow[0];
-				print 'process serviceDetail';
-				cursor.execute("select id from servicedetail where service=%s and user=%s limit 1",(sid,uid));
-				sdrow=cursor.fetchone();
-				if sdrow is None:
-					cursor.execute(add_servicedetail,(sid,uid));
-		writer=line[18].strip();
-		if writer!='':
-			cursor.execute("select id from user where firstName =%s or lastName=%s or nickname=%s limit 1",(writer,writer,writer));
-			urow=cursor.fetchone();
-			if urow is None:
-				UNKNOWNUSER+=[curteacher];
-				errorfile.writerow(line);
-				continue;
-			else:
-				uid=urow[0];
-				cursor.execute("select id from servicedetail where service=%s and user=%s limit 1",(sid,uid));
-				sdrow=cursor.fetchone();
-				if sdrow is None:
-					cursor.execute(add_servicedetail,(sid,uid));
+		addUserToService(sid,curteacher);
+		writer=line[19].strip();
+		addUserToService(sid,writer);
 
-		appCollegeName=line[14].strip();
-		appAppliedMajor=line[15].strip();
-		appAppliedSemester=line[16].strip();
-		if line[19].strip()=='Y':
+		appCollegeName=line[15].strip();
+		appAppliedMajor=line[16].strip();
+		appAppliedSemester=line[17].strip();
+		if line[20].strip()=='Y':
 			appSucceed=1;
 		else:
 			appSucceed=0;
 		if appCollegeName!='':
 			print 'add application for '+appCollegeName;
-			cursor.execute(add_application,(appCollegeName,appAppliedMajor,sid,appSucceed,line[20],appAppliedSemester));
+			cursor.execute(add_application,(appCollegeName,appAppliedMajor,sid,appSucceed,line[21].strip(),appAppliedSemester));
 		
 		# service['serviceProgress']=line[0];
 		#     	contract.teacher=line[1];
@@ -153,3 +155,6 @@ f.close();
 cnx.commit();
 cursor.close();
 cnx.close();
+
+
+
