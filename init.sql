@@ -485,6 +485,7 @@ insert into serviceprogress values('**找到我**',NULL,NOW(),NOW());
 insert into serviceprogress values('**勿忘我**',NULL,NOW(),NOW());
 insert into serviceprogress values('SOS紧急处理中',NULL,NOW(),NOW());
 insert into serviceprogress values('交接出去了',NULL,NOW(),NOW());
+insert into serviceprogress values('R身份激活已提交',NULL,NOW(),NOW());
 
 
 

@@ -29,6 +29,17 @@ for row in cursor:
 
 outfile=open("incompleteServiceImport.csv","wb");
 errorfile=csv.writer(outfile,delimiter=',',quotechar='\"');
+oldTypeToNew={'d5':'d','d4':'d','d1':'d','d3':'d2','d2':'d0','c2':'c','f2':'f','h1':'h','i5':'i','i4':'i2','i3':'i','i2':'i1','i1':'i','ps':'p2','p':'p2','ghj':'j1','ic':'h11',}
+def processType(type):
+	if type.lower() in oldTypeToNew:
+		return oldTypeToNew[type.lower()];
+	return type.lower();
+
+USERS={'renee':'xiaoya','yanmeng xiao':'yanmeng','tsung hsun lee':'lee','yolandali':'yolanda','xiaoyanmeng':'yanmeng'}
+def processUser(u):
+	if u.lower() in USERS:
+		return USERS[u.lower()];
+	return u.lower();
 
 def addUserToService(sid,username):
 	global UNKNOWNUSER;
@@ -38,11 +49,12 @@ def addUserToService(sid,username):
 		print "look for User "+username;
 		userArray=re.findall(r"[\w' ]+",username);
 		for cw in userArray:
+			cw=processUser(cw);
 			tok=cw.split(" ");
 			if len(tok)==1:
 				cursor.execute("select id from user where lower(firstName) like '%%"+tok[0]+"%%' or lower(lastName) like '%%"+tok[0]+"%%' or lower(nickname) like '%%"+tok[0]+"%%' limit 1");
 			else:
-				cursor.execute("select id from user where lower(firstName) like '%%"+tok[0]+"%%' and lower(lastName) like '%%"+tok[1]+"%%' limit 1");
+				cursor.execute("select id from user where (lower(firstName) like '%%"+tok[0]+"%%' and lower(lastName) like '%%"+tok[1]+"%%') or lower(lastName) like '%%"+tok[0]+"%%' and lower(firstName) like '%%"+tok[1]+"%%' limit 1");
 			urow=cursor.fetchone();
 			if urow is None:
 				print "User not found "+cw;
@@ -58,7 +70,7 @@ def addUserToService(sid,username):
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61_3.csv','rb') as csvfile:
+with open('61.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
 		serviceProgress=line[0].strip();
@@ -71,6 +83,7 @@ with open('S61_3.csv','rb') as csvfile:
 			errorfile.writerow(line);
 			continue;
 		serviceType=line[7].strip();
+		serviceType=processType(serviceType);
 		if serviceType in SERVICETYPE:
 			serviceType=SERVICETYPE[serviceType];
 		else:

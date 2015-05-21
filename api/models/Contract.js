@@ -16,6 +16,8 @@ module.exports = {
     primaryKey: true,
     unique: true},
 
+    namekey:{type:'string'},
+
     salesGroup:{model:'SalesGroup'},
     
     contractCategory:{model:'ContractCategory'},

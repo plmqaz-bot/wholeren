@@ -27,10 +27,20 @@ add application for Valley High School
 found progress 
 look for User hedy
 found progress 
+look for User hedy
+add application for SBBC
 found progress 
+look for User hedy
+add application for Point Park
 found progress 
+look for User hedy
+add application for Philadelphia Univeristy
 found progress 
+look for User hedy
+look for User hedy
 found progress 
+look for User hedy
+add application for La Roche
 found progress 
 look for User hedy
 found progress 
@@ -41,9 +51,16 @@ look for User hedy
 found progress 
 look for User hedy
 found progress 
+look for User hedy
+add application for Point Park University
 found progress 
+look for User hedy
+add application for Philadelphia Univeristy
 found progress 
+look for User hedy
 found progress 
+look for User hedy
+add application for Point Park
 found progress 
 look for User hedy
 found progress 
@@ -56,6 +73,7 @@ found progress
 look for User hedy
 add application for Shoreline
 found progress 
+look for User hedy
 found progress 
 look for User hedy
 found progress 
@@ -99,9 +117,20 @@ look for User hedy
 look for User hedy
 add application for UCB
 found progress 
+look for User hedy
+look for User hedy
+add application for UCB
 found progress 
+look for User hedy
+look for User hedy
+add application for UCB
 found progress 
+look for User hedy
+look for User hedy
+add application for UCB
 found progress 
+look for User hedy
+add application for Silicon Valley University
 found progress 
 look for User hedy
 found progress 
@@ -439,6 +468,8 @@ look for User hedy
 found progress 
 look for User hedy
 found progress 
+look for User hedy
+add application for 2个CC的文书
 found progress 
 look for User hedy
 add application for Ohlone College
@@ -504,6 +535,8 @@ look for User hedy
 look for User hedy
 add application for City University of Seattle
 found progress 
+look for User hedy
+add application for Point Park
 found progress 
 look for User hedy
 add application for Whatcom
@@ -531,6 +564,8 @@ add application for X
 found progress 
 look for User hedy
 found progress 
+look for User hedy
+add application for Degis University
 found progress 
 look for User hedy
 add application for Whatcom
@@ -541,7 +576,11 @@ found progress
 look for User hedy
 add application for X
 found progress 
+look for User hedy
+add application for whatcom
 found progress 
+look for User hedy
+add application for LBCC
 found progress 
 look for User hedy
 add application for Mt Lebanon
@@ -571,7 +610,11 @@ found progress
 look for User hedy
 add application for CBI
 found progress 
+look for User hedy
+add application for ?
 found progress 
+look for User hedy
+add application for ?
 found progress 
 look for User hedy
 add application for X
@@ -588,6 +631,8 @@ found progress
 look for User hedy
 add application for Pierce
 found progress 
+look for User hedy
+add application for 加州浸会
 found progress 
 look for User hedy
 add application for X
@@ -595,7 +640,11 @@ found progress
 look for User hedy
 add application for X
 found progress 
+look for User hedy
+add application for Philadelphia University
 found progress 
+look for User hedy
+add application for Rockford
 found progress 
 look for User hedy
 add application for El Camino
@@ -694,8 +743,14 @@ found progress
 look for User hedy
 add application for Clakamas CC
 found progress 
+look for User hedy
+add application for 1. Portland State University
 found progress 
+look for User hedy
+add application for 2. U of Oregan
 found progress 
+look for User hedy
+add application for 3. Oregon State University
 found progress 
 found progress 
 look for User hedy
@@ -707,6 +762,8 @@ add application for Drexel ELC
 found progress 
 look for User hedy
 found progress 
+look for User hedy
+add application for X
 found progress 
 found progress 
 found progress 
@@ -720,11 +777,23 @@ found progress
 look for User hedy
 add application for Seminole State College
 found progress 
+look for User hedy
+add application for 1. FSU
 found progress 
+look for User hedy
+add application for 2. University of Texas Dallas
 found progress 
+look for User hedy
+add application for 3. Purdue Univesity
 found progress 
+look for User hedy
+add application for 4. Adelphi University
 found progress 
+look for User hedy
+add application for 5. Spring 2015
 found progress 
+look for User hedy
+add application for 6. Spring 2015
 found progress 
 look for User hedy
 add application for Oakland Sch.
@@ -879,6 +948,8 @@ look for User hedy
 look for User iris
 add application for Uni. of St. Francis rolling
 found progress 
+look for User hedy
+add application for 5. Pierce 已提交
 found progress 
 found progress 
 found progress 
@@ -1451,6 +1522,8 @@ add application for NSCC
 found progress 
 look for User iris
 found progress 
+look for User iris
+add application for Mercy College
 found progress 
 look for User iris
 add application for ASA College
@@ -1489,6 +1562,8 @@ found progress
 look for User iris
 add application for Manor College
 found progress 
+look for User iris
+add application for Peirce College
 found progress 
 look for User iris
 found progress 
@@ -1507,6 +1582,8 @@ look for User iris
 found progress 
 look for User iris
 found progress 
+look for User iris
+add application for Monroe Community College＋Villa Maria College
 found progress 
 look for User iris
 add application for Monroe Community College
@@ -1562,6 +1639,8 @@ found progress
 look for User iris
 add application for X
 found progress 
+look for User iris
+add application for Strayer University
 found progress 
 look for User iris
 add application for Columbia College
@@ -1616,7 +1695,11 @@ found progress
 look for User iris
 add application for Phoenix College - ESL
 found progress 
+look for User iris
+add application for ?
 found progress 
+look for User iris
+add application for ?
 found progress 
 look for User iris
 add application for X
@@ -1663,8 +1746,14 @@ found progress
 look for User iris
 add application for ELI-UF
 found progress 
+look for User iris
+add application for 1. Philadelphia Univesity
 found progress 
+look for User iris
+add application for 2. Lynn University
 found progress 
+look for User iris
+add application for X
 found progress 
 look for User iris
 add application for 3. Martin Luther High School
@@ -1684,7 +1773,11 @@ found progress
 look for User iris
 add application for Pierce
 found progress 
+look for User iris
+add application for 1. Pine Manor College
 found progress 
+look for User iris
+add application for 2. Fisher College
 found progress 
 look for User iris
 add application for 1. University of South Florida
@@ -1764,7 +1857,11 @@ found progress
 look for User iris
 add application for X
 found progress 
+look for User iris
+add application for X
 found progress 
+look for User iris
+add application for 1. Berkeley College（首次开发）
 found progress 
 look for User iris
 add application for Greenriver
@@ -1784,6 +1881,8 @@ found progress
 look for User iris
 add application for Santiago Canyon
 found progress 
+look for User iris
+add application for X
 found progress 
 look for User iris
 add application for SCCC
@@ -1791,7 +1890,11 @@ found progress
 look for User iris
 add application for Pierce
 found progress 
+look for User iris
+add application for 1. Northeastern Univeristy - Seattle (待定）
 found progress 
+look for User iris
+add application for 2. Western Oregon University （待定）
 found progress 
 look for User iris
 add application for Edmonds
@@ -1811,11 +1914,17 @@ found progress
 look for User iris
 add application for Pierce
 found progress 
+look for User iris
+add application for Philadelphia Univesity(已提交)
 found progress 
+look for User iris
+add application for University of St. Francis(已提交)
 found progress 
 look for User iris
 add application for Pierce
 found progress 
+look for User iris
+add application for Century School of Langauge
 found progress 
 look for User iris
 add application for Pierce
@@ -1859,6 +1968,8 @@ found progress
 look for User iris
 add application for Edmonds
 found progress 
+look for User iris
+add application for X
 found progress 
 look for User iris
 add application for 1. University of Miami （已提交）
@@ -1917,7 +2028,11 @@ found progress
 look for User iris
 add application for Northeastern University (4/1)（已提交）
 found progress 
+look for User iris
+add application for X
 found progress 
+look for User iris
+add application for X
 found progress 
 look for User iris
 add application for X
@@ -1979,6 +2094,9 @@ found progress
 look for User iris
 add application for ￼University at Albany – SUNY (已提交)
 found progress 
+Service not found, inserting
+look for User iris
+add application for X
 found progress 
 look for User iris
 add application for 1. Winchester Thurston HS
@@ -1995,6 +2113,9 @@ found progress
 look for User iris
 add application for 5. Edmunk Burke
 found progress 
+found progress 
+Service not found, inserting
+look for User prudence
 found progress 
 look for User prudence
 add application for sccc
@@ -2105,7 +2226,11 @@ found progress
 look for User prudence
 add application for x
 found progress 
+look for User prudence
+add application for OCC
 found progress 
+look for User prudence
+add application for MCC
 found progress 
 look for User prudence
 look for User qifeng
@@ -2182,6 +2307,9 @@ look for User prudence
 add application for B1 to F1
 found progress 
 found progress 
+Service not found, inserting
+look for User prudence
+add application for CCAC
 found progress 
 look for User prudence
 found progress 
@@ -2197,7 +2325,6 @@ look for User prudence
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for NJIT
 found progress 
 look for User prudence
@@ -2240,7 +2367,11 @@ look for User prudence
 look for User serene
 add application for Brandeis u
 found progress 
+look for User prudence
+add application for Felician college -ESL
 found progress 
+look for User prudence
+add application for Felician college -MBA
 found progress 
 look for User prudence
 add application for x
@@ -2284,69 +2415,63 @@ look for User prudence
 look for User serene
 add application for New Jersey Institute of Technology
 found progress 
+look for User prudence
+look for User ul3
+User not found ul3
+add application for X
 found progress 
 look for User prudence
 look for User xiaomeng
-User not found xiaomeng
 add application for University of Notre Dame (10/1)
 found progress 
 look for User prudence
 look for User xiaomeng
-User not found xiaomeng
 add application for Michigan State University (10/1)
 found progress 
 look for User prudence
 look for User xiaomeng
-User not found xiaomeng
 add application for ohio State university (11/14)
 found progress 
 look for User prudence
 look for User xiaomeng
-User not found xiaomeng
 add application for Boston College(12/1)
 found progress 
 look for User prudence
 look for User xiaomeng
-User not found xiaomeng
 add application for University of Georgia (10/15)
 found progress 
 look for User prudence
 look for User xiaomeng
-User not found xiaomeng
 add application for Bentley University (10/1)
 found progress 
 look for User prudence
 add application for x
 found progress 
+look for User prudence
+add application for 2
 found progress 
 look for User prudence
 look for User jingwen
-User not found jingwen
 add application for Pennsylvania State University--University Park
 found progress 
 look for User prudence
 look for User jingwen
-User not found jingwen
 add application for Boston University
 found progress 
 look for User prudence
 look for User jingwen
-User not found jingwen
 add application for University of Washington-Seattle
 found progress 
 look for User prudence
 look for User jingwen
-User not found jingwen
 add application for Ohio State University
 found progress 
 look for User prudence
 look for User jingwen
-User not found jingwen
 add application for Purdue University--West Lafayette
 found progress 
 look for User prudence
 look for User jingwen
-User not found jingwen
 add application for University of Minnesota--Twin Cities
 found progress 
 look for User prudence
@@ -2468,32 +2593,26 @@ add application for X
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 1. Pennsulvania State -University Park
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 2. Ohio State University
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 3. Michigan State University
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 4. Indian Univeresity Bloomington
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 5. University of San Diego
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 6. Washingotn State University-Pullman
 found progress 
 look for User prudence
@@ -2602,7 +2721,6 @@ add application for 1. Southern New Hampshire University
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 2. West Michigan University
 found progress 
 look for User prudence
@@ -2611,68 +2729,70 @@ found progress
 look for User prudence
 add application for X
 found progress 
+look for User prudence
+add application for X
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 1. University of San Francisco (6/15)
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 2. Georgia State University (8/1)
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 3. University of Colorado Denver
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 4. University of Massachusette Boston (10/1)
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 5. Pace university (11/15)
 found progress 
 look for User prudence
 look for User vicky
-User not found vicky
 add application for 6. Bentley University
 found progress 
 look for User prudence
-look for User junyan
-User not found junyan
+look for User vicky
 add application for 1. Matignon High School
 found progress 
 look for User prudence
-look for User junyan
-User not found junyan
+look for User vicky
 add application for 2. Pope John XXIII High School
 found progress 
 look for User prudence
-look for User junyan
-User not found junyan
+look for User vicky
 add application for 3. Brookline high school
 found progress 
 look for User prudence
-look for User junyan
-User not found junyan
+look for User vicky
 add application for 4. Arlington Catholic High school
 found progress 
 look for User prudence
-look for User junyan
-User not found junyan
+look for User vicky
 add application for 5. WMA
 found progress 
 look for User prudence
 add application for 6. Lincoln Academy
 found progress 
+look for User prudence
+look for User prudence
+add application for X
 found progress 
+look for User prudence
+look for User prudence
+add application for X
 found progress 
+look for User prudence
+look for User prudence
+add application for X
 found progress 
+look for User prudence
+add application for X
 found progress 
 look for User prudence
 look for User iris
@@ -2698,6 +2818,8 @@ look for User prudence
 look for User iris
 add application for Washington State University--Pullman
 found progress 
+look for User prudence
+add application for X
 found progress 
 look for User lucia
 found progress 
@@ -2744,7 +2866,11 @@ found progress
 look for User lucia
 add application for CCAC
 found progress 
+look for User lucia
+add application for Duquesne University
 found progress 
+look for User lucia
+add application for Point Park University
 found progress 
 look for User lucia
 found progress 
@@ -2775,7 +2901,11 @@ found progress
 look for User lucia
 add application for CCAC
 found progress 
+look for User lucia
+add application for Duquesne University
 found progress 
+look for User lucia
+add application for Point Park University
 found progress 
 look for User lucia
 found progress 
@@ -2825,6 +2955,8 @@ look for User lucia
 add application for The University School
 found progress 
 found progress 
+look for User lucia
+add application for Knox College
 found progress 
 look for User lucia
 found progress 
@@ -2865,8 +2997,14 @@ found progress
 look for User lucia
 add application for Language Center International
 found progress 
+look for User lucia
+add application for Johnson & Wales University
 found progress 
+look for User lucia
+add application for Cambridge College
 found progress 
+look for User lucia
+add application for Merrimack College
 found progress 
 look for User lucia
 add application for ASC Language Center
@@ -2878,6 +3016,8 @@ found progress
 look for User lucia
 add application for Pierce Community Colelge
 found progress 
+look for User lucia
+add application for Knox College
 found progress 
 look for User lucia
 add application for Labette Community College
@@ -3055,8 +3195,14 @@ add application for Pierce Community College
 found progress 
 look for User lucia
 found progress 
+look for User lucia
+add application for Portland State University
 found progress 
+look for User lucia
+add application for Golden Gate University
 found progress 
+look for User lucia
+add application for International Technological University
 found progress 
 look for User lucia
 found progress 
@@ -3072,8 +3218,14 @@ found progress
 look for User lucia
 add application for Whatcom Community College
 found progress 
+look for User lucia
+add application for Merrimack College
 found progress 
+look for User lucia
+add application for Cambridge College
 found progress 
+look for User lucia
+add application for Johnson & Wales University
 found progress 
 look for User lucia
 add application for Greenriver Community College
@@ -3120,6 +3272,8 @@ found progress
 look for User lucia
 add application for Pierce Community College
 found progress 
+look for User lucia
+add application for Point Park University
 found progress 
 found progress 
 found progress 
@@ -3127,7 +3281,10 @@ found progress
 look for User lucia
 add application for na
 found progress 
+look for User mary
+add application for ELS
 found progress 
+look for User mary
 found progress 
 look for User mary
 add application for Columbus State CC
@@ -3135,7 +3292,13 @@ found progress
 look for User mary
 add application for Santiago Canyon College
 found progress 
+look for User mary
+look for User ran zhang
+add application for Fairleigh Dickinson University
 found progress 
+look for User mary
+look for User ran zhang
+add application for Kent State University
 found progress 
 look for User mary
 add application for ELS
@@ -3155,6 +3318,8 @@ add application for Shoreline
 found progress 
 look for User mary
 found progress 
+look for User mary
+add application for ELS Boston-Downtown
 found progress 
 look for User mary
 add application for Miracosta College
@@ -3232,6 +3397,8 @@ found progress
 look for User mary
 add application for NA
 found progress 
+look for User mary
+add application for ELS
 found progress 
 look for User mary
 add application for Parkland
@@ -3280,6 +3447,8 @@ add application for New York Film Academy
 found progress 
 look for User mary
 found progress 
+look for User mary
+add application for ELS
 found progress 
 look for User mary
 found progress 
@@ -3289,6 +3458,8 @@ found progress
 look for User mary
 add application for University of Dayton
 found progress 
+look for User mary
+add application for UC系统（477个字 + 523个字）
 found progress 
 look for User mary
 add application for Santa Monica College
@@ -3364,6 +3535,8 @@ found progress
 look for User mary
 add application for SSCC
 found progress 
+Service not found, inserting
+look for User mary
 found progress 
 look for User mary
 add application for Columbia College
@@ -3483,6 +3656,8 @@ found progress
 look for User mary
 add application for Seattle Central CC
 found progress 
+look for User mary
+add application for University School
 found progress 
 found progress 
 found progress 
@@ -3519,6 +3694,8 @@ found progress
 look for User sarah
 add application for Pierce College
 found progress 
+look for User sarah
+add application for ELS
 found progress 
 look for User sarah
 found progress 
@@ -3552,12 +3729,20 @@ look for User sarah
 found progress 
 look for User sarah
 found progress 
+look for User sarah
+add application for Santa Barbara Business College
 found progress 
+look for User sarah
+add application for Colorado State University
 found progress 
+look for User sarah
+add application for National University
 found progress 
 look for User sarah
 add application for University of Delaware
 found progress 
+look for User sarah
+add application for Goldey-Beacom College
 found progress 
 look for User sarah
 add application for Cecil College
@@ -3707,6 +3892,7 @@ look for User sarah
 look for User alex
 add application for University of Pittsburgh
 found progress 
+look for User shan/sarah
 found progress 
 look for User sarah
 look for User alex
@@ -3886,20 +4072,19 @@ found progress
 look for User sarah
 add application for South Seattle Community College
 found progress 
+Service not found, inserting
+look for User sarah
 found progress 
 look for User sarah
 look for User jingwen
-User not found jingwen
 add application for University of Southern California
 found progress 
 look for User sarah
 look for User jingwen
-User not found jingwen
 add application for New York University
 found progress 
 look for User sarah
 look for User jingwen
-User not found jingwen
 add application for Syracuse University
 found progress 
 look for User sarah
@@ -3928,6 +4113,7 @@ look for User sarah
 found progress 
 look for User sarah
 found progress 
+look for User sarah
 found progress 
 look for User sarah
 add application for University of San Fransisco
@@ -4074,16 +4260,14 @@ add application for Rutgers, the State University of New Jersey – New Brunswic
 found progress 
 look for User olivia
 look for User alex
-add application for U of Florida
+add application for Umass
 found progress 
 look for User olivia
-look for User jean
-User not found jean
+look for User jingwen shao
 add application for Boston University
 found progress 
 look for User olivia
-look for User jean
-User not found jean
+look for User jingwen shao
 add application for U of Virginia
 found progress 
 look for User olivia
@@ -4274,58 +4458,46 @@ add application for Purdue University
 found progress 
 look for User olivia
 look for User xiaomeng
-User not found xiaomeng
 add application for Miracosta CC
 found progress 
 look for User olivia
 look for User xiaomeng
-User not found xiaomeng
 add application for UCSD
 found progress 
 look for User olivia
 look for User xiaomeng
-User not found xiaomeng
 add application for UCSC
 found progress 
 look for User olivia
 look for User xiaomeng
-User not found xiaomeng
 add application for USC
 found progress 
 look for User olivia
 look for User xiaomeng
-User not found xiaomeng
 add application for UCM
 found progress 
 look for User olivia
 look for User xiaomeng
-User not found xiaomeng
 add application for UCR
 found progress 
 look for User olivia
 look for User jingwen
-User not found jingwen
 add application for Kingsborough cc
 found progress 
 look for User olivia
 look for User jingwen
-User not found jingwen
 found progress 
 look for User olivia
 look for User jingwen
-User not found jingwen
 found progress 
 look for User olivia
 look for User jingwen
-User not found jingwen
 found progress 
 look for User olivia
 look for User jingwen
-User not found jingwen
 found progress 
 look for User olivia
 look for User jingwen
-User not found jingwen
 found progress 
 look for User olivia
 add application for Pratt Int.
@@ -4486,11 +4658,29 @@ look for User olivia
 look for User qifeng
 add application for MCPHS
 found progress 
+look for User olivia
+look for User serene
+add application for University of Chicago
 found progress 
+look for User olivia
+look for User serene
+add application for Duke University
 found progress 
+look for User olivia
+look for User serene
+add application for Northwestern University
 found progress 
+look for User olivia
+look for User serene
+add application for Williams College
 found progress 
+look for User olivia
+look for User serene
+add application for Wake Forest University
 found progress 
+look for User olivia
+look for User serene
+add application for Vandebilt University
 found progress 
 look for User olivia
 look for User 还没定
@@ -4498,12 +4688,10 @@ add application for Purdue
 found progress 
 look for User olivia
 look for User xiao meng
-User not found xiao meng
 add application for Southern New Hampshire U
 found progress 
 look for User olivia
 look for User xiao meng
-User not found xiao meng
 add application for Umass Lowell
 found progress 
 look for User xuejing
@@ -4674,63 +4862,51 @@ add application for central Washington university
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for Fordham
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for U of san diego
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for miami
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for UT-Austin
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for Michigan state
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for Binghamton-SUNY
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for Penn State--park
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for UIUC
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for 明大
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for University of Massachusetts-
 Amherst
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for University of Pittsburgh
 found progress 
 look for User xuejing
 look for User jingwen
-User not found jingwen
 add application for 石溪
 found progress 
 look for User xuejing
@@ -4897,32 +5073,26 @@ add application for U of Florida
 found progress 
 look for User xuejing
 look for User xiaomeng转alex
-User not found xiaomeng
 add application for Purdue University
 found progress 
 look for User xuejing
 look for User xiaomeng转alex
-User not found xiaomeng
 add application for U of Wisconsin--Madison
 found progress 
 look for User xuejing
 look for User xiaomeng转alex
-User not found xiaomeng
 add application for Fordham U
 found progress 
 look for User xuejing
 look for User xiaomeng转alex
-User not found xiaomeng
 add application for Missouri U
 found progress 
 look for User xuejing
 look for User xiaomeng转alex
-User not found xiaomeng
 add application for USC
 found progress 
 look for User xuejing
 look for User xiaomeng转alex
-User not found xiaomeng
 add application for Penn State--Park
 found progress 
 look for User xuejing
@@ -5146,32 +5316,26 @@ add application for 待定
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Winchester Thurston School
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Abington Friends School
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Eden Chrisitian Academy
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Friends Select School
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Greensburg Central Catholic
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Calvary Baptist School
 found progress 
 look for User jingyi
@@ -5290,32 +5454,26 @@ add application for San Francisco State University
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for U of Washington
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Worcester Polytechnic Institute
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for University of Delaware
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Drexel University
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Washington State University
 found progress 
 look for User jingyi
 look for User jingwen shao
-User not found jingwen shao
 add application for Seattle University
 found progress 
 look for User jingyi
@@ -5680,12 +5838,10 @@ add application for Dwight-Englewood School
 found progress 
 look for User fannie
 look for User xiaomeng
-User not found xiaomeng
 add application for 新加一所UCLA
 found progress 
 look for User fannie
 look for User xiaomeng
-User not found xiaomeng
 add application for UC BERKELEY
 found progress 
 look for User fannie
@@ -5760,13 +5916,21 @@ look for User fannie
 look for User xinze liu
 add application for City University of Seattle
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
 found progress 
 look for User qifeng
 add application for USF
@@ -5786,7 +5950,10 @@ found progress
 look for User qifeng
 add application for PCC
 found progress 
+look for User qifeng
 found progress 
+look for User qifeng
+add application for UCLA
 found progress 
 look for User qifeng
 add application for UCSB
@@ -5850,245 +6017,283 @@ look for User alex
 look for User alex
 add application for WISC-M
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
 found progress 
+look for User alex
+look for User alex
+add application for PSU, UTA, Colorado, RPI, Delaware
 found progress 
+look for User alex
+look for User alex
+add application for USC
 found progress 
+look for User alex
+look for User alex
+add application for MIT, Columbia, CMU
 found progress 
+look for User alex
+look for User alex
 found progress 
+look for User alex
+look for User alex
 found progress 
+look for User alex
+look for User alex
+add application for Wisc, PSU, Purdue, IUB, Rutgers, Pitt
 found progress 
+look for User alex
+look for User alex
 found progress 
+look for User alex
+look for User alex
 found progress 
+look for User alex
+look for User alex
+add application for GIT
 found progress 
+look for User alex
 found progress 
+look for User alex
+add application for Alberta, Purdue, PSU, Drexel
 found progress 
+look for User alex
+add application for Wisc, PSU, Fordham, USC
 found progress 
+look for User alex
+add application for Rochester, Wisconsin, Miami, Fordham, Texas A&M, Rutgers
 found progress 
+look for User alex
+add application for Wake Forest, Mich Ann-Arbor, Rochester, Lehigh, Wisc-Madison
 found progress 
+look for User alex
+add application for USC, UIUC, Florida, GWU, Rochester, Geogria
 found progress 
+look for User alex
+add application for Whinchester, Shady Side, DE, WT 
++ parent statement
 found progress 
+look for User alex
+add application for Pepperdine
 found progress 
+look for User alex
+add application for Drexel, Biola
 found progress 
+look for User alex
+add application for Maryland, OSU, Syracuse, Northeastern, Denver, Minnesota
 found progress 
+look for User alex
+add application for UCB, Pitt, UW, Penn State
 found progress 
+look for User alex
+add application for BU+5
 found progress 
+look for User alex
+add application for UPitt
 found progress 
+look for User alex
+add application for UTEXAS
 found progress 
+look for User alex
+add application for Foxcorft, Lake Forest, Perkiomen, Cate, Maderia, WMA
 found progress 
+look for User alex
+add application for Ohio, Cincinnati, Philadelphia, NY
 found progress 
+look for User alex
 found progress 
+look for User alex
+add application for Pitt
 found progress 
+look for User alex
+add application for WISC-M
 found progress 
+look for User alex
 found progress 
+look for User alex
+add application for NYU
 found progress 
 look for User renee
-User not found renee
 add application for Greenriver
 found progress 
 look for User renee
-User not found renee
 add application for Tacoma
 found progress 
 look for User renee
-User not found renee
 add application for Whatcom
 found progress 
 look for User renee
-User not found renee
 add application for Carnegie Mellon University - Sillicon Valley
 found progress 
 look for User renee
-User not found renee
 add application for University of Southern California
 found progress 
 look for User renee
-User not found renee
 add application for San Jose State University
 found progress 
 look for User renee
-User not found renee
 add application for Northeastern University
 found progress 
 look for User renee
-User not found renee
 add application for Syracuse University
 found progress 
 look for User renee
-User not found renee
 add application for Illinois Institute of Technology
 found progress 
 look for User renee
-User not found renee
 add application for Bunker Hill Community College
 found progress 
 look for User renee
-User not found renee
 add application for Pine Manor College
 found progress 
 look for User renee
-User not found renee
 add application for Roxbury Community College
 found progress 
 look for User renee
-User not found renee
 add application for MassBay
 found progress 
 look for User renee
-User not found renee
 found progress 
 look for User renee
-User not found renee
 add application for Green River
 found progress 
 look for User renee
-User not found renee
 add application for Whatcom
 found progress 
 look for User renee
-User not found renee
 add application for Harrison
 found progress 
 look for User renee
-User not found renee
 add application for X
 found progress 
 look for User renee
-User not found renee
 add application for Harrison College
 found progress 
 look for User renee
-User not found renee
 add application for Ivy Tech
 found progress 
-found progress 
-found progress 
-found progress 
-found progress 
-found progress 
+look for User renee
 found progress 
 look for User renee
-User not found renee
+found progress 
+look for User renee
+found progress 
+look for User renee
+found progress 
+look for User renee
+found progress 
+look for User renee
+found progress 
+look for User renee
 add application for X
 found progress 
 look for User renee
-User not found renee
 add application for SMC
 found progress 
 look for User renee
-User not found renee
 add application for Pierce
 found progress 
 look for User renee
-User not found renee
 add application for Whatcom
 found progress 
 look for User renee
-User not found renee
 add application for X
 found progress 
 look for User renee
-User not found renee
 add application for NSCC
 found progress 
 look for User renee
-User not found renee
 add application for SCCC
 found progress 
 look for User renee
-User not found renee
 add application for Shoreline
 found progress 
 look for User renee
-User not found renee
 add application for Pierce
 found progress 
 look for User renee
-User not found renee
 add application for NSCC
 found progress 
 look for User renee
-User not found renee
 add application for Ivy Tech
 found progress 
 look for User renee
-User not found renee
 add application for Pierce
 found progress 
 look for User renee
-User not found renee
 add application for X
 found progress 
 found progress 
 found progress 
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for University of Alabama
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for University of British Columbia
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for Academy Art of University
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for Indiana University Bloomington
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for Oregon State University
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for UMass Boston
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for Pasadena City College
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for East Los Angeles College
 found progress 
+Service not found, inserting
+look for User dongsheng
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for University of Southern California
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for New York Univeristy
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for UCLA
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for University of Michgan-Ann
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for Boston University
 found progress 
 look for User dongsheng
-User not found dongsheng
 add application for Georgetown University
 found progress 
 look for User chloe
@@ -6185,7 +6390,11 @@ found progress
 look for User chloe
 add application for Foothill
 found progress 
+look for User chloe
+add application for SBBC
 found progress 
+look for User chloe
+add application for Uni of the Pacific
 found progress 
 look for User chloe
 found progress 
@@ -6212,9 +6421,16 @@ add application for University of Mississipi (已提交)
 found progress 
 look for User chloe
 found progress 
+look for User chloe
+add application for 1. The Art Institute
 found progress 
+look for User chloe
+add application for 2. Pace University
 found progress 
+look for User chloe
+add application for 3. NYSID
 found progress 
+look for User chloe
 found progress 
 look for User chloe
 found progress 
@@ -6245,13 +6461,21 @@ found progress
 found progress 
 look for User chloe
 found progress 
+look for User chloe
+add application for 1. Rutgers University-Newark SPAA
 found progress 
+look for User chloe
+add application for 2. Northeastern Uni. Pathway
 found progress 
+look for User chloe
+add application for 3. Florida Institute of Technology
 found progress 
+look for User chloe
 found progress 
 look for User chloe
 add application for NEU-Pathway
 found progress 
+look for User chloe
 found progress 
 look for User chloe
 add application for Pierce
@@ -6262,6 +6486,8 @@ found progress
 look for User chloe
 add application for NSCC
 found progress 
+look for User chloe
+add application for UW-Readmission
 found progress 
 look for User chloe
 found progress 
@@ -6310,9 +6536,17 @@ found progress
 look for User chloe
 add application for 7Santa Barbara Business College (rolling)
 found progress 
+look for User chloe
+add application for Johns W
 found progress 
+look for User chloe
+add application for Philadelphia Univesity
 found progress 
+look for User chloe
+add application for University of St. Francis
 found progress 
+look for User chloe
+add application for SBBCollege
 found progress 
 look for User chloe
 add application for 1. Colgate University (4.1)
@@ -6357,7 +6591,11 @@ found progress
 look for User chloe
 add application for Pierce
 found progress 
+look for User chloe
+add application for 东北pathway
 found progress 
+look for User chloe
+add application for SBBCollege
 found progress 
 look for User chloe
 found progress 
@@ -6371,6 +6609,7 @@ found progress
 look for User chloe
 add application for Edmonds
 found progress 
+look for User chloe
 found progress 
 look for User chloe
 found progress 
@@ -6380,7 +6619,11 @@ found progress
 look for User chloe
 add application for Pierce
 found progress 
+look for User chloe
+add application for University of St. Francis
 found progress 
+look for User chloe
+add application for SEMO东南密苏里
 found progress 
 look for User chloe
 add application for MassBay
@@ -6439,6 +6682,9 @@ found progress
 look for User chloe
 add application for Westmont College(已提交)
 found progress 
+look for User jiali
+User not found jiali
+add application for University of Notre Dame
 found progress 
 look for User shan
 add application for NA
@@ -6571,8 +6817,11 @@ add application for NA
 found progress 
 look for User xinyi wang
 found progress 
+look for User xinyi wang
 found progress 
+look for User xinyi wang
 found progress 
+look for User xinyi wang
 found progress 
 look for User xinyi wang
 add application for Mt. Hood CC
@@ -6598,8 +6847,14 @@ found progress
 look for User xinyi wang
 add application for Parkland College
 found progress 
+look for User xinyi wang
+add application for ITU
 found progress 
+look for User xinyi wang
+add application for National Uiversity
 found progress 
+look for User xinyi wang
+add application for Califronia State University
 found progress 
 look for User xinyi wang
 found progress 
@@ -6621,6 +6876,8 @@ found progress
 look for User xinyi wang
 add application for NA
 found progress 
+look for User xinyi wang
+add application for Grand canyon University
 found progress 
 look for User xinyi wang
 add application for phoenix
@@ -6628,6 +6885,8 @@ found progress
 look for User xinyi wang
 add application for Pima CC
 found progress 
+look for User xinyi wang
+add application for UN
 found progress 
 look for User xinyi wang
 add application for Miracosta CC
@@ -6677,6 +6936,8 @@ found progress
 look for User xinyi wang
 add application for Community College of Phila
 found progress 
+look for User xinyi wang
+add application for Le moyne College
 found progress 
 look for User xinyi wang
 add application for ASA college
@@ -6710,8 +6971,14 @@ found progress
 look for User xinyi wang
 add application for Valley International Academy
 found progress 
+look for User xinyi wang
+add application for Northwestern Polytechnic University
 found progress 
+look for User xinyi wang
+add application for California State University-San Bernardino
 found progress 
+look for User xinyi wang
+add application for Depaul University
 found progress 
 look for User xinyi wang
 add application for NA
@@ -6722,6 +6989,8 @@ found progress
 look for User xinyi wang
 add application for NA
 found progress 
+look for User xinyi wang
+add application for Bellevue College
 found progress 
 look for User xinyi wang
 add application for The Beekman School
@@ -6738,6 +7007,8 @@ found progress
 look for User xinyi wang
 add application for NA
 found progress 
+look for User xinyi wang
+add application for New York film academy
 found progress 
 look for User xinyi wang
 add application for SBBCollege
@@ -6865,7 +7136,11 @@ found progress
 look for User xinyi wang
 add application for NA
 found progress 
+look for User xinyi wang
+add application for Johnson&Wales
 found progress 
+look for User xinyi wang
+add application for Centenary
 found progress 
 look for User xinyi wang
 add application for Shoreline
@@ -6879,6 +7154,8 @@ found progress
 look for User xinyi wang
 add application for Savannah College of Art and Design
 found progress 
+look for User xinyi wang
+add application for Savannah College of Art and Design
 found progress 
 look for User xinyi wang
 add application for SBBC
@@ -6904,7 +7181,11 @@ found progress
 look for User xinyi wang
 add application for Shoreline Community College
 found progress 
+look for User xinyi wang
+add application for Central Washington University
 found progress 
+look for User xinyi wang
+add application for Philadelphia University
 found progress 
 look for User xinyi wang
 add application for NA
@@ -7043,32 +7324,26 @@ add application for Fordham University
 found progress 
 look for User du
 look for User xiaomeng
-User not found xiaomeng
 add application for Michigan state university
 found progress 
 look for User du
 look for User xiaomeng
-User not found xiaomeng
 add application for ohio state university
 found progress 
 look for User du
 look for User xiaomeng
-User not found xiaomeng
 add application for boston college
 found progress 
 look for User du
 look for User xiaomeng
-User not found xiaomeng
 add application for Bentley university
 found progress 
 look for User du
 look for User xiaomeng
-User not found xiaomeng
 add application for university of notre dame
 found progress 
 look for User du
 look for User xiaomeng
-User not found xiaomeng
 add application for university of georgia
 found progress 
 look for User du
@@ -7078,7 +7353,6 @@ add application for Brigham Young University
 found progress 
 look for User du
 look for User jingwen shao
-User not found jingwen shao
 add application for Johns Hopkins University
 found progress 
 look for User du
@@ -7121,6 +7395,14 @@ look for User zixi chen
 look for User n/a
 add application for Houston Community College
 found progress 
+look for User zixi chen
+look for User zixi
+add application for University of Wisconsin Colleges_Richland
+found progress 
+Service not found, inserting
+look for User zixi chen
+look for User zixi
+add application for University of Wisconsin Colleges_Richland
 found progress 
 look for User zixi chen
 look for User n/a
@@ -7132,17 +7414,14 @@ add application for Globe University
 found progress 
 look for User zixi chen
 look for User yiran
-User not found yiran
 add application for Rice University
 found progress 
 look for User zixi chen
 look for User yiran
-User not found yiran
 add application for Duke
 found progress 
 look for User zixi chen
 look for User yiran
-User not found yiran
 add application for GIT
 found progress 
 look for User caroline sun
@@ -7152,12 +7431,10 @@ add application for UC-berkeley
 found progress 
 look for User zixi chen
 look for User yiran
-User not found yiran
 add application for Houston University
 found progress 
 look for User zixi chen
 look for User yiran
-User not found yiran
 add application for University of Texas at Dellas
 found progress 
 look for User caroline sun
@@ -7325,6 +7602,8 @@ found progress
 look for User zachary
 add application for NA
 found progress 
+look for User zachary
+add application for CSU Northridge- open university
 found progress 
 look for User zachary
 add application for NA
@@ -7344,22 +7623,18 @@ look for User alex 老师
 add application for University of Texas-Austin
 found progress 
 look for User lee
-User not found lee
 look for User alex 老师
 add application for Univeresity of Michigan-Ann Arbor
 found progress 
 look for User lee
-User not found lee
 look for User alex 老师
 add application for Univeristy of Maryland-Baltimore
 found progress 
 look for User lee
-User not found lee
 look for User alex 老师
 add application for University of Wisconsin, Madison
 found progress 
 look for User lee
-User not found lee
 look for User alex 老师
 add application for University of Illinois-Chicago
 found progress 
@@ -7403,383 +7678,324 @@ add application for Santiago Canyon College
 found progress 
 look for User xiaoxin
 found progress 
-look for User mengye cao
-User not found mengye cao
+Service not found, inserting
+look for User xiaoxin
+found progress 
+Service not found, inserting
+look for User xiaoxin
+found progress 
+Service not found, inserting
+look for User xiaoxin
+found progress 
+Service not found, inserting
+look for User xiaoxin
+add application for Santiago Canyon College
+found progress 
+look for User xiaoxin
+add application for Golden West College
+found progress 
+look for User xiaoxin
+add application for De Anza College
+found progress 
+look for User xiaoxin
+add application for Santa Barbara Business College
+found progress 
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
+found progress 
+look for User mengye cao
 look for User 未定
 add application for U of Rochester
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for UW
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for Art Institute of Seattle
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for University of Denver
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for Baylor University
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for University of Iowa
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for University of Alabama
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for University of Nebraska Lincoln
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for Duquesne University
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for University of Arizona
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User fei ouyang
 add application for University of Cincinnati
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User serene
 add application for University of California-San Diego
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User serene
 add application for University of California-Davis
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User serene
 add application for University of California-Irvine
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User serene
 add application for University of California-Santa Cruz
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User serene
 add application for University of California-Riverside
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User serene
 add application for University of California-Merced
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for University of California-LA
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for UC-Davis
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for PSU
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for University of Texas--Austin
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for University of Washington
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for UC-Irvine
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for U of Florida
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User qifeng yin
 User not found qifeng yin
 add application for U of Georgia
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for University of Southern California
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for University of Rochester
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for University of Miami
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for University of Florida
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for George Washington University
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for University of Georgia
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User jingwen shao
-User not found jingwen shao
 add application for University of Kansas
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User chuihui zhang
 User not found chuihui zhang
 add application for UMass Amherst
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User chuihui zhang
 User not found chuihui zhang
 add application for UMass Amherst
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 add application for UMass Boston
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 look for User alex wang
 User not found alex wang
 found progress 
 look for User mengye cao
-User not found mengye cao
 add application for Penn State Universtiy
 found progress 
 look for User mengye cao
-User not found mengye cao
 add application for Roosevelt University
 found progress 
 look for User mengye cao
-User not found mengye cao
 add application for Wheaton College
 found progress 
 look for User mengye cao
-User not found mengye cao
 add application for Loyola University Chicago
 found progress 
 look for User mengye cao
-User not found mengye cao
 add application for DePaul University
 found progress 
 look for User mengye cao
-User not found mengye cao
 add application for University of Illinois--Chicago
 found progress 
+look for User mengye cao
 found progress 
 look for User jianhui
-User not found jianhui
 found progress 
 look for User jianhui
-User not found jianhui
 add application for South Seattle
 found progress 
+look for User jianhui
 found progress 
+look for User jianhui
 found progress 
+look for User jianhui
 found progress 
 found progress 
 look for User shiyu liu
@@ -7921,7 +8137,6 @@ look for User shiyu liu
 found progress 
 look for User shiyu liu
 look for User yanmeng xiao
-User not found yanmeng xiao
 add application for UMass-Boston
 found progress 
 look for User shiyu liu
@@ -7962,37 +8177,32 @@ add application for Ohio State University
 found progress 
 look for User shiyu liu
 look for User yanmeng xiao
-User not found yanmeng xiao
 add application for Drexel University
 found progress 
 look for User shiyu liu
 look for User yanmeng xiao
-User not found yanmeng xiao
 add application for Pennsylvania State
 University--University
 Park
 found progress 
 look for User shiyu liu
 look for User yanmeng xiao
-User not found yanmeng xiao
 add application for Worcester Polytechnic
 Institute
 found progress 
 look for User shiyu liu
 look for User yanmeng xiao
-User not found yanmeng xiao
 add application for Stony Brook University--SUNY
 found progress 
 look for User shiyu liu
 look for User yanmeng xiao
-User not found yanmeng xiao
 add application for University at Albany--SUNY
 found progress 
 look for User shiyu liu
 look for User yanmeng xiao
-User not found yanmeng xiao
 add application for Duquesne University
 found progress 
+look for User shiyu liu
 found progress 
 look for User shiyu liu
 look for User n/a
@@ -8102,127 +8312,102 @@ look for User fei ouyang
 add application for Boston College
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for UIC
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for University of Florida,
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for University of Maryland Baltimore,
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for U Michigan Ann Arbor,
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for Taxes Austin,
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for Wisconsin Medison
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for University of Southern California
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for University of Rochester
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for University of Miami
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for University of Florida
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for George Washington University
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 look for User alex wang
 User not found alex wang
 add application for University of Georgia
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University of Wisconcin Medison
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University of Minnesota Twin-city
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University of Taxes -- Austin
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for Ohio State University
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University Colorado-Boulder
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University of Iwoa
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University of California, Berkeley
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for Cornell University
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for Brown University
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for Johns Hopkins University
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University of Virginia
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for University of Michigan Ann -- Arbor
 found progress 
 look for User tsung hsun lee
-User not found tsung hsun lee
 add application for CA master universities
 found progress 
 look for User hedy/penny
@@ -8236,6 +8421,8 @@ add application for Nscc
 found progress 
 look for User penny
 found progress 
+look for User hedy/penny
+add application for Sofia University
 found progress 
 look for User penny
 add application for ELS
@@ -8382,8 +8569,14 @@ look for User penny
 found progress 
 look for User penny
 found progress 
+look for User penny
+add application for Berkeley
 found progress 
+look for User penny
+add application for SBBC
 found progress 
+look for User penny
+add application for Pierce
 found progress 
 look for User penny
 add application for Parkland
@@ -8463,339 +8656,274 @@ look for User penny
 User not found penny 
 found progress 
 look for User qi yao
-User not found qi yao
 add application for south seattle
 found progress 
+look for User qi yao
+add application for Bellevue College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for green river
 found progress 
 look for User qi yao
-User not found qi yao
 add application for north seattle
 found progress 
 look for User qi yao
-User not found qi yao
 add application for seattle central
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for John F.Kennedy High School
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Ursuline High School
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Berkeley
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Middlresex
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Pierce
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Santiago Canyon College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Santa Babara Business College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
-found progress 
-found progress 
-found progress 
+look for User qi yao
+add application for ELS language program
 found progress 
 look for User qi yao
-User not found qi yao
+add application for Bluedata International Institute
+found progress 
+look for User qi yao
+add application for Northwestern Polytechnic University
+found progress 
+look for User qi yao
+add application for N/A
+found progress 
+look for User qi yao
 add application for North Seattle Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Pierce College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Seattle Central College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for North Seattle Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Seattle Central College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for South Seattle College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for ASA College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Berkeley College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Borough of Manhattan Community College-CUNY
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Columbus State Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Berkeley Collge
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for SBBC
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Santiago Canyon College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for East Los Angeles College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
-add application for N/A
-found progress 
-found progress 
-found progress 
-found progress 
-look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
+add application for City University of Seattle
+found progress 
+look for User qi yao
+add application for Philadelphia University
+found progress 
+look for User qi yao
+add application for centenary college
+found progress 
+look for User qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
+add application for N/A
+found progress 
+look for User qi yao
 add application for Orange Coast College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Golden West College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Santiago Canyon College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Monroe Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Onondaga Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Finger Lakes Community College
 Geneva Campus
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for N/A
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Columbus State Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Sinclair Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Berkeley College
 found progress 
 look for User qi yao
-User not found qi yao
 found progress 
 look for User qi yao
-User not found qi yao
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Lansing Community College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for North Seattle College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Santiago Canyon College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Ivy tech College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Santiago Canyon College
 found progress 
 look for User qi yao
-User not found qi yao
 found progress 
 look for User qi yao
-User not found qi yao
 add application for South Seattle College
 found progress 
 look for User qi yao
-User not found qi yao
 add application for Sinclair Community College
 found progress 
 look for User qi yao
-User not found qi yao
 found progress 
 look for User chenzhi
 look for User yiran
-User not found yiran
 add application for UIUC
 found progress 
 look for User chenzhi
 look for User yiran
-User not found yiran
 add application for Texas-Austin
 found progress 
 look for User chenzhi
 look for User yiran
-User not found yiran
 add application for SUNY
 found progress 
 look for User chenzhi
 look for User yiran
-User not found yiran
 add application for Texas A&M-College Station
 found progress 
 look for User chenzhi
 look for User yiran
-User not found yiran
 add application for University of Arizona
 found progress 
 look for User chenzhi
 look for User yiran
-User not found yiran
 add application for Arizona State University
 found progress 
 look for User chenzhi
 look for User yiran
-User not found yiran
 add application for UM Amherst
 found progress 
 look for User chenzhi
@@ -8804,7 +8932,6 @@ add application for GIT
 found progress 
 look for User chenzhi 
 look for User jingwen
-User not found jingwen
 add application for U of San Francisco
 found progress 
 look for User chenzhi 
@@ -8835,6 +8962,7 @@ look for User chenzhi
 look for User chuhui
 add application for University of Pittsburgh
 found progress 
+look for User chenzhi
 found progress 
 look for User chenzhi
 found progress 
@@ -8876,32 +9004,26 @@ add application for University of Michigan— Ann Arbor
 found progress 
 look for User chenzhi
 look for User jingwen
-User not found jingwen
 add application for Winchester Thurston School
 found progress 
 look for User chenzhi
 look for User jingwen
-User not found jingwen
 add application for Abington Friends School
 found progress 
 look for User chenzhi
 look for User jingwen
-User not found jingwen
 add application for Geibel Cathelic junior-senior High school
 found progress 
 look for User chenzhi
 look for User jingwen
-User not found jingwen
 add application for Greensburg Central Catholic
 found progress 
 look for User chenzhi
 look for User jingwen
-User not found jingwen
 add application for Calvary Baptist School
 found progress 
 look for User chenzhi
 look for User jingwen
-User not found jingwen
 add application for Faith Christian Academy
 found progress 
 look for User chenzhi
@@ -9102,7 +9224,13 @@ add application for Santiago Canyon College
 found progress 
 look for User nancy
 found progress 
+look for User nancy
+look for User n/a
+add application for ELI
 found progress 
+look for User nancy
+look for User n/a
+add application for ELS
 found progress 
 look for User nancy
 look for User n/a
@@ -9123,6 +9251,8 @@ add application for SBBC
 found progress 
 look for User nancy
 found progress 
+look for User nancy
+add application for NPU
 found progress 
 look for User nancy
 look for User n/a
@@ -9148,6 +9278,9 @@ look for User nancy
 look for User n/a
 add application for South Seattle Community College
 found progress 
+look for User nancy
+look for User n/a
+add application for SBBC
 found progress 
 look for User nancy
 look for User n/a
@@ -9177,251 +9310,189 @@ look for User n/a
 add application for Bellevue College
 found progress 
 look for User yihong
-User not found yihong
 found progress 
 look for User yihong
-User not found yihong
 add application for Santiago Canyon College
 found progress 
 look for User yihong
-User not found yihong
 add application for Pierce College
 found progress 
 look for User yihong
-User not found yihong
 found progress 
 look for User yihong
-User not found yihong
 found progress 
 look for User yihong
-User not found yihong
 found progress 
 look for User yihong 
-User not found yihong 
 found progress 
+look for User yihong 
+add application for ELS
 found progress 
 look for User yolandali
-User not found yolandali
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Purdue University
 found progress 
 look for User yolanda li
-User not found yolanda li
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User alex
 add application for University of Texas-Austin
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User alex
 add application for University of Florida
 found progress 
 look for User yolanda li
-User not found yolanda li
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Cal State LA
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Cal State LA
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Cal State Northridge
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Cal state Long beach
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Loyola Mount University
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for California Batist Unviersity
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for University of San Diego
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User qifeng yin
 User not found qifeng yin
 add application for BU
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User qifeng yin
 User not found qifeng yin
 add application for University of Virginia
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User qifeng yin
 User not found qifeng yin
 add application for University of Illinois at Urbana-Champaign
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User qifeng yin
 User not found qifeng yin
 add application for University of Rochester
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User qifeng yin
 User not found qifeng yin
 add application for Georgia Institute of Technology
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User qifeng yin
 User not found qifeng yin
 add application for Emory
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User xiaoyanmeng
-User not found xiaoyanmeng
 add application for Purdue University
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User xiaoyanmeng
-User not found xiaoyanmeng
 add application for The University of Texas at Austin
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User xiaoyanmeng
-User not found xiaoyanmeng
 add application for Texas A&M University
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User xiaoyanmeng
-User not found xiaoyanmeng
 add application for Ohio State University-Columbus
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User xiaoyanmeng
-User not found xiaoyanmeng
 add application for University of Maryland-College Park
 found progress 
 look for User yolanda li
-User not found yolanda li
 look for User xiaoyanmeng
-User not found xiaoyanmeng
 add application for Miami University--Oxford
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for University of San Francisco
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Iowa State University
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Washington State University
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for California Baptist University
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Santa Monica College
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Pasadena Community College
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for leigh university
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Purdue U
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Michigan State u
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for University of Pittsburgh
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Miami University-Oxford
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Florida State University
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Drexel U
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for UCLA
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for UCSD
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for UCSB
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for UC Davis
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for UCI
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for UC Santa Cruz
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for NYU
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for USC
 found progress 
 look for User yolanda li
-User not found yolanda li
 add application for Northeastern University
 found progress 
 look for User yolanda li
-User not found yolanda li
 found progress 
 look for User yolanda li
-User not found yolanda li
 found progress 
 look for User yolanda li
-User not found yolanda li
 found progress 
 look for User yolanda li
-User not found yolanda li
 found progress 
 look for User patrick
 add application for NA
@@ -9473,32 +9544,26 @@ add application for Drexel University
 found progress 
 look for User patrick
 look for User jingwen shao
-User not found jingwen shao
 add application for University of Washington
 found progress 
 look for User patrick
 look for User jingwen shao
-User not found jingwen shao
 add application for Worcester Polytechnic Institute
 found progress 
 look for User patrick
 look for User jingwen shao
-User not found jingwen shao
 add application for University of Delaware
 found progress 
 look for User patrick
 look for User jingwen shao
-User not found jingwen shao
 add application for Drexel University
 found progress 
 look for User patrick
 look for User jingwen shao
-User not found jingwen shao
 add application for Washington State University
 found progress 
 look for User patrick
 look for User jingwen shao
-User not found jingwen shao
 add application for Seattle University
 found progress 
 look for User patrick
@@ -9589,8 +9654,16 @@ look for User mingxu
 found progress 
 look for User chuhui zhang
 found progress 
+look for User jingyi zou
+User not found jingyi zou
+look for User chuhui zhang
+add application for Duquesne University
 found progress 
+look for User chenzhi li
+look for User chuhui zhang
+add application for University of Pittsburgh
 found progress 
+look for User hedy
 found progress 
 look for User chuhui zhang
 found progress 
@@ -9600,6 +9673,8 @@ found progress
 look for User chuhui zhang
 add application for South Seattle
 found progress 
+look for User chuhui zhang
+add application for University at Buffalo
 found progress 
 look for User chuhui zhang
 found progress 
@@ -9612,10 +9687,23 @@ found progress
 look for User chuhui zhang
 add application for Onondaga
 found progress 
+look for User jingyi zou
+User not found jingyi zou
+look for User chuhui zhang
+add application for Duquesne University
 found progress 
+look for User chenzhi li
+look for User chuhui zhang
+add application for University of Pittsburgh
 found progress 
+look for User chuhui zhang
+add application for Felician College
 found progress 
+look for User chuhui zhang
+add application for Johnson&Wales University--Providence
 found progress 
+look for User chuhui zhang
+add application for Pace University
 found progress 
 look for User chuhui zhang
 add application for Seattle Central
@@ -9643,6 +9731,8 @@ look for User ran zhang
 found progress 
 look for User ran zhang
 found progress 
+look for User ran zhang
+add application for Grand Canyon
 found progress 
 look for User ran zhang
 add application for Pheonix College
@@ -9672,12 +9762,26 @@ add application for Ivy Tech
 found progress 
 look for User ran zhang
 found progress 
+look for User ran zhang
+look for User ran zhang
 found progress 
+look for User ran zhang
+look for User ran zhang
 found progress 
+look for User ran zhang
+look for User ran zhang
 found progress 
+look for User ran zhang
+look for User ran zhang
 found progress 
+look for User ran zhang
+look for User ran zhang
 found progress 
+look for User ran zhang
+look for User ran zhang
 found progress 
+look for User ran zhang
+look for User ran zhang
 found progress 
 found progress 
 found progress 
@@ -9814,6 +9918,11 @@ found progress
 look for User wenjia ma
 User not found wenjia ma
 found progress 
+Service not found, inserting
+look for User wenjia ma
+User not found wenjia ma
+add application for Santa Minoca College
+found progress 
 look for User phoebe qian 
 add application for Santa Barbara Business College
 found progress 
@@ -9831,9 +9940,14 @@ add application for Santiago Canyon College
 found progress 
 look for User phoebe qian 
 found progress 
+look for User phoebe qian 
 found progress 
+look for User phoebe qian 
 found progress 
+look for User phoebe qian 
+add application for National University
 found progress 
+look for User phoebe qian 
 found progress 
 look for User phoebe qian 
 found progress 
@@ -9855,7 +9969,6 @@ look for User phoebe qian
 add application for NA
 found progress 
 look for User sarah & phoebe
-User not found  phoebe
 add application for NA
 found progress 
 look for User phoebe qian 
@@ -9902,100 +10015,76 @@ add application for Fordham readmission
 found progress 
 look for User xiwen li
 look for User zhang ran
-User not found zhang ran
 add application for Drexel University
 found progress 
 look for User xiwen li
 look for User zhang ran
-User not found zhang ran
 add application for Hofstra University
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Los Angeles Pierce College
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Los Angeles Valley College
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Los Angeles Mission College
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for CSU-Northridge
 found progress 
 found progress 
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Georgia Institute of Technology
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for UC Berkeley
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Duke University
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Rice University
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for BU
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Emory University
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for U of Virginia
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for UIUC
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for Georgia Institute of Technology
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 add application for U of Rochester
 found progress 
+look for User lingyan
 found progress 
 look for User lingyan
-User not found lingyan
 add application for ULCA
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User lingyan hu
-User not found lingyan hu
 found progress 
 look for User wenhua & mary
 found progress 
@@ -10033,6 +10122,7 @@ add application for Tacoma CC
 found progress 
 look for User wenhua & mary
 found progress 
+look for User wenhua & mary
 found progress 
 look for User wenhua & mary
 found progress 
@@ -10040,6 +10130,7 @@ found progress
 look for User wenhua
 found progress 
 look for User wenhua
+add application for IEP-Indiana University, Bloomington
 found progress 
 found progress 
 found progress 
