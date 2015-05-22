@@ -227,4 +227,4 @@ chagne one contract field, other service should also update --Sync subscribe and
 
 raid for data storage
 
-z
+delete own contract

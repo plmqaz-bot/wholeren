@@ -307,6 +307,9 @@ insert into servicetype values('L.中信项目','L','Transfer',true,0.9,78,NOW()
 insert into servicetype values('L1.游学营','L1','Transfer',true,0.9,79,NOW(),NOW());
 #其它M
 insert into servicetype values('M1.夏校申请','M1','Transfer',true,0.9,80,NOW(),NOW());
+insert into servicetype values('ap.录取结果申诉','ap','Transfer',true,0.9,81,NOW(),NOW());
+insert into servicetype values('pc.付费咨询','pc','Transfer',true,0.9,82,NOW(),NOW());
+insert into servicetype values('is.选校','is','Transfer',true,0.9,83,NOW(),NOW());
 
 
 #紧急打包
@@ -461,6 +464,9 @@ insert into category2service values(10,78,NULL,NOW(),NOW());
 insert into category2service values(10,79,NULL,NOW(),NOW());
 
 insert into category2service values(9,80,NULL,NOW(),NOW());
+insert into category2service values(9,81,NULL,NOW(),NOW());
+insert into category2service values(9,82,NULL,NOW(),NOW());
+insert into category2service values(9,83,NULL,NOW(),NOW());
 
 
 #Category To Service

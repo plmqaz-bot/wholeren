@@ -111,6 +111,7 @@ var ContractView=main.baseDataView.extend({
             var momentcell=BackgridCells.MomentCell;
             self.columns=[
             {name:'clientName',label:'Name',cell:edit},
+            {name:'namekey',label:'ID',cell:'string'},
             {name:'salesGroup',label:'销售组',cell:salesgroup},
             {name:'contractCategory',label:'咨询服务类别',cell:category},
             {name:'lead',label:'Lead种类',cell:lead},

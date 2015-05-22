@@ -13,7 +13,9 @@ module.exports = {
     lName:{type:'string'},
     fName:{type:'string'},
     namekey:{type:'string'},
+    contractKey:{type:'string'},
     generated:{type:'boolean',defaultsTo:false},
+    indate:{type:'date'},
   	contract:{model:'Contract',required:true,defaultsTo:0},
 
   	serviceType:{model:'ServiceType'},

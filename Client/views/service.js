@@ -67,6 +67,8 @@ var ServiceView=main.baseDataView.extend({
             self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
             {name:'nickname',label:'总负责老师',editable: false,cell:'string'},
+            {name:'cName',label:'导入表学生中文名',cell:'string'},
+            {name:'contractKey',label:'导入表合同ID',cell:'string'},
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:BackgridCells.MomentCell},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
@@ -137,7 +139,7 @@ var ServicePopup=Backbone.Modal.extend({
         container.append('<button class="button-add">Add New</button>');
         
         var self=this;
-        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServComissionLooUp/'),util.ajaxGET('/User/'),util.ajaxGET('/ServiceTypeGroup/')]).spread(function(roles,data,users,stype){
+        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServComissionLookUp/'),util.ajaxGET('/User/'),util.ajaxGET('/ServiceTypeGroup/')]).spread(function(roles,data,users,stype){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var typeselect=userselect.extend({
                 optionValues:function(){

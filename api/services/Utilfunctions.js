@@ -251,6 +251,7 @@ module.exports = {
 	        var client={};
 	        var serviceTeachers=[];
 	        //if(line[0]=='新表格')return Promise.resolve("already")
+	        contract.namekey=line[0];
 	        client.chineseName=line[1];
 	        contract.salesGroup=stripstring(line[2]);
 	        contract.contractCategory=stripstring(line[3]); // later get contractcategoryid;
@@ -453,7 +454,8 @@ module.exports = {
 	        //console.log(STATUS);
 	        if(contract.status.indexOf('未咨询')>=0){
 	        	contract.status='A. 无效-联系不上';
-	        }else if(contract.status.indexOf('Done')>=0||contract.status.indexOf('C1')>=0||contract.status.indexOf('WIP')){
+	        }else if(contract.status.indexOf('Done')>=0||contract.status.indexOf('C1')>=0||contract.status.indexOf('WIP')>=0){
+	        	console.log('status is ',contract.status," changing to WIP");
 	        	contract.status='E. WIP-进入服务';
 	        }else if(contract.status.indexOf('放弃治疗')>=0){
 	        	contract.status='F. 放弃治疗';
@@ -463,6 +465,9 @@ module.exports = {
 	        	contract.status='G. 公益完结';
 	        }
 	        var statusid=STATUS[contract.status];
+	        if(statusid==5){
+	        	console.log("Status is 5", contract.status);
+	        }
 			if(!statusid&&contract.status){
 				unknownStatus.push(contract.status);
 			} 

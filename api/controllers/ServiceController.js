@@ -6,21 +6,21 @@
  */
  function constructsql(where,who){
 			return "select distinct client.chineseName,u.nickname,service.*,c.contractSigned, servicetype.serviceType as 'type',servicetype.addApplication, c.gpa,c.toefl,c.sat,c.gre,c.otherScore, c.degree, c.targetSchoolDegree , c.major, c.previousSchool,c.endFee,u2.nickname as 'realnickname',servrole.servRole \
-			from contract c \
-			inner join client on c.client=client.id \
-			inner join service on c.id=service.contract \
+			from service \
+			left join contract c on c.id=service.contract \
+			left join client on c.client=client.id \
 			left join serviceprogress on service.serviceProgress=serviceprogress.id \
 			left join servicetype on service.serviceType=servicetype.id \
 			left join servicedetail s on s.service=service.id \
 			left join servrole on s.servRole=servrole.id\
 			left join degree on c.degree=degree.id \
 			left join degree d on c.targetSchoolDegree=d.id \
-			inner join user on \
+			left join user on \
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) \
 			left join user u on c.teacher=u.id \
 			left join user u2 on s.user=u2.id \
-			left join whoownswho w on (w.puppet=user.id or w.puppet=u2.id) where \
-			c.contractsigned is not NULL and (status =5) "+who+" "+where+";"
+			left join whoownswho w on (w.puppet=user.id or w.puppet=u2.id or w.puppet=u.id) where \
+			 service.id is not null "+who+" "+where+";"
 		}
 var Promise=require('bluebird');
 module.exports = {
@@ -56,10 +56,10 @@ module.exports = {
 		var wherequery="";
 		if(where.contractSigned){
 			if(where.contractSigned['>']){
-				wherequery+="and contractsigned>'"+where.contractSigned['>']+"'";
+				wherequery+="and (contractsigned>'"+where.contractSigned['>']+"' or indate>'"+where.contractSigned['>']+"') ";
 			}
 			if(where.contractSigned['<']){
-				wherequery+="and contractsigned<'"+where.contractSigned['<']+"'";
+				wherequery+="and (contractsigned<'"+where.contractSigned['<']+"' or indate<'"+where.contractSigned['<']+"') ";
 			}
 		}
 		switch (req.session.user.rank){

@@ -1,12 +1,14 @@
+# -*- coding: utf-8 -*-
 import mysql.connector;
 import csv;
 import codecs;
 from collections import OrderedDict;
 import re;
+import time;
 
 add_application=("INSERT INTO application (collageName,appliedMajor,service,succeed,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s,%s)")
-add_service=("INSERT INTO service (cName,lName,fName,namekey,generated,serviceType,serviceProgress,link) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
-add_servicedetail=("INSERT INTO servicedetail (service,user) VALUES (%s,%s)")
+add_service=("INSERT INTO service (cName,lName,fName,namekey,generated,serviceType,serviceProgress,link,contractKey,indate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+add_servicedetail=("INSERT INTO servicedetail (service,user,servRole) VALUES (%s,%s,%s)")
 
 
 cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='han.bio.cmu.edu',database='wholeren',charset='utf8');
@@ -16,6 +18,7 @@ SERVICEPROGRESS={};
 SERVICETYPE={};
 UNKNOWNPROGRESS=[];
 UNKNOWNTYPE=[];
+UNKNOWNSEMESTER=[];
 
 UNKNOWNUSER=[];
 cursor.execute('select serviceProgress,id from serviceprogress;');
@@ -29,22 +32,53 @@ for row in cursor:
 
 outfile=open("incompleteServiceImport.csv","wb");
 errorfile=csv.writer(outfile,delimiter=',',quotechar='\"');
-oldTypeToNew={'d5':'d','d4':'d','d1':'d','d3':'d2','d2':'d0','c2':'c','f2':'f','h1':'h','i5':'i','i4':'i2','i3':'i','i2':'i1','i1':'i','ps':'p2','p':'p2','ghj':'j1','ic':'h11',}
+oldTypeToNew={'d5':'d','d4':'d','d1':'d','d3':'d2','d2':'d0','f2':'f','c':'c1','h1':'h','i5':'i','i4':'i2','i3':'i','i2':'i1','i1':'i','ps':'p2','p':'p2','ghj':'j1','ic':'h11','b1':'b','i4, f':'i4','d4+d5':'d','z':'i'}
 def processType(type):
+	type=type.strip();
 	if type.lower() in oldTypeToNew:
 		return oldTypeToNew[type.lower()];
 	return type.lower();
+oldProg={'**勿忘我2**':'**勿忘我**','X放弃/退款X':'X自我放弃X'}
+def processProgress(prog):
+	if prog in oldProg:
+		return oldProg[prog];
+	return prog;
 
-USERS={'renee':'xiaoya','yanmeng xiao':'yanmeng','tsung hsun lee':'lee','yolandali':'yolanda','xiaoyanmeng':'yanmeng'}
+USERS={'renee':'xiaoya','yanmeng xiao':'yanmeng','tsung hsun lee':'lee','yolandali':'yolanda','xiaoyanmeng':'yanmeng','annie wang':'annie','alex wang':'alex','alex z':'alex','xiao yanmeng':'yanmeng','caroline sun':'caroline','qifeng yin':'qifeng','chuihui zhang':'chuhui','jingyi zou':'jingyi','kelly lau':'kellylau','chole':'chloe'};
+
 def processUser(u):
+	u=u.strip();
 	if u.lower() in USERS:
 		return USERS[u.lower()];
 	return u.lower();
+semester={'na':'','v':'','NA':'','N/A':'','Fall2015':'2015-09-01','Spring2016':'2016-01-01'};
+def processSemester(s):
+	if s =='':
+		return '';
+	s=s.split('\n')[0];
+	s=s.replace(' ','');
+	if s in semester:
+		return semester[s];
 
-def addUserToService(sid,username):
+	return s.replace('/','-').replace('.','-')+'-01';
+
+def convertDate(d):
+	try:
+		dt=time.strptime(d,'%Y-%m-%d');
+		return time.strftime('%Y-%m-%d',dt);
+	except ValueError:
+		try:
+			dt=time.strptime(d,'%m/%d/%Y');
+			return time.strftime('%Y-%m-%d',dt);
+		except ValueError:
+			print "unknown date "+d;
+			return '';
+def addUserToService(sid,username,line,role):
 	global UNKNOWNUSER;
 	global errorfile;
 	username=username.lower();
+	if username=='lia chole':
+		username='lia,chole';
 	if username!='' and username!='na':
 		print "look for User "+username;
 		userArray=re.findall(r"[\w' ]+",username);
@@ -66,14 +100,14 @@ def addUserToService(sid,username):
 				cursor.execute("select id from servicedetail where service=%s and user=%s limit 1",(sid,uid));
 				sdrow=cursor.fetchone();
 				if sdrow is None:
-					cursor.execute(add_servicedetail,(sid,uid));
+					cursor.execute(add_servicedetail,(sid,uid,role));
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('61.csv','rb') as csvfile:
+with open('S61_4.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
-		serviceProgress=line[0].strip();
+		serviceProgress=processProgress(line[0].strip());
 		#print unicode(serviceProgress);
 		if serviceProgress in SERVICEPROGRESS:
 			print "found progress ";
@@ -105,23 +139,36 @@ with open('61.csv','rb') as csvfile:
 			sid=serv[0];
 		else:
 			print 'Service not found, inserting'
-			cursor.execute(add_service,(cName,lName,fName,curkey,1,serviceType,serviceProgress,link));
+			cursor.execute(add_service,(cName,lName,fName,curkey,1,serviceType,serviceProgress,link,uniqID,convertDate(line[6].strip())));
 			sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
-		addUserToService(sid,curteacher);
+		addUserToService(sid,curteacher,line,0);
 		writer=line[19].strip();
-		addUserToService(sid,writer);
+		addUserToService(sid,writer,line,4);
 
 		appCollegeName=line[15].strip();
 		appAppliedMajor=line[16].strip();
-		appAppliedSemester=line[17].strip();
+		oriappAppliedSemester=line[17].strip();
+		appAppliedSemester=processSemester(oriappAppliedSemester);
+		try:
+			dt=time.strptime(appAppliedSemester,'%Y-%m-%d');
+		except ValueError:
+			try:
+				dt=time.strptime(oriappAppliedSemester,'%m/%d/%Y');
+				appAppliedSemester=time.strftime('%Y-%m-%d',dt);
+			except ValueError:
+				UNKNOWNSEMESTER+=[oriappAppliedSemester];
 		if line[20].strip()=='Y':
 			appSucceed=1;
 		else:
 			appSucceed=0;
 		if appCollegeName!='':
-			print 'add application for '+appCollegeName;
-			cursor.execute(add_application,(appCollegeName,appAppliedMajor,sid,appSucceed,line[21].strip(),appAppliedSemester));
+			#UNKNOWNSEMESTER+=[appAppliedSemester];
+			cursor.execute('select id from application where service='+str(sid)+' and collageName="'+appCollegeName+'" limit 1;');
+			ap=cursor.fetchone();
+			if ap is None:
+				print 'add application for '+appCollegeName;
+				cursor.execute(add_application,(appCollegeName,appAppliedMajor,sid,appSucceed,line[21].strip(),appAppliedSemester));
 		
 		# service['serviceProgress']=line[0];
 		#     	contract.teacher=line[1];
@@ -161,6 +208,7 @@ f.close();
 f=open("UNKNOWNUSER.csv","w");
 f.write((",".join(OrderedDict.fromkeys(UNKNOWNUSER).keys())));
 f.close();
+print OrderedDict.fromkeys(UNKNOWNSEMESTER).keys()
 #print(UNKNOWNPROGRESS[0].encode('utf-8'));
 #print(SERVICEPROGRESS);
 #print UNKNOWNTYPE;
