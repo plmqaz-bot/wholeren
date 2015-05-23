@@ -46,7 +46,12 @@ module.exports = {
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
-		if(!(where.createdAt||{})['>']&&!(where.createdAt||{})['<']&&where.deleted==undefined) where={};
+		if(!(where.createdAt||{})['>']&&!(where.createdAt||{})['<']) where={};
+		if(!where.deleted){
+			where.deleted=false;
+		}else{
+			where.deleted=true;
+		}
 		var id=req.session.user.id;
 		var promise,who;
 		console.log(where);
@@ -439,7 +444,9 @@ module.exports = {
 		}
 		Contract.findOne({id:id}).then(function(data){
 			if(data.id){
+				console.log(data.deleted);
 				if(data.deleted==true){
+					console.log("it is true, change it to false");
 					return Contract.update({id:id},{deleted:false});
 				}else{
 					return Contract.update({id:id},{deleted:true});
