@@ -34,10 +34,10 @@ module.exports = {
 			sql=constructsql("", " and service.id="+req.params.id);	
 			break;
 			case 2:
-			sql=constructsql("and (user.id="+userId+" or w.boss="+userId+")", " and service.id="+req.params.id);
+			sql=constructsql("and (user.id="+userId+" or u.id="+userId+" or u2.id="+userId+" or w.boss="+userId+")", " and service.id="+req.params.id);
 			break;
 			default:
-			sql=constructsql("and (user.id="+userId+" or w.boss="+userId+")", " and service.id="+req.params.id);
+			sql=constructsql("and (user.id="+userId+" or u.id="+userId+" or u2.id="+userId+" or w.boss="+userId+")", " and service.id="+req.params.id);
 		}
 		Utilfunctions.nativeQuery(sql).then(function(serv){
 			if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});
