@@ -68,11 +68,11 @@ module.exports = {
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			case 2:
-			sql=constructsql(wherequery,"and (user.id="+id+" or w.boss="+id+")");
+			sql=constructsql(wherequery,"and (user.id="+id+" or u.id="+id+" or u2.id="+id+" or w.boss="+id+")");
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			default:
-			sql=constructsql(wherequery,"and (user.id="+id+" or w.boss="+id+")");
+			sql=constructsql(wherequery,"and (user.id="+id+" or u.id="+id+" or u2.id="+id+" or w.boss="+id+")");
 			promise=Utilfunctions.nativeQuery(sql);
 		}
 		promise.then(function(servIDs){
