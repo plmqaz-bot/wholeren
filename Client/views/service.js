@@ -92,6 +92,11 @@ var ServiceView=main.baseDataView.extend({
             {name:'',label:'Comment',cell:comment},
             {name:'',label:'Show Details',cell:popup},
             ];
+            
+            self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
+            {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
+            {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
+            ];
             return Promise.resolve({});
         });
     }

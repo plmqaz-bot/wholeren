@@ -1115,3 +1115,10 @@ inner join client on A.client=client.id
 group by A.contract,A.user;
 END;;
 delimiter ;
+
+
+set sql_safe_updates=0;
+update service inner join client on service.cName=client.chineseName and service.cName !='' set service.client=client.id;
+update service inner join contract on service.contractKey=contract.nameKey and service.contractKey !='' set service.contract=contract.id;
+update service inner join (
+select service.id as sid,contract.id,count(contract.id) as 'count' from service inner join contract on service.client=contract.client and service.indate=contract.contractSigned and service.indate !='' and service.contract is null group by service.id)  as newServ on service.id=newServ.sid set service.contract=newServ.id where count=1;

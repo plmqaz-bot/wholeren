@@ -14,16 +14,6 @@ Backgrid.Extension.AlmightyFilter=Backgrid.Extension.ClientSideFilter.extend({
       var queryfields=query.split('&');
       return function (model) {
         var keys = this.fields || model.keys();
-        // for (var i = 0, l = keys.length; i < l; i++) {
-        // 	var isSelect=_.find(this.selectFields,{name:keys[i]});
-        // 	if(isSelect){ //If it is a select
-        // 		var item=(_.find(isSelect['options'],function(e){if(e[1]==model.get(keys[i])) return true;})||[])[0];
-				    // if(regexp.test(item)) return true;
-        // 	}else{
-        // 		if (regexp.test(model.get(keys[i]) + "")) return true;
-        // 	}
-        // }
-        //var result=true;
         for(var i=0,l=queryfields.length;i<l;i++){ //Every fields test need to be true
           if(queryfields[i].length>0){
             var pair=queryfields[i].split(':');
@@ -32,11 +22,11 @@ Backgrid.Extension.AlmightyFilter=Backgrid.Extension.ClientSideFilter.extend({
             var isSelect=_.find(this.selectFields,{label:key});
             if(isSelect){
               var item=(_.find(isSelect['options'],function(e){if(e[1]==model.get(isSelect['name'])) return true;})||[""])[0];
-              if(item.indexOf(value)<0) return false;
+              if(!m(item,value)) return false;
             }else{
               var columnfield=_.find(this.columns,{label:key});
               if(columnfield){
-                if((model.get(columnfield['name'])+"").indexOf(value)<0) return false;  
+                if(!m(model.get(columnfield['name']+""),value)) return false;
               }else{
                 return false;
               }                
@@ -45,6 +35,18 @@ Backgrid.Extension.AlmightyFilter=Backgrid.Extension.ClientSideFilter.extend({
         }
         return true;
       };
+      function m(master,slave){
+        if(slave=='null'){
+          if((master||"").length==0) return true;
+          else return false;
+        }else if(slave=='!null'){
+          if((master||"").length==0) return false;
+          else return true;
+        }else{
+          if((master||"").indexOf(slave)<0) return false;
+          else return true;
+        }
+      }
     },
 });
 module.exports=Backgrid;
