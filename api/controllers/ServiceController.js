@@ -5,10 +5,11 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
  function constructsql(where,who){
-			return "select distinct client.chineseName,u.nickname,service.*,c.contractSigned, servicetype.serviceType as 'type',servicetype.addApplication, c.gpa,c.toefl,c.sat,c.gre,c.otherScore, c.degree, c.targetSchoolDegree , c.major, c.previousSchool,c.endFee,u2.nickname as 'realnickname',servrole.servRole \
+			return "select distinct cli.chineseName as 'matchedcName',client.chineseName,u.nickname,service.*,c.contractSigned, servicetype.serviceType as 'type',servicetype.addApplication, c.gpa,c.toefl,c.sat,c.gre,c.otherScore, c.degree, c.targetSchoolDegree , c.major, c.previousSchool,c.endFee,u2.nickname as 'realnickname',servrole.servRole \
 			from service \
 			left join contract c on c.id=service.contract \
 			left join client on c.client=client.id \
+			left join client cli on cli.id=service.client \
 			left join serviceprogress on service.serviceProgress=serviceprogress.id \
 			left join servicetype on service.serviceType=servicetype.id \
 			left join servicedetail s on s.service=service.id \
