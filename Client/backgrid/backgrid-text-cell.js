@@ -94,6 +94,7 @@
     */
     saveOrCancel: function (e) {
       if (e && e.type == "submit") {
+      //if (e ) {
         e.preventDefault();
         e.stopPropagation();
       }
@@ -119,7 +120,9 @@
         model.set(column.get("name"), newValue);
         this.$el.modal("hide");
       }
-      else if (e.type != "hide") this.$el.modal("hide");
+      else if (e.type != "hide") {
+        this.$el.modal("hide");
+      }
     },
 
     /**

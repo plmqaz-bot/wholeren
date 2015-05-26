@@ -214,7 +214,7 @@ Text box click X close
 
 contract status is outside --DONE
 
-import from S61
+import from S61 --DONE
 
 setup debug enviroment and utest
 

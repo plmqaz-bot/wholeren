@@ -123,7 +123,7 @@ module.exports = {
 		var id=req.params.id;
 		delete attribs["createAt"];
 		delete attribs["updateAt"];
-		var serviceUpdate=Utilfunctions.prepareUpdate(attribs,['serviceProgress','step1','step2','studentDestination','link']);
+		var serviceUpdate=Utilfunctions.prepareUpdate(attribs,['serviceProgress','step1','step2','studentDestination','link','cName','contractKey']);
 		if(serviceUpdate['step1']){
 			serviceUpdate['step1']=new Date(serviceUpdate['step1']);
 		}
@@ -135,7 +135,7 @@ module.exports = {
 			if(data.contract){
 				return Contract.update({id:data.contract},contractUpdate);
 			}else{
-				return Promise.reject({error:"Service not found"});	
+				return Promise.reject({error:"Contract not found"});	
 			}
 		}).then(function(d){
 			return Service.update({id:id},serviceUpdate);

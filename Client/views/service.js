@@ -67,7 +67,7 @@ var ServiceView=main.baseDataView.extend({
             self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
             {name:'nickname',label:'总负责老师',editable: false,cell:'string'},
-            {name:'matchedcName',label:'导入表匹配到中文名',cell:'string'},
+            {name:'matchedcName',label:'导入表匹配到中文名',editable:false,cell:'string'},
             {name:'cName',label:'导入表学生中文名',cell:'string'},
             {name:'contractKey',label:'导入表合同ID',cell:'string'},
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
