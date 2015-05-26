@@ -135,7 +135,8 @@ module.exports = {
 			if(data.contract){
 				return Contract.update({id:data.contract},contractUpdate);
 			}else{
-				return Promise.reject({error:"Contract not found"});	
+				//return Promise.reject({error:"Contract not found"});	
+				return Promise.resolve({});	
 			}
 		}).then(function(d){
 			return Service.update({id:id},serviceUpdate);
