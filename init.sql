@@ -1050,6 +1050,18 @@ end if;
 end;;
 delimiter ;
 
+drop function if exists sumPrice;
+delimiter ;;
+create function sumPrice(id int)
+RETURNS DECIMAL(10,2)
+DETERMINISTIC
+begin
+	declare var_name decimal(10,2);
+    set var_name=0;
+	select sum(IFNULL(service.price,0)) into var_name from contract left join service on contract.id=service.contract where contract.id=id ;
+    return var_name;
+end;;
+delimiter ;
 
 DROP PROCEDURE IF EXISTS SalesComission;
 delimiter ;;
