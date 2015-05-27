@@ -154,6 +154,6 @@
 
     }
   });
-Backgrid.Extension.ResponsiveGrid=ResponsiveGrid;
+  Backgrid.Extension.ResponsiveGrid=ResponsiveGrid;
   return Backgrid;
 }));

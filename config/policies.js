@@ -86,6 +86,10 @@ module.exports.policies = {
   UserController:{
     '*':'sessionAuth',
    'delete':'managerAuth',
+  },
+  WhoOwnsWhoController:{
+    '*':'managerAuth',
+    'find':'sessionAuth',
   }
 
 };
