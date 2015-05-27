@@ -122,7 +122,7 @@ var ContractView=main.baseDataView.extend({
             //{name:'status',label:'签约状态',cell:sign},
             {name:'status',label:'签约状态',cell:status},
             {name:'contractSigned',label:'签约日期',cell:momentcell},
-            {name:'contractPaid',label:'签约日期',cell:momentcell},
+            {name:'contractPaid',label:'付款日期',cell:momentcell},
             {name:'',label:'人员分配',cell:agent},
             {name:'salesFollowup',label:'销售跟进记录',cell:'text'},
             {name:'salesRecord',label:'销售跟进摘要',cell:'text'},
