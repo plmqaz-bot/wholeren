@@ -73,7 +73,7 @@ var ServiceView=main.baseDataView.extend({
             {name:'serviceProgress',label:'状态',cell:progressselect},                    
             {name:'contractSigned',label:'进入服务时间',editable:false,cell:BackgridCells.MomentCell},
             {name:'type',label:'服务类型',editable:false,cell:'string'},
-            {name:'realnickname',label:'具体负责老师',editable:false,cell:'string'},
+            //{name:'realnickname',label:'具体负责老师',editable:false,cell:'string'},
             {name:'servRole',label:'具体负责任务',editable:false,cell:'string'},
             {name:'endFee',label:'预付申请费',editable:false,cell:'boolean'},
             {name:'gpa',label:'GPA',cell:'number'},
