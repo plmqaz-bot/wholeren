@@ -20,6 +20,7 @@ module.exports = {
    models: {
      connection: 'devMysqlServer'
    },
+   sendFakeEmail:true,
    //port:80
 
 };

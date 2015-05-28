@@ -19,14 +19,40 @@ var loo=function () {
 	var sql="select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval);";
 	Utilfunctions.nativeQuery(sql).then(function(data){
 		var promises=[];
+		console.log("found ",data.length," reminders");
 		if(data){
 			data.forEach(function(ele){
 				if(ele.sales1){
-					var p=Notifications.findOrCreate({contract:ele.id,days:ele.dayInterval,user:ele.sales1},{contract:ele.id,days:ele.dayInterval,user:ele.sales1,reason:ele.textNotification});
+					var p=Notifications.find({contract:ele.id,days:ele.dayInterval,user:ele.sales1}).then(function(notifi){
+						if(notifi.length<1){// Not found
+							
+							return Notifications.create({contract:ele.id,days:ele.dayInterval,user:ele.sales1,reason:ele.textNotification}).then(function(){
+								return User.findOne({id:ele.sales1}).then(function(u){
+									if(u){
+										return EmailService.sendReminderEmail({email:u.email,nickname:u.nickname,client:ele.chineseName,reason:ele.textNotification}).error(function(err){
+											console.log(err);
+										});	
+									}						
+								});
+							})
+						}
+					})
 					promises.push(p);
 				}
 				if(ele.sales2){
-					var p=Notifications.findOrCreate({contract:ele.id,days:ele.dayInterval,user:ele.sales2},{contract:ele.id,days:ele.dayInterval,user:ele.sales2,reason:ele.textNotification});
+					var p=Notifications.find({contract:ele.id,days:ele.dayInterval,user:ele.sales2}).then(function(notifi){
+						if(notifi.length<1){// Not found
+							return Notifications.create({contract:ele.id,days:ele.dayInterval,user:ele.sales2,reason:ele.textNotification}).then(function(){
+								return User.findOne({id:ele.sales2}).then(function(u){
+									if(u){
+										return EmailService.sendReminderEmail({email:u.email,nickname:u.nickname,client:ele.chineseName,reason:ele.textNotification}).error(function(err){
+											console.log(err);
+										});	;	
+									}						
+								});
+							})
+						}
+					})
 					promises.push(p);
 				}
 			});	
