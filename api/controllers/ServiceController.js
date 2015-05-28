@@ -78,6 +78,7 @@ module.exports = {
 		}
 		promise.then(function(servIDs){
 			if((servIDs=servIDs||[]).length<1) return Promise.reject({error:"no service found for user"});
+			console.log("found ",servIDs.length);
 			return res.json(servIDs);
 		//	var idarray=_.uniq(servIDs.map(function(c){return c.id;}));
 		//	var contractarray=_.uniq(servIDs.map(function(c){return c.contract;}));
