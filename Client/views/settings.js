@@ -128,11 +128,11 @@ Settings.user=main.basePaneView.extend({
                     headers: {
                         'X-CSRF-Token': $("meta[name='csrf-param']").attr('content')
                     },
-                    data: JSON.stringify({
+                    data: {
                         password: oldPassword,
                         newpassword: newPassword,
                         ne2password: ne2Password
-                    }),
+                    },
                     success: function (msg) {
                         Wholeren.notifications.addItem({
                             type: 'success',

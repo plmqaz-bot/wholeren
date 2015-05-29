@@ -4,7 +4,7 @@
  * @description :: Server-side logic for managing Users
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
-
+Promise=require('bluebird');
 module.exports = {
 	'updateUser':function(req,res){
 		var attribs=req.body;
@@ -32,19 +32,27 @@ module.exports = {
 				if(!ppl){
                     return res.json(400,'no user found');
                 }
+                var promise=Promise.defer();
                 bcrypt.compare(attribs.password,ppl.password,function(err,valid){
-                	if(err) return res.json(400,'cannot compare password');
-                    if(!valid) return res.json(400,'password incorrect');
+                	if(err) return promise.reject('cannot compare password');
+                    if(!valid) return promise.reject('password incorrect');
                     console.log("update",attribs.newpassword);
-					return User.update({id:id},{password:attribs.newpassword}).then(function(data){
-						if(data){
-							return res.json(data);
+					User.update({id:id},{password:attribs.newpassword}).then(function(data){
+						if(data.length>0){
+							return promise.resolve(data[0]);
 						}else{
-							return res.json(400,{error:"update failed"});
+							return promise.reject("update failed");
 						}
-					})	
-				});		
+					}).fail(function(err){
+						promise.reject(err);
+					});	
+				});
+				return promise.promise;		
+			}).then(function(data){
+				return res.json(data);
 			}).fail(function(err){
+            	return Utilfunctions.errorHandler(err,res,"Change User password failed id:"+id);
+			}).error(function(err){
             	return Utilfunctions.errorHandler(err,res,"Change User password failed id:"+id);
 			});
 		}else{
