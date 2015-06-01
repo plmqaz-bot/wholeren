@@ -114,7 +114,7 @@ Market.general=main.baseDataView.extend({
         this.$el.addClass('active');
     },
 });
-Market.view1=Market.general.extend({
+Market.view1=DatabaseView.extend({
     collectionParam:{url:'contractOfSaleAndExpert'},
     constructColumns:function(){
          this.columns=[
@@ -127,7 +127,7 @@ Market.view1=Market.general.extend({
         return Promise.resolve({});
     },
 });
-Market.view2=Market.general.extend({
+Market.view2=DatabaseView.extend({
     requrestUrl:'MonthlyChange'
 });
 Market.view3=main.baseDataView.extend({
