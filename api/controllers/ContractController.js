@@ -19,6 +19,33 @@ function constructsql(who){
 	left join whoownswho w on w.puppet=user.id \
 	where "+who;
 }
+function whoCanView(user,where){
+	var restrictions=""
+	var id =user.id;
+	if(user.role==1){
+		switch (user.rank){
+			case 1: var restrictions="user.id ="+id;break;
+			case 2: var restrictions="(user.id ="+id+" or user.subRole=contract.salesGroup)";break;
+		}
+	}
+	if(user.role==3){ // Marketing
+		switch (user.rank){
+			case 1: var restrictions= "false";break;
+		}
+	}
+	if(restrictions!=""){
+		var sql=constructsql(restrictions);
+		promise=Utilfunctions.nativeQuery(sql).then(function(ids){
+			var idarray=ids.map(function(c){return c.id;});
+			where['id']=idarray;
+			return Contract.find(where);
+		});
+	}else{
+		promise=Contract.find(where);
+	}
+	return promise;
+}
+
 var findOne=function(req,res,id){
 		return Contract.findOne({id:id}).populate('client').then(function(data){
 			console.log("look for "+id)
@@ -55,27 +82,28 @@ module.exports = {
 		var id=req.session.user.id;
 		var promise,who;
 		console.log(where);
-		switch(req.session.user.rank){
-			case 3:
-			console.log("manager");
-			promise=Contract.find(where);
-			break;
-			case 2:
-			var sql=constructsql(" (user.id ="+id+" or w.boss="+id+")");
-			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
-				var idarray=ids.map(function(c){return c.id;});
-				where['id']=idarray;
-				return Contract.find(where);
-			});
-			break;
-			default:
-			var sql=constructsql(" (user.id ="+id+" or w.boss="+id+")");
-			promise=Utilfunctions.nativeQuery(sql).then(function(ids){
-				var idarray=ids.map(function(c){return c.id;});
-				where['id']=idarray;
-				return Contract.find(where);
-			});
-		}
+		promise=whoCanView(req.session.user,where);
+		// switch(req.session.user.rank){
+		// 	case 3:
+		// 	console.log("manager");
+		// 	promise=Contract.find(where);
+		// 	break;
+		// 	case 2:
+		// 	var sql=constructsql(" (user.id ="+id+")");
+		// 	promise=Utilfunctions.nativeQuery(sql).then(function(ids){
+		// 		var idarray=ids.map(function(c){return c.id;});
+		// 		where['id']=idarray;
+		// 		return Contract.find(where);
+		// 	});
+		// 	break;
+		// 	default:
+		// 	var sql=constructsql(" (user.id ="+id+")");
+		// 	promise=Utilfunctions.nativeQuery(sql).then(function(ids){
+		// 		var idarray=ids.map(function(c){return c.id;});
+		// 		where['id']=idarray;
+		// 		return Contract.find(where);
+		// 	});
+		// }
 		
 		if(promise){
 			var toReturn=[];
@@ -409,7 +437,7 @@ module.exports = {
 				Status.find().exec(dt);
 			},
 			SalesGroup:function(dt){
-				SalesGroup.find().exec(dt);
+				SalesGroup.find({department:1}).exec(dt);
 			},
 			Group2Service:function(dt){
 				Group2Service.find().populate('contractCategory').exec(dt);

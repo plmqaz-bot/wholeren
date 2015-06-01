@@ -35,6 +35,7 @@ module.exports.http = {
        'methodCaster',
        'cookieParser',
        'session',
+       'autoLoginWithCookie',
        'sessionHack',
        'myRequestLogger',
        'bodyParser',
@@ -75,6 +76,13 @@ module.exports.http = {
             req.session.manager=true;
         }
         next();
+    },
+    autoLoginWithCookie:function(req,res,next){
+      if(req.cookies.user&&!req.session.user){
+        req.session.user=req.cookies.user;
+
+      }
+      next();
     }
 
 

@@ -46,7 +46,7 @@ module.exports = {
   	
   	country:{model:"Country"},
   	
-  	validI20:{type:"boolean",required:true,defaultsTo: 'true'},
+  	validI20:{type:"boolean",defaultsTo: 'true'},
   	
   	gpa:{type:"float",defaultsTo:null},
 

@@ -169,15 +169,15 @@ Settings.allUsers=main.baseDataView.extend({
         if(parseInt(this.rank||"1")==3){
             editable=true;
         }
-        return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/'),util.ajaxGET('/SubRole/')]).spread(function(role,user,level,subrole){
+        return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/'),util.ajaxGET('/SalesGroup/')]).spread(function(role,user,level,subrole){
             var roleselect=BackgridCells.SelectCell({name:"Role",values:_.map(role,function(e){return [e.role,e.id]})});
             var userselect=BackgridCells.SelectCell({name:"User",values:_.map(user,function(e){return [e.nickname,e.id]})});
             var levelselect=BackgridCells.SelectCell({name:"UserLevel",values:_.map(level,function(e){return [e.userLevel,e.id]})});
             var subroleselect=roleselect.extend({
                 optionValues:function(){
                     var r=this.model.get('role')||0;
-                    var shrunk=_.where(subrole,{role:r});
-                    var toadd=_.map(shrunk,function(e){return [e.roleName,e.id]});
+                    var shrunk=_.where(subrole,{department:r});
+                    var toadd=_.map(shrunk,function(e){return [e.salesGroup,e.id]});
                     return [{name:'SubRole',values:toadd}];
                 }
             });      

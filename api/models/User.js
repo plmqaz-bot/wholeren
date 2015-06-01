@@ -31,7 +31,7 @@ module.exports = {
 
   	role:{model:'Role',required:true,defaultsTo:1},
 
-    subRole:{model:'SubRole'},
+    subRole:{model:'SalesGroup'},
 
     active:{type:'boolean',required:true,defaultsTo:false},
 

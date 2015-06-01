@@ -1,12 +1,17 @@
 use test;
 #销售组
 truncate salesgroup;
-insert into salesgroup values('紧急',1,NOW(),NOW());
-insert into salesgroup values('转学',2,NOW(),NOW());
-insert into salesgroup values('升学',3,NOW(),NOW());
-insert into salesgroup values('高中',4,NOW(),NOW());
-insert into salesgroup values('其它',5,NOW(),NOW());
-
+insert into salesgroup values('紧急',1,1,NOW(),NOW());
+insert into salesgroup values('转学',1,2,NOW(),NOW());
+insert into salesgroup values('升学',1,3,NOW(),NOW());
+insert into salesgroup values('高中',1,4,NOW(),NOW());
+insert into salesgroup values('其它',1,5,NOW(),NOW());
+insert into salesgroup values('紧急申请',2,6,NOW(),NOW());
+insert into salesgroup values('大申请',2,7,NOW(),NOW());
+insert into salesgroup values('转学',2,8,NOW(),NOW());
+insert into salesgroup values('文书',2,9,NOW(),NOW());
+insert into salesgroup values('广告',3,10,NOW(),NOW());
+insert into salesgroup values('渠道',3,11,NOW(),NOW());
 #文件类型
 truncate doctype
 insert into doctype values('新人必读',NULL,NOW(),NOW());
@@ -178,6 +183,8 @@ insert into degree values('语言',NULL,NOW(),NOW());
 insert into degree values('本科',NULL,NOW(),NOW());
 insert into degree values('硕士',NULL,NOW(),NOW());# 硕博
 insert into degree values('博士',NULL,NOW(),NOW());# 硕博
+insert into degree values('小学',NULL,NOW(),NOW());
+insert into degree values('初中',NULL,NOW(),NOW());
 #insert into degree values('硕博',NULL,NOW(),NOW());
 #付款方式
 truncate paymentoption;
@@ -225,6 +232,7 @@ insert into servicetype values('d0.紧急服务之高中申请2所，10天','d0'
 insert into servicetype values('d.紧急服务之普通申请3所，7天','d','Emerg',true,0.9,6,NOW(),NOW());
 insert into servicetype values('d1.紧急服务之CC申请2所，7天','d1','Emerg',true,0.9,7,NOW(),NOW());
 insert into servicetype values('d2.紧急服务之硕士申请3所，50天','d2','Emerg',true,0.9,8,NOW(),NOW());
+insert into servicetype values('d3.加申学校','d3','Emerg',true,0.9,20,NOW(),NOW());
 insert into servicetype values('e.身份激活','e','Emerg',false,0.5,9,NOW(),NOW());
 insert into servicetype values('f.签证辅导紧急','f','Emerg',false,0.9,10,NOW(),NOW());
 insert into servicetype values('g.签证工具（PAP）','g','Emerg',false,0.9,11,NOW(),NOW());
@@ -310,6 +318,7 @@ insert into servicetype values('M1.夏校申请','M1','Transfer',true,0.9,80,NOW
 insert into servicetype values('ap.录取结果申诉','ap','Transfer',true,0.9,81,NOW(),NOW());
 insert into servicetype values('pc.付费咨询','pc','Transfer',true,0.9,82,NOW(),NOW());
 insert into servicetype values('is.选校','is','Transfer',true,0.9,83,NOW(),NOW());
+insert into servicetype values('面试收费','m','Transfer',true,0.9,84,NOW(),NOW());
 
 
 #紧急打包
@@ -391,7 +400,8 @@ insert into category2service values(1,16,NULL,NOW(),NOW());
 insert into category2service values(1,17,NULL,NOW(),NOW());
 insert into category2service values(1,18,NULL,NOW(),NOW());
 insert into category2service values(1,19,NULL,NOW(),NOW());
-#insert into category2service values(1,20,NULL,NOW(),NOW());
+insert into category2service values(1,20,NULL,NOW(),NOW());
+insert into category2service values(1,53,NULL,NOW(),NOW());
 #insert into category2service values(1,21,NULL,NOW(),NOW());
 #insert into category2service values(1,22,NULL,NOW(),NOW());
 
@@ -1130,7 +1140,23 @@ delimiter ;
 
 
 set sql_safe_updates=0;
-update service inner join client on service.cName=client.chineseName and service.cName !='' set service.client=client.id;
-update service inner join contract on service.contractKey=contract.nameKey and service.contractKey !='' where service.contract =0 or service.contract is null set service.contract=contract.id;
+
+# If the chinese name and the contract is unique, then it must be it. 
+update service inner join (
+select service.id,client.id as cid, contract.id as contid,count(*) as 'count' from service inner join client on service.cName=client.chineseName and service.cName !='' inner join contract on contract.client=client.id group by service.id
+) as s on service.id=s.id set service.client=cid and  service.contract=contid where count=1;
+update service inner join (
+# If it match to multiple contract, but only one has match the contract signed date, then it must be it. 
+select service.id,client.id as cid, contract.id as contid,count(*) as 'count' from service inner join client on service.cName=client.chineseName inner join contract on contract.client=client.id where contract.contractSigned=service.indate group by service.id
+) as s on service.id=s.id set service.client=cid and  service.contract=contid where count=1;
+# The Service contain a contract key, then set it!
+update service inner join contract on service.contractKey=contract.nameKey and service.contractKey !='' set service.contract=contract.id;
+update service inner join (
+select service.id as sid, client.id,count(*) as 'count' from service inner join client on service.cName=client.chineseName and service.cName!='' group by service.id
+) as s on service.id=s.sid set service.client=s.id where count=1;
+
+
+
+# The service 
 update service inner join (
 select service.id as sid,contract.id,count(*) as 'count' from service inner join contract on service.client=contract.client  and service.indate !='' and service.contract is null group by service.id)  as newServ on service.id=newServ.sid set service.contract=newServ.id where count=1;

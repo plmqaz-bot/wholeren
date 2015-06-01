@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
   	salesGroup:{type:'string',required:true,unique:true},
-  	
+  	department:{model:'Role'}
   }
 };
 

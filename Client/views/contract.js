@@ -130,7 +130,7 @@ var ContractView=main.baseDataView.extend({
             {name:'expertFollowup',label:'专家跟进记录',cell:'text'},
             {name:'originalText',label:'求助原文',cell:'text'},
             {name:'country',label:'当前所在地',cell:country},                    
-            {name:'validI20',label:'I-20有效',cell:'boolean'},
+            {name:'validI20',label:'I-20有效',cell:BackgridCells.BooleanCell},
             {name:'previousSchool',label:'原学校',cell:'string'},
             {name:'degree',label:'原学校类型',cell:degree},
             {name:'targetSchool',label:'目标学校',cell:'string'},

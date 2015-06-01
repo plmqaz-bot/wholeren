@@ -16,7 +16,7 @@ module.exports.bootstrap = function(cb) {
 
 var loo=function () {
 	console.log("Hello");
-	var sql="select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval);";
+	var sql="select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval) where contract.contractSigned is null ;";
 	Utilfunctions.nativeQuery(sql).then(function(data){
 		var promises=[];
 		console.log("found ",data.length," reminders");

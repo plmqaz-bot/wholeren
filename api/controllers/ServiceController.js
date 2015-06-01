@@ -20,7 +20,7 @@
 			(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2)) \
 			left join user u on c.teacher=u.id \
 			left join user u2 on s.user=u2.id \
-			left join whoownswho w on (w.puppet=user.id or w.puppet=u2.id or w.puppet=u.id) where \
+			left join whoownswho w on (w.puppet=user.id or w.puppet=u2.id or w.puppet=u.id) where (service.generated or c.createdAt>'2015-05-01') and \
 			 service.id is not null "+who+" "+where+";"
 		}
 var Promise=require('bluebird');

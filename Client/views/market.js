@@ -16,7 +16,7 @@ var Sidebar=require('./sidebar');
 var base=require('./base');
 
 var Market={};
-Market.general=main.basePaneView.extend({
+var DatabaseView=main.basePaneView.extend({
     templateName:'default',
     renderOptions:{month:true},
     events: {
@@ -86,9 +86,46 @@ Market.general=main.basePaneView.extend({
     }
 
 });
-
+Market.general=main.baseDataView.extend({
+    title:'Lead分析',
+    paginator:true,
+    filterFields:['salesGroup','lead'],
+    collectionName:'General',
+    minScreenSize:0,
+    renderOptions:{month:true},
+    collectionParam:{url:'/Market/General/'},
+    templateName:'default',
+    constructColumns:function(){
+         this.columns=[
+        {name:'salesGroup',label:'销售组',editable:false,cell:'string'},
+        {name:'lead',label:'Lead',editable:false,cell:'string'},
+        {name:'count',label:'咨询量',editable:false,cell:'number'},
+        {name:'signcount',label:'签约量',editable:false,cell:'number'},
+        {name:'income',label:'签约价',editable:false,cell:'number'},
+        ];
+        return Promise.resolve({});
+    },
+    destroy: function () {
+        this.$el.removeClass('active');
+        this.undelegateEvents();
+    },
+    afterRender:function(){
+        this.$el.attr('id', this.id);
+        this.$el.addClass('active');
+    },
+});
 Market.view1=Market.general.extend({
-    requrestUrl:'contractOfSaleAndExpert'
+    collectionParam:{url:'contractOfSaleAndExpert'},
+    constructColumns:function(){
+         this.columns=[
+        {name:'salesGroup',label:'销售组',editable:false,cell:'string'},
+        {name:'lead',label:'Lead',cell:'string'},
+        {name:'count',label:'咨询量',cell:'number'},
+        {name:'signcount',label:'签约量',cell:'number'},
+        {name:'income',label:'签约价',cell:'number'},
+        ];
+        return Promise.resolve({});
+    },
 });
 Market.view2=Market.general.extend({
     requrestUrl:'MonthlyChange'

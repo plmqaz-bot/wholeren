@@ -36,31 +36,14 @@ with open('study.csv','rb') as csvfile:
 		semestersystem=line[10].strip();
 		progress=line[11].strip();
 		comment=line[22]+"|"+line[23]+"|"+line[24];
-		serviceProgress=processProgress(line[0].strip());
-		#print unicode(serviceProgress);
-		if serviceProgress in SERVICEPROGRESS:
-			print "found progress ";
-			serviceProgress=SERVICEPROGRESS[serviceProgress];
-		else:
-			UNKNOWNPROGRESS+=[serviceProgress];
-			errorfile.writerow(line);
-			continue;
-		serviceType=line[7].strip();
-		serviceType=processType(serviceType);
-		if serviceType in SERVICETYPE:
-			serviceType=SERVICETYPE[serviceType];
-		else:
-			UNKNOWNTYPE+=[serviceType];
-			errorfile.writerow(line);
-			continue;
+		
 		uniqID=line[2].strip().replace("\'","\\'");
 		name=line[3].strip().replace("\'","\\'");
 		fName=line[4].strip().replace("\'","\\'");
 		lName=line[5].strip().replace("\'","\\'");
 		cName=line[22].strip().replace("\'","\\'");
 		link=line[24].strip().replace("\'","\\'");
-		curkey=fName+lName+cName+name+line[6].strip()+line[7].strip();
-		curteacher=line[1];
+		
 		query=("select id from service where namekey='"+curkey+"';");
 		cursor.execute(query);
 		serv=cursor.fetchone();
