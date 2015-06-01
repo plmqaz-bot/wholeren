@@ -116,6 +116,7 @@ Market.general=main.baseDataView.extend({
 });
 Market.view1=DatabaseView.extend({
     collectionParam:{url:'contractOfSaleAndExpert'},
+    requrestUrl:'contractOfSaleAndExpert',
     constructColumns:function(){
          this.columns=[
         {name:'salesGroup',label:'销售组',editable:false,cell:'string'},
