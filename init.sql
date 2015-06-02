@@ -489,6 +489,69 @@ insert into category2service values(9,81,NULL,NOW(),NOW());
 insert into category2service values(9,82,NULL,NOW(),NOW());
 insert into category2service values(9,83,NULL,NOW(),NOW());
 
+# RealServiceType
+insert into realservicetype values('a',1,NOW(),NOW());
+insert into realservicetype values('b',2,NOW(),NOW());
+insert into realservicetype values('c',3,NOW(),NOW());
+insert into realservicetype values('d',4,NOW(),NOW());
+insert into realservicetype values('e',5,NOW(),NOW());
+insert into realservicetype values('f',6,NOW(),NOW());
+insert into realservicetype values('g',7,NOW(),NOW());
+insert into realservicetype values('h',8,NOW(),NOW());
+insert into realservicetype values('hs',9,NOW(),NOW());
+insert into realservicetype values('ht',10,NOW(),NOW());
+insert into realservicetype values('hb',11,NOW(),NOW());
+insert into realservicetype values('i',12,NOW(),NOW());
+insert into realservicetype values('is',13,NOW(),NOW());
+insert into realservicetype values('ib',14,NOW(),NOW());
+insert into realservicetype values('p',15,NOW(),NOW());
+insert into realservicetype values('z',17,NOW(),NOW());
+insert into realservicetype values('ap',18,NOW(),NOW());
+insert into realservicetype values('hv',19,NOW(),NOW());
+insert into realservicetype values('vip',20,NOW(),NOW());
+
+# ServiceType to RealServiceType
+
+insert into sales2realservicetype values(1,1)
+insert into sales2realservicetype values(2,2)
+insert into sales2realservicetype values(3,3)
+insert into sales2realservicetype values(4,3)
+insert into sales2realservicetype values(5,4)
+insert into sales2realservicetype values(6,4)
+insert into sales2realservicetype values(7,4)
+insert into sales2realservicetype values(8,4)
+insert into sales2realservicetype values(9,5)
+insert into sales2realservicetype values(10,6)
+insert into sales2realservicetype values(11,7)
+insert into sales2realservicetype values(12,8)
+insert into sales2realservicetype values(13,12)
+insert into sales2realservicetype values(13,13)
+insert into sales2realservicetype values(13,15)
+insert into sales2realservicetype values(20,4)
+insert into sales2realservicetype values(23,12)
+insert into sales2realservicetype values(23,13)
+insert into sales2realservicetype values(23,15)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #Category To Service
 
