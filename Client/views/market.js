@@ -226,7 +226,7 @@ Market.view6=Market.view4.extend({
      },
 });
 var MarketTitle={
-    'general':'General',
+    'general':'Lead分析',
     'view1':'总结',
     'view2':'月份收入',
     'view3':'月份销售目标',

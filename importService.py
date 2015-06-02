@@ -7,7 +7,7 @@ import re;
 import time;
 
 add_application=("INSERT INTO application (collageName,appliedMajor,service,succeed,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s,%s)")
-add_service=("INSERT INTO service (cName,lName,fName,namekey,generated,serviceType,serviceProgress,link,contractKey,indate) VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)")
+add_service=("INSERT INTO service (contractKey,cName,serviceType,serviceProgress,indate,link,namekey,generated) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
 add_servicedetail=("INSERT INTO servicedetail (service,user,servRole) VALUES (%s,%s,%s)")
 
 
@@ -107,7 +107,17 @@ teacher=''
 with open('S61_4.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
-		serviceProgress=processProgress(line[0].strip());
+		contractKey=line[0].strip();
+		cName=line[1].strip();
+		serviceType=line[2].strip();
+		serviceType=processType(serviceType);
+		if serviceType in SERVICETYPE:
+			serviceType=SERVICETYPE[serviceType];
+		else:
+			UNKNOWNTYPE+=[serviceType];
+			errorfile.writerow(line);
+			continue;
+		serviceProgress=processProgress(line[3].strip());
 		#print unicode(serviceProgress);
 		if serviceProgress in SERVICEPROGRESS:
 			print "found progress ";
@@ -116,21 +126,11 @@ with open('S61_4.csv','rb') as csvfile:
 			UNKNOWNPROGRESS+=[serviceProgress];
 			errorfile.writerow(line);
 			continue;
-		serviceType=line[7].strip();
-		serviceType=processType(serviceType);
-		if serviceType in SERVICETYPE:
-			serviceType=SERVICETYPE[serviceType];
-		else:
-			UNKNOWNTYPE+=[serviceType];
-			errorfile.writerow(line);
-			continue;
-		uniqID=line[2].strip().replace("\'","\\'");
-		name=line[3].strip().replace("\'","\\'");
-		fName=line[4].strip().replace("\'","\\'");
-		lName=line[5].strip().replace("\'","\\'");
-		cName=line[22].strip().replace("\'","\\'");
-		link=line[24].strip().replace("\'","\\'");
-		curkey=fName+lName+cName+name+line[6].strip()+line[7].strip();
+		curteacher=line[4].strip().lower();
+		indate=convertDate(line[5].strip()));
+		comment=line[6].strip();
+		link=line[7].strip().replace("\'","\\'");
+		curkey=cName+line[2].strip()+line[5].strip();
 		curteacher=line[1];
 		query=("select id from service where namekey='"+curkey+"';");
 		cursor.execute(query);

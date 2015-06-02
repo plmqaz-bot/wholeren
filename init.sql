@@ -12,6 +12,7 @@ insert into salesgroup values('转学',2,8,NOW(),NOW());
 insert into salesgroup values('文书',2,9,NOW(),NOW());
 insert into salesgroup values('广告',3,10,NOW(),NOW());
 insert into salesgroup values('渠道',3,11,NOW(),NOW());
+insert into salesgroup values('大客户',1,12,NOW(),NOW());
 #文件类型
 truncate doctype
 insert into doctype values('新人必读',NULL,NOW(),NOW());
@@ -77,6 +78,16 @@ insert into group2service values(4,8,NULL,NOW(),NOW());
 insert into group2service values(5,8,NULL,NOW(),NOW());
 insert into group2service values(5,9,NULL,NOW(),NOW());
 insert into group2service values(5,10,NULL,NOW(),NOW());
+insert into group2service values(12,1,NULL,NOW(),NOW());
+insert into group2service values(12,2,NULL,NOW(),NOW());
+insert into group2service values(12,3,NULL,NOW(),NOW());
+insert into group2service values(12,4,NULL,NOW(),NOW());
+insert into group2service values(12,5,NULL,NOW(),NOW());
+insert into group2service values(12,6,NULL,NOW(),NOW());
+insert into group2service values(12,7,NULL,NOW(),NOW());
+insert into group2service values(12,8,NULL,NOW(),NOW());
+insert into group2service values(12,9,NULL,NOW(),NOW());
+insert into group2service values(12,10,NULL,NOW(),NOW());
 
 #Lead
 #insert into lead values('Campus校代介绍',NULL,NOW(),NOW());
