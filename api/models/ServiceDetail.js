@@ -10,9 +10,14 @@ module.exports = {
   attributes: {
   	service:{model:'Service',required:true},
   	user:{model:'User'},
-  	serviceType:{model:'ServiceType'},
-  	servRole:{model:'ServRole'},
-    servLevel:{model:'ServLevel'},
+  	assist:{model:'User'},
+  	realServiceType:{model:'RealServiceType'},
+  	serviceProgress:{model:'ServiceProgress',required:true,defaultsTo:1},
+  	indate:{type:'date'},
+  	link:{type:'string'},
+  	contractKey:{type:'string'},
+  	cName:{type:'string'},
+  	namekey:{type:'string'}
   }
 };
 

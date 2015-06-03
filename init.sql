@@ -509,6 +509,9 @@ insert into realservicetype values('z',17,NOW(),NOW());
 insert into realservicetype values('ap',18,NOW(),NOW());
 insert into realservicetype values('hv',19,NOW(),NOW());
 insert into realservicetype values('vip',20,NOW(),NOW());
+insert into realservicetype values('ghj',21,NOW(),NOW());
+insert into realservicetype values('ic',22,NOW(),NOW());
+insert into realservicetype values('pc',23,NOW(),NOW());
 
 # ServiceType to RealServiceType
 
@@ -531,6 +534,20 @@ insert into sales2realservicetype values(20,4)
 insert into sales2realservicetype values(23,12)
 insert into sales2realservicetype values(23,13)
 insert into sales2realservicetype values(23,15)
+insert into sales2realservicetype values(52,15)
+insert into sales2realservicetype values(53,15)
+insert into sales2realservicetype values(54,15)
+insert into sales2realservicetype values(55,21)
+insert into sales2realservicetype values(56,21)
+insert into sales2realservicetype values(57,21)
+insert into sales2realservicetype values(58,21)
+insert into sales2realservicetype values(59,21)
+insert into sales2realservicetype values(60,21)
+insert into sales2realservicetype values(61,6)
+insert into sales2realservicetype values(65,11)
+insert into sales2realservicetype values(65,14)
+insert into sales2realservicetype values(66,9)
+insert into sales2realservicetype values(67,10)
 
 
 
@@ -565,17 +582,16 @@ insert into sales2realservicetype values(23,15)
 #insert into serviceprogress values('C.已交等结果',NULL,NOW(),NOW());
 #insert into serviceprogress values('D.服务结束',NULL,NOW(),NOW());
 truncate serviceprogress;
-insert into serviceprogress values('0等待启动',NULL,NOW(),NOW());
-insert into serviceprogress values('1选校中',NULL,NOW(),NOW());
-insert into serviceprogress values('2申请中',NULL,NOW(),NOW());
-insert into serviceprogress values('3全部提交',NULL,NOW(),NOW());
-insert into serviceprogress values('4完成服务',NULL,NOW(),NOW());
-insert into serviceprogress values('X自我放弃X',NULL,NOW(),NOW());
+insert into serviceprogress values('0.0 等待启动',NULL,NOW(),NOW());
+insert into serviceprogress values('1.0该进程开始',NULL,NOW(),NOW());
+insert into serviceprogress values('-1.1签订选校单',NULL,NOW(),NOW());
+insert into serviceprogress values('-1.2全部提交',NULL,NOW(),NOW());
+insert into serviceprogress values('2.0该进程完成',NULL,NOW(),NOW());
+insert into serviceprogress values('6.0自我放弃',NULL,NOW(),NOW());
+insert into serviceprogress values('4.0勿忘我',NULL,NOW(),NOW());
 insert into serviceprogress values('**找到我**',NULL,NOW(),NOW());
-insert into serviceprogress values('**勿忘我**',NULL,NOW(),NOW());
 insert into serviceprogress values('SOS紧急处理中',NULL,NOW(),NOW());
 insert into serviceprogress values('交接出去了',NULL,NOW(),NOW());
-insert into serviceprogress values('R身份激活已提交',NULL,NOW(),NOW());
 
 
 

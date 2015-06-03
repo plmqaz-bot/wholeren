@@ -1,76 +1,53 @@
 use wholeren;
-CREATE TABLE `doctype` (
-  `docType` VARCHAR(45) NOT NULL,
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `createdAt` DATETIME NULL,
-  `updatedAt` DATETIME NULL,
-  UNIQUE INDEX `docType_UNIQUE` (`docType` ASC),
-  PRIMARY KEY (`id`)
-)DEFAULT CHARACTER SET = utf8;
-
-ALTER TABLE `publicfiles` 
-ADD COLUMN `role` INT(11) NULL AFTER `fileCategory`;
-
-CREATE TABLE `staticlink` (
-  `name` VARCHAR(45),
-  `fileCategory` INT(11) NULL,
-  `user` INT(11) NOT NULL,
-  `role` INT(11) NULL,
-  `link` VARCHAR(512) NULL,
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `createdAt` DATETIME NULL,
-  `updatedAt` DATETIME NULL,
-  PRIMARY KEY (`id`))DEFAULT CHARACTER SET = utf8;
-
-ALTER TABLE `user` 
-ADD COLUMN `dropbox` VARCHAR(255) NULL AFTER `userLevel`,
-ADD COLUMN `evernote` VARCHAR(255) NULL AFTER `dropbox`,
-ADD COLUMN `address` VARCHAR(45) NULL AFTER `evernote`,
-ADD COLUMN `city` VARCHAR(45) NULL AFTER `address`,
-ADD COLUMN `state` VARCHAR(45) NULL AFTER `city`,
-ADD COLUMN `zipcode` INT NULL AFTER `state`,
-ADD COLUMN `bio` VARCHAR(512) NULL AFTER `zipcode`;
-
-SET NAMES 'utf8';
-SET CHARACTER SET utf8;
-
-insert into doctype values('新人必读',NULL,NOW(),NOW());
-insert into doctype values('SOP',NULL,NOW(),NOW());
-
-CREATE TABLE `subrole` (
-  `roleName` VARCHAR(45) NOT NULL,
-  `role` INT(11) NULL,
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `createdAt` DATETIME NULL,
-  `updatedAt` DATETIME NULL,
-  PRIMARY KEY (`id`)
-)DEFAULT CHARACTER SET = utf8;
-
-CREATE TABLE `wholeren`.`message` (
-  `from` INT(11) NOT NULL,
-  `to` INT(11) NOT NULL,
-  `subject` VARCHAR(45) NULL,
-  `text` VARCHAR(512) NULL,
-  `replyTo` INT(11) NULL,
-  `read` TINYINT NOT NULL DEFAULT 0,
+CREATE TABLE `wholeren`.`realservicetype` (
+  `realServiceType` VARCHAR(45) NULL,
   `id` INT NOT NULL AUTO_INCREMENT,
   `createdAt` DATETIME NULL,
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
 
-ALTER TABLE `user` 
-ADD COLUMN `subRole` INT(11) NULL AFTER `role`;
-insert into subrole values('高中',1,NULL,NOW(),NOW());
-insert into subrole values('紧急销售',1,NULL,NOW(),NOW());
-insert into subrole values('转升',1,NULL,NOW(),NOW());
-insert into subrole values('大客户',1,NULL,NOW(),NOW());
-insert into subrole values('紧急申请',2,NULL,NOW(),NOW());
-insert into subrole values('大申请',2,NULL,NOW(),NOW());
-insert into subrole values('转学',2,NULL,NOW(),NOW());
-insert into subrole values('文书',2,NULL,NOW(),NOW());
-insert into subrole values('广告',3,NULL,NOW(),NOW());
-insert into subrole values('渠道',3,NULL,NOW(),NOW());
+CREATE TABLE `wholeren`.`sales2realservicetype` (
+  `serviceType` INT(11) NOT NULL,
+  `realServiceType` INT(11) NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  PRIMARY KEY (`id`));
 
-
-ALTER TABLE `userlevel` 
-ADD COLUMN `baseSalary` FLOAT NULL DEFAULT 0 AFTER `userComission`;
+ALTER TABLE `wholeren`.`servicedetail` 
+DROP COLUMN `servLevel`,
+DROP COLUMN `servRole`,
+CHANGE COLUMN `serviceType` `realServiceType` INT(11) NULL DEFAULT NULL ,
+CHANGE COLUMN `id` `id` INT(11) NOT NULL ,
+ADD COLUMN `assis` INT(11) NULL AFTER `realServiceType`,
+ADD COLUMN `serviceProgress` INT(11) NOT NULL DEFAULT 1 AFTER `assis`,
+ADD COLUMN `indate` DATE NULL AFTER `serviceProgress`,
+ADD COLUMN `link` VARCHAR(225) NULL AFTER `indate`,
+ADD COLUMN `contractKey` VARCHAR(45) NULL AFTER `link`,
+ADD COLUMN `cName` VARCHAR(45) NULL AFTER `contractKey`;
+ALTER TABLE `wholeren`.`servicedetail` 
+ADD COLUMN `namekey` VARCHAR(45) NULL AFTER `cName`;
+ALTER TABLE `wholeren`.`servicedetail` 
+ADD COLUMN `contract` INT(11) NULL FIRST;
+insert into realservicetype values('a',1,NOW(),NOW());
+insert into realservicetype values('b',2,NOW(),NOW());
+insert into realservicetype values('c',3,NOW(),NOW());
+insert into realservicetype values('d',4,NOW(),NOW());
+insert into realservicetype values('e',5,NOW(),NOW());
+insert into realservicetype values('f',6,NOW(),NOW());
+insert into realservicetype values('g',7,NOW(),NOW());
+insert into realservicetype values('h',8,NOW(),NOW());
+insert into realservicetype values('hs',9,NOW(),NOW());
+insert into realservicetype values('ht',10,NOW(),NOW());
+insert into realservicetype values('hb',11,NOW(),NOW());
+insert into realservicetype values('i',12,NOW(),NOW());
+insert into realservicetype values('is',13,NOW(),NOW());
+insert into realservicetype values('ib',14,NOW(),NOW());
+insert into realservicetype values('p',15,NOW(),NOW());
+insert into realservicetype values('z',17,NOW(),NOW());
+insert into realservicetype values('ap',18,NOW(),NOW());
+insert into realservicetype values('hv',19,NOW(),NOW());
+insert into realservicetype values('vip',20,NOW(),NOW());
+insert into realservicetype values('ghj',21,NOW(),NOW());
+insert into realservicetype values('ic',22,NOW(),NOW());
+insert into realservicetype values('pc',23,NOW(),NOW());
