@@ -28,13 +28,14 @@ cursor.execute('select realServiceType,id from realservicetype;');
 for row in cursor:
 	SERVICETYPE[unicode(row[0]).encode('utf-8')]=row[1];
 
-outfile=open("incompleteServiceImport.csv","wb");
+outfile=open("incompletezhushouImport.csv","wb");
 errorfile=csv.writer(outfile,delimiter=',',quotechar='\"');
-oldTypeToNew={'d5':'d','d4':'d','d1':'d','d3':'d2','d2':'d0','f2':'f','c':'c1','h1':'h','i5':'i','i4':'i2','i3':'i','i2':'i1','i1':'i','ps':'p2','p':'p2','ghj':'j1','ic':'h11','b1':'b','i4, f':'i4','d4+d5':'d','z':'i'}
+#oldTypeToNew={'d5':'d','d4':'d','d1':'d','d3':'d2','d2':'d0','f2':'f','c':'c1','h1':'h','i5':'i','i4':'i2','i3':'i','i2':'i1','i1':'i','ps':'p2','p':'p2','ghj':'j1','ic':'h11','b1':'b','i4, f':'i4','d4+d5':'d','z':'i'}
+oldTypeToNew={'d4':'d','d5':'d','d1':'d','d3':'d'}
 def processType(type):
-	# type=type.strip();
-	# if type.lower() in oldTypeToNew:
-	# 	return oldTypeToNew[type.lower()];
+	type=type.strip();
+	if type.lower() in oldTypeToNew:
+		return oldTypeToNew[type.lower()];
 	return type.lower();
 def processProgress(prog):
 	return prog;
@@ -89,12 +90,12 @@ def addUserToService(sid,username,line,role):
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61.csv','rb') as csvfile:
+with open('S61_zhuli.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
-		contractKey=line[0].strip();
-		cName=line[1].strip();
-		serviceType=line[2].strip();
+		contractKey=line[1].strip();
+		cName=line[2].strip();
+		serviceType=line[3].strip();
 		serviceType=processType(serviceType);
 		if serviceType in SERVICETYPE:
 			serviceType=SERVICETYPE[serviceType];
@@ -103,24 +104,24 @@ with open('S61.csv','rb') as csvfile:
 			UNKNOWNTYPE+=[serviceType];
 			errorfile.writerow(line);
 			continue;
-		serviceProgress=processProgress(line[3].strip());
+		serviceProgress=processProgress(line[4].strip());
 		#print unicode(serviceProgress);
 		if serviceProgress in SERVICEPROGRESS:
-			print "found progress ";
+			#print "found progress ";
 			serviceProgress=SERVICEPROGRESS[serviceProgress];
 		else:
 			print "progress not found:"+serviceProgress;
 			UNKNOWNPROGRESS+=[serviceProgress];
 			errorfile.writerow(line);
 			continue;
-		curteacher=line[4].strip().lower();
-		indate=convertDate(line[5].strip());
+		curteacher=line[5].strip().lower();
+		indate=convertDate(line[6].strip());
 		if indate=='':
 			print "unknown Date:"+indate;
 			errorfile.writerow(line);
-		comment=line[6].strip();
-		link=line[7].strip().replace("\'","\\'");
-		curkey=cName+line[2].strip()+line[5].strip();	
+		comment=line[7].strip();
+		link=line[8].strip().replace("\'","\\'");
+		curkey=cName+line[3].strip()+line[6].strip();	
 		#find the user using email
 		query=("select id from user where email ='"+curteacher+"';");
 		cursor.execute(query);
@@ -131,15 +132,18 @@ with open('S61.csv','rb') as csvfile:
 		else:
 			uid=uid[0]
 
-		query=("select id from servicedetail where namekey='"+curkey+"';");
+		query=("select id,count(*) from servicedetail where cName='"+cName+"' and realServiceType='"+str(serviceType)+"';");
 		cursor.execute(query);
 		serv=cursor.fetchone();
-		if serv is not None:
-		 	sid=serv[0];
+		sid=serv[0];
+	 	count=serv[1]
+		if count ==1:
+		 	# add zhuli
+		 	print '';
 		else:
-		 	print 'ServiceDetail not found, inserting'
-			cursor.execute(add_servicedetail,(uid,serviceType,serviceProgress,indate,link,contractKey,cName,curkey));
-			sid=cursor.lastrowid
+		 	print 'ServiceDetail not found, inserting'+str(count)+curkey
+			#cursor.execute(add_servicedetail,(uid,serviceType,serviceProgress,indate,link,contractKey,cName,curkey));
+			#sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
 		#addUserToService(sid,curteacher,line,0);
 
