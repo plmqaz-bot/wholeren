@@ -124,35 +124,64 @@ module.exports={
         var csvContent = "";
         if(!colnames){
             csvContent += keys.join(',')+'\n';
-        }else{
-            csvContent += keys.map(function(e){
-                var header=_.find(colnames,function(f){
-                    return f.name==e;
-                });
-                if((header||{}).label){
-                    return header.label;
-                }else{
-                    return e;
-                }
-            }).join(',')+'\n';
-        }
-        csvContent += collection.map(function(item) { 
-            var cols = []
-            _.each(keys, function(key) { 
-                var i=item.get(key);
-                var topush="";
-                if(typeof i == "string"){
+            csvContent += collection.map(function(item) { 
+                var cols = []
+                _.each(keys, function(key) { 
+                    var i=item.get(key);
+                    var topush="";
+                    if(key)
+                    if(typeof i == "string"){
 
-                }else if (i!=null&&i!=undefined){
-                    topush=i.toString();
-                }                    
-                if(topush.indexOf(/,\n/g)>-1){
-                    topush="\""+topush+"\"";
-                }
-                cols.push(topush);
-            }); 
-            return cols.join(',') ;
-        }).join('\n');
+                    }else if (i!=null&&i!=undefined){
+                        topush=i.toString();
+                    }                    
+                    if(topush.indexOf(/,\n/g)>-1){
+                        topush="\""+topush+"\"";
+                    }
+                    cols.push(topush);
+                }); 
+                return cols.join(',') ;
+            }).join('\n');
+        }else{
+            csvContent +=_.map(colnames,function(e){
+                return e.label;
+            }).join(',')+"\n";
+            csvContent+=collection.map(function(item){
+                var cols=_.map(colnames,function(e){
+                    var key=e.name;
+                    var i=item.get(key);
+                    // If it is a select cell
+                    if(e.cell._touse){
+                        var selValue=_.find(e.cell._touse,function(f){
+                            return f[1]==i;
+                        });
+                        if((selValue||[]).length>0){
+                            i=selValue[0];
+                        }
+                    }
+                    i=i||"";
+                    if(typeof i !=='string'){
+                        i=i.toString();
+                    }
+                    if(i.search(/[,\n]/g)>-1){
+                        i="\""+i+"\"";
+                    }
+                    return i;
+                }).join(",");
+                return cols;
+            }).join('\n');
+            // csvContent += keys.map(function(e){
+            //     var header=_.find(colnames,function(f){
+            //         return f.name==e;
+            //     });
+            //     if((header||{}).label){
+            //         return header.label;
+            //     }else{
+            //         return e;
+            //     }
+            // }).join(',')+'\n';
+        }
+
         var blob=new Blob([csvContent],{type:'text/plain;charset=utf-8'});
         saveAs.saveAs(blob,'text.csv');
 

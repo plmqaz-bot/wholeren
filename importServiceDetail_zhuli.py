@@ -17,6 +17,7 @@ SERVICETYPE={};
 UNKNOWNPROGRESS=[];
 UNKNOWNTYPE=[];
 UNKNOWNSEMESTER=[];
+UNKNOWNCNAME=[];
 
 UNKNOWNUSER=[];
 cursor.execute('select serviceProgress,id from serviceprogress;');
@@ -90,7 +91,7 @@ def addUserToService(sid,username,line,role):
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61_zhuli.csv','rb') as csvfile:
+with open('S61_zhuli_uni.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
 		contractKey=line[1].strip();
@@ -100,7 +101,7 @@ with open('S61_zhuli.csv','rb') as csvfile:
 		if serviceType in SERVICETYPE:
 			serviceType=SERVICETYPE[serviceType];
 		else:
-			print "type not found:"+serviceType;
+			print "type not found:"+line[3].strip()+line[2];
 			UNKNOWNTYPE+=[serviceType];
 			errorfile.writerow(line);
 			continue;
@@ -137,11 +138,13 @@ with open('S61_zhuli.csv','rb') as csvfile:
 		serv=cursor.fetchone();
 		sid=serv[0];
 	 	count=serv[1]
-		if count ==1:
+		if count !=1:
 		 	# add zhuli
-		 	print '';
-		else:
-		 	print 'ServiceDetail not found, inserting'+str(count)+curkey
+		 	print 'ServiceDetail not found, inserting'+str(count)+cName;
+		 	UNKNOWNCNAME+=[cName];
+
+		
+		 	
 			#cursor.execute(add_servicedetail,(uid,serviceType,serviceProgress,indate,link,contractKey,cName,curkey));
 			#sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
@@ -159,6 +162,9 @@ f.close();
 print OrderedDict.fromkeys(UNKNOWNUSER).keys()
 print OrderedDict.fromkeys(UNKNOWNTYPE).keys()
 print OrderedDict.fromkeys(UNKNOWNPROGRESS).keys()
+f=open("UNKNOWNCNAME.csv","w");
+f.write(",".join(UNKNOWNCNAME));
+f.close();
 #print(UNKNOWNPROGRESS[0].encode('utf-8'));
 #print(SERVICEPROGRESS);
 #print UNKNOWNTYPE;

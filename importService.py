@@ -104,7 +104,7 @@ def addUserToService(sid,username,line,role):
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61_4.csv','rb') as csvfile:
+with open('S61_uni.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
 		contractKey=line[0].strip();
@@ -127,7 +127,7 @@ with open('S61_4.csv','rb') as csvfile:
 			errorfile.writerow(line);
 			continue;
 		curteacher=line[4].strip().lower();
-		indate=convertDate(line[5].strip()));
+		indate=convertDate(line[5].strip());
 		comment=line[6].strip();
 		link=line[7].strip().replace("\'","\\'");
 		curkey=cName+line[2].strip()+line[5].strip();

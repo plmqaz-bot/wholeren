@@ -59,6 +59,8 @@ var ContractView=main.baseDataView.extend({
                     toadd.push(['unknown',null]);
                     return [{name:'ContractCategory',values:toadd}];
                 } 
+            },{
+                _touse:_.map(AllOptions['ContractCategory'],function(e){return [e.contractCategory,e.id]})
             });
             var lead=BackgridCells.SelectCell({nullable:true,name:"Lead",values:_.map(AllOptions['Lead'],function(e){return [e.lead,e.id]})});
             var leadDetail=lead.extend({
@@ -69,6 +71,8 @@ var ContractView=main.baseDataView.extend({
                     toadd.push(['unknown',null]);
                     return [{name:'LeadDetail',values:toadd}];
                 }
+            },{
+                _touse:_.map(AllOptions['LeadDetail'],function(e){return [e.leadDetail,e.id]})
             });
             var leadLevel=BackgridCells.SelectCell({name:"LeadLevel",values:_.map(AllOptions['LeadLevel'],function(e){return [e.leadLevel,e.id]})});
             var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
