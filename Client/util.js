@@ -2,6 +2,7 @@
 var Promise=require('bluebird');
 var $=require('./jquery');
 var _=require('underscore');
+var saveAs=require('./FileSaver');
 module.exports={
 
 
@@ -120,7 +121,7 @@ module.exports={
 
         var downloadName = 'CSV data '+(new Date()).toString('yyyy-MM-dd hhmmss');
         var keys = _.chain(collection.first().attributes).keys().sort().value();
-        var csvContent = "data:text/csv;charset=utf-8,";
+        var csvContent = "";
         if(!colnames){
             csvContent += keys.join(',')+'\n';
         }else{
@@ -137,15 +138,29 @@ module.exports={
         }
         csvContent += collection.map(function(item) { 
             var cols = []
-            _.each(keys, function(key) { cols.push(item.get(key)) }); 
+            _.each(keys, function(key) { 
+                var i=item.get(key);
+                var topush="";
+                if(typeof i == "string"){
+
+                }else if (i!=null&&i!=undefined){
+                    topush=i.toString();
+                }                    
+                if(topush.indexOf(/,\n/g)>-1){
+                    topush="\""+topush+"\"";
+                }
+                cols.push(topush);
+            }); 
             return cols.join(',') ;
         }).join('\n');
+        var blob=new Blob([csvContent],{type:'text/plain;charset=utf-8'});
+        saveAs.saveAs(blob,'text.csv');
 
-        var encodedUri = encodeURI(csvContent);
-        var link = document.createElement("a");
-        link.setAttribute("href", encodedUri);
-        link.setAttribute("download", downloadName+".csv");
-        link.click();
+        // var encodedUri = encodeURI(csvContent);
+        // var link = document.createElement("a");
+        // link.setAttribute("href", encodedUri);
+        // link.setAttribute("download", downloadName+".csv");
+        // link.click();
     }
  
 
