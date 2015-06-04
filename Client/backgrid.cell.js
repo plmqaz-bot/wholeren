@@ -191,6 +191,8 @@ module.exports={
           return formattedValue == null ? null: parseInt(formattedValue);
         }
       })
+    },{
+      _touse:touse
     });
   },
   MomentCell:Backgrid.Extension.MomentCell.extend({

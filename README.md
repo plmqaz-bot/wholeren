@@ -220,8 +220,13 @@ setup debug enviroment and utest
 
 setup Lead, sales group, category restrictions for user change
 
-add a rank to be able to see all contract,service, but not all comission. 
+add a rank to be able to see all contract,service, but not all comission.  This lead to total change of how permission works. 
 
+multiple group for a user
+
+import services
+
+change the view how service is displayed
 
 chagne one contract field, other service should also update --Sync subscribe and stuff, later
 

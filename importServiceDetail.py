@@ -32,6 +32,8 @@ for row in cursor:
 
 outfile=open("incompleteServiceImport.csv","wb");
 errorfile=csv.writer(outfile,delimiter=',',quotechar='\"');
+outfile2=open("S61_servicedetail_new.csv","wb");
+processed=csv.writer(outfile2,delimiter=',',quotechar='\"');
 oldTypeToNew={'d5':'d','d4':'d','d1':'d','d3':'d2','d2':'d0','f2':'f','c':'c1','h1':'h','i5':'i','i4':'i2','i3':'i','i2':'i1','i1':'i','ps':'p2','p':'p2','ghj':'j1','ic':'h11','b1':'b','i4, f':'i4','d4+d5':'d','z':'i'}
 def processType(type):
 	# type=type.strip();
@@ -58,8 +60,12 @@ def convertDate(d):
 			dt=time.strptime(d,'%m/%d/%Y');
 			return time.strftime('%Y-%m-%d',dt);
 		except ValueError:
-			print "unknown date "+d;
-			return '';
+			try:
+				dt=time.strptime(d,'%Y%m%d');
+				return time.strftime('%Y-%m-%d',dt);
+			except ValueError:
+				print "unknown date "+d;
+				return '';
 def addUserToService(sid,username,line,role):
 	global UNKNOWNUSER;
 	global errorfile;
@@ -120,8 +126,12 @@ with open('S61.csv','rb') as csvfile:
 		if indate=='':
 			print "unknown Date:"+indate;
 			errorfile.writerow(line);
+			continue;
 		comment=line[6].strip();
-		link=line[7].strip().replace("\'","\\'");
+		if len(line)>7:
+			link=line[7].strip().replace("\'","\\'");
+		else:
+			link="";
 		curkey=cName+line[2].strip()+line[5].strip();	
 		#find the user using email
 		query=("select id from user where email ='"+curteacher+"';");
@@ -144,6 +154,7 @@ with open('S61.csv','rb') as csvfile:
 			sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
 		#addUserToService(sid,curteacher,line,0);
+		processed.writerow(line);
 
 f=open("UNKNOWNPROGRESS.csv","w");
 f.write((",".join(OrderedDict.fromkeys(UNKNOWNPROGRESS).keys())));
