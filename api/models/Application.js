@@ -14,7 +14,7 @@ module.exports = {
 
 	writer:{model:'User'},
 
-	service:{model:'Service'},
+	service:{model:'ServiceDetail'},
 
 	newDev:{type:'boolean',defaultsTo:false},
 

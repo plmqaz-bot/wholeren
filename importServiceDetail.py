@@ -58,8 +58,12 @@ def convertDate(d):
 			dt=time.strptime(d,'%m/%d/%Y');
 			return time.strftime('%Y-%m-%d',dt);
 		except ValueError:
-			print "unknown date "+d;
-			return '';
+			try:
+				dt=time.strptime(d,'%Y%m%d');
+				return time.strftime('%Y-%m-%d',dt);
+			except ValueError:
+				print "unknown date "+d;
+				return '';
 def addUserToService(sid,username,line,role):
 	global UNKNOWNUSER;
 	global errorfile;
@@ -91,7 +95,7 @@ def addUserToService(sid,username,line,role):
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61.csv','rb') as csvfile:
+with open('S61_service.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
 		contractKey=line[0].strip();
@@ -110,6 +114,8 @@ with open('S61.csv','rb') as csvfile:
 		if serviceProgress in SERVICEPROGRESS:
 			print "found progress ";
 			serviceProgress=SERVICEPROGRESS[serviceProgress];
+		elif serviceProgress=='':
+			serviceProgress=1;
 		else:
 			print "progress not found:"+serviceProgress;
 			UNKNOWNPROGRESS+=[serviceProgress];
@@ -120,6 +126,7 @@ with open('S61.csv','rb') as csvfile:
 		if indate=='':
 			print "unknown Date:"+indate;
 			errorfile.writerow(line);
+			continue;
 		comment=line[6].strip();
 		link=line[7].strip().replace("\'","\\'");
 		curkey=cName+line[2].strip()+line[5].strip();	
