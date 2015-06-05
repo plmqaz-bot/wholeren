@@ -13,7 +13,6 @@
 			left join serviceprogress on service.serviceProgress=serviceprogress.id \
 			left join servicetype on service.serviceType=servicetype.id \
 			left join servicedetail s on s.service=service.id \
-			left join servrole on s.servRole=servrole.id\
 			left join degree on c.degree=degree.id \
 			left join degree d on c.targetSchoolDegree=d.id \
 			left join user on \
@@ -57,10 +56,10 @@ module.exports = {
 		var wherequery="";
 		if(where.contractSigned){
 			if(where.contractSigned['>']){
-				wherequery+="and (contractsigned>'"+where.contractSigned['>']+"' or indate>'"+where.contractSigned['>']+"') ";
+				wherequery+="and (contractsigned>'"+where.contractSigned['>']+"' or service.indate>'"+where.contractSigned['>']+"') ";
 			}
 			if(where.contractSigned['<']){
-				wherequery+="and (contractsigned<'"+where.contractSigned['<']+"' or indate<'"+where.contractSigned['<']+"') ";
+				wherequery+="and (contractsigned<'"+where.contractSigned['<']+"' or service.indate<'"+where.contractSigned['<']+"') ";
 			}
 		}
 		switch (req.session.user.rank){

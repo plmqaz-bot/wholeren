@@ -27,6 +27,11 @@ for row in cursor:
 
 outfile=open("incompleteApplication.csv","wb");
 errorfile=csv.writer(outfile,delimiter=',',quotechar='\"');
+
+outfile2=open("S61_app_processed.csv","wb");
+processed=csv.writer(outfile2,delimiter=',',quotechar='\"');
+outfile3=open("unknownDate.csv","wb");
+errorfile3=csv.writer(outfile3,delimiter=',',quotechar='\"');
 #oldTypeToNew={'d5':'d','d4':'d','d1':'d','d3':'d2','d2':'d0','f2':'f','c':'c1','h1':'h','i5':'i','i4':'i2','i3':'i','i2':'i1','i1':'i','ps':'p2','p':'p2','ghj':'j1','ic':'h11','b1':'b','i4, f':'i4','d4+d5':'d','z':'i'}
 oldTypeToNew={'d4':'d','d5':'d','d1':'d','d3':'d'}
 def processType(type):
@@ -43,7 +48,11 @@ def convertDate(d):
 			dt=time.strptime(d,'%m/%d/%Y');
 			return time.strftime('%Y-%m-%d',dt);
 		except ValueError:
-			return '';
+			try:
+				dt=time.strptime(d,'%Y/%m');
+				return time.strftime('%Y-%m-%d',dt);
+			except ValueError:
+				return '';
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
@@ -65,14 +74,15 @@ with open('S61_app.csv','rb') as csvfile:
 			continue;
 		univ=line[4].strip();
 		major=line[5].strip();
-		semester=convertDate(line[6].strip());
+		semester=convertDate(line[6].strip().replace(" ",""));
 		if semester=='':
 			print "unknown Date:"+line[6];
 			UNKNOWNSEMESTER+=[line[6]];
-			errorfile.writerow(line);
+			errorfile3.writerow(line);
+			continue;
 		result=line[7].strip();
 		studentCondition=line[8].strip();
-		query=("select id,count(*) from servicedetail where (cName='"+cName+"' and realServiceType='"+str(serviceType)+"');");
+		query=("select id,count(*) from servicedetail where ( cName='"+cName+"' and realServiceType='"+str(serviceType)+"');");
 		cursor.execute(query);
 		serv=cursor.fetchone();
 		sid=serv[0];
@@ -81,11 +91,12 @@ with open('S61_app.csv','rb') as csvfile:
 		 	# add application
 		 	print 'ServiceDetail not found or too many'+str(count)+" " +str(serviceType)+" "+contractKey#+cName;
 			errorfile.writerow(line);
+			continue;
 			#cursor.execute(add_servicedetail,(uid,serviceType,serviceProgress,indate,link,contractKey,cName,curkey));
 			#sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
 		#addUserToService(sid,curteacher,line,0);
-
+		processed.writerow(line);
 f=open("UNKNOWNTYPE.csv","w");
 f.write((",".join(OrderedDict.fromkeys(UNKNOWNTYPE).keys())));
 f.close();

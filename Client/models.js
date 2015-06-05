@@ -419,6 +419,52 @@ Collections={
         },
 
     }),
+    ShortContract:Backbone.PageableCollection.extend({
+        model: Models.syncModel,
+        
+        _url: '/ShortContract/',
+        url: function(){
+            if(this.whereclaus){
+                return '/ShortContract/?where='+this.whereclaus();
+            }else{
+                return '/ShortContract/';
+            }
+        },
+        initialize:function(models,options){
+            options=options||{};
+            this.startDate=options.startDate||"09-01-2014";
+            this.endDate=options.endDate||"";
+            this.mode="client";
+            this.state={pageSize:20};
+        },
+        setdate:function(options){
+            this.startDate=options.startDate;
+            this.endDate=options.endDate;
+        },
+        whereclaus:function(){
+            var where={};
+            try{
+                if(this.startDate){
+                    where.createdAt=where.createdAt||{};
+                    where.createdAt['>']=new Date(this.startDate);
+                }
+                if(this.endDate){
+                    where.createdAt=where.createdAt||{};
+                    where.createdAt['<']=new Date(this.endDate);
+                }
+                if(this.deleted==true){
+                    where.deleted=true;
+                }
+                if(where.createdAt){
+                    return JSON.stringify(where);
+                }
+            }catch(e){
+                return "{}";
+            }
+            return "{}";
+        },
+
+    }),
     Client : Backbone.Collection.extend({
         model: Models.simpleModel,
         name:'client',

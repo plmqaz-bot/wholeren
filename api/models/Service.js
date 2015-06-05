@@ -22,7 +22,7 @@ module.exports = {
 
   	serviceProgress:{model:'ServiceProgress',required:true,defaultsTo:1},
 
-    application:{collection:'Application', via:'service'},
+    //application:{collection:'Application', via:'service'},
 
     comment:{collection:'Comment',via:'service'},
 

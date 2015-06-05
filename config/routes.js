@@ -215,7 +215,7 @@ module.exports.routes = {
   'PUT /market/MonthlyGoal/:id':{
     controller:'market',
     action:'updateMonthlyGoal'
-  }
+  },
 
   /***************************************************************************
   *                                                                          *
@@ -226,4 +226,9 @@ module.exports.routes = {
   * for configuration options and examples.                                  *
   *                                                                          *
   ***************************************************************************/
+  /*******************These are dummy Controllers for fake Models**************/
+  'GET /ShortContract/':'ShortContractController.find',
+  'GET /ShortContract/:id':'ShortContractController.findOne',
+  'PUT /ShortContract/:id':'ShortContractController.update',
+  'DELETE /ShortContract/:id':'ShortContractController.destroy'
 };
