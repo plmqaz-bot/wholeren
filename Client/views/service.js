@@ -106,45 +106,26 @@ var ShortContractView=main.baseDataView.extend({
     collectionName:'ShortContract',
     title:'服务列表',
     paginator:true,
-    filterFields:['chineseName','serviceProgress','type','degree','previousSchool','studentDestination','servRole'],
+    //filterFields:['chineseName','serviceProgress','type','degree','previousSchool','studentDestination','servRole'],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({
             cellText:'Details',
             action:function(e){
                 e.preventDefault();
-                var id=this.model.get('id');
-                var type=this.model.get('serviceType');
-                var teacherview= new ServicePopup({id:id,type:type});
+                var teacherview= new ServicePopup({model:this.model});
                 teacherview.render();
                 $('.app').html(teacherview.el);
             },
         });
-        var appPopup=BackgridCells.Cell.extend({
-            cellText:'Applications',
-            render: function () {
-                if(this.model.get('addApplication')!=0)
-                    this.$el.html('<a>'+this.cellText+'</a>');
-                else
-                    this.$el.html('');        
-                this.delegateEvents();
-                return this;
-              },
-            action:function(e){
-                e.preventDefault();
-                var id=this.model.get('id');
-                var appview= new ApplicationPopup({id:id});
-                appview.render();
-                $('.app').html(appview.el);  
-            }
-        });
+
         var comment=BackgridCells.Cell.extend({
             cellText:'Comments',
             action:function(e){
                 var item=$(e.currentTarget);
                 var id = this.model.get('id');
                 var type='serv';
-                var m=new CommentModalView({sid:id});
+                var m=new CommentModalView({cid:id});
                 $('.app').html(m.renderAll().el);   
             }
         });
@@ -154,38 +135,31 @@ var ShortContractView=main.baseDataView.extend({
             var degreeselect=BackgridCells.SelectCell({name:"Degree",values:_.map(degree,function(e){return [e.degree,e.id]})});
             self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
-            {name:'nickname',label:'总负责老师',editable: false,cell:'string'},
-            {name:'matchedcName',label:'导入表匹配到中文名',editable:false,cell:'string'},
-            {name:'cName',label:'导入表学生中文名',cell:'string'},
-            {name:'contractKey',label:'导入表合同ID',cell:'string'},
-            {name:'serviceProgress',label:'状态',cell:progressselect},                    
-            {name:'contractSigned',label:'进入服务时间',editable:false,cell:BackgridCells.MomentCell},
-            {name:'type',label:'服务类型',editable:false,cell:'string'},
-            //{name:'realnickname',label:'具体负责老师',editable:false,cell:'string'},
-            //{name:'servRole',label:'具体负责任务',editable:false,cell:'string'},
-            {name:'endFee',label:'预付申请费',editable:false,cell:'boolean'},
+            {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
+            {name:'teacher',label:'后期组长',editable: false,cell:'string'},
+            {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
+            {name:'status',label:'该合同进度',editable:false,cell:'string'},
+            {name:'boughtservices',label:'该合同购买服务',editable:false,cell:'string'},
+            {name:'',label:'各进程细节',cell:popup},                    
+            {name:'',label:'学生联系方式',cell:'string'},                    
+            //{name:'',label:'第三方费用',cell:'string'},                    
+            {name:'country',label:'学生所在地',cell:'string'},
+            {name:'degree',label:'原学校类型',cell:degreeselect},
+            {name:'previousSchool',label:'原学校',cell:'string'},
+            {name:'major',label:'原专业',cell:'string'},
             {name:'gpa',label:'GPA',cell:'number'},
             {name:'toefl',label:'托福',cell:'number'},
             {name:'gre',label:'GRE',cell:'number'},
             {name:'sat',label:'SAT',cell:'number'},
             {name:'otherScore',label:'其他分数',cell:'string'},
-            {name:'degree',label:'原学校类型',cell:degreeselect},
-            {name:'previousSchool',label:'原学校',cell:'string'},
-            {name:'major',label:'原专业',cell:'string'},
-            {name:'targetSchoolDegree',label:'申请学校类型',cell:degreeselect},
-            // {name:'step1',label:'step1',cell:'date'},
-            // {name:'step2',label:'step2',cell:'date'},
-            {name:'studentDestination',label:'学生去向',cell:'string'},
-                {name:'link',label:'链接',cell:'uri'},
-            {name:'',label:'Show Applications',cell:appPopup},
-            {name:'',label:'Comment',cell:comment},
-            {name:'',label:'Show Details',cell:popup},
+            //{name:'',label:'Show Applications',cell:appPopup},
+            {name:'',label:'Comment',cell:comment}
             ];
             
-            self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
-            {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
-            {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
-            ];
+            // self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
+            // {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
+            // {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
+            // ];
             return Promise.resolve({});
         });
     }
@@ -208,13 +182,13 @@ var ServicePopup=Backbone.Modal.extend({
             render();
             self.afterRender();
         });
-        this.serviceID=parseInt(options.id);
-        this.type=parseInt(options.type);
+        this.shortContract=options.model;
+        this.contractId=parseInt(this.shortContract.get('id'));
         this.collection=new Obiwang.Collections.ServiceDetail();
-        this.collection.setSID(this.serviceID);
+        this.collection.setCID(this.contractId);
     },     
     addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel({service:this.serviceID,originalType:this.type},{_url:'/ServiceDetail/'});
+        var toAdd=new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
         //toAdd.set('service',this.serviceID,{save:false});
         //toAdd.set('originalType',this.type,{save:false});
         var self=this;
@@ -247,79 +221,43 @@ var ServicePopup=Backbone.Modal.extend({
                     return [{name:'ServiceType',values:toadd}];
                 }
             });
-            var roleselect=userselect.extend({
-                optionValues:function(){
-                    var type=this.model.get('serviceType')||0;
-                    var rols=_.unique(_.where(data,{serviceType:type}),false,function(e){
-                        if(e.servRole){
-                            return e.servRole.id;
-                        }
-                        return undefined;
-                    })
-                    var toAdd=_.map(rols,function(e){
-                        if(e.servRole){
-                            return [e.servLevel,e.lid];    
-                        }
-                        return ['error',null];                        
-                    });
-                    return [{name:'Roles',values:toAdd}];
+            var appPopup=BackgridCells.Cell.extend({
+                cellText:'Applications',
+                render: function () {
+                    if(this.model.get('addApplication')!=0)
+                        this.$el.html('<a>'+this.cellText+'</a>');
+                    else
+                        this.$el.html('');        
+                    this.delegateEvents();
+                    return this;
+                  },
+                action:function(e){
+                    e.preventDefault();
+                    var id=this.model.get('id');
+                    var appview= new ApplicationPopup({id:id});
+                    appview.render();
+                    $('.app').append(appview.el);  
                 }
             });
-            
-            var levelselect=roleselect.extend({
-                optionValues:function(){
-                    var cell=this;
-                    var role=this.model.get('servRole')||0;
-                    var type=this.model.get('serviceType')||0;
-                    self.cache[role]=self.cache[role]||[];
-                    self.cache[role][type]=self.cache[role][type]||[];
-                    self.cache[role][type]["level"]=self.cache[role][type]["level"]||[];
-                    if(self.cache[role][type]["level"].length<1){                     
-                        var shrunk=_.where(data,{servRole:role,serviceType:type});
-                        _.where(data,{servRole:role,serviceType:0}).forEach(function(e){
-                            shrunk.push(e);
-                        });
-                        var unique=_.uniq(shrunk,false,function(e){return e.lid;});
-                        self.cache[role][type]["level"]=_.map(unique,function(e){return [e.servLevel,e.lid]});                         
+            var comment=BackgridCells.Cell.extend({
+                    cellText:'Comments',
+                    action:function(e){
+                        var item=$(e.currentTarget);
+                        var id = this.model.get('id');
+                        var type='serv';
+                        var m=new CommentModalView({sid:id});
+                        $('.app').append(m.renderAll().el);   
                     }
-                    var toadd=self.cache[role][type]["level"].slice(0);//clone it
-                    toadd.push(["No Level",null]);
-                    cell._optionValues=[{name:10,values:toadd}];
-                    return cell._optionValues;                    
-                }
-            });
-            var statusselect=roleselect.extend({
-                optionValues:function(){
-                    var cell=this;
-                    var role=this.model.get('servRole')||0;
-                    var type=this.model.get('serviceType')||0;
-                    self.cache[role]=self.cache[role]||[];
-                    self.cache[role][type]=self.cache[role][type]||[];
-                    self.cache[role][type]["status"]=self.cache[role][type]["status"]||[];
-                    if(self.cache[role][type]["status"].length<1){
-                        var shrunk=_.where(data,{servRole:role,serviceType:type});
-                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
-                            shrunk.push(e);
-                        });
-                        var unique=_.uniq(shrunk,false,function(e){return e.sid;});
-                        self.cache[role][type]["status"]=_.map(unique,function(e){return [e.serviceStatus,e.sid]});
-                    }
-                    var toadd=self.cache[role][type]["status"].slice(0);//clone it
-                    toadd.push(["No Status",null]);
-                    cell._optionValues=[{name:10,values:toadd}];
-                    return cell._optionValues;
-                } 
-            });
-            var DeleteCell = BackgridCells.DeleteCell;
-           // var UpdateCell=BackgridCells.UpdateCell;
+                });
             var columns=[
-                {name:'user',label:'User',cell:userselect},
-                {name:'serviceType',label:'ServiceType',cell:typeselect},
-                {name:'servRole',label:'Role',cell:roleselect},
-                {name:'servLevel',label:'Level',cell:levelselect},
-                {name:'progress',label:'Current Status',cell:statusselect},
-                //{name:'',label:'Update',cell:UpdateCell},
-                {name:'',label:'Delete Action',cell:DeleteCell}
+                {name:'cName',label:'用户名字',editable:false,cell:'string'},
+                {name:'realServiceType',label:'各进程类型',cell:'string'},
+                {name:'ServiceProgress',label:'该进程状态',cell:'string'},
+                {name:'user',label:'该进程负责人',cell:userselect},
+                {name:'link',label:'学生档案 Link',cell:'uri'},
+                {name:'',label:'该进程备注',cell:comment},
+                {name:'',label:'Application',cell:appPopup},
+                {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
                 container.append(grid.render().el);
@@ -410,7 +348,7 @@ var ApplicationPopup=ServicePopup.extend({
                 //{name:'studentCondition',label:'Condition',cell:'string'},
                 {name:'',label:'Comments',cell:comment},
                 //{name:'',label:'Update',cell:UpdateCell},
-                {name:'',label:'Delete Action',cell:DeleteCell}
+                {name:'',label:'Delete',cell:DeleteCell}
                 ];
             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
                 container.append(grid.render().el);
@@ -421,4 +359,4 @@ var ApplicationPopup=ServicePopup.extend({
         return this;
     }, 
 });
-module.exports=ServiceView;
+module.exports=ShortContractView;

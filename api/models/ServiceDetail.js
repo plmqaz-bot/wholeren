@@ -8,9 +8,10 @@
 module.exports = {
 
   attributes: {
-  	service:{model:'Service',required:true},
+    service:{model:'Service'},
+  	contract:{model:'Contract',required:true},
   	user:{model:'User'},
-  	assist:{model:'User'},
+  	//assist:{model:'User'},
   	realServiceType:{model:'RealServiceType'},
   	serviceProgress:{model:'ServiceProgress',required:true,defaultsTo:1},
   	indate:{type:'date'},

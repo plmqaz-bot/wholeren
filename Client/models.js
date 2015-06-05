@@ -689,15 +689,15 @@ Collections={
         model:Models.syncModel,
         _url:'/ServiceDetail/',
         url:function(){
-            var toReturn='/ServiceDetail/?service='+this.sid;
+            var toReturn='/ServiceDetail/?contract='+this.cid;
             return toReturn;
         },
         initialize:function(models, options){
             this.mode="client";
             this.state={pageSize:25};
         },
-        setSID:function(sid){
-            this.sid=sid;
+        setCID:function(cid){
+            this.cid=cid;
         }
     }),
     General:Backbone.PageableCollection.extend({

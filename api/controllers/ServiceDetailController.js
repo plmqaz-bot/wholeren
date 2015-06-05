@@ -25,10 +25,12 @@ function createsql(service,user,option){
 }
 module.exports = {
 	find:function(req,res){
-		var serv=req.param('service');
-		if(!serv)  return res.json(404,{error:"no service id"});
-		var sql=createsql(serv,null);
-		Utilfunctions.nativeQuery(sql).then(function(data){
+		var cont=req.param('contract');
+		if(!cont)  return res.json(404,{error:"no contract id"});
+		
+		//var sql=createsql(cont,null);
+		//Utilfunctions.nativeQuery(sql)
+		ServiceDetail.find({contract:cont}).then(function(data){
 			return res.json(data);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Find ServiceDetail failed");
@@ -44,7 +46,7 @@ module.exports = {
 		// tocreate['servRole']=attribs.servRole;
 		// tocreate['servLevel']=attribs.servLevel;
 		progress=attribs['progress'];
-		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel','serviceType']);
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link']);
 		ServiceDetail.update({id:id},tocreate).then(function(data){
 			data=data[0]||data;
 			if(progress&&data.id){
@@ -56,9 +58,8 @@ module.exports = {
 			}
 		}).then(function(data){
 			var sql=createsql(attribs.service,attribs.user,'s.id='+id);
-			return Utilfunctions.nativeQuery(sql);
+			return ServiceDetail.findOne({id:id});
 		}).then(function(data){
-			data=data[0]||data;
 			return res.json(data);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Update Service failed id:"+id);
@@ -66,38 +67,43 @@ module.exports = {
 	},
 	createorupdate:function(req,res){
 		var attribs=req.body;
-		if(!attribs.service) return res.json(404,{error:"no user or service"});
-		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel','serviceType']);
-		progress=attribs['progress'];
-		console.log(progress);
-		ServiceDetail.findOne({user:attribs.user,service:attribs.service}).then(function(data){
-			data=data||{};
-			if(data.id){
-				console.log("update detail",data);
-				return ServiceDetail.update({id:data.id},tocreate);
-			}else{
-				console.log("create detail");
-				return ServiceDetail.create(tocreate);
-			}
-		}).then(function(data){
-			data=data[0]||data;
-			if(progress&&data.id){
-				console.log("create progress");
-				return ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:progress});
-			}else{
-				console.log("not creating progress ",progress,data);
-				return Promise.resolve(data);
-			}
-		}).then(function(data){
-			console.log("create sql to retrieve the row", data);
-			var sql=createsql(attribs.service,attribs.user,'s.id='+data.id);
-			return Utilfunctions.nativeQuery(sql);
-		}).then(function(data){
-			data=data[0]||data;
+		if(!attribs.contract) return res.json(404,{error:"no user or contract"});
+		ServiceDetail.create(attribs).then(function(data){
 			return res.json(data);
-		}).catch(function(err){
+		}).error(function(err){
             Utilfunctions.errorHandler(err,res,"Create ServiceDetail failed");
-		});
+		})
+		// var tocreate=Utilfunctions.prepareUpdate(attribs,['user','service','servRole','servLevel','serviceType']);
+		// progress=attribs['progress'];
+		// console.log(progress);
+		// ServiceDetail.findOne({user:attribs.user,service:attribs.service}).then(function(data){
+		// 	data=data||{};
+		// 	if(data.id){
+		// 		console.log("update detail",data);
+		// 		return ServiceDetail.update({id:data.id},tocreate);
+		// 	}else{
+		// 		console.log("create detail");
+		// 		return ServiceDetail.create(tocreate);
+		// 	}
+		// }).then(function(data){
+		// 	data=data[0]||data;
+		// 	if(progress&&data.id){
+		// 		console.log("create progress");
+		// 		return ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:progress});
+		// 	}else{
+		// 		console.log("not creating progress ",progress,data);
+		// 		return Promise.resolve(data);
+		// 	}
+		// }).then(function(data){
+		// 	console.log("create sql to retrieve the row", data);
+		// 	var sql=createsql(attribs.service,attribs.user,'s.id='+data.id);
+		// 	return Utilfunctions.nativeQuery(sql);
+		// }).then(function(data){
+		// 	data=data[0]||data;
+		// 	return res.json(data);
+		// }).catch(function(err){
+  //           Utilfunctions.errorHandler(err,res,"Create ServiceDetail failed");
+		// });
 	},
 	destroy:function(req,res){
 		console.log("destroy");

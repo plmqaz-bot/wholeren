@@ -6,26 +6,28 @@
  */
 
 function createsql(where){
-	sql="select contract.id,chineseName,teacher,GROUP_CONCAT(distinct service.serviceType SEPARATOR ',') as 'boughservices', country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore\
-	from contract left join service on service.contract=contract.id left join client on contract.client=client.id\
+	sql="select contract.nameKey,contract.status,contractPaid,contract.id,chineseName,teacher,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices', country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore\
+	from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType \
 	where contract.contractSigned is not null "+where+" group by contract.id;";
 	return sql;
 }
 function whoCanView(user){
 	return "";
 }
-
-module.exports = {
-	findOne:function(req,res){
-		var id=req.params.id;
+function getOne(req,res){
+	var id=req.params.id;
 		if(!id) return Utilfunctions.errorHandler({error:"No id"},res,"Get short contract  failed");
 		var sql=createsql("and contract.id="+id);
-		Utilfunctions.nativeQuery(sql).then(function(data){
+		return Utilfunctions.nativeQuery(sql).then(function(data){
 			if((data=data||[]).length<1) return Promise.reject({error:"not found"});
-			return res.json(serv[0]);
+			return res.json(data[0]);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Find short contract failed id:"+req.params.id);
 		});
+}
+module.exports = {
+	findOne:function(req,res){
+		return getOne(req,res);
 	},
 	find:function(req,res){
 		var id=req.session.user.id;
@@ -70,7 +72,7 @@ module.exports = {
 		delete attribs["updateAt"];
 		var contractUpdate=Utilfunctions.prepareUpdate(attribs,['country','gpa','gre','toefl','sat','otherScore','degree','previousSchool','major']);
 		Contract.update({id:id},contractUpdate).then(function(data){
-			return this.findOne(req,res);
+			return getOne(req,res);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Find short contract failed");
 		});
