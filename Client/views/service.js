@@ -130,21 +130,22 @@ var ShortContractView=main.baseDataView.extend({
             }
         });
         var self=this;
-        return Promise.all([util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/Degree/')]).spread(function(progress,degree){
-            var progressselect=BackgridCells.SelectCell({name:"Progress",values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
-            var degreeselect=BackgridCells.SelectCell({name:"Degree",values:_.map(degree,function(e){return [e.degree,e.id]})});
-            self.columns=[
+        return util.ajaxGET('/contract/getAllOptions/').then(function(AllOptions){
+            var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
+            var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
+            var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
+             self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
             {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
             {name:'teacher',label:'后期组长',editable: false,cell:'string'},
             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
-            {name:'status',label:'该合同进度',editable:false,cell:'string'},
+            {name:'status',label:'该合同进度',editable:false,cell:status},
             {name:'boughtservices',label:'该合同购买服务',editable:false,cell:'string'},
             {name:'',label:'各进程细节',cell:popup},                    
             {name:'',label:'学生联系方式',cell:'string'},                    
             //{name:'',label:'第三方费用',cell:'string'},                    
-            {name:'country',label:'学生所在地',cell:'string'},
-            {name:'degree',label:'原学校类型',cell:degreeselect},
+            {name:'country',label:'学生所在地',cell:country},
+            {name:'degree',label:'原学校类型',cell:degree},
             {name:'previousSchool',label:'原学校',cell:'string'},
             {name:'major',label:'原专业',cell:'string'},
             {name:'gpa',label:'GPA',cell:'number'},
@@ -208,19 +209,21 @@ var ServicePopup=Backbone.Modal.extend({
         container.append('<button class="button-add">Add New</button>');
         
         var self=this;
-        Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServComissionLookUp/'),util.ajaxGET('/User/'),util.ajaxGET('/ServiceTypeGroup/')]).spread(function(roles,data,users,stype){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
-            var typeselect=userselect.extend({
-                optionValues:function(){
-                    var oritype=this.model.get('originalType');
-                    var shrunk=_.where(stype,{groupServiceType:oritype});
-                    var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
-                    if((toadd||[]).length<1){
-                        toadd.push([this.model.get('typetext'),this.model.get('originalType')]);
-                    }
-                    return [{name:'ServiceType',values:toadd}];
-                }
-            });
+        Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
+            var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+            // var typeselect=userselect.extend({
+            //     optionValues:function(){
+            //         var oritype=this.model.get('originalType');
+            //         var shrunk=_.where(stype,{groupServiceType:oritype});
+            //         var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
+            //         if((toadd||[]).length<1){
+            //             toadd.push([this.model.get('typetext'),this.model.get('originalType')]);
+            //         }
+            //         return [{name:'ServiceType',values:toadd}];
+            //     }
+            // });
             var appPopup=BackgridCells.Cell.extend({
                 cellText:'Applications',
                 render: function () {
@@ -251,8 +254,8 @@ var ServicePopup=Backbone.Modal.extend({
                 });
             var columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
-                {name:'realServiceType',label:'各进程类型',cell:'string'},
-                {name:'ServiceProgress',label:'该进程状态',cell:'string'},
+                {name:'realServiceType',label:'各进程类型',cell:typeselect},
+                {name:'ServiceProgress',label:'该进程状态',cell:progressselect},
                 {name:'user',label:'该进程负责人',cell:userselect},
                 {name:'link',label:'学生档案 Link',cell:'uri'},
                 {name:'',label:'该进程备注',cell:comment},

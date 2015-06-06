@@ -6,8 +6,8 @@
  */
 
 function createsql(where){
-	sql="select contract.nameKey,contract.status,contractPaid,contract.id,chineseName,teacher,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices', country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore\
-	from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType \
+	sql="select contract.nameKey,contract.status,user.nickname as teacher,contractPaid,contract.id,chineseName,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices', country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore\
+	from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType left join user on contract.teacher=user.id\
 	where contract.contractSigned is not null "+where+" group by contract.id;";
 	return sql;
 }

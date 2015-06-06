@@ -344,8 +344,8 @@ var ContractAgentView=Backbone.Modal.extend({
             self.afterRender();
         });
         this.model=options.model;
-        this.options=options.options;
-        this.options=_.map(options.options,function(e){
+        this.Users=options.options;
+        this.options=_.map(this.Users,function(e){
             return {label:e.nickname,value:e.id};
         });
         this.options.push({label:'NONE',value:null});
@@ -353,18 +353,22 @@ var ContractAgentView=Backbone.Modal.extend({
     afterRender:function(){
         var container=this.$el.find('.bbm-modal__section');
         var self=this;
+        var sales=_.map(_.where(this.Users,{role:1}),function(e){return {label:e.nickname,value:e.id};});
+        sales.push({label:'NONE',value:null})
+        var shenqing=_.map(_.filter(this.Users,function(e){return e.role==2&&e.rank>1}),function(e){return {label:e.nickname,value:e.id};});
+        shenqing.push({label:'NONE',value:null});
         var fields=[
-        {name:'assistant1',label:'助理1',control:'select',options:this.options},
-        {name:'assistant2',label:'助理2',control:'select',options:this.options},
-        {name:'assistant3',label:'助理3',control:'select',options:this.options},
-        {name:'assistant4',label:'助理4',control:'select',options:this.options},
-        {name:'assisCont1',label:'助签1',control:'select',options:this.options},
-        {name:'assisCont2',label:'助签1',control:'select',options:this.options},
-        {name:'expert1',label:'专家1',control:'select',options:this.options},
-        {name:'expert2',label:'专家2',control:'select',options:this.options},
-        {name:'sales1',label:'销售1',control:'select',options:this.options},
-        {name:'sales2',label:'销售2',control:'select',options:this.options},
-        {name:'teacher',label:'总服务老师',control:'select',options:this.options}];
+        {name:'assistant1',label:'助理1',control:'select',options:sales},
+        {name:'assistant2',label:'助理2',control:'select',options:sales},
+        {name:'assistant3',label:'助理3',control:'select',options:sales},
+        {name:'assistant4',label:'助理4',control:'select',options:sales},
+        {name:'assisCont1',label:'助签1',control:'select',options:sales},
+        {name:'assisCont2',label:'助签1',control:'select',options:sales},
+        {name:'expert1',label:'专家1',control:'select',options:sales},
+        {name:'expert2',label:'专家2',control:'select',options:sales},
+        {name:'sales1',label:'销售1',control:'select',options:sales},
+        {name:'sales2',label:'销售2',control:'select',options:sales},
+        {name:'teacher',label:'总服务老师',control:'select',options:shenqing}];
         this.form=new Backform.Form({
             el:self.$el.find('.bbm-modal__section'),
             model:self.model,
