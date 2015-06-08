@@ -71,10 +71,11 @@ module.exports = {
 				return ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:progress});
 			}else{
 				console.log("not creating progress ",progress,data);
-				return data;
+				return Promise.resolve(data);
 			}
 		}).then(function(data){
-			var sql=createsql(attribs.service,attribs.user,'s.id='+id);
+			console.log("update successful, now get this");
+			//var sql=createsql(attribs.service,attribs.user,'s.id='+id);
 			return ServiceDetail.findOne({id:id});
 		}).then(function(data){
 			return res.json(data);

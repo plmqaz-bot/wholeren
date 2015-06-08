@@ -409,7 +409,7 @@ Collections={
                 if(this.deleted==true){
                     where.deleted=true;
                 }
-                if(where.createdAt){
+                if(where.createdAt||where.deleted!=undefined){
                     return JSON.stringify(where);
                 }
             }catch(e){

@@ -36,6 +36,7 @@ function whoCanView(user,where){
 	if(restrictions!=""){
 		var sql=constructsql(restrictions);
 		promise=Utilfunctions.nativeQuery(sql).then(function(ids){
+			console.log("Establish the ids that the user can view");
 			var idarray=ids.map(function(c){return c.id;});
 			where['id']=idarray;
 			return Contract.find(where);
@@ -112,38 +113,21 @@ module.exports = {
 				console.log("found ", toReturn.length);
 				var cId=conts.map(function(e){return e.id;});
 				var clientId=conts.map(function(e){return e.client;});
-				return Promise.all([ContractCategory.find(),Country.find(),Degree.find(),Lead.find(),LeadLevel.find(),PaymentOption.find(),Status.find(),User.find(),Client.find({id:clientId}),Service.find({contract:cId})]);
+				return Promise.all([Client.find({id:clientId}),Service.find({contract:cId})]);
 			}).then(function(data){
 				// manually populate
 				var Hashs=[];
-				for(var i=0;i<data.length-1;i++){
-					Hashs.push(Utilfunctions.makePopulateHash(data[i]));
-				}
+				Hashs.push(Utilfunctions.makePopulateHash(data[0]));
 				// Last hash the service
-				Hashs.push(Utilfunctions.makeO2MHash(data[data.length-1],'contract'));
+				Hashs.push(Utilfunctions.makeO2MHash(data[1],'contract'));
 				//console.log("manuall hashing",Hashs.length);
 				 toReturn=toReturn.map(function(ele){
 				 	var r=ele;
-				// 	if(r.contractCategory) r.contractCategory=Hashs[0][r.contractCategory];
-				// 	if(r.country) r.country=Hashs[1][r.country];
-				// 	if(r.degree) r.degree=Hashs[2][r.degree];
-				// 	if(r.lead) r.lead=Hashs[3][r.lead];
-				// 	if(r.leadLevel) r.leadLevel=Hashs[4][r.leadLevel];
-				// 	if(r.paymentOption) r.paymentOption=Hashs[5][r.paymentOption];
-				// 	if(r.status) r.status=Hashs[6][r.status];
-				// 	if(r.assistant) r.assistant=Hashs[7][r.assistant];
-				// 	if(r.assisCont1) r.assisCont1=Hashs[7][r.assisCont1];
-				// 	if(r.assisCont2) r.assisCont2=Hashs[7][r.assisCont2];
-				// 	if(r.expert1) r.expert1=Hashs[7][r.expert1];
-				// 	if(r.expert2) r.expert2=Hashs[7][r.expert2];
-				// 	if(r.sales1) r.sales1=Hashs[7][r.sales1];
-				// 	if(r.sales2) r.sales2=Hashs[7][r.sales2];
-				// 	if(r.teacher) r.teacher=Hashs[7][r.teacher];
 				 	if(r.client){
-				 		r.client=Hashs[8][r.client]||{};
+				 		r.client=Hashs[0][r.client]||{};
 				 		r.clientName=r.client['chineseName'];
 				 	} 
-				 	var services=Hashs[9][r.id]||[];
+				 	var services=Hashs[1][r.id]||[];
 				 	var totalprice=0;
 				 	for(var i=0;i<services.length;i++){
 				 		totalprice+=services[i].price||0;
