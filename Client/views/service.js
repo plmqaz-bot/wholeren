@@ -106,7 +106,7 @@ var ShortContractView=main.baseDataView.extend({
     collectionName:'ShortContract',
     title:'服务列表',
     paginator:true,
-    //filterFields:['chineseName','serviceProgress','type','degree','previousSchool','studentDestination','servRole'],
+    filterFields:['chineseName','nameKey','teacher','contractPaid','boughtservices','previousSchool','major'],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({
@@ -157,10 +157,10 @@ var ShortContractView=main.baseDataView.extend({
             {name:'',label:'Comment',cell:comment}
             ];
             
-            // self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
-            // {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
-            // {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
-            // ];
+             self.selectFields=[{name:'status',label:'该合同进度',options:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})},
+            {name:'country',label:'学生所在地',options:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})},
+            {name:'degree',label:'原学校类型',options:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})},
+            ];
             return Promise.resolve({});
         });
     }
