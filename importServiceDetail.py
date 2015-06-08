@@ -11,7 +11,7 @@ add_service=("INSERT INTO servicedetail (contractKey,cName,serviceType,servicePr
 add_servicedetail=("INSERT INTO servicedetail (user,realServiceType,serviceProgress,indate,link,contractKey,cname,namekey) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
 
 
-cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='han.bio.cmu.edu',database='wholeren',charset='utf8');
+cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='localhost',database='wholeren',charset='utf8');
 cursor=cnx.cursor();
 
 SERVICEPROGRESS={};
@@ -97,7 +97,7 @@ def addUserToService(sid,username,line,role):
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61.csv','rb') as csvfile:
+with open('S61_appendix.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
 		contractKey=line[0].strip();
@@ -129,7 +129,10 @@ with open('S61.csv','rb') as csvfile:
 			print "unknown Date:"+indate;
 			errorfile.writerow(line);
 			continue;
-		comment=line[6].strip();
+		if len(line)>6:
+			comment=line[6].strip();
+		else:
+			comment="";
 		if len(line)>7:
 			link=line[7].strip().replace("\'","\\'");
 		else:

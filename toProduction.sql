@@ -1,12 +1,13 @@
+
 use wholeren;
-CREATE TABLE `wholeren`.`realservicetype` (
+CREATE TABLE `realservicetype` (
   `realServiceType` VARCHAR(45) NULL,
   `id` INT NOT NULL AUTO_INCREMENT,
   `createdAt` DATETIME NULL,
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
 
-CREATE TABLE `wholeren`.`sales2realservicetype` (
+CREATE TABLE `sales2realservicetype` (
   `serviceType` INT(11) NOT NULL,
   `realServiceType` INT(11) NOT NULL,
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -14,7 +15,7 @@ CREATE TABLE `wholeren`.`sales2realservicetype` (
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
 
-ALTER TABLE `wholeren`.`servicedetail` 
+ALTER TABLE `servicedetail` 
 DROP COLUMN `servLevel`,
 DROP COLUMN `servRole`,
 CHANGE COLUMN `serviceType` `realServiceType` INT(11) NULL DEFAULT NULL ,
@@ -51,3 +52,45 @@ insert into realservicetype values('vip',20,NOW(),NOW());
 insert into realservicetype values('ghj',21,NOW(),NOW());
 insert into realservicetype values('ic',22,NOW(),NOW());
 insert into realservicetype values('pc',23,NOW(),NOW());
+CREATE TABLE `userinservice` (
+  `user` INT(11) NULL,
+  `serviceDetail` INT(11) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  PRIMARY KEY (`id`));
+select   distinct contract.*,chineseName,teacher,GROUP_CONCAT(distinct service.serviceType SEPARATOR ',') as 'boughservices', country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore  from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicedetail on servicedetail.contract=contract.id left join userinservice u on u.servicedetail=servicedetail.id  where contract.contractSigned is not null  and 1 in (contract.sales1,contract.sales2, contract.teacher, servicedetail.user, u.user) group by contract.id;
+select SQL_NO_CACHE  distinct contract.*,chineseName,teacher,GROUP_CONCAT(distinct service.serviceType SEPARATOR ',') as 'boughservices', country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore  from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicedetail on servicedetail.contract=contract.id left join userinservice u on u.servicedetail=servicedetail.id  where contract.contractSigned is not null  group by contract.id;
+
+create index sdc on servicedetail(contract);
+create index sc on service(contract);
+create index cc on contract(client);
+create index sales1 on `contract`(sales1);
+create index sales2 on `contract`(sales2);
+create index teacher on `contract`(teacher);
+
+truncate servicedetail;
+
+select servicedetail.*,user.nickname,u2.nickname from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank=2;
+
+select * from client where chineseName='王淼';
+
+
+select cName, count(*) from servicedetail inner join client on client.chinesename=cName and client.chineseName!='' where contractKey ='' group by servicedetail.cName;
+
+
+select * from client where chineseName='令一辉';
+
+
+set sql_safe_updates=0;
+# delete no use client
+delete client from client  left join contract on contract.client=client.id where contract.id is null;
+#match by contractkey
+update servicedetail inner join contract on contractKey=contract.nameKey and contractKey!='' set servicedetail.contract=contract.id;
+#find duplicate client
+select * from client inner join client c2 on client.chineseName=c2.chineseName and client.firstName=c2.firstname and client.lastName=c2.lastName and client.id>c2.id;
+# match by cname
+update servicedetail inner join (
+select servicedetail.id,contract.id as cid,count(*) as 'count' from servicedetail inner join client on servicedetail.cName=client.chineseName and servicedetail.cName !='' and servicedetail.cname is not null inner join contract on contract.client=client.id group by servicedetail.cName) as t on t.id=servicedetail.id set servicedetail.contract=cid where count=1;
+
+select * from servicedetail where contract is null;

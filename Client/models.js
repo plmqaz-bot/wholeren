@@ -597,6 +597,49 @@ Collections={
             return "{}";
         }
     }),
+    ServiceList:Backbone.PageableCollection.extend({
+        model: Models.syncModel,
+        _url:'/ServiceDetail/',
+        url: function(){
+            if(this.customWhere){
+                return '/ServiceDetail/?where='+this.customWhere;   
+            }else if(this.whereclaus){
+                return '/ServiceDetail/?where='+this.whereclaus();   
+            }else{
+                return '/ServiceDetail/';
+            }
+        },
+        
+        initialize:function(models,options){
+            options=options||{};
+            this.startDate=options.startDate||"09-01-2014";
+            this.endDate=options.endDate||"";
+            this.mode="client";
+            this.state={pageSize:20};
+        },
+        setdate:function(options){
+            this.startDate=options.startDate;
+            this.endDate=options.endDate;
+        },
+        whereclaus:function(){
+            var where={};
+            where.contractSigned={};
+             try{
+               if(this.startDate){
+                    where.indate['>']=new Date(this.startDate);
+                }
+                if(this.endDate){
+                    where.indate['<']=new Date(this.endDate);
+                }
+                if(where.indate){
+                    return JSON.stringify(where);
+                }
+            }catch(e){
+                return "{}";
+            }
+            return "{}";
+        }
+    }),
     Comission:Backbone.PageableCollection.extend({
         model:Models.syncModel,
          url: function(){

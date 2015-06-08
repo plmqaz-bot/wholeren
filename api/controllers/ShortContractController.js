@@ -7,23 +7,24 @@
 
 function createsql(where){
 	sql="select contract.nameKey,contract.status,user.nickname as teacher,contractPaid,contract.id,chineseName,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices', country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore\
-	from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType left join user on contract.teacher=user.id\
+	from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType left join user on contract.teacher=user.id left join servicedetail on servicedetail.contract=contract.id left join userinservice u on u.servicedetail=servicedetail.id\
 	where contract.contractSigned is not null "+where+" group by contract.id;";
 	return sql;
 }
 function whoCanView(user){
-	return "";
+	var id=user.id;
+	return "and "+id+" in (contract.sales1,contract.sales2, contract.teacher, servicedetail.user, u.user)";
 }
 function getOne(req,res){
 	var id=req.params.id;
-		if(!id) return Utilfunctions.errorHandler({error:"No id"},res,"Get short contract  failed");
-		var sql=createsql("and contract.id="+id);
-		return Utilfunctions.nativeQuery(sql).then(function(data){
-			if((data=data||[]).length<1) return Promise.reject({error:"not found"});
-			return res.json(data[0]);
-		}).catch(function(err){
-            Utilfunctions.errorHandler(err,res,"Find short contract failed id:"+req.params.id);
-		});
+	if(!id) return Utilfunctions.errorHandler({error:"No id"},res,"Get short contract  failed");
+	var sql=createsql("and contract.id="+id);
+	return Utilfunctions.nativeQuery(sql).then(function(data){
+		if((data=data||[]).length<1) return Promise.reject({error:"not found"});
+		return res.json(data[0]);
+	}).catch(function(err){
+        Utilfunctions.errorHandler(err,res,"Find short contract failed id:"+req.params.id);
+	});
 }
 module.exports = {
 	findOne:function(req,res){
@@ -51,11 +52,11 @@ module.exports = {
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			case 2:
-			sql=createsql(wherequery+" and (user.id="+id+" or u.id="+id+" or u2.id="+id+" or w.boss="+id+")");
+			sql=createsql(wherequery+whoCanView(req.session.user));
 			promise=Utilfunctions.nativeQuery(sql);
 			break;
 			default:
-			sql=createsql(wherequery+" and (user.id="+id+" or u.id="+id+" or u2.id="+id+" or w.boss="+id+")");
+			sql=createsql(wherequery+whoCanView(req.session.user));
 			promise=Utilfunctions.nativeQuery(sql);
 		}
 		promise.then(function(data){

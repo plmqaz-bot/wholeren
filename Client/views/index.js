@@ -48,6 +48,7 @@ module.exports={
         Notification:require('./notification.js'),
         Contract:require('./contract.js'),
         Service:require('./service.js'),
+        ServiceList:require('./servicelist.js'),
         Market:require('./market'),
         Setting:require('./settings'),
        //User:UserView,

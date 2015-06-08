@@ -24,6 +24,13 @@ adminNavbar = {
         path: '/service/',
         display:true
     },
+    servicelist: {
+        name: 'ServiceList',
+        navClass: 'contract',
+        key: 'admin.navbar.contract',
+        path: '/servicelist/',
+        display:true
+    },
     /*salescomission: {
         name: 'Comission',
         navClass: 'contract',
@@ -130,6 +137,10 @@ module.exports={
     'service':function(req,res){
         handleRank(req);
         generateView(req,res,'contract','service');
+    },
+    'servicelist':function(req,res){
+        handleRank(req);
+        generateView(req,res,'contract','servicelist');
     },
     'market':function(req,res){
         handleRank(req);

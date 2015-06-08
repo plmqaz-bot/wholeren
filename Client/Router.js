@@ -17,6 +17,7 @@ module.exports=Backbone.Router.extend({
         toReturn[this.root+'market(/:pane)/']='market',
         toReturn[this.root+'contract/(:option)']='contract',
         toReturn[this.root+'service/(:option)']='service',
+        toReturn[this.root+'servicelist/(:option)']='servicelist',
         toReturn[this.root+'comission(/:pane)/']='comission',
         toReturn[this.root+'accounting/']='accounting',
         toReturn[this.root+'user/(:option)']='user',
@@ -76,6 +77,11 @@ module.exports=Backbone.Router.extend({
     service:function(option){
         if(!Wholeren.currentView){
             Wholeren.currentView=new  Wholeren.Views.Service({el:'.content-view-container',id:option});
+        }
+    },
+    servicelist:function(option){
+        if(!Wholeren.currentView){
+            Wholeren.currentView=new  Wholeren.Views.ServiceList({el:'.content-view-container',id:option});
         }
     },
     accounting:function(option){

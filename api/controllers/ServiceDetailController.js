@@ -5,36 +5,44 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
  var Promise=require('bluebird');
-function createsql(service,user,option){
-	var sql="select s.id,s.service,s.user,s.servRole,s.servLevel, y.serviceProgress as 'progress' ,servicetype.serviceType as 'typetext',z.serviceType as 'originalType',s.serviceType \
-		from  serviceprogressupdate y \
-		inner join (select u.serviceDetail,max(u.id) as 'mostrecent' from serviceprogressupdate u group by u.serviceDetail) as x on y.id=x.mostrecent \
-		right join servicedetail s on s.id=y.serviceDetail  \
-		left join service z on s.service=z.id \
-		left join servicetype on z.serviceType=servicetype.id where z.serviceType is not null "
-	if(service){
-		sql+="and s.service="+service;
-	}
-	if(user){
-		sql+=" and s.user="+user;
-	}
-	if(option){
-		sql+=" and "+option;
-	}
+function createsql(where,user){
+	var uid=user.id;
+	where=where+" and "+uid+" in (user.id,u2.id) ";
+	var sql="select distinct servicedetail.* from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+";"
 	return sql;
 }
 module.exports = {
 	find:function(req,res){
 		var cont=req.param('contract');
-		if(!cont)  return res.json(404,{error:"no contract id"});
-		
+		if(!cont) {
+			var where=req.param('where')||"{}";
+			where=JSON.parse(where);
+			// First find all signed contracts
+			var promise;
+			var wherequery="";
+			if(where.indate){
+				if(where.indate['>']){
+					wherequery+="and (indate>'"+where.indate['>']+"') ";
+				}
+				if(where.contractSigned['<']){
+					wherequery+="and (indate<'"+where.indate['<']+"') ";
+				}
+			}
+ 			Utilfunctions.nativeQuery(createsql(wherequery,req.session.user)).then(function(data){
+ 				return res.json(data);
+ 			}).catch(function(err){
+	            Utilfunctions.errorHandler(err,res,"Find ServiceDetail failed");
+			});
+		}else{
+			ServiceDetail.find({contract:cont}).then(function(data){
+				return res.json(data);
+			}).catch(function(err){
+	            Utilfunctions.errorHandler(err,res,"Find ServiceDetail failed");
+			});
+		} 	
 		//var sql=createsql(cont,null);
 		//Utilfunctions.nativeQuery(sql)
-		ServiceDetail.find({contract:cont}).then(function(data){
-			return res.json(data);
-		}).catch(function(err){
-            Utilfunctions.errorHandler(err,res,"Find ServiceDetail failed");
-		});
+		
 	},
 	update:function(req,res){
 		var id=req.params.id;

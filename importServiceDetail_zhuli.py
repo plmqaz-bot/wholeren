@@ -7,9 +7,9 @@ import re;
 import time;
 
 add_servicedetail=("INSERT INTO servicedetail (user,realServiceType,serviceProgress,indate,link,contractKey,cname,namekey) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
+add_assistant=("INSERT INTO userinservice (user,serviceDetail) VALUES (%s,%s)");
 
-
-cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='han.bio.cmu.edu',database='wholeren',charset='utf8');
+cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='localhost',database='wholeren',charset='utf8');
 cursor=cnx.cursor();
 
 SERVICEPROGRESS={};
@@ -142,7 +142,8 @@ with open('S61_zhuli_uni.csv','rb') as csvfile:
 		 	# add zhuli
 		 	print 'ServiceDetail not found, inserting'+str(count)+cName;
 		 	UNKNOWNCNAME+=[cName];
-
+		else:
+			cursor.execute(add_assistant,(uid,sid));
 		
 		 	
 			#cursor.execute(add_servicedetail,(uid,serviceType,serviceProgress,indate,link,contractKey,cName,curkey));

@@ -6,12 +6,13 @@ from collections import OrderedDict;
 import re;
 import time;
 
-add_application=("INSERT INTO application (collageName,appliedMajor,service,succeed,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s,%s)")
+add_application=("INSERT INTO application (collageName,appliedMajor,succeed,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s)")
+add_application2=("INSERT INTO application (collageName,appliedMajor,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s)")
 
 add_servicedetail=("INSERT INTO servicedetail (user,realServiceType,serviceProgress,indate,link,contractKey,cname,namekey) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
 
 
-cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='han.bio.cmu.edu',database='wholeren',charset='utf8');
+cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='localhost',database='wholeren',charset='utf8');
 cursor=cnx.cursor();
 
 
@@ -52,11 +53,11 @@ def convertDate(d):
 				dt=time.strptime(d,'%Y/%m');
 				return time.strftime('%Y-%m-%d',dt);
 			except ValueError:
-				return '';
+				return '1/1/2020';
 #print unicode(SERVICETYPE).encode('utf8');
 key='';
 teacher=''
-with open('S61_app.csv','rb') as csvfile:
+with open('S61_app_final.csv','rb') as csvfile:
 	filereader=csv.reader(csvfile,delimiter=',',quotechar='\"');
 	for line in filereader:
 		contractKey=line[0].strip();
@@ -81,6 +82,12 @@ with open('S61_app.csv','rb') as csvfile:
 			errorfile3.writerow(line);
 			continue;
 		result=line[7].strip();
+		if "1.31" in result:
+			result=1;
+		elif "1.41" in result:
+			result=0;
+		else:
+			result="null"
 		studentCondition=line[8].strip();
 		query=("select id,count(*) from servicedetail where ( cName='"+cName+"' and realServiceType='"+str(serviceType)+"');");
 		cursor.execute(query);
@@ -88,15 +95,62 @@ with open('S61_app.csv','rb') as csvfile:
 		sid=serv[0];
 	 	count=serv[1]
 		if count !=1:
+			# check if there is an email
+			if len(line)>10:
+				query="select id from user where email='"+line[10].strip()+"';";
+				cursor.execute(query);
+				handler=cursor.fetchone();
+				if handler is None:
+					print 'user not found, and service too many';
+					errorfile.writerow(line);
+					continue;
+				else:
+					query=("select id,count(*) from servicedetail where ( cName='"+cName+"' and realServiceType='"+str(serviceType)+"' and user="+str(handler[0])+");");
+					cursor.execute(query);
+					secondchance=cursor.fetchone();
+					if secondchance[1]!=1:
+						if len(line)>11:
+							#3rd chance
+							query=("select id,count(*) from servicedetail where ( cName='"+cName+"' and realServiceType='"+str(serviceType)+"' and user="+str(handler[0])+") and indate='"+convertDate(line[11].strip())+"'");
+							cursor.execute(query);
+							thirdchance=cursor.fetchone();
+							if thirdchance[1]!=1:
+								print 'third chance does not work'+query;
+							else:
+								print 'processed'
+								if result=="null":
+									cursor.execute(add_application2,(univ,major,studentCondition,semester));
+								else:
+									cursor.execute(add_application,(univ,major,result,studentCondition,semester));
+								processed.writerow(line);
+						else:
+							print 'still not exactly 1';
+							errorfile.writerow(line);
+							continue;
+					else:
+						# Found it, add application to this
+						print "processed";
+						if result=="null":
+							cursor.execute(add_application2,(univ,major,studentCondition,semester));
+						else:
+							cursor.execute(add_application,(univ,major,result,studentCondition,semester));
+						processed.writerow(line);
+			else:
+				print 'ServiceDetail not found or too many'+str(count)+" " +str(serviceType)+" "+contractKey#+cName;
+				errorfile.writerow(line);
+				continue;
+		else:
 		 	# add application
-		 	print 'ServiceDetail not found or too many'+str(count)+" " +str(serviceType)+" "+contractKey#+cName;
-			errorfile.writerow(line);
-			continue;
+		 	if result=="null":
+				cursor.execute(add_application2,(univ,major,studentCondition,semester));
+			else:
+				cursor.execute(add_application,(univ,major,result,studentCondition,semester));
 			#cursor.execute(add_servicedetail,(uid,serviceType,serviceProgress,indate,link,contractKey,cName,curkey));
 			#sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
 		#addUserToService(sid,curteacher,line,0);
-		processed.writerow(line);
+			print 'processed';
+			processed.writerow(line);
 f=open("UNKNOWNTYPE.csv","w");
 f.write((",".join(OrderedDict.fromkeys(UNKNOWNTYPE).keys())));
 f.close();
