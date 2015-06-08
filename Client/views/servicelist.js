@@ -363,7 +363,7 @@ var ApplicationPopup=ServicePopup.extend({
                 }
             });
             var columns=[
-                {name:'user',label:'文书负责人',cell:userselect},
+                //{name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
                 {name:'appliedMajor',label:'申请专业',cell:'string'},
                 {name:'succeed',label:'录取',cell:'boolean'},

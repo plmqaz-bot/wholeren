@@ -6,8 +6,8 @@ from collections import OrderedDict;
 import re;
 import time;
 
-add_application=("INSERT INTO application (collageName,appliedMajor,succeed,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s)")
-add_application2=("INSERT INTO application (collageName,appliedMajor,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s)")
+add_application=("INSERT INTO application (service,collageName,appliedMajor,succeed,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s,%s)")
+add_application2=("INSERT INTO application (service,collageName,appliedMajor,studentCondition,appliedSemester) VALUES (%s,%s,%s,%s,%s)")
 
 add_servicedetail=("INSERT INTO servicedetail (user,realServiceType,serviceProgress,indate,link,contractKey,cname,namekey) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)")
 
@@ -117,11 +117,12 @@ with open('S61_app_final.csv','rb') as csvfile:
 							if thirdchance[1]!=1:
 								print 'third chance does not work'+query;
 							else:
+								sid=thirdchance[0];
 								print 'processed'
 								if result=="null":
-									cursor.execute(add_application2,(univ,major,studentCondition,semester));
+									cursor.execute(add_application2,(sid,univ,major,studentCondition,semester));
 								else:
-									cursor.execute(add_application,(univ,major,result,studentCondition,semester));
+									cursor.execute(add_application,(sid,univ,major,result,studentCondition,semester));
 								processed.writerow(line);
 						else:
 							print 'still not exactly 1';
@@ -130,10 +131,11 @@ with open('S61_app_final.csv','rb') as csvfile:
 					else:
 						# Found it, add application to this
 						print "processed";
+						sid=secondchance[0];
 						if result=="null":
-							cursor.execute(add_application2,(univ,major,studentCondition,semester));
+							cursor.execute(add_application2,(sid,univ,major,studentCondition,semester));
 						else:
-							cursor.execute(add_application,(univ,major,result,studentCondition,semester));
+							cursor.execute(add_application,(sid,univ,major,result,studentCondition,semester));
 						processed.writerow(line);
 			else:
 				print 'ServiceDetail not found or too many'+str(count)+" " +str(serviceType)+" "+contractKey#+cName;
@@ -142,9 +144,9 @@ with open('S61_app_final.csv','rb') as csvfile:
 		else:
 		 	# add application
 		 	if result=="null":
-				cursor.execute(add_application2,(univ,major,studentCondition,semester));
+				cursor.execute(add_application2,(sid,univ,major,studentCondition,semester));
 			else:
-				cursor.execute(add_application,(univ,major,result,studentCondition,semester));
+				cursor.execute(add_application,(sid,univ,major,result,studentCondition,semester));
 			#cursor.execute(add_servicedetail,(uid,serviceType,serviceProgress,indate,link,contractKey,cName,curkey));
 			#sid=cursor.lastrowid
 		# Got service, now see if the teacher name is found
