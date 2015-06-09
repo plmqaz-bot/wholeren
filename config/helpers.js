@@ -1,8 +1,9 @@
 //var handlebars=require('sails/node_modules/express-handlebars/node_modules/handlebars/dist/cjs/handlebars');
 var handlebars=require('handlebars');
 module.exports={
-    'asset':function (link,options) {
-        var output = '/' + link;
+    'asset':function (link,options)
+     {
+        var output = '/' + link+"?"+Math.random();
 //        var handlebars=sails.config.handlebars;
         var toreturn =new handlebars.SafeString(output);
         return toreturn;

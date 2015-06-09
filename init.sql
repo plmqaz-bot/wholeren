@@ -588,7 +588,7 @@ insert into serviceprogress values('-1.1签订选校单',NULL,NOW(),NOW());
 insert into serviceprogress values('-1.2全部提交',NULL,NOW(),NOW());
 insert into serviceprogress values('2.0该进程完成',NULL,NOW(),NOW());
 insert into serviceprogress values('6.0自我放弃',NULL,NOW(),NOW());
-insert into serviceprogress values('4.0勿忘我',NULL,NOW(),NOW());
+insert into serviceprogress values('0.1勿忘我',NULL,NOW(),NOW());
 insert into serviceprogress values('**找到我**',NULL,NOW(),NOW());
 insert into serviceprogress values('SOS紧急处理中',NULL,NOW(),NOW());
 insert into serviceprogress values('3.0交接出去了',NULL,NOW(),NOW());
