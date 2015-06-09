@@ -18,6 +18,7 @@ var ServiceView=main.baseDataView.extend({
     collectionName:'ServiceList',
     title:'服务列表',
     paginator:true,
+    minScreenSize:0,
     filterFields:['cName','realServiceType','serviceProgress','user','link'],
     renderOptions:{date:true},
     constructColumns:function(){
