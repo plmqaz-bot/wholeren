@@ -16,8 +16,8 @@ function createsql(where,user){
 			where ="and false";
 		}
 	}
-	
-	var sql="select distinct servicedetail.* from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+";"
+	var sql="select servicedetail.* from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+") as viewable on viewable.cName=servicedetail.cName;"
+	//var sql="select distinct servicedetail.* from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+";"
 	return sql;
 }
 module.exports = {
