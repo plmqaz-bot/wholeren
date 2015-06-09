@@ -141,6 +141,11 @@ module.exports={
 			}else{
 				this.collection = new Obiwang.Collections[this.collectionName]();
 			}
+			this.constructColumns().then(function(data){
+				self.constructTable();
+			}).catch(function(err){
+				util.handleRequestError(err);
+			});
 			
 	    },
 	    afterRender:function(model){
@@ -149,11 +154,7 @@ module.exports={
             var container=this.$el.find('.bbm-modal__section');
         	container.append('<button class="button-add">Add New</button>');
 	        var self=this;
-	        this.constructColumns().then(function(data){
-				self.constructTable();
-			}).catch(function(err){
-				util.handleRequestError(err);
-			});
+	        
 			return this;
 	    },
 	    constructColumns:function(){
@@ -163,9 +164,10 @@ module.exports={
 			this.grid=new Backgrid.Grid({columns:this.columns,collection:this.collection});
 	        var container=this.$el.find('.bbm-modal__section');
 	        container.append(this.grid.render().el);
-	        this.collection.fetch({reset:true}).then(function(data){
-	        	//console.log(data);
-	        });
+	        this.collection.fetch({reset:true})
+	        //.then(function(data){
+	        // 	console.log(data);
+	        // });
 	    },
 	    submit: function () {
 	        // get text and submit, and also refresh the collection. 

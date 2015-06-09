@@ -33,34 +33,6 @@ var ServiceView=main.baseDataView.extend({
                 $('.app').html(teacherview.el);
             },
         });
-        var appPopup=BackgridCells.Cell.extend({
-            cellText:'Applications',
-            render: function () {
-                if(this.model.get('addApplication')!=0)
-                    this.$el.html('<a>'+this.cellText+'</a>');
-                else
-                    this.$el.html('');        
-                this.delegateEvents();
-                return this;
-              },
-            action:function(e){
-                e.preventDefault();
-                var id=this.model.get('id');
-                var appview= new ApplicationPopup({id:id});
-                appview.render();
-                $('.app').html(appview.el);  
-            }
-        });
-        var comment=BackgridCells.Cell.extend({
-            cellText:'Comments',
-            action:function(e){
-                var item=$(e.currentTarget);
-                var id = this.model.get('id');
-                var type='serv';
-                var m=new CommentModalView({sid:id});
-                $('.app').html(m.renderAll().el);   
-            }
-        });
         var self=this;
         return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})}); // Only Backend Group
@@ -115,7 +87,7 @@ var ServiceView=main.baseDataView.extend({
                 action:function(e){
                     e.preventDefault();
                     var id=this.model.get('id');
-                    var userview= new MoreUserPopup({serviceDetail:id});
+                    var userview= new MoreUserPopup({serviceDetail:id,collectionParam:{serviceDetail:id}});
                     userview.render();
                     $('.app').append(userview.el);  
                 }
