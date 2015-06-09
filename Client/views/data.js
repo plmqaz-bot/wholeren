@@ -121,6 +121,9 @@ module.exports={
 	    template: JST['editbox'],
 	    submitEl: '.ok',
 	    cancelEl:'.cancel',
+	    events:{
+        'click .button-add':'addnew'
+    	},
 	    initialize: function (options){
 	        _.bindAll(this,  'render', 'afterRender');
 	        var self=this;
@@ -130,6 +133,7 @@ module.exports={
 	        });
 
 	        if(options.collectionName)this.collectionName=options.collectionName;
+	        if(options.collectionParam)this.collectionParam=options.collectionParam;
 	        if(this.collectionUrl){
 				this.collection = new Obiwang.Collections[this.collectionName]([],{url:this.collectionUrl});
 			}else if(this.collectionParam){
@@ -137,15 +141,19 @@ module.exports={
 			}else{
 				this.collection = new Obiwang.Collections[this.collectionName]();
 			}
-			this.constructColumns().then(function(data){
-				self.constructTable();
-			}).catch(function(err){
-				util.handleRequestError(err);
-			});
+			
 	    },
 	    afterRender:function(model){
 	    	//var container=this.$el.find('.bbm-modal__section');
 	        //container.append('<button class="button-add-invoice">Add New</button>');
+            var container=this.$el.find('.bbm-modal__section');
+        	container.append('<button class="button-add">Add New</button>');
+	        var self=this;
+	        this.constructColumns().then(function(data){
+				self.constructTable();
+			}).catch(function(err){
+				util.handleRequestError(err);
+			});
 			return this;
 	    },
 	    constructColumns:function(){
@@ -156,7 +164,7 @@ module.exports={
 	        var container=this.$el.find('.bbm-modal__section');
 	        container.append(this.grid.render().el);
 	        this.collection.fetch({reset:true}).then(function(data){
-	        	console.log(data);
+	        	//console.log(data);
 	        });
 	    },
 	    submit: function () {

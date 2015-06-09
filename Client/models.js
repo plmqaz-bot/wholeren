@@ -743,6 +743,16 @@ Collections={
             this.cid=cid;
         }
     }),
+    UserInService:Backbone.Collection.extend({
+        model:Models.syncModel,
+        _url:'/UserInService/',
+        url:function(){
+            return this._url+'?serviceDetail='+this.serviceDetail;
+        },
+        initialize:function(models,options){
+            this.serviceDetail=(options||{}).serviceDetail;
+        }
+    }),
     General:Backbone.PageableCollection.extend({
         model:Models.syncModel,
         url: function(){

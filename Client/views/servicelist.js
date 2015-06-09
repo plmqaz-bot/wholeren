@@ -105,12 +105,29 @@ var ServiceView=main.baseDataView.extend({
                         $('.app').append(m.renderAll().el);   
                     }
                 });
+            var userinservice=BackgridCells.Cell.extend({
+                cellText:'Others',
+                render:function(){
+                    this.$el.html('<a>'+this.cellText+'</a>');
+                    this.delegateEvents();
+                    return this;
+                },
+                action:function(e){
+                    e.preventDefault();
+                    var id=this.model.get('id');
+                    var userview= new MoreUserPopup({serviceDetail:id});
+                    userview.render();
+                    $('.app').append(userview.el);  
+                }
+            })
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+                {name:'contractKey',label:'ID',cell:'string'},
                 {name:'realServiceType',label:'各进程类型',editable:false,cell:typeselect},
                 {name:'serviceProgress',label:'该进程状态',cell:progressselect},
                 {name:'user',label:'该进程负责人',editable:false,cell:userselect},
                 {name:'link',label:'学生档案 Link',cell:'uri'},
+                {name:'',label:'OtherUsers',cell:userinservice},
                 {name:'',label:'该进程备注',cell:comment},
                 {name:'',label:'Application',cell:appPopup},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
@@ -124,6 +141,44 @@ var ServiceView=main.baseDataView.extend({
         });
     }
 });
+
+var MoreUserPopup=main.baseModalDataView.extend({
+    collectionName:'UserInService',
+    initialize:function(options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.serviceDetail=options.serviceDetail;
+    },
+    constructColumns:function(){
+        var self=this;
+        return util.ajaxGET('/User/').then(function(users){
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            self.columns=[
+                {name:'user',label:'负责人名字',cell:userselect},
+                {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
+            ];
+            return Promise.resolve({});
+        })        
+    },
+    addnew:function(e){
+        var toAdd=new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
+        //toAdd.set('service',this.serviceID,{save:false});
+        //toAdd.set('originalType',this.type,{save:false});
+        var self=this;
+        toAdd.save(null,{
+            save:false,
+            success:function(model){
+                self.collection.add(model);
+            },
+            error:function(response,model){
+                util.handleRequestError(response);
+            }
+        })
+  
+    },
+})
+
+
+
 var ShortContractView=main.baseDataView.extend({
     collectionName:'ShortContract',
     title:'服务列表',
