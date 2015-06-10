@@ -144,8 +144,7 @@ var MoreUserPopup=main.baseModalDataView.extend({
             error:function(response,model){
                 util.handleRequestError(response);
             }
-        })
-  
+        });  
     },
 })
 
@@ -183,16 +182,15 @@ var ShortContractView=main.baseDataView.extend({
             var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
             var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
             var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
-             self.columns=[
+            self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
-            {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
+            {name:'nameKey',label:'合同ID',cell:'string'},
             {name:'teacher',label:'后期组长',editable: false,cell:'string'},
             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
             {name:'status',label:'该合同进度',editable:false,cell:status},
             {name:'boughtservices',label:'该合同购买服务',editable:false,cell:'string'},
             {name:'',label:'各进程细节',cell:popup},                    
             {name:'',label:'学生联系方式',cell:'string'},                    
-            //{name:'',label:'第三方费用',cell:'string'},                    
             {name:'country',label:'学生所在地',cell:country},
             {name:'degree',label:'原学校类型',cell:degree},
             {name:'previousSchool',label:'原学校',cell:'string'},
@@ -202,14 +200,13 @@ var ShortContractView=main.baseDataView.extend({
             {name:'gre',label:'GRE',cell:'number'},
             {name:'sat',label:'SAT',cell:'number'},
             {name:'otherScore',label:'其他分数',cell:'string'},
-            //{name:'',label:'Show Applications',cell:appPopup},
             {name:'',label:'Comment',cell:comment}
             ];
             
-            // self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
-            // {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
-            // {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
-            // ];
+            self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
+            {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
+            {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
+            ];
             return Promise.resolve({});
         });
     }

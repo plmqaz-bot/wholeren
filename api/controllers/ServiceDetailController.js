@@ -63,7 +63,7 @@ module.exports = {
 		// tocreate['servRole']=attribs.servRole;
 		// tocreate['servLevel']=attribs.servLevel;
 		progress=attribs['progress'];
-		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link']);
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey']);
 		ServiceDetail.update({id:id},tocreate).then(function(data){
 			data=data[0]||data;
 			if(progress&&data.id){
