@@ -144,8 +144,7 @@ var MoreUserPopup=main.baseModalDataView.extend({
             error:function(response,model){
                 util.handleRequestError(response);
             }
-        })
-  
+        });  
     },
 })
 
@@ -286,6 +285,7 @@ var MoreUserPopup=main.baseModalDataView.extend({
 //         return new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
 //     }
 // });
+
 
 // var ServicePopup=Backbone.Modal.extend({
 //     prefix:"bbm",
