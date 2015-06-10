@@ -18,7 +18,8 @@ module.exports = {
   	link:{type:'string'},
   	contractKey:{type:'string'},
   	cName:{type:'string'},
-  	namekey:{type:'string'}
+  	namekey:{type:'string'},
+    deleted:{type:'boolean',defaultsTo:false}
   }
 };
 

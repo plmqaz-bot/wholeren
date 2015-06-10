@@ -16,7 +16,7 @@ function createsql(where,user){
 			where ="and false";
 		}
 	}
-	var sql="select servicedetail.* from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract;"
+	var sql="select servicedetail.* from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract where servicedetail.deleted=0;"
 	//var sql="select distinct servicedetail.* from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+";"
 	return sql;
 }
@@ -43,7 +43,7 @@ module.exports = {
 	            Utilfunctions.errorHandler(err,res,"Find ServiceDetail failed");
 			});
 		}else{
-			ServiceDetail.find({contract:cont}).then(function(data){
+			ServiceDetail.find({contract:cont,deleted:false}).then(function(data){
 				return res.json(data);
 			}).catch(function(err){
 	            Utilfunctions.errorHandler(err,res,"Find ServiceDetail failed");
@@ -127,10 +127,22 @@ module.exports = {
 		console.log("destroy");
 		var id=req.params.id;
 		if(!id) return res.json(404,{error:"no id"});
-		ServiceDetail.destroy({id:id}).then(function(data){
-			return res.json({});
+		ServiceDetail.findOne({id:id}).then(function(data){
+			if(data.id){
+				console.log(data.deleted);
+				if(data.deleted==true){
+					console.log("it is true, change it to false");
+					return ServiceDetail.update({id:id},{deleted:false});
+				}else{
+					return ServiceDetail.update({id:id},{deleted:true});
+				}
+			}else{
+				return Promise.reject({error:"not found"});
+			}
+		}).then(function(data){
+			return res.json(data);
 		}).fail(function(err){
-            Utilfunctions.errorHandler(err,res,"Destroy Service failed");
+			Utilfunctions.errorHandler(err,res,"Delete failed");
 		});
 	}
 	

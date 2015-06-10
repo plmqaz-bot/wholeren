@@ -167,49 +167,130 @@ var ShortContractView=main.baseDataView.extend({
 });
 
 
-var ServicePopup=Backbone.Modal.extend({
-    prefix:"bbm",
-    template: JST['editbox'],
-    submitEl: '.ok',
-    cancelEl:'.cancel',
-    events:{
-        'click .button-add':'addnew'
-    },
-    initialize: function (options){
-        _.bindAll(this,  'render', 'afterRender');
-        this.cache=[];
-        var self=this;
-        this.render=_.wrap(this.render,function(render){
-            render();
-            self.afterRender();
-        });
+// var ServicePopup=Backbone.Modal.extend({
+//     prefix:"bbm",
+//     template: JST['editbox'],
+//     submitEl: '.ok',
+//     cancelEl:'.cancel',
+//     events:{
+//         'click .button-add':'addnew'
+//     },
+//     initialize: function (options){
+//         _.bindAll(this,  'render', 'afterRender');
+//         this.cache=[];
+//         var self=this;
+//         this.render=_.wrap(this.render,function(render){
+//             render();
+//             self.afterRender();
+//         });
+//         this.shortContract=options.model;
+//         this.contractId=parseInt(this.shortContract.get('id'));
+//         this.collection=new Obiwang.Collections.ServiceDetail();
+//         this.collection.setCID(this.contractId);
+//     },     
+//     addnew:function(e){
+//         var toAdd=new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
+//         //toAdd.set('service',this.serviceID,{save:false});
+//         //toAdd.set('originalType',this.type,{save:false});
+//         var self=this;
+//         toAdd.save(null,{
+//             save:false,
+//             success:function(model){
+//                 self.collection.add(model);
+//             },
+//             error:function(response,model){
+//                 util.handleRequestError(response);
+//             }
+//         })
+  
+//     },
+//     afterRender:function(model){
+//         var container=this.$el.find('.bbm-modal__section');
+//         container.append('<button class="button-add">Add New</button>');
+        
+//         var self=this;
+//         Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
+//             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+//             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
+//             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+//             // var typeselect=userselect.extend({
+//             //     optionValues:function(){
+//             //         var oritype=this.model.get('originalType');
+//             //         var shrunk=_.where(stype,{groupServiceType:oritype});
+//             //         var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
+//             //         if((toadd||[]).length<1){
+//             //             toadd.push([this.model.get('typetext'),this.model.get('originalType')]);
+//             //         }
+//             //         return [{name:'ServiceType',values:toadd}];
+//             //     }
+//             // });
+//             var appPopup=BackgridCells.Cell.extend({
+//                 cellText:'Applications',
+//                 render: function () {
+//                     if(this.model.get('addApplication')!=0)
+//                         this.$el.html('<a>'+this.cellText+'</a>');
+//                     else
+//                         this.$el.html('');        
+//                     this.delegateEvents();
+//                     return this;
+//                   },
+//                 action:function(e){
+//                     e.preventDefault();
+//                     var id=this.model.get('id');
+//                     var appview= new ApplicationPopup({id:id});
+//                     appview.render();
+//                     $('.app').append(appview.el);  
+//                 }
+//             });
+//             var comment=BackgridCells.Cell.extend({
+//                     cellText:'Comments',
+//                     action:function(e){
+//                         var item=$(e.currentTarget);
+//                         var id = this.model.get('id');
+//                         var type='serv';
+//                         var m=new CommentModalView({sid:id});
+//                         $('.app').append(m.renderAll().el);   
+//                     }
+//                 });
+//             var columns=[
+//                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+//                 {name:'realServiceType',label:'各进程类型',cell:typeselect},
+//                 {name:'ServiceProgress',label:'该进程状态',cell:progressselect},
+//                 {name:'user',label:'该进程负责人',cell:userselect},
+//                 {name:'link',label:'学生档案 Link',cell:'uri'},
+//                 {name:'',label:'该进程备注',cell:comment},
+//                 {name:'',label:'Application',cell:appPopup},
+//                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
+//                 ];
+//             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+//                 container.append(grid.render().el);
+//                 self.collection.fetch({reset:true});
+//             }).error(function(err){
+//                 console.log(err);
+//             });  
+//         return this;
+//     },
+//     submit: function () {
+//         // get text and submit, and also refresh the collection. 
+
+//     },
+//     checkKey:function(e){
+//         if (this.active) {
+//             if (e.keyCode==27) return this.triggerCancel();
+//         }
+//     }
+// });
+var ServicePopup=main.baseModalDataView.extend({
+    collectionName:'ServiceDetail',
+    initialize:function(options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.shortContract=options.model;
         this.contractId=parseInt(this.shortContract.get('id'));
-        this.collection=new Obiwang.Collections.ServiceDetail();
         this.collection.setCID(this.contractId);
-    },     
-    addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
-        //toAdd.set('service',this.serviceID,{save:false});
-        //toAdd.set('originalType',this.type,{save:false});
-        var self=this;
-        toAdd.save(null,{
-            save:false,
-            success:function(model){
-                self.collection.add(model);
-            },
-            error:function(response,model){
-                util.handleRequestError(response);
-            }
-        })
-  
     },
-    afterRender:function(model){
-        var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add">Add New</button>');
-        
+    constructColumns:function(){
         var self=this;
-        Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
+        return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
@@ -242,6 +323,21 @@ var ServicePopup=Backbone.Modal.extend({
                     $('.app').append(appview.el);  
                 }
             });
+            var userinservice=BackgridCells.Cell.extend({
+                cellText:'Others',
+                render:function(){
+                    this.$el.html('<a>'+this.cellText+'</a>');
+                    this.delegateEvents();
+                    return this;
+                },
+                action:function(e){
+                    e.preventDefault();
+                    var id=this.model.get('id');
+                    var userview= new MoreUserPopup({serviceDetail:id,collectionParam:{serviceDetail:id}});
+                    userview.render();
+                    $('.app').append(userview.el);  
+                }
+            })
             var comment=BackgridCells.Cell.extend({
                     cellText:'Comments',
                     action:function(e){
@@ -252,65 +348,72 @@ var ServicePopup=Backbone.Modal.extend({
                         $('.app').append(m.renderAll().el);   
                     }
                 });
-            var columns=[
+            self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
                 {name:'realServiceType',label:'各进程类型',cell:typeselect},
                 {name:'ServiceProgress',label:'该进程状态',cell:progressselect},
                 {name:'user',label:'该进程负责人',cell:userselect},
                 {name:'link',label:'学生档案 Link',cell:'uri'},
+                {name:'',label:'OtherUsers',cell:userinservice},
                 {name:'',label:'该进程备注',cell:comment},
                 {name:'',label:'Application',cell:appPopup},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
                 ];
-            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                container.append(grid.render().el);
-                self.collection.fetch({reset:true});
-            }).error(function(err){
-                console.log(err);
-            });  
-        return this;
+        });       
     },
-    submit: function () {
-        // get text and submit, and also refresh the collection. 
-
-    },
-    checkKey:function(e){
-        if (this.active) {
-            if (e.keyCode==27) return this.triggerCancel();
-        }
+    newModel:function(){
+        return new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
     }
 });
-var ApplicationPopup=ServicePopup.extend({
-    initialize: function (options){
-        _.bindAll(this,  'render', 'afterRender');
-        this.cache=[];
+
+var MoreUserPopup=main.baseModalDataView.extend({
+    collectionName:'UserInService',
+    initialize:function(options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.serviceDetail=options.serviceDetail;
+    },
+    constructColumns:function(){
         var self=this;
-        this.render=_.wrap(this.render,function(render){
-            render();
-            self.afterRender();
-        });
-        this.serviceID=parseInt(options.id);
-        this.collection=new Obiwang.Collections.Application();
-        this.collection.setSID(this.serviceID);
-    },     
+        return util.ajaxGET('/User/').then(function(users){
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            self.columns=[
+                {name:'user',label:'负责人名字',cell:userselect},
+                {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
+            ];
+            return Promise.resolve({});
+        })        
+    },
     addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/Application/'});
+        var toAdd=new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
+        //toAdd.set('service',this.serviceID,{save:false});
+        //toAdd.set('originalType',this.type,{save:false});
         var self=this;
         toAdd.save(null,{
-            success:function(d){
-                self.collection.add(toAdd);
+            save:false,
+            success:function(model){
+                self.collection.add(model);
             },
-            error:function(model,response){
-                util.handleRequestError(response);                       
+            error:function(response,model){
+                util.handleRequestError(response);
             }
-        });
+        })
+  
     },
-    afterRender:function(model){
-        var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add">Add New</button>');
-        
+})
+
+var ApplicationPopup=main.baseModalDataView.extend({
+    collectionName:'Application',
+    initialize: function (options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.serviceID=parseInt(options.id);
+        this.collection.setSID(this.serviceID);
+    },  
+    newModel:function(){
+        return new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/Application/'});
+    },
+    constructColumns:function(){
         var self=this;
-        util.ajaxGET('/User/').then(function(users){
+        return util.ajaxGET('/User/').then(function(users){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',
@@ -341,8 +444,8 @@ var ApplicationPopup=ServicePopup.extend({
                     }
                 }
             });
-            var columns=[
-                {name:'user',label:'文书负责人',cell:userselect},
+            self.columns=[
+                //{name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
                 {name:'appliedMajor',label:'申请专业',cell:'string'},
                 {name:'succeed',label:'录取',cell:'boolean'},
@@ -353,13 +456,7 @@ var ApplicationPopup=ServicePopup.extend({
                 //{name:'',label:'Update',cell:UpdateCell},
                 {name:'',label:'Delete',cell:DeleteCell}
                 ];
-            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                container.append(grid.render().el);
-                self.collection.fetch({reset:true});
-            }).error(function(err){
-                console.log(err);
-            });  
-        return this;
-    }, 
+        });         
+    },
 });
 module.exports=ShortContractView;

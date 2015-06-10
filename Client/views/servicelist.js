@@ -151,215 +151,268 @@ var MoreUserPopup=main.baseModalDataView.extend({
 
 
 
-var ShortContractView=main.baseDataView.extend({
-    collectionName:'ShortContract',
-    title:'服务列表',
-    paginator:true,
-    //filterFields:['chineseName','serviceProgress','type','degree','previousSchool','studentDestination','servRole'],
-    renderOptions:{date:true},
-    constructColumns:function(){
-        var popup=BackgridCells.Cell.extend({
-            cellText:'Details',
-            action:function(e){
-                e.preventDefault();
-                var teacherview= new ServicePopup({model:this.model});
-                teacherview.render();
-                $('.app').html(teacherview.el);
-            },
-        });
+// var ShortContractView=main.baseDataView.extend({
+//     collectionName:'ShortContract',
+//     title:'服务列表',
+//     paginator:true,
+//     //filterFields:['chineseName','serviceProgress','type','degree','previousSchool','studentDestination','servRole'],
+//     renderOptions:{date:true},
+//     constructColumns:function(){
+//         var popup=BackgridCells.Cell.extend({
+//             cellText:'Details',
+//             action:function(e){
+//                 e.preventDefault();
+//                 var teacherview= new ServicePopup({model:this.model});
+//                 teacherview.render();
+//                 $('.app').html(teacherview.el);
+//             },
+//         });
 
-        var comment=BackgridCells.Cell.extend({
-            cellText:'Comments',
-            action:function(e){
-                var item=$(e.currentTarget);
-                var id = this.model.get('id');
-                var type='serv';
-                var m=new CommentModalView({cid:id});
-                $('.app').html(m.renderAll().el);   
-            }
-        });
-        var self=this;
-        return util.ajaxGET('/contract/getAllOptions/').then(function(AllOptions){
-            var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
-            var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
-            var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
-             self.columns=[
-            {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
-            {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
-            {name:'teacher',label:'后期组长',editable: false,cell:'string'},
-            {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
-            {name:'status',label:'该合同进度',editable:false,cell:status},
-            {name:'boughtservices',label:'该合同购买服务',editable:false,cell:'string'},
-            {name:'',label:'各进程细节',cell:popup},                    
-            {name:'',label:'学生联系方式',cell:'string'},                    
-            //{name:'',label:'第三方费用',cell:'string'},                    
-            {name:'country',label:'学生所在地',cell:country},
-            {name:'degree',label:'原学校类型',cell:degree},
-            {name:'previousSchool',label:'原学校',cell:'string'},
-            {name:'major',label:'原专业',cell:'string'},
-            {name:'gpa',label:'GPA',cell:'number'},
-            {name:'toefl',label:'托福',cell:'number'},
-            {name:'gre',label:'GRE',cell:'number'},
-            {name:'sat',label:'SAT',cell:'number'},
-            {name:'otherScore',label:'其他分数',cell:'string'},
-            //{name:'',label:'Show Applications',cell:appPopup},
-            {name:'',label:'Comment',cell:comment}
-            ];
+//         var comment=BackgridCells.Cell.extend({
+//             cellText:'Comments',
+//             action:function(e){
+//                 var item=$(e.currentTarget);
+//                 var id = this.model.get('id');
+//                 var type='serv';
+//                 var m=new CommentModalView({cid:id});
+//                 $('.app').html(m.renderAll().el);   
+//             }
+//         });
+//         var self=this;
+//         return util.ajaxGET('/contract/getAllOptions/').then(function(AllOptions){
+//             var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
+//             var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
+//             var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
+//              self.columns=[
+//             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+//             {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
+//             {name:'teacher',label:'后期组长',editable: false,cell:'string'},
+//             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
+//             {name:'status',label:'该合同进度',editable:false,cell:status},
+//             {name:'boughtservices',label:'该合同购买服务',editable:false,cell:'string'},
+//             {name:'',label:'各进程细节',cell:popup},                    
+//             {name:'',label:'学生联系方式',cell:'string'},                    
+//             //{name:'',label:'第三方费用',cell:'string'},                    
+//             {name:'country',label:'学生所在地',cell:country},
+//             {name:'degree',label:'原学校类型',cell:degree},
+//             {name:'previousSchool',label:'原学校',cell:'string'},
+//             {name:'major',label:'原专业',cell:'string'},
+//             {name:'gpa',label:'GPA',cell:'number'},
+//             {name:'toefl',label:'托福',cell:'number'},
+//             {name:'gre',label:'GRE',cell:'number'},
+//             {name:'sat',label:'SAT',cell:'number'},
+//             {name:'otherScore',label:'其他分数',cell:'string'},
+//             //{name:'',label:'Show Applications',cell:appPopup},
+//             {name:'',label:'Comment',cell:comment}
+//             ];
             
-            // self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
-            // {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
-            // {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
-            // ];
-            return Promise.resolve({});
-        });
-    }
-});
+//             // self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
+//             // {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
+//             // {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
+//             // ];
+//             return Promise.resolve({});
+//         });
+//     }
+// });
+// var ServicePopup=main.baseModalDataView.extend({
+//     collectionName:'ServiceDetail',
+//     initialize:function(options){
+//         main.baseModalDataView.prototype.initialize.apply(this,arguments);
+//         this.shortContract=options.model;
+//         this.contractId=parseInt(this.shortContract.get('id'));
+//         this.collection.setCID(this.contractId);
+//     },
+//     constructColumns:function(){
+//         var self=this;
+//         return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
+//             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+//             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
+//             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+//             // var typeselect=userselect.extend({
+//             //     optionValues:function(){
+//             //         var oritype=this.model.get('originalType');
+//             //         var shrunk=_.where(stype,{groupServiceType:oritype});
+//             //         var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
+//             //         if((toadd||[]).length<1){
+//             //             toadd.push([this.model.get('typetext'),this.model.get('originalType')]);
+//             //         }
+//             //         return [{name:'ServiceType',values:toadd}];
+//             //     }
+//             // });
+//             var appPopup=BackgridCells.Cell.extend({
+//                 cellText:'Applications',
+//                 render: function () {
+//                     if(this.model.get('addApplication')!=0)
+//                         this.$el.html('<a>'+this.cellText+'</a>');
+//                     else
+//                         this.$el.html('');        
+//                     this.delegateEvents();
+//                     return this;
+//                   },
+//                 action:function(e){
+//                     e.preventDefault();
+//                     var id=this.model.get('id');
+//                     var appview= new ApplicationPopup({id:id});
+//                     appview.render();
+//                     $('.app').append(appview.el);  
+//                 }
+//             });
+//             var comment=BackgridCells.Cell.extend({
+//                     cellText:'Comments',
+//                     action:function(e){
+//                         var item=$(e.currentTarget);
+//                         var id = this.model.get('id');
+//                         var type='serv';
+//                         var m=new CommentModalView({sid:id});
+//                         $('.app').append(m.renderAll().el);   
+//                     }
+//                 });
+//             var columns=[
+//                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+//                 {name:'realServiceType',label:'各进程类型',cell:typeselect},
+//                 {name:'ServiceProgress',label:'该进程状态',cell:progressselect},
+//                 {name:'user',label:'该进程负责人',cell:userselect},
+//                 {name:'link',label:'学生档案 Link',cell:'uri'},
+//                 {name:'',label:'该进程备注',cell:comment},
+//                 {name:'',label:'Application',cell:appPopup},
+//                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
+//                 ];
+//             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+//                 container.append(grid.render().el);
+//                 self.collection.fetch({reset:true});
+//         });       
+//     },
+//     newModel:function(){
+//         return new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
+//     }
+// });
 
-
-var ServicePopup=Backbone.Modal.extend({
-    prefix:"bbm",
-    template: JST['editbox'],
-    submitEl: '.ok',
-    cancelEl:'.cancel',
-    events:{
-        'click .button-add':'addnew'
-    },
-    initialize: function (options){
-        _.bindAll(this,  'render', 'afterRender');
-        this.cache=[];
-        var self=this;
-        this.render=_.wrap(this.render,function(render){
-            render();
-            self.afterRender();
-        });
-        this.shortContract=options.model;
-        this.contractId=parseInt(this.shortContract.get('id'));
-        this.collection=new Obiwang.Collections.ServiceDetail();
-        this.collection.setCID(this.contractId);
-    },     
-    addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
-        //toAdd.set('service',this.serviceID,{save:false});
-        //toAdd.set('originalType',this.type,{save:false});
-        var self=this;
-        toAdd.save(null,{
-            save:false,
-            success:function(model){
-                self.collection.add(model);
-            },
-            error:function(response,model){
-                util.handleRequestError(response);
-            }
-        })
+// var ServicePopup=Backbone.Modal.extend({
+//     prefix:"bbm",
+//     template: JST['editbox'],
+//     submitEl: '.ok',
+//     cancelEl:'.cancel',
+//     events:{
+//         'click .button-add':'addnew'
+//     },
+//     initialize: function (options){
+//         _.bindAll(this,  'render', 'afterRender');
+//         this.cache=[];
+//         var self=this;
+//         this.render=_.wrap(this.render,function(render){
+//             render();
+//             self.afterRender();
+//         });
+//         this.shortContract=options.model;
+//         this.contractId=parseInt(this.shortContract.get('id'));
+//         this.collection=new Obiwang.Collections.ServiceDetail();
+//         this.collection.setCID(this.contractId);
+//     },     
+//     addnew:function(e){
+//         var toAdd=new Obiwang.Models.syncModel({contract:this.contractId,cName:this.shortContract.get('chineseName')},{_url:'/ServiceDetail/'});
+//         //toAdd.set('service',this.serviceID,{save:false});
+//         //toAdd.set('originalType',this.type,{save:false});
+//         var self=this;
+//         toAdd.save(null,{
+//             save:false,
+//             success:function(model){
+//                 self.collection.add(model);
+//             },
+//             error:function(response,model){
+//                 util.handleRequestError(response);
+//             }
+//         })
   
-    },
-    afterRender:function(model){
-        var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add">Add New</button>');
+//     },
+//     afterRender:function(model){
+//         var container=this.$el.find('.bbm-modal__section');
+//         container.append('<button class="button-add">Add New</button>');
         
-        var self=this;
-        Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
-            var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
-            var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
-            // var typeselect=userselect.extend({
-            //     optionValues:function(){
-            //         var oritype=this.model.get('originalType');
-            //         var shrunk=_.where(stype,{groupServiceType:oritype});
-            //         var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
-            //         if((toadd||[]).length<1){
-            //             toadd.push([this.model.get('typetext'),this.model.get('originalType')]);
-            //         }
-            //         return [{name:'ServiceType',values:toadd}];
-            //     }
-            // });
-            var appPopup=BackgridCells.Cell.extend({
-                cellText:'Applications',
-                render: function () {
-                    if(this.model.get('addApplication')!=0)
-                        this.$el.html('<a>'+this.cellText+'</a>');
-                    else
-                        this.$el.html('');        
-                    this.delegateEvents();
-                    return this;
-                  },
-                action:function(e){
-                    e.preventDefault();
-                    var id=this.model.get('id');
-                    var appview= new ApplicationPopup({id:id});
-                    appview.render();
-                    $('.app').append(appview.el);  
-                }
-            });
-            var comment=BackgridCells.Cell.extend({
-                    cellText:'Comments',
-                    action:function(e){
-                        var item=$(e.currentTarget);
-                        var id = this.model.get('id');
-                        var type='serv';
-                        var m=new CommentModalView({sid:id});
-                        $('.app').append(m.renderAll().el);   
-                    }
-                });
-            var columns=[
-                {name:'cName',label:'用户名字',editable:false,cell:'string'},
-                {name:'realServiceType',label:'各进程类型',cell:typeselect},
-                {name:'ServiceProgress',label:'该进程状态',cell:progressselect},
-                {name:'user',label:'该进程负责人',cell:userselect},
-                {name:'link',label:'学生档案 Link',cell:'uri'},
-                {name:'',label:'该进程备注',cell:comment},
-                {name:'',label:'Application',cell:appPopup},
-                {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
-                ];
-            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                container.append(grid.render().el);
-                self.collection.fetch({reset:true});
-            }).error(function(err){
-                console.log(err);
-            });  
-        return this;
-    },
-    submit: function () {
-        // get text and submit, and also refresh the collection. 
+//         var self=this;
+//         Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
+//             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+//             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
+//             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+//             // var typeselect=userselect.extend({
+//             //     optionValues:function(){
+//             //         var oritype=this.model.get('originalType');
+//             //         var shrunk=_.where(stype,{groupServiceType:oritype});
+//             //         var toadd=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
+//             //         if((toadd||[]).length<1){
+//             //             toadd.push([this.model.get('typetext'),this.model.get('originalType')]);
+//             //         }
+//             //         return [{name:'ServiceType',values:toadd}];
+//             //     }
+//             // });
+//             var appPopup=BackgridCells.Cell.extend({
+//                 cellText:'Applications',
+//                 render: function () {
+//                     if(this.model.get('addApplication')!=0)
+//                         this.$el.html('<a>'+this.cellText+'</a>');
+//                     else
+//                         this.$el.html('');        
+//                     this.delegateEvents();
+//                     return this;
+//                   },
+//                 action:function(e){
+//                     e.preventDefault();
+//                     var id=this.model.get('id');
+//                     var appview= new ApplicationPopup({id:id});
+//                     appview.render();
+//                     $('.app').append(appview.el);  
+//                 }
+//             });
+//             var comment=BackgridCells.Cell.extend({
+//                     cellText:'Comments',
+//                     action:function(e){
+//                         var item=$(e.currentTarget);
+//                         var id = this.model.get('id');
+//                         var type='serv';
+//                         var m=new CommentModalView({sid:id});
+//                         $('.app').append(m.renderAll().el);   
+//                     }
+//                 });
+//             var columns=[
+//                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+//                 {name:'realServiceType',label:'各进程类型',cell:typeselect},
+//                 {name:'ServiceProgress',label:'该进程状态',cell:progressselect},
+//                 {name:'user',label:'该进程负责人',cell:userselect},
+//                 {name:'link',label:'学生档案 Link',cell:'uri'},
+//                 {name:'',label:'该进程备注',cell:comment},
+//                 {name:'',label:'Application',cell:appPopup},
+//                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
+//                 ];
+//             var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
+//                 container.append(grid.render().el);
+//                 self.collection.fetch({reset:true});
+//             }).error(function(err){
+//                 console.log(err);
+//             });  
+//         return this;
+//     },
+//     submit: function () {
+//         // get text and submit, and also refresh the collection. 
 
-    },
-    checkKey:function(e){
-        if (this.active) {
-            if (e.keyCode==27) return this.triggerCancel();
-        }
-    }
-});
-var ApplicationPopup=ServicePopup.extend({
+//     },
+//     checkKey:function(e){
+//         if (this.active) {
+//             if (e.keyCode==27) return this.triggerCancel();
+//         }
+//     }
+// });
+var ApplicationPopup=main.baseModalDataView.extend({
+    collectionName:'Application',
     initialize: function (options){
-        _.bindAll(this,  'render', 'afterRender');
-        this.cache=[];
-        var self=this;
-        this.render=_.wrap(this.render,function(render){
-            render();
-            self.afterRender();
-        });
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.serviceID=parseInt(options.id);
-        this.collection=new Obiwang.Collections.Application();
         this.collection.setSID(this.serviceID);
-    },     
-    addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/Application/'});
-        var self=this;
-        toAdd.save(null,{
-            success:function(d){
-                self.collection.add(toAdd);
-            },
-            error:function(model,response){
-                util.handleRequestError(response);                       
-            }
-        });
+    },  
+    newModel:function(){
+        return new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/Application/'});
     },
-    afterRender:function(model){
-        var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add">Add New</button>');
-        
+    constructColumns:function(){
         var self=this;
-        util.ajaxGET('/User/').then(function(users){
+        return util.ajaxGET('/User/').then(function(users){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',
@@ -390,7 +443,7 @@ var ApplicationPopup=ServicePopup.extend({
                     }
                 }
             });
-            var columns=[
+            self.columns=[
                 //{name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
                 {name:'appliedMajor',label:'申请专业',cell:'string'},
@@ -402,13 +455,7 @@ var ApplicationPopup=ServicePopup.extend({
                 //{name:'',label:'Update',cell:UpdateCell},
                 {name:'',label:'Delete',cell:DeleteCell}
                 ];
-            var grid=new Backgrid.Grid({columns:columns,collection:self.collection});
-                container.append(grid.render().el);
-                self.collection.fetch({reset:true});
-            }).error(function(err){
-                console.log(err);
-            });  
-        return this;
-    }, 
+        });         
+    },
 });
 module.exports=ServiceView;

@@ -205,11 +205,11 @@ Models={
     // ServiceDetail:Backbone.Model.extend({
     //     urlRoot:'/ServiceDetail/',
     // }),
-    Invoice:syncModel.extend({
-        setContract:function(options){
-            this.set('contract',options.contract,{save:false});
-        }
-    }) ,
+    // Invoice:syncModel.extend({
+    //     setContract:function(options){
+    //         this.set('contract',options.contract,{save:false});
+    //     }
+    // }) ,
     // ServiceInvoice:Backbone.Model.extend({
     //     urlRoot:'/ServiceInvoice/',
     //     initialize: function (options) {

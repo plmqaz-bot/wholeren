@@ -124,6 +124,7 @@ module.exports={
 	    events:{
         'click .button-add':'addnew'
     	},
+    	addNew:true,
 	    initialize: function (options){
 	        _.bindAll(this,  'render', 'afterRender');
 	        var self=this;
@@ -141,19 +142,23 @@ module.exports={
 			}else{
 				this.collection = new Obiwang.Collections[this.collectionName]();
 			}
-			this.constructColumns().then(function(data){
-				self.constructTable();
-			}).catch(function(err){
-				util.handleRequestError(err);
-			});
+			
 			
 	    },
 	    afterRender:function(model){
 	    	//var container=this.$el.find('.bbm-modal__section');
 	        //container.append('<button class="button-add-invoice">Add New</button>');
-            var container=this.$el.find('.bbm-modal__section');
-        	container.append('<button class="button-add">Add New</button>');
-	        var self=this;
+            var self=this;
+            if(this.addNew){
+            	var container=this.$el.find('.bbm-modal__section');
+        		container.append('<button class="button-add">Add New</button>');
+        	}
+            this.constructColumns().then(function(data){
+				self.constructTable();
+			}).catch(function(err){
+				util.handleRequestError(err);
+			});
+	        
 	        
 			return this;
 	    },
@@ -169,6 +174,24 @@ module.exports={
 	        // 	console.log(data);
 	        // });
 	    },
+	    addnew:function(e){
+			e.preventDefault();
+	        e.stopPropagation();
+			var toAdd=this.newModel();
+			var self=this;
+			toAdd.save(null,{
+				success:function(model){
+					self.collection.add(toAdd);
+				},
+				error:function(response,model){
+					util.handleRequestError(response);
+				},
+				save:false
+			});  
+    	},
+    	newModel:function(){
+    		return new Obiwang.Models.syncModel();
+    	},
 	    submit: function () {
 	        // get text and submit, and also refresh the collection. 
 	        this.grid.remove();

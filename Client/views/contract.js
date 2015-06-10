@@ -209,9 +209,9 @@ var ServiceChoices=main.baseModalDataView.extend({
         this.collection.contract=this.contract.get('id');
         
     },
-    events:{
-        'click .button-add-invoice':'addnew'
-    },
+    // events:{
+    //     'click .button-add-invoice':'addnew'
+    // },
     constructColumns:function(){
         var self=this;
         return util.ajaxGET('/Category2Service/').then(function(data){
@@ -246,25 +246,28 @@ var ServiceChoices=main.baseModalDataView.extend({
             return Promise.resolve({});
         });
     },
-    afterRender:function(model){
-        var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add-invoice">Add New</button>');
-        return this;
+    // afterRender:function(model){
+    //     var container=this.$el.find('.bbm-modal__section');
+    //     container.append('<button class="button-add-invoice">Add New</button>');
+    //     return this;
+    // },
+    newModel:function(){
+        return new Obiwang.Models.syncModel({contract:this.contract.get('id')},{_url:'/Service/'});
     },
-    addnew:function(e){
-        e.preventDefault();
-        var toAdd=new Obiwang.Models.syncModel({contract:this.contract.get('id')},{_url:'/Service/'});
-        var self=this;
-        toAdd.save(null,{
-            success:function(model){
-                self.collection.fetch({reset:true});
-            },
-            error:function(response,model){
-                util.handleRequestError(response);
-            },
-            save:false
-        });  
-    },
+    // addnew:function(e){
+    //     e.preventDefault();
+    //     var toAdd=new Obiwang.Models.syncModel({contract:this.contract.get('id')},{_url:'/Service/'});
+    //     var self=this;
+    //     toAdd.save(null,{
+    //         success:function(model){
+    //             self.collection.fetch({reset:true});
+    //         },
+    //         error:function(response,model){
+    //             util.handleRequestError(response);
+    //         },
+    //         save:false
+    //     });  
+    // },
 });
 var ContractSignView=Backbone.Modal.extend({
     prefix:"bbm",
@@ -388,9 +391,6 @@ var ContractAgentView=Backbone.Modal.extend({
 });
 
 var ContractInvoiceView=main.baseModalDataView.extend({
-	events:{
-        'click .button-add-invoice':'addnew'
-    },
     collectionName:'Invoice',
     initialize:function(options){
     	main.baseModalDataView.prototype.initialize.apply(this,arguments);
@@ -398,26 +398,14 @@ var ContractInvoiceView=main.baseModalDataView.extend({
     	this.contractID=this.contract.get('id');
     	this.collection.contract=this.contractID;
     },
-    addnew:function(e){
-		e.preventDefault();
-		var toAdd=new Obiwang.Models.Invoice({},{_url:'/Invoice/'});
-		toAdd.setContract({contract:this.contractID});
-		var self=this;
-		toAdd.save(null,{
-			success:function(model){
-				self.collection.add(toAdd);
-			},
-			error:function(response,model){
-				util.handleRequestError(response);
-			},
-			save:false
-		});  
+    newModel:function(){
+        return new Obiwang.Models.syncModel({contract:this.contractID},{_url:'/Invoice/'});
     },
-    afterRender:function(model){
-    	var container=this.$el.find('.bbm-modal__section');
-        container.append('<button class="button-add-invoice">Add New</button>');
-		return this;
-    },
+  //   afterRender:function(model){
+  //   	var container=this.$el.find('.bbm-modal__section');
+  //       container.append('<button class="button-add-invoice">Add New</button>');
+		// return this;
+  //   },
     constructColumns:function(){
     	var DeleteCell = BackgridCells.DeleteCell;
         var self=this;
@@ -451,6 +439,7 @@ var ContractInvoiceView=main.baseModalDataView.extend({
 });
 var ServiceInvoiceView=main.baseModalDataView.extend({
     collectionName:'ServiceInvoice',
+    addNew:false,
     initialize: function (options){
        	main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.contract=options.contract;
@@ -458,9 +447,6 @@ var ServiceInvoiceView=main.baseModalDataView.extend({
         this.invoiceID=parseInt(this.invoice.id);
         this.collection.invoice=this.invoiceID;
     },
-    // events:{
-    //     'click .button-add-invoice':'addnew'
-    // },
     constructColumns:function(){
     	var self=this;
     	return util.ajaxGET('/Category2Service/').then(function(data){
@@ -526,26 +512,6 @@ var ServiceInvoiceView=main.baseModalDataView.extend({
             return Promise.resolve({});
         });
     },
-    // afterRender:function(model){
-    //     var container=this.$el.find('.bbm-modal__section');
-    //     container.append('<button class="button-add-invoice">Add New</button>');
-    //     return this;
-    // },
-    // addnew:function(e){
-    //     e.preventDefault();
-    //     var toAdd=new Obiwang.Models.syncModel({},{_url:'/Service/'});
-    //     toAdd.set('contract',this.invoice.get('contract'),{save:false});
-    //     var self=this;
-    //     toAdd.save(null,{
-    //         success:function(model){
-    //             self.collection.fetch({reset:true});
-    //         },
-    //         error:function(response,model){
-    //             util.handleRequestError(response);
-    //         },
-    //         save:false
-    //     });  
-    // },
     submit: function () {
         // get text and submit, and also refresh the collection. 
         this.invoice.fetch();
