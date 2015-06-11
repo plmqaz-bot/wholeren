@@ -1229,24 +1229,14 @@ END;;
 delimiter ;
 
 
+
+
 set sql_safe_updates=0;
-
 # If the chinese name and the contract is unique, then it must be it. 
-update service inner join (
-select service.id,client.id as cid, contract.id as contid,count(*) as 'count' from service inner join client on service.cName=client.chineseName and service.cName !='' inner join contract on contract.client=client.id group by service.id
-) as s on service.id=s.id set service.client=cid and  service.contract=contid where count=1;
-update service inner join (
-# If it match to multiple contract, but only one has match the contract signed date, then it must be it. 
-select service.id,client.id as cid, contract.id as contid,count(*) as 'count' from service inner join client on service.cName=client.chineseName inner join contract on contract.client=client.id where contract.contractSigned=service.indate group by service.id
-) as s on service.id=s.id set service.client=cid and  service.contract=contid where count=1;
-# The Service contain a contract key, then set it!
-update service inner join contract on service.contractKey=contract.nameKey and service.contractKey !='' set service.contract=contract.id;
-update service inner join (
-select service.id as sid, client.id,count(*) as 'count' from service inner join client on service.cName=client.chineseName and service.cName!='' group by service.id
-) as s on service.id=s.sid set service.client=s.id where count=1;
+update servicedetail inner join (
+select servicedetail.id,count(*) as 'count',contract.id as 'cid' from servicedetail inner join client on  servicedetail.cName=client.chineseName and ifnull(servicedetail.cName,'')!='' inner join contract on client.id=contract.client and contract.status=5 and contract.deleted=0 group by servicedetail.id) as a on a.id=servicedetail.id set contract=cid where count=1;
+# If the contractKey is unique, then it must be it. 
+update servicedetail inner join (
+select servicedetail.id,count(*) as 'count',contract.id as 'cid' from servicedetail  inner join contract on servicedetail.contractKey=contract.nameKey and and ifnull(servicedetail.contractKey,'')!='' and contract.status=5 and contract.deleted=0 group by servicedetail.id) as a on a.id=servicedetail.id set contract=cid where count=1;
 
 
-
-# The service 
-update service inner join (
-select service.id as sid,contract.id,count(*) as 'count' from service inner join contract on service.client=contract.client  and service.indate !='' and service.contract is null group by service.id)  as newServ on service.id=newServ.sid set service.contract=newServ.id where count=1;

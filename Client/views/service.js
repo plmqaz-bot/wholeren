@@ -383,22 +383,9 @@ var MoreUserPopup=main.baseModalDataView.extend({
             return Promise.resolve({});
         })        
     },
-    addnew:function(e){
-        var toAdd=new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
-        //toAdd.set('service',this.serviceID,{save:false});
-        //toAdd.set('originalType',this.type,{save:false});
-        var self=this;
-        toAdd.save(null,{
-            save:false,
-            success:function(model){
-                self.collection.add(model);
-            },
-            error:function(response,model){
-                util.handleRequestError(response);
-            }
-        })
-  
-    },
+    newModel:function(){
+        return new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
+    }
 })
 
 var ApplicationPopup=main.baseModalDataView.extend({

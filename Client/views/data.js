@@ -115,6 +115,9 @@ module.exports={
 		save:function(e){
 			util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
 		},
+		cleanup:function(){
+			this.grid.remove();
+		}
 	}),
 	baseModalDataView:Backbone.Modal.extend({
 	    prefix:"bbm",

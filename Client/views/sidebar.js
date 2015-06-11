@@ -61,8 +61,12 @@ var Sidebar = baseView.extend({
         if (this.pane && id === this.pane.id) {
             return;
         }
-        if(this.pane)
-        this.pane.destroy();
+        if(this.pane){
+            this.pane.destroy();
+            if(_.isFunction(this.pane.cleanup)){
+                this.pane.cleanup();
+            }
+        }
         this.setActive(id);
         var toDisplay=this.MenuViews[id];
         if(toDisplay){
