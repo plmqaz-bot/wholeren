@@ -94,3 +94,11 @@ update servicedetail inner join (
 select servicedetail.id,contract.id as cid,count(*) as 'count' from servicedetail inner join client on servicedetail.cName=client.chineseName and servicedetail.cName !='' and servicedetail.cname is not null inner join contract on contract.client=client.id group by servicedetail.cName) as t on t.id=servicedetail.id set servicedetail.contract=cid where count=1;
 
 select * from servicedetail where contract is null;
+
+
+
+
+ALTER TABLE `wholeren`.`application` 
+CHANGE COLUMN `succeed` `succeed` TINYINT(1) NULL DEFAULT 0 ,
+ADD COLUMN `decided` TINYINT(1) NULL DEFAULT 0 AFTER `newDev`,
+ADD COLUMN `applied` TINYINT(1) NULL DEFAULT 0 AFTER `decided`;

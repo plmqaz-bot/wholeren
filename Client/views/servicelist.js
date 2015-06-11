@@ -92,9 +92,23 @@ var ServiceView=main.baseDataView.extend({
                     $('.app').append(userview.el);  
                 }
             })
+            var RedirectCell=Backgrid.Cell.extend({
+                render: function () {
+                  var id=this.model.get('contract');
+                  if(id){
+                    this.$el.html('<a href="/admin/contract/'+id+'">Link to contract</a>');
+                  }else{
+                    this.$el.html('');
+                  }
+                  this.delegateEvents();
+                  return this;
+                }
+            });
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+                {name:'',label:'合同链接',editable:false,cell:RedirectCell},
                 {name:'contractKey',label:'ID',cell:'string'},
+                {name:'indate',label:'启动时间',cell:BackgridCells.MomentCell},
                 {name:'realServiceType',label:'各进程类型',editable:false,cell:typeselect},
                 {name:'serviceProgress',label:'该进程状态',cell:progressselect},
                 {name:'user',label:'该进程负责人',editable:false,cell:userselect},
@@ -185,6 +199,8 @@ var ApplicationPopup=main.baseModalDataView.extend({
                 //{name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
                 {name:'appliedMajor',label:'申请专业',cell:'string'},
+                {name:'decided',label:'选校',cell:'boolean'},
+                {name:'applied',label:'申请',cell:'boolean'},
                 {name:'succeed',label:'录取',cell:'boolean'},
                 {name:'newDev',label:'新开发？',cell:'boolean'},
                 {name:'appliedSemester',label:'申请入读学期',cell:DateCell},

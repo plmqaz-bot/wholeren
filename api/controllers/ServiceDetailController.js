@@ -57,6 +57,7 @@ module.exports = {
 		var id=req.params.id;
 		if(!id) return res.json(404,{error:"no id"});
 		var attribs=req.body;
+		console.log(attribs);
 		var tocreate={};
 		// tocreate['user']=attribs.user;
 		// tocreate['service']=attribs.service;
@@ -64,20 +65,22 @@ module.exports = {
 		// tocreate['servLevel']=attribs.servLevel;
 		progress=attribs['progress'];
 		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey']);
-		ServiceDetail.update({id:id},tocreate).then(function(data){
-			data=data[0]||data;
-			if(progress&&data.id){
-				console.log("create progress");
-				return ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:progress});
-			}else{
-				console.log("not creating progress ",progress,data);
-				return Promise.resolve(data);
-			}
-		}).then(function(data){
+		 console.log(tocreate);
+		 ServiceDetail.update({id:id},tocreate).then(function(data){
+		// 	data=data[0]||data;
+		// 	if(progress&&data.id){
+		// 		console.log("create progress");
+		// 		return ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:progress});
+		// 	}else{
+		// 		console.log("not creating progress ",progress,data);
+		// 		return Promise.resolve(data);
+		// 	}
+		// }).then(function(data){
 			console.log("update successful, now get this");
 			//var sql=createsql(attribs.service,attribs.user,'s.id='+id);
 			return ServiceDetail.findOne({id:id});
 		}).then(function(data){
+			console.log(data);
 			return res.json(data);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Update Service failed id:"+id);

@@ -119,6 +119,9 @@ module.exports={
     },
     deleteRow: function (e) {
       e.preventDefault();
+      if (confirm("Are you sure to delete (or recover) this row?") != true) {
+        return;
+      }
       this.model.destroy({
         success:function(model){
           Wholeren.notifications.addItem({

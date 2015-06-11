@@ -140,7 +140,7 @@ var ShortContractView=main.baseDataView.extend({
             {name:'teacher',label:'后期组长',editable: false,cell:'string'},
             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
             {name:'status',label:'该合同进度',editable:false,cell:status},
-            {name:'boughtservices',label:'该合同购买服务',editable:false,cell:'string'},
+            {name:'boughtservices',label:'该合同购买服务',cell:'text'},
             {name:'',label:'各进程细节',cell:popup},                    
             {name:'',label:'学生联系方式',cell:'string'},                    
             //{name:'',label:'第三方费用',cell:'string'},                    
@@ -351,7 +351,8 @@ var ServicePopup=main.baseModalDataView.extend({
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
                 {name:'realServiceType',label:'各进程类型',cell:typeselect},
-                {name:'ServiceProgress',label:'该进程状态',cell:progressselect},
+                {name:'serviceProgress',label:'该进程状态',cell:progressselect},
+                {name:'indate',label:'启动时间',cell:BackgridCells.MomentCell},
                 {name:'user',label:'该进程负责人',cell:userselect},
                 {name:'link',label:'学生档案 Link',cell:'uri'},
                 {name:'',label:'OtherUsers',cell:userinservice},

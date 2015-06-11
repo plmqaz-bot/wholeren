@@ -16,6 +16,10 @@ module.exports = {
 
 	service:{model:'ServiceDetail'},
 
+	decided:{type:'boolean',defaultsTo:false},
+
+	applied:{type:'boolean',defaultsTo:false},
+
 	newDev:{type:'boolean',defaultsTo:false},
 
 	succeed:{type:'boolean',defaultsTo:false},
@@ -25,6 +29,18 @@ module.exports = {
 	studentCondition:{type:'string'}
 
 
-  }
+  },
+  beforeUpdate:function(attrs,next){
+    if (attrs.decided==false){
+      delete attrs['decided'];
+    }
+    if (attrs.applied==false){
+      delete attrs['applied'];
+    }
+    if (attrs.succeed==false){
+      delete attrs['succeed'];
+    }
+     next();
+  },
 };
 
