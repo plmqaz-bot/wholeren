@@ -10,14 +10,14 @@ function constructsql(who){
 	left join service on contract.id=service.contract \
 	left join servicedetail s on s.service=service.id \
 	inner join user on (user.id =s.user) \
-	left join subrole_handle_salesgroup ss on ss.subRole=user.subRole \
+	left join subrole_handle_salesgroup ss on ss.salesGroup=contract.salesGroup \
 	left join whoownswho w on w.puppet=user.id \
 	where "+who+"\
 	union\
 	select distinct(contract.id) from contract \
 	inner join user on \
 	(user.id in (assistant1,assistant2,assistant3,assistant4,sales1,sales2,expert1,expert2,assiscont1,assiscont2,teacher)) \
-	left join subrole_handle_salesgroup ss on ss.subRole=user.subRole \
+	left join subrole_handle_salesgroup ss on ss.salesGroup=contract.salesGroup \
 	left join whoownswho w on w.puppet=user.id \
 	where "+who;
 }
@@ -27,7 +27,7 @@ function whoCanView(user,where){
 	if(user.role==1){
 		switch (user.rank){
 			case 1: var restrictions="user.id ="+id;break;
-			case 2: var restrictions="(user.id ="+id+" or ss.salesGroup=contract.salesGroup)";break;
+			case 2: var restrictions="(user.id ="+id+" or ss.subRole="+user.subRole+")";break;
 		}
 	}
 	if(user.role==3){ // Marketing
