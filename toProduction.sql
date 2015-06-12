@@ -102,3 +102,10 @@ ALTER TABLE `wholeren`.`application`
 CHANGE COLUMN `succeed` `succeed` TINYINT(1) NULL DEFAULT 0 ,
 ADD COLUMN `decided` TINYINT(1) NULL DEFAULT 0 AFTER `newDev`,
 ADD COLUMN `applied` TINYINT(1) NULL DEFAULT 0 AFTER `decided`;
+CREATE TABLE `wholeren`.`subrole_handle_salesgroup` (
+  `subRole` INT(11) NULL,
+  `salesGroup` INT(11) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  PRIMARY KEY (`id`));

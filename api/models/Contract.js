@@ -159,6 +159,16 @@ module.exports = {
       console.log("to del service are ",toDel);
     }).error(function(err){console.log(err);});    
   },
+  /* If this is status 5, meaning contract is signed, in case they forgot to enter, automatically create one
+  */
+  beforeUpdate:function(attrs,next){
+    if(attrs.status){
+      if(attrs.status==5){
+        attrs.contractSigned=new Date();
+      }
+    }
+    next();
+  },
 
 };
 

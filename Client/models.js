@@ -445,17 +445,17 @@ Collections={
             var where={};
             try{
                 if(this.startDate){
-                    where.createdAt=where.createdAt||{};
-                    where.createdAt['>']=new Date(this.startDate);
+                    where.contractSigned=where.contractSigned||{};
+                    where.contractSigned['>']=new Date(this.startDate);
                 }
                 if(this.endDate){
-                    where.createdAt=where.createdAt||{};
-                    where.createdAt['<']=new Date(this.endDate);
+                    where.contractSigned=where.contractSigned||{};
+                    where.contractSigned['<']=new Date(this.endDate);
                 }
                 if(this.deleted==true){
                     where.deleted=true;
                 }
-                if(where.createdAt){
+                if(where.contractSigned){
                     return JSON.stringify(where);
                 }
             }catch(e){

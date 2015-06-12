@@ -1249,5 +1249,6 @@ select servicedetail.id,count(*) as 'count',contract.id as 'cid' from servicedet
 # If the contractKey is unique, then it must be it. 
 update servicedetail inner join (
 select servicedetail.id,count(*) as 'count',contract.id as 'cid' from servicedetail  inner join contract on servicedetail.contractKey=contract.nameKey and and ifnull(servicedetail.contractKey,'')!='' and contract.status=5 and contract.deleted=0 group by servicedetail.id) as a on a.id=servicedetail.id set contract=cid where count=1;
-
+#update contractsinged
+update contract inner join servicedetail on servicedetail.contract=contract.id set contractSigned=indate where status=5 and (contractSigned is null or contractSigned='0000-00-00' or contractSigned<'2000-01-01')and indate is not null;
 
