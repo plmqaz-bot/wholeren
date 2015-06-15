@@ -20,6 +20,12 @@ module.exports = {
   	cName:{type:'string'},
   	namekey:{type:'string'},
     deleted:{type:'boolean',defaultsTo:false}
-  }
+  },
+  beforeUpdate:function(attrs,next){
+    if (attrs.serviceProgress==2){
+      attrs.indate=new Date();
+    }
+    next();
+  },
 };
 

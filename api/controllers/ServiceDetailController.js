@@ -63,19 +63,18 @@ module.exports = {
 		// tocreate['service']=attribs.service;
 		// tocreate['servRole']=attribs.servRole;
 		// tocreate['servLevel']=attribs.servLevel;
-		progress=attribs['progress'];
 		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey']);
 		 console.log(tocreate);
 		 ServiceDetail.update({id:id},tocreate).then(function(data){
-		// 	data=data[0]||data;
-		// 	if(progress&&data.id){
-		// 		console.log("create progress");
-		// 		return ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:progress});
-		// 	}else{
-		// 		console.log("not creating progress ",progress,data);
-		// 		return Promise.resolve(data);
-		// 	}
-		// }).then(function(data){
+		 	data=data[0]||data;
+		 	if(tocreate['serviceProgress']&&data.id){
+		 		console.log("create progress");
+		 		return ServiceProgressUpdate.create({serviceDetail:id,serviceProgress:tocreate['serviceProgress']});
+		 	}else{
+				console.log("not creating progress ",progress,data);
+				return Promise.resolve(data);
+			}
+		 }).then(function(data){
 			console.log("update successful, now get this");
 			//var sql=createsql(attribs.service,attribs.user,'s.id='+id);
 			return ServiceDetail.findOne({id:id});
