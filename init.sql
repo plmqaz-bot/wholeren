@@ -593,16 +593,16 @@ insert into sales2realservicetype values(67,10)
 #insert into serviceprogress values('C.已交等结果',NULL,NOW(),NOW());
 #insert into serviceprogress values('D.服务结束',NULL,NOW(),NOW());
 truncate serviceprogress;
-insert into serviceprogress values('0.0 等待启动',NULL,NOW(),NOW());
-insert into serviceprogress values('1.0该进程开始',NULL,NOW(),NOW());
-insert into serviceprogress values('-1.1签订选校单',NULL,NOW(),NOW());
-insert into serviceprogress values('-1.2全部提交',NULL,NOW(),NOW());
-insert into serviceprogress values('2.0该进程完成',NULL,NOW(),NOW());
-insert into serviceprogress values('6.0自我放弃',NULL,NOW(),NOW());
-insert into serviceprogress values('0.1勿忘我',NULL,NOW(),NOW());
-insert into serviceprogress values('**找到我**',NULL,NOW(),NOW());
-insert into serviceprogress values('SOS紧急处理中',NULL,NOW(),NOW());
-insert into serviceprogress values('3.0交接出去了',NULL,NOW(),NOW());
+insert into serviceprogress values('0.0 等待启动',1,NOW(),NOW());
+insert into serviceprogress values('1.0该进程开始',2,NOW(),NOW());
+insert into serviceprogress values('-1.1签订选校单',3,NOW(),NOW());
+insert into serviceprogress values('-1.2全部提交',4,NOW(),NOW());
+insert into serviceprogress values('2.0该进程完成',5,NOW(),NOW());
+insert into serviceprogress values('6.0自我放弃',6,NOW(),NOW());
+insert into serviceprogress values('0.1勿忘我',7,NOW(),NOW());
+insert into serviceprogress values('**找到我**',8,NOW(),NOW());
+insert into serviceprogress values('SOS紧急处理中',9,NOW(),NOW());
+insert into serviceprogress values('3.0交接出去了',10,NOW(),NOW());
 
 
 
@@ -1107,6 +1107,18 @@ DETERMINISTIC
 BEGIN 
   DECLARE dist boolean;
   SET dist = targetDate between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21');
+  RETURN dist;
+END$$
+DELIMITER ;
+
+DROP function IF EXISTS DateBeforeMonth;
+DELIMITER $$
+CREATE FUNCTION DateBeforeMonth (targetDate date,year int, month int) 
+RETURNS boolean
+DETERMINISTIC
+BEGIN 
+  DECLARE dist boolean;
+  SET dist = targetDate < DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21');
   RETURN dist;
 END$$
 DELIMITER ;
