@@ -59,12 +59,16 @@ module.exports = {
 			return res.json(400,{error:"new passwords don't match"});
 		}
 	},
-	// 'find':function(req,res){
-	// 	User.find().then(function(data){
-	// 		return res.json(data);
-	// 	}).fail(function(err){
-	// 		return Utilfunctions.errorHandler(err,res,"Get All Users failed");
-	// 	});
-	// }
+	'find':function(req,res){
+		// var active=req.params('active');
+		// if(active==undefined){
+		// 	active=true;
+		// }
+		// User.find({active:active});.then(function(data){
+		// 	return res.json(data);
+		// }).fail(function(err){
+		// 	return Utilfunctions.errorHandler(err,res,"Get All Users failed");
+		// });
+	}
 };
 
