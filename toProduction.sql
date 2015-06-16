@@ -68,6 +68,7 @@ create index cc on contract(client);
 create index sales1 on `contract`(sales1);
 create index sales2 on `contract`(sales2);
 create index teacher on `contract`(teacher);
+create index app_serv on `application`(service);
 
 truncate servicedetail;
 

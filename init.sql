@@ -1206,25 +1206,13 @@ delimiter ;;
 create PROCEDURE ServiceComission (uid int,sid int, year int, month int,single bool)
 COMMENT ''
 BEGIN
-SELECT  client.chineseName,contract.contractPaid,service.id as "service" ,contract.id as "contract", user.id as "user",user.nickname,servicetype.serviceType, service.servicetype as "type", st.servRole,st.servLevel, p2.serviceProgress as 'startprogress', p1.serviceProgress as 'endprogress',
-IFNULL((select  ((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat from application where application.service=service.id),0) as "startComission",
-IFNULL((select  ((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat from application where application.service=service.id),0) as "endComission",
-(select IFNULL(((count(*)*s2.pricePerCol)+s2.priceFlat)*s2.statusportion+s2.statusflat,0)-IFNULL(((count(*)*s1.pricePerCol)+s1.priceFlat)*s1.statusportion+s1.statusflat,0) from application where application.service=service.id) as "monthlyComission"
-FROM service 
-inner join contract on service.contract=contract.id
-inner join client on contract.client=client.id
-inner join servicedetail st on st.service=service.id
-inner join user on st.user=user.id
-inner join servicetype on service.serviceType=servicetype.id
-left join serviceprogress on service.serviceProgress=serviceprogress.id
-left join (select serviceDetail,max(id) as 'curMonth' from serviceprogressupdate where createdAt <=DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21')  group by serviceDetail) as x on x.serviceDetail=st.id
-left join (select serviceDetail,max(id) as 'lastMonth' from serviceprogressupdate where createdAt <=SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21'),INTERVAL 1 MONTH)  group by serviceDetail) as y on y.serviceDetail=st.id
-left join serviceprogressupdate p1 on x.curMonth=p1.id
-left join serviceprogressupdate p2 on y.lastMonth=p2.id
-left join servcomissionlookup s1 on (((s1.serviceType=service.serviceType and s1.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s1.serviceType=0 and s1.servLevel=st.servLevel) or s1.serviceType=service.serviceType))) and s1.serviceStatus=p2.serviceProgress and s1.servRole=st.servRole)
-left join servcomissionlookup s2 on (((s2.serviceType=service.serviceType and s2.servLevel=st.servLevel and servicetype.serviceType  like 'p%') or (servicetype.serviceType not like 'p%' and ((s2.serviceType=0 and s2.servLevel=st.servLevel) or s2.serviceType=service.serviceType))) and s2.serviceStatus=p1.serviceProgress and s2.servRole=st.servRole)
-left join whoownswho w on w.puppet=user.id
-where contract.contractPaid is not NULL and serviceprogress.serviceProgress not like 'D%' and ((single=false and (user.id=uid or uid=0 or w.boss=uid) and (service.id=sid or sid=0)) or (single=true and user.id=uid and service.id=sid));
+select * from (select servicedetail.*, count(application.id) as 'app',sp1.serviceProgress as 'curProgress',sp2.serviceProgress as 'lastProgress' from servicedetail left join
+(select serviceDetail,max(if(DateBeforeMonth(sp.createdAt,2015,4),sp.id,null)) as 'curMonth',max(if(DateBeforeMonth(sp.createdAt,2015,3),sp.id,null)) as 'lastMonth' from 
+serviceprogressupdate sp group by serviceDetail) as t1 on t1.serviceDetail=servicedetail.id
+left join serviceprogressupdate sp1 on sp1.id=curMonth
+left join serviceprogressupdate sp2 on sp2.id=lastMonth
+left join application on application.service=servicedetail.id group by servicedetail.id) as main 
+inner join user on main.user=user.id where (app!=0 or curProgress!=lastProgress);
 END;;
 delimiter ;
 
