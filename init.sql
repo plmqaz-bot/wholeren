@@ -1106,23 +1106,34 @@ RETURNS boolean
 DETERMINISTIC
 BEGIN 
   DECLARE dist boolean;
-  SET dist = targetDate between SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-22'),INTERVAL 1 MONTH) and DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21');
+  SET dist = targetDate between LastMonthEnd(year,month) and ThisMonthEnd(year,month);
   RETURN dist;
 END$$
 DELIMITER ;
 
-DROP function IF EXISTS DateBeforeMonth;
+DROP function IF EXISTS LastMonthEnd;
 DELIMITER $$
-CREATE FUNCTION DateBeforeMonth (targetDate date,year int, month int) 
-RETURNS boolean
+CREATE FUNCTION LastMonthEnd (year int, month int) 
+RETURNS date
 DETERMINISTIC
 BEGIN 
-  DECLARE dist boolean;
-  SET dist = targetDate < DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-21');
+  DECLARE dist date;
+  SET dist=SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-23'),INTERVAL 1 MONTH)
   RETURN dist;
 END$$
 DELIMITER ;
 
+DROP function IF EXISTS ThisMonthEnd;
+DELIMITER $$
+CREATE FUNCTION ThisMonthEnd (year int, month int) 
+RETURNS date
+DETERMINISTIC
+BEGIN 
+  DECLARE dist date;
+  SET dist=DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-23')
+  RETURN dist;
+END$$
+DELIMITER ;
 # SALES COMISSION whole table or single 
 -- DROP PROCEDURE IF EXISTS SalesComission;
 -- delimiter ;;
@@ -1203,16 +1214,16 @@ delimiter ;
 # SERVICE COMISSION
 DROP PROCEDURE IF EXISTS ServiceComission;
 delimiter ;;
-create PROCEDURE ServiceComission (uid int,sid int, year int, month int,single bool)
+create PROCEDURE ServiceComission (uid int, year int, month int)
 COMMENT ''
 BEGIN
-select * from (select servicedetail.*, count(application.id) as 'app',sp1.serviceProgress as 'curProgress',sp2.serviceProgress as 'lastProgress' from servicedetail left join
-(select serviceDetail,max(if(DateBeforeMonth(sp.createdAt,2015,4),sp.id,null)) as 'curMonth',max(if(DateBeforeMonth(sp.createdAt,2015,3),sp.id,null)) as 'lastMonth' from 
+select main.*,user.nickname from (select servicedetail.*, sum(if(DateInRange(application.submitDate,year,month),application.id,0)) as 'applied',sum(if(DateInRange(application.acceptedDate,year,month),application.id,0)) as 'accepted',sp1.serviceProgress as 'curProgress',sp2.serviceProgress as 'lastProgress' from servicedetail left join
+(select serviceDetail,max(if(sp.createdAt<ThisMonthEnd(year,month),sp.id,null)) as 'curMonth',max(if(sp.createdAt<LastMonthEnd(year,month),sp.id,null)) as 'lastMonth' from 
 serviceprogressupdate sp group by serviceDetail) as t1 on t1.serviceDetail=servicedetail.id
 left join serviceprogressupdate sp1 on sp1.id=curMonth
 left join serviceprogressupdate sp2 on sp2.id=lastMonth
-left join application on application.service=servicedetail.id group by servicedetail.id) as main 
-inner join user on main.user=user.id where (app!=0 or curProgress!=lastProgress);
+left join application on application.service=servicedetail.id where servicedetail.deleted=0 group by servicedetail.id) as main 
+inner join user on main.user=user.id where (applied!=0 or accepted!=0 or curProgress!=lastProgress) and uid in (user.id,0);
 END;;
 delimiter ;
 

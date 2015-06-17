@@ -110,3 +110,11 @@ CREATE TABLE `wholeren`.`subrole_handle_salesgroup` (
   `createdAt` DATETIME NULL,
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
+
+
+
+
+ALTER TABLE `wholeren`.`application` 
+ADD COLUMN `appliedDegree` INT(11) NULL AFTER `appliedMajor`,
+ADD COLUMN `submitDate` DATE NULL AFTER `applied`,
+ADD COLUMN `acceptedDate` DATE NULL AFTER `succeed`;

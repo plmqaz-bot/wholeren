@@ -164,8 +164,9 @@ var ApplicationPopup=main.baseModalDataView.extend({
     },
     constructColumns:function(){
         var self=this;
-        return util.ajaxGET('/User/').then(function(users){
+        return Promise.all([util.ajaxGET('/User/'),util.ajaxGET('/Degree/')]).spread(function(users,degree){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
+            var degree=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',
                 action:function(e){
@@ -199,10 +200,13 @@ var ApplicationPopup=main.baseModalDataView.extend({
                 //{name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
                 {name:'appliedMajor',label:'申请专业',cell:'string'},
-                {name:'decided',label:'选校',cell:'boolean'},
-                {name:'applied',label:'申请',cell:'boolean'},
+                {name:'appliedDegree',label:'申请专业',cell:degree},
+                //{name:'decided',label:'选校',cell:'boolean'},
+                {name:'applied',label:'已提交申请',cell:'boolean'},
+                {name:'submitDate',label:'申请时间',cell:BackgridCells.MomentCell},
                 {name:'succeed',label:'录取',cell:'boolean'},
-                {name:'newDev',label:'新开发？',cell:'boolean'},
+                {name:'acceptedDate',label:'录取时间',cell:BackgridCells.MomentCell},
+               // {name:'newDev',label:'新开发？',cell:'boolean'},
                 {name:'appliedSemester',label:'申请入读学期',cell:DateCell},
                 //{name:'studentCondition',label:'Condition',cell:'string'},
                 {name:'',label:'Comments',cell:comment},

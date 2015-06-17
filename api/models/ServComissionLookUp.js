@@ -8,21 +8,22 @@
 module.exports = {
 
   attributes: {
-  	serviceType:{model:'ServiceType',required:true},
-
-  	servRole:{model:'ServRole',required:true},
+  	realServiceType:{model:'RealServiceType',required:true},
 
   	servLevel:{model:'ServLevel'},
 
-  	pricePerCol:{type:'float',required:true},
+    degree:{model:'Degree'},
 
-  	priceFlat:{type:'float',required:true},
+  	//pricePerApplication:{type:'float',required:true},
 
-  	serviceStatus:{model:'ServiceStatus',required:true},
+  	//pricePerApplicationAfterAccept:{type:'float',required:true},
 
-  	statusportion:{type:'float'},
+  	serviceProgress:{model:'ServiceProgress',required:true},
 
-  	statusflat:{type:'float'}
+  	// statusportion:{type:'float'},
+
+  	// statusflat:{type:'float'}
+
   }
 };
 

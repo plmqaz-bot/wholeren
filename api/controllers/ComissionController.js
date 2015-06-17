@@ -8,7 +8,7 @@ var Promise=require('bluebird');
 module.exports = {
 	'getSalesComission':function(req,res){
 		var id=req.session.user.id;
-		if(req.session.user.rank>2){
+		if(req.session.user.rank==3&&req.session.user.role==1){
 			id=0;
 		}
 		var year=parseInt(req.param('year'));
@@ -88,7 +88,7 @@ module.exports = {
 	},
 	'getServiceComission':function(req,res){
 		var id=req.session.user.id;
-		if(req.session.user.rank>2){
+		if(req.session.user.rank==3&&req.session.user.role==2){
 			id=0;
 		}
 		var year=parseInt(req.param('year'));
@@ -96,7 +96,7 @@ module.exports = {
 		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});
 		console.log(year);
 		console.log(month);
-		var sql="call ServiceComission("+id+",0,"+year+","+month+",false);";
+		var sql="call ServiceComission("+id+","+year+","+month+");";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 			return res.json(data[0]);
 		}).catch(function(err){
@@ -143,7 +143,7 @@ module.exports = {
 	},
 	'getAssistantComission':function(req,res){
 		var id=req.session.user.id;
-		if(req.session.user.rank>2){
+		if(req.session.user.rank==3&&(req.session.user.role==1||req.session.user.rank==2){
 			id=0;
 		}
 		var year=parseInt(req.param('year'));

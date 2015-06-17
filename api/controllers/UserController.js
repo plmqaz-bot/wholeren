@@ -59,7 +59,7 @@ module.exports = {
 			return res.json(400,{error:"new passwords don't match"});
 		}
 	},
-	'find':function(req,res){
+	//'find':function(req,res){
 		// var active=req.params('active');
 		// if(active==undefined){
 		// 	active=true;
@@ -69,6 +69,6 @@ module.exports = {
 		// }).fail(function(err){
 		// 	return Utilfunctions.errorHandler(err,res,"Get All Users failed");
 		// });
-	}
+	//}
 };
 

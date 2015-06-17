@@ -61,69 +61,71 @@ var teacher=main.baseDataView.extend({
     title:'申请老师佣金列表',
     paginator:true,
     renderOptions:{month:true},
-    cache:{},
     templateName:'default',
     constructColumns:function(){
         var self=this;
-        return Promise.all([util.ajaxGET('/ServiceComission/roles/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(roles,data){
-            var roleselect=BackgridCells.SelectCell({name:'Roles',values:roles});
-            var levelselect=roleselect.extend({
-                optionValues:function(){
-                    var cell=this;
-                    var role=this.model.get('servRole')||0;
-                    var type=this.model.get('type')||0;
-                    self.cache[role]=self.cache[role]||[];
-                    self.cache[role][type]=self.cache[role][type]||[];
-                    self.cache[role][type]["level"]=self.cache[role][type]["level"]||[];
-                    if(self.cache[role][type]["level"].length<1){                     
-                        var shrunk=_.where(data,{servRole:role,serviceType:type});
-                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
-                            shrunk.push(e);
-                        });
-                        var unique=_.uniq(shrunk,false,function(e){return e.lid;});
-                        self.cache[role][type]["level"]=_.map(unique,function(e){return [e.servLevel,e.lid]});                         
-                    }
-                    var toadd=self.cache[role][type]["level"].slice(0);//clone it
-                    toadd.push(["No Level",null]);
-                    cell._optionValues=[{name:10,values:toadd}];
-                    return cell._optionValues;                    
-                }
-            });
-            var statusselect=roleselect.extend({
-                optionValues:function(){
-                    var cell=this;
-                    var role=this.model.get('servRole')||0;
-                    var type=this.model.get('type')||0;
-                    self.cache[role]=self.cache[role]||[];
-                    self.cache[role][type]=self.cache[role][type]||[];
-                    self.cache[role][type]["status"]=self.cache[role][type]["status"]||[];
-                    if(self.cache[role][type]["status"].length<1){
-                        var shrunk=_.where(data,{servRole:role,serviceType:type});
-                        var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
-                            shrunk.push(e);
-                        });
-                        var unique=_.uniq(shrunk,false,function(e){return e.sid;});
-                        self.cache[role][type]["status"]=_.map(unique,function(e){return [e.serviceStatus,e.sid]});
-                    }
-                    var toadd=self.cache[role][type]["status"].slice(0);//clone it
-                    toadd.push(["No Status",null]);
-                    cell._optionValues=[{name:10,values:toadd}];
-                    return cell._optionValues;
-                } 
-            });
+        return Promise.all([util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(progress,data){
+             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+            
+            // var levelselect=roleselect.extend({
+            //     optionValues:function(){
+            //         var cell=this;
+            //         var role=this.model.get('servRole')||0;
+            //         var type=this.model.get('type')||0;
+            //         self.cache[role]=self.cache[role]||[];
+            //         self.cache[role][type]=self.cache[role][type]||[];
+            //         self.cache[role][type]["level"]=self.cache[role][type]["level"]||[];
+            //         if(self.cache[role][type]["level"].length<1){                     
+            //             var shrunk=_.where(data,{servRole:role,serviceType:type});
+            //             var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
+            //                 shrunk.push(e);
+            //             });
+            //             var unique=_.uniq(shrunk,false,function(e){return e.lid;});
+            //             self.cache[role][type]["level"]=_.map(unique,function(e){return [e.servLevel,e.lid]});                         
+            //         }
+            //         var toadd=self.cache[role][type]["level"].slice(0);//clone it
+            //         toadd.push(["No Level",null]);
+            //         cell._optionValues=[{name:10,values:toadd}];
+            //         return cell._optionValues;                    
+            //     }
+            // });
+            // var statusselect=roleselect.extend({
+            //     optionValues:function(){
+            //         var cell=this;
+            //         var role=this.model.get('servRole')||0;
+            //         var type=this.model.get('type')||0;
+            //         self.cache[role]=self.cache[role]||[];
+            //         self.cache[role][type]=self.cache[role][type]||[];
+            //         self.cache[role][type]["status"]=self.cache[role][type]["status"]||[];
+            //         if(self.cache[role][type]["status"].length<1){
+            //             var shrunk=_.where(data,{servRole:role,serviceType:type});
+            //             var shrunk2=_.where(data,{servRole:role,serviceType:0}).forEach(function(e){
+            //                 shrunk.push(e);
+            //             });
+            //             var unique=_.uniq(shrunk,false,function(e){return e.sid;});
+            //             self.cache[role][type]["status"]=_.map(unique,function(e){return [e.serviceStatus,e.sid]});
+            //         }
+            //         var toadd=self.cache[role][type]["status"].slice(0);//clone it
+            //         toadd.push(["No Status",null]);
+            //         cell._optionValues=[{name:10,values:toadd}];
+            //         return cell._optionValues;
+            //     } 
+            // });
             self.columns=[
-                {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+                {name:'cName',label:'用户名字',editable:false,cell:'string'},
                 {name:'nickname',label:'老师名字',editable: false,cell:'string'},
-                {name:'serviceType',label:'服务类型',editable: false,cell:'string'},
-                {name:'contractPaid',label:'付款时间',editable:false,cell:'Date'},
-                {name:'servRole',label:'老师任务',editable:false,cell:roleselect},
-                {name:'servLevel',label:'文书level',editable:false,cell:levelselect},
-                {name:'startprogress',label:'月初进度',editable:false,cell:statusselect},
-                {name:'endprogress',label:'月末进度',editable:false,cell:statusselect},
+                {name:'realServiceType',label:'服务类型',editable: false,cell:'string'},
+                {name:'indate',label:'进入服务时间',editable:false,cell:BackgridCells.MomentCell},
+                //{name:'servRole',label:'老师任务',editable:false,cell:roleselect},
+                //{name:'servLevel',label:'文书level',editable:false,cell:levelselect},
+                {name:'lastProgress',label:'月初进度',editable:false,cell:progressselect},
+                {name:'curProgress',label:'月末进度',editable:false,cell:progressselect},
+                {name:'applied',label:'本月申请数',editable:false,cell:'number'},
+                {name:'accepted',label:'本月录取数',editable:false,cell:'number'},
                // {name:'extra',label:'Extra',cell:'number'},
-                {name:'startComission',label:'月初佣金',editable: false,cell:'number'},
-                {name:'endComission',label:'月末佣金',editable: false,cell:'number'},
-                {name:'monthlyComission',label:'本月佣金',editable:false,cell:'number'},
+                // {name:'startComission',label:'月初佣金',editable: false,cell:'number'},
+                // {name:'endComission',label:'月末佣金',editable: false,cell:'number'},
+                // {name:'monthlyComission',label:'本月佣金',editable:false,cell:'number'},
                 // {name:'final',label:'佣金',cell:'number'}
                 ];
             return Promise.resolve({});
