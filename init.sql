@@ -27,7 +27,7 @@ insert into subrole values('文书',2,8,NOW(),NOW());
 insert into subrole values('广告',3,9,NOW(),NOW());
 insert into subrole values('渠道',3,10,NOW(),NOW());
 
-truncate subrole_handle_salesgroup
+truncate subrole_handle_salesgroup;
 insert into subrole_handle_salesgroup values(1,4,NULL,NOW(),NOW());
 insert into subrole_handle_salesgroup values(2,1,NULL,NOW(),NOW());
 insert into subrole_handle_salesgroup values(3,2,NULL,NOW(),NOW());
