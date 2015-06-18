@@ -167,6 +167,16 @@ module.exports = {
         attrs.contractSigned=new Date();
       }
     }
+    if(attrs.hasOwnProperty('createdAt')){
+      if(!attrs['createdAt']){
+        delete attrs['createdAt'];
+      }else {
+        var d=new Date(attrs['createdAt']);
+        if(isNaN(d.getTime())){
+          delete attrs['createdAt'];
+        }
+      }
+    }
     next();
   },
 

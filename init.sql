@@ -1207,7 +1207,7 @@ inner join user on user.id in (contract.sales1,contract.sales2,contract.expert1,
 left join salescomissiongoal s on (s.year=year and s.month=month and user.id=s.user)
 left join service on service.contract=contract.id
 left join whoownswho w on w.puppet=user.id
-where contractSigned is not null and contractPrice is not null and (uid=user.id or uid=w.boss or uid=0) and (DateInRange(contract.contractSigned,year,month)) group by contract.id,user.id order by user.nickname, contractSigned ;
+where contractSigned is not null and deleted!=1 and contractPrice is not null and (uid=user.id or uid=w.boss or uid=0) and (DateInRange(contract.contractSigned,year,month)) group by contract.id,user.id order by user.nickname, contractSigned ;
 END;;
 delimiter ;
 
@@ -1222,7 +1222,8 @@ select main.*,user.nickname from (select servicedetail.*, sum(if(DateInRange(app
 serviceprogressupdate sp group by serviceDetail) as t1 on t1.serviceDetail=servicedetail.id
 left join serviceprogressupdate sp1 on sp1.id=curMonth
 left join serviceprogressupdate sp2 on sp2.id=lastMonth
-left join application on application.service=servicedetail.id where servicedetail.deleted=0 group by servicedetail.id) as main 
+left join contract on servicedetail.contract=contract.id
+left join application on application.service=servicedetail.id where servicedetail.deleted!=1 and contract.deleted!=1 group by servicedetail.id) as main 
 inner join user on main.user=user.id where (applied!=0 or accepted!=0 or curProgress!=lastProgress) and uid in (user.id,0);
 END;;
 delimiter ;
