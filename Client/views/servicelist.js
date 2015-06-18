@@ -34,10 +34,11 @@ var ServiceView=main.baseDataView.extend({
             },
         });
         var self=this;
-        return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
+        return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/'),util.ajaxGET('/Degree/')]).spread(function(stype,progress,users,degree){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})}); // Only Backend Group
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
+            var degreeselect=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
             // var typeselect=userselect.extend({
             //     optionValues:function(){
             //         var oritype=this.model.get('originalType');
@@ -109,6 +110,9 @@ var ServiceView=main.baseDataView.extend({
                 {name:'',label:'合同链接',editable:false,cell:RedirectCell},
                 {name:'contractKey',label:'ID',cell:'string'},
                 {name:'indate',label:'启动时间',cell:BackgridCells.MomentCell},
+                {name:'degree',label:'申请学校类型',cell:degreeselect},
+                {name:'correspondService',label:'附属i服务',cell:'string'},
+                {name:'level',label:'Level',cell:'number'},
                 {name:'realServiceType',label:'各进程类型',editable:false,cell:typeselect},
                 {name:'serviceProgress',label:'该进程状态',cell:progressselect},
                 {name:'user',label:'该进程负责人',editable:false,cell:userselect},

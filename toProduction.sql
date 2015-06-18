@@ -118,3 +118,23 @@ ALTER TABLE `wholeren`.`application`
 ADD COLUMN `appliedDegree` INT(11) NULL AFTER `appliedMajor`,
 ADD COLUMN `submitDate` DATE NULL AFTER `applied`,
 ADD COLUMN `acceptedDate` DATE NULL AFTER `succeed`;
+
+ALTER TABLE `wholeren`.`servicedetail` 
+ADD COLUMN `degree` INT(11) NULL AFTER `serviceProgress`,
+ADD COLUMN `correspondService` INT(11) NULL AFTER `degree`;
+
+
+ALTER TABLE `wholeren`.`servcomissionlookup` 
+DROP COLUMN `statusflat`,
+DROP COLUMN `statusportion`,
+DROP COLUMN `serviceStatus`,
+DROP COLUMN `priceFlat`,
+DROP COLUMN `pricePerCol`,
+DROP COLUMN `servRole`,
+CHANGE COLUMN `serviceType` `realServiceType` INT(11) NULL DEFAULT NULL ,
+ADD COLUMN `degree` INT(11) NULL AFTER `servLevel`,
+ADD COLUMN `serviceProgress` INT(11) NULL AFTER `degree`;
+
+ALTER TABLE `wholeren`.`servcomissionlookup` 
+ADD COLUMN `score` FLOAT NULL DEFAULT 0 AFTER `serviceProgress`;
+

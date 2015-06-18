@@ -696,6 +696,41 @@ insert into notifyinterval values(15,'Day 15 ',NULL,NOW(),NOW());
 insert into notifyinterval values(30,'Day 30 ',NULL,NOW(),NOW());
 
 # Now hard part 服务佣金的lookup table
+insert into servcomissionlookup values(1,NULL,NULL,2,1.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(1,NULL,NULL,5,3,NULL,NOW(),NOW());
+insert into servcomissionlookup values(2,NULL,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(2,NULL,NULL,5,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(3,NULL,NULL,2,2.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(3,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,1,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,1,NULL,5,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,2,NULL,2,7.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,2,NULL,5,15,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,3,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,3,NULL,5,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(5,NULL,NULL,2,2.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(5,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(6,NULL,NULL,2,2.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(6,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(7,NULL,NULL,2,2.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(7,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(17,NULL,NULL,2,1.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(17,NULL,NULL,5,3,NULL,NOW(),NOW());
+insert into servcomissionlookup values(13,NULL,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(13,NULL,NULL,5,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(22,NULL,NULL,2,2.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(22,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(14,NULL,NULL,2,2.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(14,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(18,NULL,NULL,2,2.5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(18,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(21,NULL,NULL,2,6,NULL,NOW(),NOW());
+insert into servcomissionlookup values(21,NULL,NULL,5,12,NULL,NOW(),NOW());
+	#i, p now
+insert into servcomissionlookup values(2,NULL,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(2,NULL,NULL,5,10,NULL,NOW(),NOW());
+
+
 set @stype=1; #a
 select id from servrole where servRole ='负责老师' into @srole;
 select id from servicestatus where serviceStatus ='进入服务' into @sprogress1;
@@ -1223,7 +1258,7 @@ serviceprogressupdate sp group by serviceDetail) as t1 on t1.serviceDetail=servi
 left join serviceprogressupdate sp1 on sp1.id=curMonth
 left join serviceprogressupdate sp2 on sp2.id=lastMonth
 left join contract on servicedetail.contract=contract.id
-left join application on application.service=servicedetail.id where servicedetail.deleted!=1 and contract.deleted!=1 group by servicedetail.id) as main 
+left join application on (application.service=servicedetail.id or (application.service=servicedetail.correspondService)) where servicedetail.deleted!=1 and contract.deleted!=1 group by servicedetail.id) as main 
 inner join user on main.user=user.id where (applied!=0 or accepted!=0 or curProgress!=lastProgress) and uid in (user.id,0);
 END;;
 delimiter ;

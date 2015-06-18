@@ -10,7 +10,7 @@ module.exports = {
   attributes: {
   	realServiceType:{model:'RealServiceType',required:true},
 
-  	servLevel:{model:'ServLevel'},
+  	servLevel:{type:'int'},
 
     degree:{model:'Degree'},
 
