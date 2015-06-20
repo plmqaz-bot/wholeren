@@ -138,3 +138,15 @@ ADD COLUMN `serviceProgress` INT(11) NULL AFTER `degree`;
 ALTER TABLE `wholeren`.`servcomissionlookup` 
 ADD COLUMN `score` FLOAT NULL DEFAULT 0 AFTER `serviceProgress`;
 
+
+CREATE TABLE `wholeren`.`servappcomissionlookup` (
+  `realServiceType` INT(11) NULL,
+  `decidedScore` FLOAT NULL,
+  `appliedScore` FLOAT NULL,
+  `acceptedScore` FLOAT NULL,
+  `acceptedFlat` FLOAT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  PRIMARY KEY (`id`));
+

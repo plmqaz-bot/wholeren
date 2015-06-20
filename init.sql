@@ -696,18 +696,15 @@ insert into notifyinterval values(15,'Day 15 ',NULL,NOW(),NOW());
 insert into notifyinterval values(30,'Day 30 ',NULL,NOW(),NOW());
 
 # Now hard part 服务佣金的lookup table
+truncate servcomissionlookup;
 insert into servcomissionlookup values(1,NULL,NULL,2,1.5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(1,NULL,NULL,5,3,NULL,NOW(),NOW());
 insert into servcomissionlookup values(2,NULL,NULL,2,5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(2,NULL,NULL,5,10,NULL,NOW(),NOW());
 insert into servcomissionlookup values(3,NULL,NULL,2,2.5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(3,NULL,NULL,5,5,NULL,NOW(),NOW());
-insert into servcomissionlookup values(4,1,NULL,2,5,NULL,NOW(),NOW());
-insert into servcomissionlookup values(4,1,NULL,5,10,NULL,NOW(),NOW());
-insert into servcomissionlookup values(4,2,NULL,2,7.5,NULL,NOW(),NOW());
-insert into servcomissionlookup values(4,2,NULL,5,15,NULL,NOW(),NOW());
-insert into servcomissionlookup values(4,3,NULL,2,5,NULL,NOW(),NOW());
-insert into servcomissionlookup values(4,3,NULL,5,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,NULL,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,NULL,NULL,5,10,NULL,NOW(),NOW());
 insert into servcomissionlookup values(5,NULL,NULL,2,2.5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(5,NULL,NULL,5,5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(6,NULL,NULL,2,2.5,NULL,NOW(),NOW());
@@ -727,8 +724,16 @@ insert into servcomissionlookup values(18,NULL,NULL,5,5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(21,NULL,NULL,2,6,NULL,NOW(),NOW());
 insert into servcomissionlookup values(21,NULL,NULL,5,12,NULL,NOW(),NOW());
 	#i, p now
-insert into servcomissionlookup values(2,NULL,NULL,2,5,NULL,NOW(),NOW());
-insert into servcomissionlookup values(2,NULL,NULL,5,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(12,NULL,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(12,NULL,NULL,5,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,1,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,1,NULL,5,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,2,NULL,2,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,2,NULL,5,20,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,3,NULL,2,15,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,3,NULL,5,30,NULL,NOW(),NOW());
+
+#Now the service comission from applications
 
 
 set @stype=1; #a
