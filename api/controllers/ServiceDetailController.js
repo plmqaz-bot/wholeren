@@ -74,7 +74,7 @@ module.exports = {
 		 		console.log("This is i");
 		 		return  ServiceDetail.update({id:id},{correspondService:id});
 		 	}else{
-				console.log("not creating progress ",progress,data);
+				console.log("not creating progress ",data);
 				return Promise.resolve(data);
 			}
 		 }).then(function(data){
