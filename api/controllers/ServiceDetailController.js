@@ -64,9 +64,12 @@ module.exports = {
 		// tocreate['servRole']=attribs.servRole;
 		// tocreate['servLevel']=attribs.servLevel;
 		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey']);
-		 console.log(tocreate);
+		 console.log(tocreate,id);
 		 ServiceDetail.update({id:id},tocreate).then(function(data){
 		 	data=data[0]||data;
+	 	    if(tocreate['serviceProgress']){
+		        return ServiceProgressUpdate.create({serviceDetail:id,serviceProgress:tocreate['serviceProgress']});
+		    }
 		 	if(tocreate['realServiceType']==12){
 		 		console.log("This is i");
 		 		return  ServiceDetail.update({id:id},{correspondService:id});
@@ -89,7 +92,10 @@ module.exports = {
 		var attribs=req.body;
 		if(!attribs.contract) return res.json(404,{error:"no user or contract"});
 		ServiceDetail.create(attribs).then(function(data){
-			return res.json(data);
+			if(attribs['serviceProgress']){
+		        ServiceProgressUpdate.create({serviceDetail:data.id,serviceProgress:attribs['serviceProgress']});
+		    }
+		    return res.json(data);
 		}).error(function(err){
             Utilfunctions.errorHandler(err,res,"Create ServiceDetail failed");
 		})
