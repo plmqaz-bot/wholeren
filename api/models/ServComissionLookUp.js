@@ -20,6 +20,7 @@ module.exports = {
 
   	serviceProgress:{model:'ServiceProgress',required:true},
 
+    score:'float'
   	// statusportion:{type:'float'},
 
   	// statusflat:{type:'float'}

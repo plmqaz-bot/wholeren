@@ -67,9 +67,9 @@ module.exports = {
 		 console.log(tocreate);
 		 ServiceDetail.update({id:id},tocreate).then(function(data){
 		 	data=data[0]||data;
-		 	if(tocreate['serviceProgress']&&data.id){
-		 		console.log("create progress");
-		 		return ServiceProgressUpdate.create({serviceDetail:id,serviceProgress:tocreate['serviceProgress']});
+		 	if(tocreate['realServiceType']==12){
+		 		console.log("This is i");
+		 		return  ServiceDetail.update({id:id},{correspondService:id});
 		 	}else{
 				console.log("not creating progress ",progress,data);
 				return Promise.resolve(data);

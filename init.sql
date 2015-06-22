@@ -208,15 +208,15 @@ insert into country values('美国',NULL,NOW(),NOW());
 
 #就读学位
 truncate degree;
-insert into degree values('无学校',NULL,NOW(),NOW());
-insert into degree values('高中',NULL,NOW(),NOW());
-insert into degree values('社区',NULL,NOW(),NOW());
-insert into degree values('语言',NULL,NOW(),NOW());
-insert into degree values('本科',NULL,NOW(),NOW());
-insert into degree values('硕士',NULL,NOW(),NOW());# 硕博
-insert into degree values('博士',NULL,NOW(),NOW());# 硕博
-insert into degree values('小学',NULL,NOW(),NOW());
-insert into degree values('初中',NULL,NOW(),NOW());
+insert into degree values('无学校',1,NOW(),NOW());
+insert into degree values('高中',2,NOW(),NOW());
+insert into degree values('社区',3,NOW(),NOW());
+insert into degree values('语言',4,NOW(),NOW());
+insert into degree values('本科',5,NOW(),NOW());
+insert into degree values('硕士',6,NOW(),NOW());# 硕博
+insert into degree values('博士',7,NOW(),NOW());# 硕博
+insert into degree values('小学',8,NOW(),NOW());
+insert into degree values('初中',9,NOW(),NOW());
 #insert into degree values('硕博',NULL,NOW(),NOW());
 #付款方式
 truncate paymentoption;
@@ -704,6 +704,7 @@ insert into servcomissionlookup values(2,NULL,NULL,5,10,NULL,NOW(),NOW());
 insert into servcomissionlookup values(3,NULL,NULL,2,2.5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(3,NULL,NULL,5,5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(4,NULL,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(4,NULL,NULL,4,10,NULL,NOW(),NOW());
 insert into servcomissionlookup values(4,NULL,NULL,5,10,NULL,NOW(),NOW());
 insert into servcomissionlookup values(5,NULL,NULL,2,2.5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(5,NULL,NULL,5,5,NULL,NOW(),NOW());
@@ -725,16 +726,24 @@ insert into servcomissionlookup values(21,NULL,NULL,2,6,NULL,NOW(),NOW());
 insert into servcomissionlookup values(21,NULL,NULL,5,12,NULL,NOW(),NOW());
 	#i, p now
 insert into servcomissionlookup values(12,NULL,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(12,NULL,NULL,3,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(12,NULL,NULL,4,5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(12,NULL,NULL,5,5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(15,1,NULL,2,5,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,1,NULL,4,5,NULL,NOW(),NOW());
 insert into servcomissionlookup values(15,1,NULL,5,10,NULL,NOW(),NOW());
 insert into servcomissionlookup values(15,2,NULL,2,10,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,2,NULL,4,10,NULL,NOW(),NOW());
 insert into servcomissionlookup values(15,2,NULL,5,20,NULL,NOW(),NOW());
 insert into servcomissionlookup values(15,3,NULL,2,15,NULL,NOW(),NOW());
+insert into servcomissionlookup values(15,3,NULL,4,15,NULL,NOW(),NOW());
 insert into servcomissionlookup values(15,3,NULL,5,30,NULL,NOW(),NOW());
 
 #Now the service comission from applications
-
+insert into servappcomissionlookup values(12,1,0,1,3,1,3,0,1,1,0,NULL,NULL,NOW(),NOW());
+insert into servappcomissionlookup values(15,0,0,0,0,0,0,0,0,0,5,1,NULL,NOW(),NOW());
+insert into servappcomissionlookup values(15,0,0,0,0,0,0,0,0,0,10,2,NULL,NOW(),NOW());
+insert into servappcomissionlookup values(15,0,0,0,0,0,0,0,0,0,15,3,NULL,NOW(),NOW());
 
 set @stype=1; #a
 select id from servrole where servRole ='负责老师' into @srole;
@@ -1158,7 +1167,7 @@ RETURNS date
 DETERMINISTIC
 BEGIN 
   DECLARE dist date;
-  SET dist=SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-23'),INTERVAL 1 MONTH)
+  SET dist=SUBDATE(DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-23'),INTERVAL 1 MONTH);
   RETURN dist;
 END$$
 DELIMITER ;
@@ -1170,7 +1179,7 @@ RETURNS date
 DETERMINISTIC
 BEGIN 
   DECLARE dist date;
-  SET dist=DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-23')
+  SET dist=DATE_FORMAT(STR_TO_DATE(CONCAT(year,'-',month),'%Y-%m'),'%Y-%m-23');
   RETURN dist;
 END$$
 DELIMITER ;
@@ -1252,19 +1261,44 @@ END;;
 delimiter ;
 
 # SERVICE COMISSION
+
+
 DROP PROCEDURE IF EXISTS ServiceComission;
 delimiter ;;
 create PROCEDURE ServiceComission (uid int, year int, month int)
 COMMENT ''
 BEGIN
-select main.*,user.nickname from (select servicedetail.*, sum(if(DateInRange(application.submitDate,year,month),application.id,0)) as 'applied',sum(if(DateInRange(application.acceptedDate,year,month),application.id,0)) as 'accepted',sp1.serviceProgress as 'curProgress',sp2.serviceProgress as 'lastProgress' from servicedetail left join
-(select serviceDetail,max(if(sp.createdAt<ThisMonthEnd(year,month),sp.id,null)) as 'curMonth',max(if(sp.createdAt<LastMonthEnd(year,month),sp.id,null)) as 'lastMonth' from 
-serviceprogressupdate sp group by serviceDetail) as t1 on t1.serviceDetail=servicedetail.id
+set @year=year;
+set @month=month;
+set @uid=uid;
+select sql_no_cache main.*, main.decidedH*ifnull(s.decideH,0)+main.decidedCC*ifnull(s.decideCC,0)+main.decidedU*ifnull(s.decideU,0) as'decidedScore',
+main.appliedH*s.appliedH+main.appliedCC*s.appliedCC+main.appliedU*s.appliedU as'appliedScore',
+if(anyBeforeThisMonthAccept,main.appliedH*s.perAppIfAcceptH+main.appliedCC*s.perAppIfAcceptCC+main.appliedU*s.perAppIfAcceptU,
+if(anyThisMonthAccept,main.totalH*s.perAppIfAcceptH+main.totalCC*s.perAppIfAcceptCC+main.totalU*s.perAppIfAcceptU,0)) as 'acceptedScore'
+from (select  t1.*, user.nickname,
+sum(if(DateInRange(application.decidedDate,@year,@month) and appliedDegree=2,1,0)) as 'decidedH',
+sum(if(DateInRange(application.submitDate,@year,@month) and appliedDegree=2,1,0)) as 'appliedH',
+sum(if(applied and appliedDegree=2,1,0)) as 'totalH',
+sum(if(DateInRange(application.decidedDate,@year,@month) and appliedDegree in (3,4),1,0)) as 'decidedCC',
+sum(if(DateInRange(application.submitDate,@year,@month)and appliedDegree in (3,4),1,0)) as 'appliedCC',
+sum(if(applied and appliedDegree in (3,4),1,0)) as 'totalCC',
+sum(if(DateInRange(application.decidedDate,@year,@month) and appliedDegree in (5,6),1,0)) as 'decidedU',
+sum(if(DateInRange(application.submitDate,@year,@month) and appliedDegree in (5,6),1,0)) as 'appliedU',
+sum(if(applied and appliedDegree in (5,6),1,0)) as 'totalU',
+if(sum(if(succeed and application.acceptedDate<LastMonthEnd(@year,@month),1,0))>0,1,0) as 'anyBeforeThisMonthAccept',
+if(sum(if(succeed and DateInRange(application.acceptedDate,@year,@month),1,0))>0,1,0) as 'anyThisMonthAccept',
+sp1.serviceProgress as 'curProgress',sp2.serviceProgress as 'lastProgress',ss1.score as 'curScore',ss2.score as 'lastScore', ss1.score-ss2.score as 'thisMonthScore'
+from (select servicedetail.*,max(if(sp.createdAt<ThisMonthEnd(@year,@month),sp.id,null)) as 'curMonth',max(if(sp.createdAt<LastMonthEnd(@year,@month),sp.id,null)) as 'lastMonth' from 
+serviceprogressupdate sp  inner join servicedetail on servicedetail.id=sp.serviceDetail where @uid in (user,0) and servicedetail.deleted!=1 group by servicedetail.id) as t1 
 left join serviceprogressupdate sp1 on sp1.id=curMonth
 left join serviceprogressupdate sp2 on sp2.id=lastMonth
-left join contract on servicedetail.contract=contract.id
-left join application on (application.service=servicedetail.id or (application.service=servicedetail.correspondService)) where servicedetail.deleted!=1 and contract.deleted!=1 group by servicedetail.id) as main 
-inner join user on main.user=user.id where (applied!=0 or accepted!=0 or curProgress!=lastProgress) and uid in (user.id,0);
+left join servcomissionlookup ss1 on ss1.realServiceType=t1.realServiceType and sp1.serviceProgress=ss1.serviceProgress and (t1.level=ss1.servLevel or t1.level is null)
+left join servcomissionlookup ss2 on ss2.realServiceType=t1.realServiceType and sp2.serviceProgress=ss2.serviceProgress and (t1.level=ss2.servLevel or t1.level is null)
+left join contract on t1.contract=contract.id
+left join application on (t1.correspondService=application.service)
+inner join user on t1.user=user.id where contract.deleted!=1 group by t1.id) as main
+left join servappcomissionlookup s on s.realServiceType=main.realServiceType and (s.level=main.level or main.level is null)
+where ((main.decidedH+main.appliedH+main.decidedCC+main.appliedCC+main.decidedU+main.appliedU+main.anyThisMonthAccept!=0) or curProgress!=lastProgress) ;
 END;;
 delimiter ;
 

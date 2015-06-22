@@ -69,6 +69,7 @@ create index sales1 on `contract`(sales1);
 create index sales2 on `contract`(sales2);
 create index teacher on `contract`(teacher);
 create index app_serv on `application`(service);
+create index servprogupdate on `servicedetail`(correspondService);
 
 truncate servicedetail;
 
@@ -149,4 +150,41 @@ CREATE TABLE `wholeren`.`servappcomissionlookup` (
   `createdAt` DATETIME NULL,
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
+
+
+ALTER TABLE `wholeren`.`application` 
+ADD COLUMN `decidedDate` DATE NULL AFTER `decided`;
+
+ALTER TABLE `wholeren`.`servicedetail` 
+ADD COLUMN `level` INT NULL AFTER `degree`;
+
+
+ALTER TABLE `wholeren`.`servappcomissionlookup` 
+CHANGE COLUMN `decidedScore` `decideH` FLOAT NULL DEFAULT NULL ,
+CHANGE COLUMN `appliedScore` `decideCC` FLOAT NULL DEFAULT NULL ,
+CHANGE COLUMN `acceptedScore` `decideU` FLOAT NULL DEFAULT NULL ,
+CHANGE COLUMN `acceptedFlat` `appliedH` FLOAT NULL DEFAULT NULL ,
+ADD COLUMN `appliedCC` FLOAT NULL AFTER `appliedH`,
+ADD COLUMN `appliedU` FLOAT NULL AFTER `appliedCC`,
+ADD COLUMN `perAppIfAccept` FLOAT NULL AFTER `appliedU`;
+
+ALTER TABLE `wholeren`.`servappcomissionlookup` 
+CHANGE COLUMN `perAppIfAccept` `perAppIfAcceptH` FLOAT NULL DEFAULT NULL ,
+ADD COLUMN `perAppIfAcceptCC` FLOAT NULL AFTER `perAppIfAcceptH`,
+ADD COLUMN `perAppIfAcceptU` FLOAT NULL AFTER `perAppIfAcceptCC`;
+ALTER TABLE `wholeren`.`servappcomissionlookup` 
+ADD COLUMN `flatIfAccepted` FLOAT NULL AFTER `updatedAt`,
+ADD COLUMN `level` INT NULL AFTER `flatIfAccepted`;
+ALTER TABLE `wholeren`.`servappcomissionlookup` 
+CHANGE COLUMN `flatIfAccepted` `flatIfAccepted` FLOAT NULL DEFAULT NULL AFTER `perAppIfAcceptU`,
+CHANGE COLUMN `level` `level` INT(11) NULL DEFAULT NULL AFTER `flatIfAccepted`;
+
+set sql_safe_updates=0;
+update servicedetail set correspondService=id where realServicetype=12;
+truncate serviceprogressupdate;
+insert into serviceprogressupdate 
+select id,2,NULL,indate,indate from servicedetail;
+insert into serviceprogressupdate 
+select id,serviceProgress,NULL,now(),now()from servicedetail;
+
 

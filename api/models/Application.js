@@ -18,7 +18,9 @@ module.exports = {
 
 	service:{model:'ServiceDetail'},
 
-	decided:{type:'boolean',defaultsTo:false},
+  decided:{type:'boolean',defaultsTo:false},
+
+	decidedDate:{type:'date'},
 
 	applied:{type:'boolean',defaultsTo:false},
 
@@ -40,13 +42,23 @@ module.exports = {
     if (attrs.decided==false){
       delete attrs['decided'];
     }
+    if (attrs.decided==true){
+     // delete attrs['applied'];
+     attrs.decidedDate=new Date();
+    }else if (attrs.decided==false){
+      attrs.decidedDate=null;
+    }
     if (attrs.applied==true){
      // delete attrs['applied'];
      attrs.submitDate=new Date();
+    }else if (attrs.applied==false){
+      attrs.submitDate=null;
     }
     if (attrs.succeed==true){
       //delete attrs['succeed'];
       attrs.acceptedDate=new Date();
+    }else if (attrs.succeed==false){
+      attrs.acceptedDate=null;
     }
      next();
   },

@@ -28,7 +28,16 @@ module.exports = {
     if (attrs.serviceProgress==2){
       attrs.indate=new Date();
     }
+    if(attrs.serviceProgress){
+      ServiceProgressUpdate.create({serviceDetail:id,serviceProgress:attrs.serviceProgress});
+    }
     next();
   },
+  beforeCreate:function(attrs,next){
+    if(attrs.serviceProgress){
+      ServiceProgressUpdate.create({serviceDetail:id,serviceProgress:attrs.serviceProgress});
+    }    
+    next();
+  }
 };
 

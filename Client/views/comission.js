@@ -64,7 +64,7 @@ var teacher=main.baseDataView.extend({
     templateName:'default',
     constructColumns:function(){
         var self=this;
-        return Promise.all([util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/ServiceComission/level/')]).spread(function(progress,data){
+        return Promise.all([util.ajaxGET('/ServiceProgress/')]).spread(function(progress,data){
              var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             
             // var levelselect=roleselect.extend({
@@ -111,17 +111,33 @@ var teacher=main.baseDataView.extend({
             //         return cell._optionValues;
             //     } 
             // });
+            var totalCell=BackgridCells.Cell.extend({
+                render:function(){
+                    var totalScore=this.model.get('thisMonthScore')||0+this.model.get('decidedScore')||0+this.model.get('appliedScore')||0+this.model.get('acceptedScore')||0
+                    this.$el.html(totalScore);
+                    return this;
+                }
+            });
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
                 {name:'nickname',label:'老师名字',editable: false,cell:'string'},
                 {name:'realServiceType',label:'服务类型',editable: false,cell:'string'},
                 {name:'indate',label:'进入服务时间',editable:false,cell:BackgridCells.MomentCell},
-                //{name:'servRole',label:'老师任务',editable:false,cell:roleselect},
+                //{name:'user',label:'老师',editable:false,cell:'number'},
                 //{name:'servLevel',label:'文书level',editable:false,cell:levelselect},
                 {name:'lastProgress',label:'月初进度',editable:false,cell:progressselect},
                 {name:'curProgress',label:'月末进度',editable:false,cell:progressselect},
-                {name:'applied',label:'本月申请数',editable:false,cell:'number'},
-                {name:'accepted',label:'本月录取数',editable:false,cell:'number'},
+                {name:'decidedH',label:'本月选校高中数',editable:false,cell:'number'},
+                {name:'appliedH',label:'本月提交高中数',editable:false,cell:'number'},
+                {name:'decidedCC',label:'本月选校语言cc数',editable:false,cell:'number'},
+                {name:'appliedCC',label:'本月提交语言cc数',editable:false,cell:'number'},
+                {name:'decidedU',label:'本月选校U/master数',editable:false,cell:'number'},
+                {name:'appliedU',label:'本月提交U/master数',editable:false,cell:'number'},
+                {name:'thisMonthScore',label:'本月进度积分',editable:false,cell:'number'},
+                {name:'decidedScore',label:'本月选校积分',editable:false,cell:'number'},
+                {name:'appliedScore',label:'本月提交积分',editable:false,cell:'number'},
+                {name:'acceptedScore',label:'本月录取积分',editable:false,cell:'number'},
+                {name:'',label:'本月总积分',editable:false,cell:totalCell},
                // {name:'extra',label:'Extra',cell:'number'},
                 // {name:'startComission',label:'月初佣金',editable: false,cell:'number'},
                 // {name:'endComission',label:'月末佣金',editable: false,cell:'number'},
