@@ -91,7 +91,7 @@ module.exports = {
 		if(req.session.user.rank==3&&req.session.user.role==2){
 			id=0;
 		}
-		id=0;
+		
 		var year=parseInt(req.param('year'));
 		var month=parseInt(req.param('month'));
 		if(isNaN(year)||isNaN(month)||year<1969||year>2100||month<1||month>12) return res.json(400,{error:"invalid year and month"});

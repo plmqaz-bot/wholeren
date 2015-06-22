@@ -1287,7 +1287,7 @@ sum(if(DateInRange(application.submitDate,@year,@month) and appliedDegree in (5,
 sum(if(applied and appliedDegree in (5,6),1,0)) as 'totalU',
 if(sum(if(succeed and application.acceptedDate<LastMonthEnd(@year,@month),1,0))>0,1,0) as 'anyBeforeThisMonthAccept',
 if(sum(if(succeed and DateInRange(application.acceptedDate,@year,@month),1,0))>0,1,0) as 'anyThisMonthAccept',
-sp1.serviceProgress as 'curProgress',sp2.serviceProgress as 'lastProgress',ss1.score as 'curScore',ss2.score as 'lastScore', ss1.score-ss2.score as 'thisMonthScore'
+sp1.serviceProgress as 'curProgress',sp2.serviceProgress as 'lastProgress',ifnull(ss1.score,0) as 'curScore',ifnull(ss2.score,0) as 'lastScore', ifnull(ss1.score,0)-ifnull(ss2.score,0) as 'thisMonthScore'
 from (select servicedetail.*,max(if(sp.createdAt<ThisMonthEnd(@year,@month),sp.id,null)) as 'curMonth',max(if(sp.createdAt<LastMonthEnd(@year,@month),sp.id,null)) as 'lastMonth' from 
 serviceprogressupdate sp  inner join servicedetail on servicedetail.id=sp.serviceDetail where @uid in (user,0) and servicedetail.deleted!=1 group by servicedetail.id) as t1 
 left join serviceprogressupdate sp1 on sp1.id=curMonth
@@ -1296,7 +1296,7 @@ left join servcomissionlookup ss1 on ss1.realServiceType=t1.realServiceType and 
 left join servcomissionlookup ss2 on ss2.realServiceType=t1.realServiceType and sp2.serviceProgress=ss2.serviceProgress and (t1.level=ss2.servLevel or t1.level is null)
 left join contract on t1.contract=contract.id
 left join application on (t1.correspondService=application.service)
-inner join user on t1.user=user.id where contract.deleted!=1 group by t1.id) as main
+inner join user on t1.user=user.id where contract.deleted!=1 or contract.deleted is null group by t1.id) as main
 left join servappcomissionlookup s on s.realServiceType=main.realServiceType and (s.level=main.level or main.level is null)
 where ((main.decidedH+main.appliedH+main.decidedCC+main.appliedCC+main.decidedU+main.appliedU+main.anyThisMonthAccept!=0) or curProgress!=lastProgress) ;
 END;;

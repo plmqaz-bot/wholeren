@@ -71,18 +71,6 @@ create index teacher on `contract`(teacher);
 create index app_serv on `application`(service);
 create index servprogupdate on `servicedetail`(correspondService);
 
-truncate servicedetail;
-
-select servicedetail.*,user.nickname,u2.nickname from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank=2;
-
-select * from client where chineseName='王淼';
-
-
-select cName, count(*) from servicedetail inner join client on client.chinesename=cName and client.chineseName!='' where contractKey ='' group by servicedetail.cName;
-
-
-select * from client where chineseName='令一辉';
-
 
 set sql_safe_updates=0;
 # delete no use client
@@ -98,13 +86,7 @@ select servicedetail.id,contract.id as cid,count(*) as 'count' from servicedetai
 select * from servicedetail where contract is null;
 
 
-
-
-ALTER TABLE `wholeren`.`application` 
-CHANGE COLUMN `succeed` `succeed` TINYINT(1) NULL DEFAULT 0 ,
-ADD COLUMN `decided` TINYINT(1) NULL DEFAULT 0 AFTER `newDev`,
-ADD COLUMN `applied` TINYINT(1) NULL DEFAULT 0 AFTER `decided`;
-CREATE TABLE `wholeren`.`subrole_handle_salesgroup` (
+CREATE TABLE `subrole_handle_salesgroup` (
   `subRole` INT(11) NULL,
   `salesGroup` INT(11) NULL,
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -112,20 +94,22 @@ CREATE TABLE `wholeren`.`subrole_handle_salesgroup` (
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
 
+ALTER TABLE `application` 
+CHANGE COLUMN `succeed` `succeed` TINYINT(1) NULL DEFAULT 0 ,
+ADD COLUMN `decided` TINYINT(1) NULL DEFAULT 0 AFTER `newDev`,
+ADD COLUMN `applied` TINYINT(1) NULL DEFAULT 0 AFTER `decided`;
 
-
-
-ALTER TABLE `wholeren`.`application` 
+ALTER TABLE `application` 
 ADD COLUMN `appliedDegree` INT(11) NULL AFTER `appliedMajor`,
 ADD COLUMN `submitDate` DATE NULL AFTER `applied`,
 ADD COLUMN `acceptedDate` DATE NULL AFTER `succeed`;
 
-ALTER TABLE `wholeren`.`servicedetail` 
+ALTER TABLE `servicedetail` 
 ADD COLUMN `degree` INT(11) NULL AFTER `serviceProgress`,
 ADD COLUMN `correspondService` INT(11) NULL AFTER `degree`;
 
 
-ALTER TABLE `wholeren`.`servcomissionlookup` 
+ALTER TABLE `servcomissionlookup` 
 DROP COLUMN `statusflat`,
 DROP COLUMN `statusportion`,
 DROP COLUMN `serviceStatus`,
@@ -136,11 +120,11 @@ CHANGE COLUMN `serviceType` `realServiceType` INT(11) NULL DEFAULT NULL ,
 ADD COLUMN `degree` INT(11) NULL AFTER `servLevel`,
 ADD COLUMN `serviceProgress` INT(11) NULL AFTER `degree`;
 
-ALTER TABLE `wholeren`.`servcomissionlookup` 
+ALTER TABLE `servcomissionlookup` 
 ADD COLUMN `score` FLOAT NULL DEFAULT 0 AFTER `serviceProgress`;
 
 
-CREATE TABLE `wholeren`.`servappcomissionlookup` (
+CREATE TABLE `servappcomissionlookup` (
   `realServiceType` INT(11) NULL,
   `decidedScore` FLOAT NULL,
   `appliedScore` FLOAT NULL,
@@ -152,14 +136,14 @@ CREATE TABLE `wholeren`.`servappcomissionlookup` (
   PRIMARY KEY (`id`));
 
 
-ALTER TABLE `wholeren`.`application` 
+ALTER TABLE `application` 
 ADD COLUMN `decidedDate` DATE NULL AFTER `decided`;
 
-ALTER TABLE `wholeren`.`servicedetail` 
+ALTER TABLE `servicedetail` 
 ADD COLUMN `level` INT NULL AFTER `degree`;
 
 
-ALTER TABLE `wholeren`.`servappcomissionlookup` 
+ALTER TABLE `servappcomissionlookup` 
 CHANGE COLUMN `decidedScore` `decideH` FLOAT NULL DEFAULT NULL ,
 CHANGE COLUMN `appliedScore` `decideCC` FLOAT NULL DEFAULT NULL ,
 CHANGE COLUMN `acceptedScore` `decideU` FLOAT NULL DEFAULT NULL ,
@@ -168,14 +152,14 @@ ADD COLUMN `appliedCC` FLOAT NULL AFTER `appliedH`,
 ADD COLUMN `appliedU` FLOAT NULL AFTER `appliedCC`,
 ADD COLUMN `perAppIfAccept` FLOAT NULL AFTER `appliedU`;
 
-ALTER TABLE `wholeren`.`servappcomissionlookup` 
+ALTER TABLE `servappcomissionlookup` 
 CHANGE COLUMN `perAppIfAccept` `perAppIfAcceptH` FLOAT NULL DEFAULT NULL ,
 ADD COLUMN `perAppIfAcceptCC` FLOAT NULL AFTER `perAppIfAcceptH`,
 ADD COLUMN `perAppIfAcceptU` FLOAT NULL AFTER `perAppIfAcceptCC`;
-ALTER TABLE `wholeren`.`servappcomissionlookup` 
+ALTER TABLE `servappcomissionlookup` 
 ADD COLUMN `flatIfAccepted` FLOAT NULL AFTER `updatedAt`,
 ADD COLUMN `level` INT NULL AFTER `flatIfAccepted`;
-ALTER TABLE `wholeren`.`servappcomissionlookup` 
+ALTER TABLE `servappcomissionlookup` 
 CHANGE COLUMN `flatIfAccepted` `flatIfAccepted` FLOAT NULL DEFAULT NULL AFTER `perAppIfAcceptU`,
 CHANGE COLUMN `level` `level` INT(11) NULL DEFAULT NULL AFTER `flatIfAccepted`;
 
