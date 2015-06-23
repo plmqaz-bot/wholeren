@@ -20,10 +20,10 @@ insert into subrole values('高中',1,1,NOW(),NOW());
 insert into subrole values('紧急销售',1,2,NOW(),NOW());
 insert into subrole values('转升',1,3,NOW(),NOW());
 insert into subrole values('大客户',1,4,NOW(),NOW());
-insert into subrole values('紧急申请',2,5,NOW(),NOW());
-insert into subrole values('大申请',2,6,NOW(),NOW());
-insert into subrole values('转学',2,7,NOW(),NOW());
-insert into subrole values('文书',2,8,NOW(),NOW());
+insert into subrole values('后期紧急',2,5,NOW(),NOW());
+insert into subrole values('后期转升',2,6,NOW(),NOW());
+insert into subrole values('后期高中',2,7,NOW(),NOW());
+insert into subrole values('后期辅导',2,8,NOW(),NOW());
 insert into subrole values('广告',3,9,NOW(),NOW());
 insert into subrole values('渠道',3,10,NOW(),NOW());
 
@@ -1256,7 +1256,7 @@ inner join user on user.id in (contract.sales1,contract.sales2,contract.expert1,
 left join salescomissiongoal s on (s.year=year and s.month=month and user.id=s.user)
 left join service on service.contract=contract.id
 left join whoownswho w on w.puppet=user.id
-where contractSigned is not null and deleted!=1 and contractPrice is not null and (uid=user.id or uid=w.boss or uid=0) and (DateInRange(contract.contractSigned,year,month)) group by contract.id,user.id order by user.nickname, contractSigned ;
+where contractSigned is not null and deleted!=1 and (uid=user.id or uid=w.boss or uid=0) and (DateInRange(contract.contractSigned,year,month)) group by contract.id,user.id order by user.nickname, contractSigned ;
 END;;
 delimiter ;
 

@@ -187,7 +187,7 @@ Settings.allUsers=main.baseDataView.extend({
             {name:'firstname',label:'姓',editable:false,cell:'string'},                    
             {name:'lastname',label:'名',editable:false,cell:'string'},
             {name:'email',label:'邮箱',editable:false,cell:'string'},
-            {name:'role',label:'职位',editable:editable,cell:roleselect},
+            {name:'role',label:'所在部门',editable:editable,cell:roleselect},
             {name:'subRole',label:'细分职位',editable:editable,cell:subroleselect},
             {name:'userLevel',label:'佣金等级',editable:editable,cell:levelselect},
             {name:'rank',label:'职位等级',editable:editable,cell:'number'},
