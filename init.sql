@@ -694,6 +694,24 @@ insert into notifyinterval values(6,'Day 6 ',NULL,NOW(),NOW());
 insert into notifyinterval values(9,'Day 9 ',NULL,NOW(),NOW());
 insert into notifyinterval values(15,'Day 15 ',NULL,NOW(),NOW());
 insert into notifyinterval values(30,'Day 30 ',NULL,NOW(),NOW());
+#Comission Lookup
+insert into comissionlookup values('sales',NULL,NULL,1,0.03,0,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,2,0.05,0,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,3,0.05,0,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,4,0.05,0,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,5,0.05,0,NULL,NOW(),NOW());
+insert into comissionlookup values('expert',NULL,NULL,1,0.02,0,NULL,NOW(),NOW());
+insert into comissionlookup values('expert',NULL,NULL,2,0.035,0,NULL,NOW(),NOW());
+insert into comissionlookup values('expert',NULL,NULL,3,0.035,0,NULL,NOW(),NOW());
+insert into comissionlookup values('expert',NULL,NULL,4,0.035,0,NULL,NOW(),NOW());
+insert into comissionlookup values('expert',NULL,NULL,5,0.035,0,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,1,0.05,1,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,2,0.08,1,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,3,0.08,1,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,4,0.08,1,NULL,NOW(),NOW());
+insert into comissionlookup values('sales',NULL,NULL,5,0.08,1,NULL,NOW(),NOW());
+
+
 
 # Now hard part 服务佣金的lookup table
 truncate servcomissionlookup;
@@ -1005,7 +1023,14 @@ insert into servcomissionlookup values(@stype,@srole,@slevel,0,9,@sprogress3,0.3
 
 ##############################################MARKET VIEWS #################################################
 # as Sales or Expert, percent if sign every month
-
+create index sdc on servicedetail(contract);
+create index sc on service(contract);
+create index cc on contract(client);
+create index sales1 on `contract`(sales1);
+create index sales2 on `contract`(sales2);
+create index teacher on `contract`(teacher);
+create index app_serv on `application`(service);
+create index servprogupdate on `servicedetail`(correspondService);
 DROP PROCEDURE IF EXISTS PerUserSignRate;
 delimiter ;;
 create PROCEDURE PerUserSignRate (uid int, month int, year int)

@@ -172,3 +172,9 @@ insert into serviceprogressupdate
 select id,serviceProgress,NULL,now(),now()from servicedetail;
 
 
+
+
+ALTER TABLE `wholeren`.`comissionlookup` 
+ADD COLUMN `alone` INT NULL AFTER `comission`;
+
+

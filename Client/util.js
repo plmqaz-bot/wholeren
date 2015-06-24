@@ -36,6 +36,8 @@ module.exports={
         Wholeren.notifications.clearEverything();
         var errors=response.responseJSON||{};
         var errortext=response.responseText||"";
+        var redirect=response.redirect;
+        var delay=response.delay||5;
         if(errors.invalidAttributes){
             for(var key in errors.invalidAttributes){
                 if(errors.invalidAttributes.hasOwnProperty(key)){
@@ -51,10 +53,22 @@ module.exports={
             }                     
         }else{
             Wholeren.notifications.addItem({
-                        type: 'error',
-                        message: errortext,
-                        status: 'passive'
-                        });
+                type: 'error',
+                message: errortext,
+                status: 'passive'
+            });
+        }
+
+        if(redirect){
+            Wholeren.notifications.addItem({
+                type: 'error',
+                message: 'redirecting',
+                status: 'passive'
+            });
+            setTimeout(function(){
+                //Wholeren.router.navigate(redirect,{trigger:true});  
+                window.location.href = redirect;
+            },delay*1000);
         }
     },
     handleRequestSuccess:function(response){

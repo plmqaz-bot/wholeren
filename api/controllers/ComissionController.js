@@ -40,8 +40,10 @@ module.exports = {
 				// }
 				if((cl||[]).length>0){
 					ele.percent=(_.max(cl,function(e){
-						if(e.rolename==ele['role']&&e.salesGroup==ele.salesGroup&&(e.lead==0||e.lead==null||e.lead==ele.lead)&&(e.leadDetail==0||e.leadDetail==null||e.leadDetail==ele.leadDetail)&&(e.salesGroup==0||e.salesGroup==null||e.salesGroup==ele.salesGroup)){
-							 return e.comission;
+						if(e.rolename==ele['role']&&(e.lead==0||e.lead==null||e.lead==ele.lead)&&(e.leadDetail==0||e.leadDetail==null||e.leadDetail==ele.leadDetail)&&(e.salesGroup==0||e.salesGroup==null||e.salesGroup==ele.salesGroup)){
+							 if(ele.UserCount==1&&e.alone==true){
+							 	return e.comission;
+							 }							 	
 						}
 						return 0;
 					})||{}).comission;

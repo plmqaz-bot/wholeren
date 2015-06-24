@@ -12,7 +12,8 @@ module.exports = {
   	lead:{model:'Lead'},
   	leadDetail:{model:'LeadDetail'},
   	salesGroup:{model:'SalesGroup'},
-  	comission:{type:'float'}
+  	comission:{type:'float'},
+  	alone:{type:'boolean'}
   }
 };
 
