@@ -26,6 +26,10 @@ module.exports = {
    ***************************************************************************/
   sendFakeEmail:true,
    port: 443,
+    ssl:{
+    key: require('fs').readFileSync(__dirname+'/../ssl/key.pem'),
+    cert:require('fs').readFileSync(__dirname+'/../ssl/cert.pem')
+  }
 
   /***************************************************************************
    * Set the log level in production environment to "silent"                 *

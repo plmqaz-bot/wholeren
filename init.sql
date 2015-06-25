@@ -1036,24 +1036,33 @@ delimiter ;;
 create PROCEDURE PerUserSignRate (uid int, month int, year int)
 COMMENT ''
 BEGIN
+#declare @lastM  date;
+set @lastM=LastMonthEnd(year,month);
+#declare thisM date;
+set @thisM=ThisMonthEnd(year,month);
 select user.id ,user.nickname,
 紧急销售咨询量,紧急销售签约量,紧急销售签约额,
 转学销售咨询量,转学销售签约量,转学销售签约额,
+升学销售咨询量,升学销售签约量,升学销售签约额,
 高中销售咨询量,高中销售签约量,高中销售签约额,
-学术销售咨询量,学术销售签约量,学术销售签约额,
+大客户销售咨询量,大客户销售签约量,大客户销售签约额,
+其他销售咨询量,其他销售签约量,其他销售签约额,
 紧急专家咨询量,紧急专家签约量,紧急专家签约额,
 转学专家咨询量,转学专家签约量,转学专家签约额, 
+升学专家咨询量,升学专家签约量,升学专家签约额, 
 高中专家咨询量,高中专家签约量,高中专家签约额,
-学术专家咨询量,学术专家签约量,学术专家签约额,
+大客户专家咨询量,大客户专家签约量,大客户专家签约额,
+其他专家咨询量,其他专家签约量,其他专家签约额,
 IFNULL(紧急销售签约量,0)+IFNULL(紧急专家签约量,0) as '紧急签约量',
 IFNULL(转学销售签约量,0)+IFNULL(转学专家签约量,0) as '转学签约量',
 IFNULL(升学销售签约量,0)+IFNULL(升学专家签约量,0) as '升学签约量',
 IFNULL(高中销售咨询量,0)+IFNULL(高中专家咨询量,0) as '高中签约量',
+IFNULL(大客户销售咨询量,0)+IFNULL(大客户专家咨询量,0) as '大客户签约量',
 IFNULL(其他销售咨询量,0)+IFNULL(其他专家咨询量,0) as '其他签约量',
 #(IFNULL(紧急销售签约量,0)+IFNULL(紧急专家签约量,0))/(IFNULL(紧急销售咨询量,0)+IFNULL(紧急专家咨询量,0)) as '紧急签约率',
 #(IFNULL(转学销售签约量,0)+IFNULL(转学专家签约量,0))/(IFNULL(转学销售咨询量,0)+IFNULL(转学专家咨询量,0)) as '转学签约率',
-(IFNULL(转学销售签约量,0)+IFNULL(紧急销售签约量,0)+IFNULL(升学销售签约量,0)+IFNULL(高中销售签约量,0)+IFNULL(其他销售签约量,0))/(IFNULL(转学销售咨询量,0)+IFNULL(升学销售咨询量,0)+IFNULL(紧急销售咨询量,0)+IFNULL(高中销售咨询量,0)+IFNULL(其他销售咨询量,0)) as '销售签约率',
-(IFNULL(转学专家签约量,0)+IFNULL(紧急专家签约量,0)+IFNULL(升学专家签约量,0)+IFNULL(高中专家签约量,0)+IFNULL(学术专家签约量,0))/(IFNULL(转学专家咨询量,0)+IFNULL(升学专家咨询量,0)+IFNULL(紧急专家咨询量,0)+IFNULL(高中专家咨询量,0)+IFNULL(其他销售咨询量,0)) as '专家签约率',
+(IFNULL(转学销售签约量,0)+IFNULL(紧急销售签约量,0)+IFNULL(升学销售签约量,0)+IFNULL(高中销售签约量,0)+IFNULL(大客户销售签约量,0)+IFNULL(其他销售签约量,0))/(IFNULL(转学销售咨询量,0)+IFNULL(升学销售咨询量,0)+IFNULL(紧急销售咨询量,0)+IFNULL(高中销售咨询量,0)+IFNULL(大客户销售咨询量,0)+IFNULL(其他销售咨询量,0)) as '销售签约率',
+(IFNULL(转学专家签约量,0)+IFNULL(紧急专家签约量,0)+IFNULL(升学专家签约量,0)+IFNULL(高中专家签约量,0)+IFNULL(大客户专家签约量,0)+IFNULL(其他专家签约量,0))/(IFNULL(转学专家咨询量,0)+IFNULL(升学专家咨询量,0)+IFNULL(紧急专家咨询量,0)+IFNULL(高中专家咨询量,0)+IFNULL(大客户专家咨询量,0)+IFNULL(其他销售咨询量,0)) as '专家签约率',
 #IFNULL(紧急销售签约额,0)+IFNULL(转学销售签约额,0)+IFNULL(高中销售签约额,0)+IFNULL(学术销售签约额,0) as '销售签约额',
 #IFNULL(紧急专家签约量,0)+IFNULL(转学专家签约量,0)+IFNULL(高中专家签约额,0)+IFNULL(学术专家签约额,0) as '专家签约额'
 IFNULL(紧急专家签约量,0)+IFNULL(转学专家签约量,0)+IFNULL(升学专家签约量,0)+IFNULL(高中专家签约额,0)+IFNULL(其他专家签约额,0)+IFNULL(紧急销售签约额,0)+IFNULL(转学销售签约额,0)+IFNULL(升学销售签约额,0)+IFNULL(高中销售签约额,0)+IFNULL(其他销售签约额,0) as '签约额'
@@ -1062,52 +1071,60 @@ from user left join
 sum(IF(c.salesGroup=2,1,0)) as '转学销售咨询量',
 sum(IF(c.salesGroup=3,1,0)) as '升学销售咨询量',
 sum(IF(c.salesGroup=4 ,1,0)) as '高中销售咨询量',
+sum(IF(c.salesGroup=12 ,1,0)) as '大客户销售咨询量',
 sum(IF(c.salesGroup=5,1,0)) as '其他销售咨询量'
 from user 
 left join contract c on user.id in (c.sales1,c.sales2) 
-where (uid in (0,user.id)) and DateInRange(c.createdAt,year,month) group by user.id) as t1 on user.id=t1.id
+where (uid in (0,user.id)) and c.createdAt between @lastM and @thisM group by user.id) as t1 on user.id=t1.id
 left join
 (select user.id,
 sum(IF(c.salesGroup=1,1,0)) as '紧急销售签约量',
-sum(IF(c.salesGroup=1,contractPrice,0)) as '紧急销售签约额',
+sum(IF(c.salesGroup=1,ifnull(contractPrice,sumPrice(c.id)),0)) as '紧急销售签约额',
 sum(IF(c.salesGroup=2,1,0)) as '转学销售签约量',
-sum(IF(c.salesGroup=2,contractPrice,0)) as '转学销售签约额',
+sum(IF(c.salesGroup=2,ifnull(contractPrice,sumPrice(c.id)),0)) as '转学销售签约额',
 sum(IF(c.salesGroup=3,1,0)) as '升学销售签约量',
-sum(IF(c.salesGroup=3,contractPrice,0)) as '升学销售签约额',
+sum(IF(c.salesGroup=3,ifnull(contractPrice,sumPrice(c.id)),0)) as '升学销售签约额',
 sum(IF(c.salesGroup=4,1,0)) as '高中销售签约量',
-sum(IF(c.salesGroup=4,contractPrice,0)) as '高中销售签约额',
+sum(IF(c.salesGroup=4,ifnull(contractPrice,sumPrice(c.id)),0)) as '高中销售签约额',
+sum(IF(c.salesGroup=12,1,0)) as '大客户销售签约量',
+sum(IF(c.salesGroup=12,ifnull(contractPrice,sumPrice(c.id)),0)) as '大客户销售签约额',
 sum(IF(c.salesGroup=5,1,0)) as '其他销售签约量',
-sum(IF(c.salesGroup=5,contractPrice,0)) as '其他销售签约额'
+sum(IF(c.salesGroup=5,ifnull(contractPrice,sumPrice(c.id)),0)) as '其他销售签约额'
 from user 
 left join contract c on user.id in (c.sales1,c.sales2) 
-where (uid in (0,user.id)) and DateInRange(c.contractSigned,year,month) group by user.id) as t2 on user.id=t2.id
+where (uid in (0,user.id)) and c.contractSigned between @lastM and @thisM and status=5 group by user.id) as t2 on user.id=t2.id
 left join
 (select user.id,sum(IF(c.salesGroup=1, 1,0)) as '紧急专家咨询量',
 sum(IF(c.salesGroup=2,1,0)) as '转学专家咨询量',
 sum(IF(c.salesGroup=3,1,0)) as '升学专家咨询量',
 sum(IF(c.salesGroup=4 ,1,0)) as '高中专家咨询量',
+sum(IF(c.salesGroup=12,1,0)) as '大客户专家咨询量',
 sum(IF(c.salesGroup=5,1,0)) as '其他专家咨询量'
 from user 
 left join contract c on user.id in (c.expert1,c.expert2) 
-where (uid in (0,user.id)) and DateInRange(c.createdAt,year,month) group by user.id) as t3 on user.id=t3.id
+where (uid in (0,user.id)) and c.createdAt between @lastM and @thisM group by user.id) as t3 on user.id=t3.id
 left join
 (select user.id,
 sum(IF(c.salesGroup=1,1,0)) as '紧急专家签约量',
-sum(IF(c.salesGroup=1,contractPrice,0)) as '紧急专家签约额',
+sum(IF(c.salesGroup=1,ifnull(contractPrice,sumPrice(c.id)),0)) as '紧急专家签约额',
 sum(IF(c.salesGroup=2,1,0)) as '转学专家签约量',
-sum(IF(c.salesGroup=2,contractPrice,0)) as '转学专家签约额',
+sum(IF(c.salesGroup=2,ifnull(contractPrice,sumPrice(c.id)),0)) as '转学专家签约额',
 sum(IF(c.salesGroup=3,1,0)) as '升学专家签约量',
-sum(IF(c.salesGroup=3,contractPrice,0)) as '升学专家签约额',
+sum(IF(c.salesGroup=3,ifnull(contractPrice,sumPrice(c.id)),0)) as '升学专家签约额',
 sum(IF(c.salesGroup=4,1,0)) as '高中专家签约量',
-sum(IF(c.salesGroup=4,contractPrice,0)) as '高中专家签约额',
+sum(IF(c.salesGroup=4,ifnull(contractPrice,sumPrice(c.id)),0)) as '高中专家签约额',
+sum(IF(c.salesGroup=12,1,0)) as '大客户专家签约量',
+sum(IF(c.salesGroup=12,ifnull(contractPrice,sumPrice(c.id)),0)) as '大客户专家签约额',
 sum(IF(c.salesGroup=5,1,0)) as '其他专家签约量',
-sum(IF(c.salesGroup=5,contractPrice,0)) as '其他专家签约额'
+sum(IF(c.salesGroup=5,ifnull(contractPrice,sumPrice(c.id)),0)) as '其他专家签约额'
 from user 
 left join contract c on user.id in (c.expert1,c.expert2) 
-where (uid in (0,user.id)) and DateInRange(c.contractSigned,year,month) group by user.id) as t4 on user.id=t4.id
+where (uid in (0,user.id)) and c.contractSigned between @lastM and @thisM and status=5 group by user.id) as t4 on user.id=t4.id
 where not(t1.id is null and t2.id is null and t3.id is null and t4.id is null);
 END;;
 delimiter ;
+
+
 
 
 
@@ -1132,7 +1149,7 @@ sum(IF(contractCategory=8 ,contractPrice,0)) as '紧急签约额',
 sum(IF(contractCategory in (7,9,10,11),1,0)) as '转学签约量',
 sum(IF(contractCategory in (7,9,10,11),contractPrice,0)) as '转学签约额'
 FROM contract c left join lead on c.lead=lead.id where 
-DateInRange(c.contractSigned,year,month) group by lead.id) as t2 on t1.id=t2.id;
+DateInRange(c.contractSigned,year,month) and status=5 group by lead.id) as t2 on t1.id=t2.id;
 END;;
 delimiter ;
 
@@ -1142,28 +1159,28 @@ create or replace view MonthlySummary as
 (select 
 IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) as 'M',
 IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) as 'Y',
-sum(contractPrice) as '总收入',
+FORMAT(sum(ifnull(contractPrice,sumPrice(c.id))),2) as '总收入',
 count(*) as '总咨询量',
-sum(IF(status.status like '%WIP%',1,0)) as '总签约量',
-sum(IF(contractcategory.contractCategory like '%紧急%',1,0)) as '紧急咨询量',
-sum(IF(contractcategory.contractCategory like '%紧急%' and (status.status like '%WIP%'),1,0))  as '紧急签约量',
-sum(IF(contractcategory.contractCategory like '%紧急%' and (status.status like '%WIP%'),contractPrice,0))  as '紧急签约额',
-sum(IF(contractcategory.contractCategory like '%转学%',1,0)) as '转学咨询量',
-sum(IF(contractcategory.contractCategory like '%转学%' and (status.status like '%WIP%'),1,0))  as '转学签约量',
-sum(IF(contractcategory.contractCategory like '%转学%' and (status.status like '%WIP%'),contractPrice,0))  as '转学签约额'
+sum(IF(c.status =5,1,0)) as '总签约量',
+sum(IF(c.salesGroup=1,1,0)) as '紧急咨询量',
+sum(IF(c.salesGroup=1 and c.status =5,1,0))  as '紧急签约量',
+sum(IF(c.salesGroup=1 and c.status =5,ifnull(contractPrice,sumPrice(c.id)),0))  as '紧急签约额',
+sum(IF(c.salesGroup=2,1,0)) as '转学咨询量',
+sum(IF(c.salesGroup=2 and c.status =5,1,0))  as '转学签约量',
+sum(IF(c.salesGroup=2 and c.status =5,ifnull(contractPrice,sumPrice(c.id)),0))  as '转学签约额'
 from contract c
 #left join contractcategory on c.contractCategory=contractcategory.id
-left join status on c.status=status.id
+#left join status on c.status=status.id
 group by M,Y) ;
 
 create or replace view FullSummary as
 select STR_TO_DATE(CONCAT(m1.Y,'-',m1.M,'-22'),'%Y-%m-%d') as 'Time',
 m1.总收入,
-(m1.总收入-m2.总收入)/m2.总收入 as '收入月增长率',
+FORMAT((m1.总收入-m2.总收入)/m2.总收入,2) as '收入月增长率',
 m1.总咨询量,
 (m1.总咨询量-m2.总咨询量)/m2.总咨询量 as '咨询量月增长率',
 m1.总签约量,
-m1.总收入/m1.总签约量 as '平均签约价',
+FORMAT(m1.总收入/m1.总签约量,2) as '平均签约价',
 m1.紧急咨询量,
 (m1.紧急咨询量-m2.紧急咨询量)/m2.紧急咨询量 as '紧急咨询量月增长率',
 m1.紧急签约量,
@@ -1174,7 +1191,7 @@ m1.转学咨询量,
 m1.转学签约量,
 m1.转学签约额,
 m1.转学签约量/m1.转学咨询量 as '转学签约率'
- from MonthlySummary m1 left join MonthlySummary m2 on m1.M=(m2.M%12+1) and m1.Y=m2.Y+FLOOR(m2.M/12);
+ from MonthlySummary m1 left join MonthlySummary m2 on m1.M=(m2.M%12+1) and m1.Y=m2.Y+FLOOR(m2.M/12) order by Time;
 
 DROP function IF EXISTS DateInRange;
 DELIMITER $$
