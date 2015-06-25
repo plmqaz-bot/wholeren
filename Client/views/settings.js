@@ -434,6 +434,7 @@ Settings.comissionLookup=Settings.hierarchy.extend({
                 {name:'lead',label:'Lead种类',editable:editable,cell:lead},
                 {name:'leadDetail',label:'lead种类细分',editable:editable,cell:leadDetail},
                 {name:'salesGroup',label:'销售组',editable:editable,cell:salesgroup},
+                {name:'alone',label:'是否独立',editable:editable,cell:'boolean'},
                 {name:'rolename',label:'销售角色',editable:editable,cell:'string'},
                 {name:'comission',label:'佣金百分比',editable:editable,cell:Backgrid.NumberCell.extend({decimals:3})},
                 {name:'',label:'Delete',cell:BackgridCells.DeleteCell}

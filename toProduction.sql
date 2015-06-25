@@ -175,6 +175,7 @@ select id,serviceProgress,NULL,now(),now()from servicedetail;
 
 
 ALTER TABLE `wholeren`.`comissionlookup` 
-ADD COLUMN `alone` INT NULL AFTER `comission`;
+ADD COLUMN `alone` TINYINT NOT NULL DEFAULT 0 ;
+
 
 
