@@ -146,7 +146,7 @@ module.exports = {
 	},
 	'getAssistantComission':function(req,res){
 		var id=req.session.user.id;
-		if(req.session.user.rank==3&&(req.session.user.role==1||req.session.user.rank==2)){
+		if((req.session.user.role==1&&req.session.user.rank==4)){
 			id=0;
 		}
 		var year=parseInt(req.param('year'));

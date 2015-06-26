@@ -294,7 +294,8 @@ var ServicePopup=main.baseModalDataView.extend({
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
-            // var typeselect=userselect.extend({
+            var semesterselect=BackgridCells.SelectCell({name:'SemesterType',values:[['quarter','quarter'],['dual','dual']]});
+           // var typeselect=userselect.extend({
             //     optionValues:function(){
             //         var oritype=this.model.get('originalType');
             //         var shrunk=_.where(stype,{groupServiceType:oritype});
@@ -348,12 +349,32 @@ var ServicePopup=main.baseModalDataView.extend({
                         $('.app').append(m.renderAll().el);   
                     }
                 });
+            var DateCell=Backgrid.DateCell.extend({
+                formatter:{
+                    fromRaw:function(rawValue,model){
+                        if(rawValue==null||rawValue=="") return '';
+                        var d=moment(rawValue);
+                        return d.format('YYYY-MM');
+                    },
+                    toRaw:function(formattedData, model){
+                        if(formattedData=="") return null;
+                        var d=moment(formattedData,'YYYY-MM');
+                        if(d.isValid()){
+                            return d
+                        }else{
+                            return
+                        } ;
+                    }
+                }
+            });
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
                 {name:'realServiceType',label:'各进程类型',cell:typeselect},
                 {name:'serviceProgress',label:'该进程状态',cell:progressselect},
                 {name:'indate',label:'启动时间',cell:BackgridCells.MomentCell},
                 {name:'correspondService',label:'附属i服务',cell:'string'},
+                {name:'effectiveSemester',label:'需选课学期',cell:DateCell},
+                {name:'semesterType',label:'学校系统',cell:semesterselect},
                 {name:'level',label:'Level',cell:'number'},
                 {name:'user',label:'该进程负责人',cell:userselect},
                 {name:'link',label:'学生档案 Link',cell:'uri'},
@@ -446,6 +467,7 @@ var ApplicationPopup=main.baseModalDataView.extend({
                 {name:'submitDate',label:'提交时间',cell:BackgridCells.MomentCell},
                 {name:'succeed',label:'录取',cell:'boolean'},
                 {name:'acceptedDate',label:'录取时间',cell:BackgridCells.MomentCell},
+                {name:'deadline',label:'截止时间',cell:BackgridCells.MomentCell},
                // {name:'newDev',label:'新开发？',cell:'boolean'},
                 {name:'appliedSemester',label:'申请入读学期',cell:DateCell},
                 //{name:'studentCondition',label:'Condition',cell:'string'},

@@ -22,6 +22,8 @@ module.exports = {
   	contractKey:{type:'string'},
   	cName:{type:'string'},
   	namekey:{type:'string'},
+    effectiveSemester:{type:'date'},
+    semesterType:{type:'string',regex:'(quarter|dual)'},
     deleted:{type:'boolean',defaultsTo:false}
   },
   beforeUpdate:function(attrs,next){

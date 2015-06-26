@@ -177,5 +177,11 @@ select id,serviceProgress,NULL,now(),now()from servicedetail;
 ALTER TABLE `wholeren`.`comissionlookup` 
 ADD COLUMN `alone` TINYINT NOT NULL DEFAULT 0 ;
 
+ALTER TABLE `wholeren`.`application` 
+ADD COLUMN `deadline` DATE NULL DEFAULT NULL AFTER `studentCondition`;
+
+ALTER TABLE `wholeren`.`servicedetail` 
+ADD COLUMN `effectiveSemester` DATE NULL DEFAULT NULL AFTER `namekey`,
+ADD COLUMN `semesterType` VARCHAR(45) NULL DEFAULT NULL AFTER `effectiveSemester`;
 
 
