@@ -15,6 +15,7 @@ module.exports=Backbone.Router.extend({
         toReturn[this.root+'settings(/:pane)/']='settings';
         toReturn[this.root+'settings(/:pane)/' ]= 'settings',
         toReturn[this.root+'market(/:pane)/']='market',
+        toReturn[this.root+'salesSummary(/:pane)/']='salesSummary',
         toReturn[this.root+'contract/(:option)']='contract',
         toReturn[this.root+'service/(:option)']='service',
         toReturn[this.root+'servicelist/(:option)']='servicelist',
@@ -67,6 +68,13 @@ module.exports=Backbone.Router.extend({
             return;
         }
         Wholeren.currentView=new Wholeren.Views.Market({ el: '#main', pane: pane });
+    },
+    salesSummary:function(pane){
+        if(!pane){
+            this.navigate(this.root+'salesSummary/view1/',{trigger:true,replace:true});
+            return;
+        }
+        Wholeren.currentView=new Wholeren.Views.SalesSummary({ el: '#main', pane: pane });
     },
     contract:function(option){
 

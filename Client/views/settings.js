@@ -715,9 +715,9 @@ Settings.tableEditor=main.basePaneView.extend({
 var MenuTitle={
     user:'个人资料',
     allUsers:'UserControl',
-    lookup:'Comission机制',
-    hierarchy:'老师等级机制',
-    comissionLookup:'销售佣金设定',
+    //lookup:'Comission机制',
+    //hierarchy:'老师等级机制',
+    //comissionLookup:'销售佣金设定',
     fileupload:'文件下载',
     link:'有用的链接',
     message:'内部消息',

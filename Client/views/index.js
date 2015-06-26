@@ -50,6 +50,7 @@ module.exports={
         Service:require('./service.js'),
         ServiceList:require('./servicelist.js'),
         Market:require('./market'),
+        SalesSummary:require('./salesSummary'),
         Setting:require('./settings'),
        //User:UserView,
         Auth:require('./authenticate.js'),

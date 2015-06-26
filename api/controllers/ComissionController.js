@@ -8,7 +8,7 @@ var Promise=require('bluebird');
 module.exports = {
 	'getSalesComission':function(req,res){
 		var id=req.session.user.id;
-		if(req.session.user.rank==3&&req.session.user.role==1){
+		if(req.session.user.rank==4&&req.session.user.role==1){
 			id=0;
 		}
 		var year=parseInt(req.param('year'));

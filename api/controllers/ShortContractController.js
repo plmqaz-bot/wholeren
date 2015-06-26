@@ -13,7 +13,35 @@ function createsql(where){
 }
 function whoCanView(user){
 	var id=user.id;
-	return "and "+id+" in (contract.sales1,contract.sales2, contract.teacher, servicedetail.user, u.user)";
+	switch (user.role){
+		case 1:
+			switch (user.rank){
+				case 1: restrictions="user.id ="+id;break;
+				case 2: restrictions="(user.id ="+id+" or ss.subRole="+user.subRole+")";break;
+				case 3: restrictions="";break;
+				case 4: restrictions="";break;
+				default:restrictions="false";
+			}
+		break;
+		case 2:
+			switch (user.rank){
+				case 1: restrictions="user.id ="+id;break;
+				case 2: restrictions="user.id ="+id;break;
+				case 3: restrictions="";
+				default: restrictions="false";
+			}
+		break;
+		case 3:
+			switch (user.rank){
+				case 1: restrictions="false";break;
+				case 2: restrictions="";break;
+				case 3: restrictions="";
+				default: restrictions="false";
+			}
+		break;
+		default:restrictions="false";
+	}
+	return "and "+id+" in (contract.sales1,contract.sales2, contract.expert1, contract.expert2, contract.teacher, servicedetail.user, u.user)";
 }
 function getOne(req,res){
 	var id=req.params.id;

@@ -36,8 +36,8 @@ var Sidebar = baseView.extend({
         }
         this.$el.html(ml);
         var container=this.$('.settings-menu>ul')
-        for(var key in this.MenuViews){
-            if (this.MenuViews.hasOwnProperty(key)){
+        for(var key in this.MenuTitle){
+            if (this.MenuTitle.hasOwnProperty(key)){
                 container.append('<li class="general"><a href="#'+key+'">'+this.MenuTitle[key]+'</a></li>');
             }
         }

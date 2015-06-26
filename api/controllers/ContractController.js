@@ -24,16 +24,33 @@ function constructsql(who){
 function whoCanView(user,where){
 	var restrictions=""
 	var id =user.id;
-	if(user.role==1){
-		switch (user.rank){
-			case 1: var restrictions="user.id ="+id;break;
-			case 2: var restrictions="(user.id ="+id+" or ss.subRole="+user.subRole+")";break;
-		}
-	}
-	if(user.role==3){ // Marketing
-		switch (user.rank){
-			case 1: var restrictions= "false";break;
-		}
+	switch (user.role){
+		case 1:
+			switch (user.rank){
+				case 1: restrictions="user.id ="+id;break;
+				case 2: restrictions="(user.id ="+id+" or ss.subRole="+user.subRole+")";break;
+				case 3: restrictions="";break;
+				case 4: restrictions="";break;
+				default:restrictions="false";
+			}
+		break;
+		case 2:
+			switch (user.rank){
+				case 1: restrictions="user.id ="+id;break;
+				case 2: restrictions="user.id ="+id;break;
+				case 3: restrictions="";
+				default: restrictions="false";
+			}
+		break;
+		case 3:
+			switch (user.rank){
+				case 1: restrictions="false";break;
+				case 2: restrictions="";break;
+				case 3: restrictions="";
+				default: restrictions="false";
+			}
+		break;
+		default:restrictions="false";
 	}
 	if(restrictions!=""){
 		var sql=constructsql(restrictions);
