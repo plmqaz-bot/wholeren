@@ -185,3 +185,21 @@ ADD COLUMN `effectiveSemester` DATE NULL DEFAULT NULL AFTER `namekey`,
 ADD COLUMN `semesterType` VARCHAR(45) NULL DEFAULT NULL AFTER `effectiveSemester`;
 
 
+CREATE TABLE `wholeren`.`contactinfo` (
+  `primaryCell` VARCHAR(45) NULL,
+  `secondaryCell` VARCHAR(45) NULL,
+  `skype` VARCHAR(45) NULL,
+  `qq` VARCHAR(45) NULL,
+  `wechat` VARCHAR(45) NULL,
+  `parentPhone` VARCHAR(45) NULL,
+  `parentEmail` VARCHAR(45) NULL,
+  `emergencyContact` VARCHAR(45) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  PRIMARY KEY (`id`));
+
+ALTER TABLE `wholeren`.`contactinfo` 
+ADD COLUMN `service` INT(11) NULL AFTER `updatedAt`,
+ADD COLUMN `client` INT(11) NULL AFTER `service`;
+

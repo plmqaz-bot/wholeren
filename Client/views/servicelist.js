@@ -51,6 +51,21 @@ var ServiceView=main.baseDataView.extend({
             //         return [{name:'ServiceType',values:toadd}];
             //     }
             // });
+            var contPopup=BackgridCells.Cell.extend({
+                cellText:'ContactInfo',
+                render: function () {
+                    this.$el.html('<a>'+this.cellText+'</a>');
+                    this.delegateEvents();
+                    return this;
+                  },
+                action:function(e){
+                    e.preventDefault();
+                    var id=this.model.get('id');
+                    var contactview= new ContactInfoPopup({id:id});
+                    contactview.render();
+                    $('.app').append(contactview.el);  
+                }
+            });
             var appPopup=BackgridCells.Cell.extend({
                 cellText:'Applications',
                 render: function () {
@@ -140,6 +155,7 @@ var ServiceView=main.baseDataView.extend({
                 {name:'link',label:'学生档案 Link',cell:'uri'},
                 {name:'',label:'OtherUsers',cell:userinservice},
                 {name:'',label:'该进程备注',cell:comment},
+                {name:'',label:'ContactInfo',cell:contPopup},
                 {name:'',label:'Application',cell:appPopup},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
                 ];
@@ -174,7 +190,34 @@ var MoreUserPopup=main.baseModalDataView.extend({
         return new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
     }
 })
-
+var ContactInfoPopup=main.baseModalDataView.extend({
+    collectionName:'ContactInfo',
+    initialize: function (options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.serviceID=parseInt(options.id);
+        this.collection.setSID(this.serviceID);
+    },
+    newModel:function(){
+        return new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/ContactInfo/'});
+    },
+    constructColumns:function(){
+        var DeleteCell = BackgridCells.DeleteCell;
+        this.columns=[
+            //{name:'user',label:'文书负责人',cell:userselect},
+            {name:'primaryCell',label:'主要电话',cell:'string'},
+            {name:'secondaryCell',label:'次要电话',cell:'string'},
+            {name:'skype',label:'skype',cell:'string'},
+            {name:'qq',label:'QQ',cell:'string'},
+            {name:'wechat',label:'微信',cell:'string'},
+            {name:'parentPhone',label:'家长电话',cell:'string'},
+            {name:'parentEmail',label:'家长邮箱',cell:'string'},
+            {name:'emergencyContact',label:'紧急联系方式',cell:'string'},
+            {name:'',label:'Delete',cell:DeleteCell}
+            ];
+        return Promise.resolve({});
+                
+    },
+});
 
 
 var ApplicationPopup=main.baseModalDataView.extend({

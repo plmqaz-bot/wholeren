@@ -540,6 +540,16 @@ Collections={
             this.sid=sid;
         }
     }),
+    ContactInfo:Backbone.Collection.extend({
+        model:Models.syncModel,
+        _url:'/ContactInfo/',
+        url:function(){
+            return '/ContactInfo/?service='+this.sid;
+        },
+        setSID:function(sid){
+            this.sid=sid;
+        }
+    }),
     Role:Backbone.Collection.extend({
         model:Models.simpleModel,
         url:'/Role/'
