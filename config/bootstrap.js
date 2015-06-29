@@ -14,59 +14,18 @@ var Promise=require('bluebird');
 module.exports.bootstrap = function(cb) {
 /*************************also schedule *****************************************/
 
-var loo=function () {
-	console.log("Hello");
-	var sql="select chineseName,contract.id, contract.createdAt, dayInterval,textNotification,sales1,sales2 from contract inner join client on contract.client=client.id inner join notifyinterval on (Datediff(NOW(),contract.createdAt)=notifyinterval.dayInterval) where contract.contractSigned is null ;";
-	Utilfunctions.nativeQuery(sql).then(function(data){
-		var promises=[];
-		console.log("found ",data.length," reminders");
-		if(data){
-			data.forEach(function(ele){
-				if(ele.sales1){
-					var p=Notifications.find({contract:ele.id,days:ele.dayInterval,user:ele.sales1}).then(function(notifi){
-						if(notifi.length<1){// Not found
-							
-							return Notifications.create({contract:ele.id,days:ele.dayInterval,user:ele.sales1,reason:ele.textNotification}).then(function(){
-								return User.findOne({id:ele.sales1}).then(function(u){
-									if(u){
-										return EmailService.sendReminderEmail({email:u.email,nickname:u.nickname,client:ele.chineseName,reason:ele.textNotification}).error(function(err){
-											console.log(err);
-										});	
-									}						
-								});
-							})
-						}
-					})
-					promises.push(p);
-				}
-				if(ele.sales2){
-					var p=Notifications.find({contract:ele.id,days:ele.dayInterval,user:ele.sales2}).then(function(notifi){
-						if(notifi.length<1){// Not found
-							return Notifications.create({contract:ele.id,days:ele.dayInterval,user:ele.sales2,reason:ele.textNotification}).then(function(){
-								return User.findOne({id:ele.sales2}).then(function(u){
-									if(u){
-										return EmailService.sendReminderEmail({email:u.email,nickname:u.nickname,client:ele.chineseName,reason:ele.textNotification}).error(function(err){
-											console.log(err);
-										});	;	
-									}						
-								});
-							})
-						}
-					})
-					promises.push(p);
-				}
-			});	
-		}
-		return Promise.all(promises);
-	}).then(function(data){
-		console.log("notification done");
-	}).catch(function(err){
-		console.log(err);
-	});
-};
-loo();
 
-setInterval(loo, 1000*60*60*24);
+//PeriodicFunctions.periodicEmailCheck();
+
+for(var key in PeriodicFunctions){
+	if(PeriodicFunctions.hasOwnProperty(key)&&typeof PeriodicFunctions[key]==='function'){
+		sails.log.info('Set up periodic function: ',key);
+		PeriodicFunctions[key]();
+		setInterval(PeriodicFunctions[key], 1000*60*60*24);		
+	}
+}
+
+
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();
