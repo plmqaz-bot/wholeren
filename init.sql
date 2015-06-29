@@ -36,8 +36,9 @@ insert into subrole_handle_salesgroup values(4,12,NULL,NOW(),NOW());
 
 #文件类型
 truncate doctype
-insert into doctype values('新人必读',NULL,NOW(),NOW());
-insert into doctype values('SOP',NULL,NOW(),NOW());
+insert into doctype values('新人必读',1,NOW(),NOW());
+insert into doctype values('SOP',2,NOW(),NOW());
+insert into doctype values('HIDDEN',3,NOW(),NOW());
 
 #合同类型
 truncate contractcategory;

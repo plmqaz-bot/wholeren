@@ -117,9 +117,9 @@ module.exports={
 				data.forEach(function(ele){
 					var reason="合同于 "+ele.diff+" 天前签约，但是 服务，后期老师，以及费用详细之中有未填信息。";
 					if(ele.sales1){
-						var p=Notifications.find({contract:ele.id,user:ele.sales1,reason:reason}).then(function(notifi){
+						var p=Notifications.find({contract:ele.id,days:ele.diff,user:ele.sales1,reason:reason}).then(function(notifi){
 							if(notifi.length<1){// Not found
-								return Notifications.create({contract:ele.id,user:ele.sales1,reason:reason}).then(function(){
+								return Notifications.create({contract:ele.id,days:diff,user:ele.sales1,reason:reason}).then(function(){
 									return User.findOne({id:ele.sales1}).then(function(u){
 										if(u){
 											return EmailService.sendReminderEmail({email:u.email,nickname:u.nickname,client:ele.chineseName,reason:reason}).error(function(err){

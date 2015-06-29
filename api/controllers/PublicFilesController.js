@@ -39,6 +39,11 @@ module.exports = {
 		  })
 		});
 	},
+	find:function(req,res){
+		PublicFiles.find({'!':[{fileCategory:3}]}).then(function(data){
+			return res.ok(data);
+		});
+	},
 	getFile:function(req,res){
 		req.validate({
 	    	id: 'string'
