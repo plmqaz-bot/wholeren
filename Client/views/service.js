@@ -291,7 +291,7 @@ var ServicePopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2,active:true}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             var semesterselect=BackgridCells.SelectCell({name:'SemesterType',values:[['quarter','quarter'],['dual','dual']]});

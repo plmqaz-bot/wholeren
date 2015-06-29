@@ -311,9 +311,9 @@ module.exports = {
 				});
 			}
 		}else{
-			if(attribs['service']){
-				return privateUpdateService(attribs['service'],req.params.id,res);
-			}
+			// if(attribs['service']){
+			// 	return privateUpdateService(attribs['service'],req.params.id,res);
+			// }
 
 			//generateComment(attribs,'sales');
 			//generateComment(attribs,'assistant');

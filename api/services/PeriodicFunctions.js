@@ -57,7 +57,7 @@ module.exports={
 		});
 	},
 	missingLeadLevel:function(){
-		sails.log.info("Notification: 发email 提醒未签约的lead");
+		sails.log.info("Notification: 发email 提醒校代 or 渠道 missing leadlevel");
 		var today=moment().format('dddd');
 		if(today=='Tuesday'||today=='Thursday'){
 			var sql="select distinct contract.id,contract.sales1,contract.sales2,client.chineseName from contract left join client on client.id=contract.client where leadLevel is null and (lead=4 or lead=10);";
@@ -109,7 +109,7 @@ module.exports={
 		}
 	},
 	afterLeadSign:function(){
-		var sql="select distinct contract.id,contract.sales1,contract.sales2,client.chineseName,Datediff(NOW(),contract.contractSigned) as 'diff' from contract left join client on contract.client=client.id left join invoice on invoice.contract=contract.id left join service on service.contract=contract.id where contract.status=5 and (Datediff(NOW(),contract.contractSigned)>=3 and contract.salesGroup=1 or Datediff(NOW(),contract.contractSigned)>=1 and contract.salesGroup!=1) and (contract.teacher is null or invoice.id is null or service.id is null);";
+		var sql="select distinct contract.id,contract.sales1,contract.sales2,client.chineseName,Datediff(NOW(),contract.contractSigned) as 'diff' from contract left join client on contract.client=client.id left join invoice on invoice.contract=contract.id left join service on service.contract=contract.id where contract.status=5 and (Datediff(NOW(),contract.contractSigned)>=3 and contract.salesGroup=1 or Datediff(NOW(),contract.contractSigned)>=1 and contract.salesGroup!=1) and (contract.teacher is null or invoice.id is null or service.id is null) and contract.createdAt>'2015-05-01';";
 		Utilfunctions.nativeQuery(sql).then(function(data){
 				var promises=[];
 				sails.log.info("found ",data.length," 签约合同但是未填 服务，后期老师，以及费用详细");
@@ -119,7 +119,7 @@ module.exports={
 					if(ele.sales1){
 						var p=Notifications.find({contract:ele.id,days:ele.diff,user:ele.sales1,reason:reason}).then(function(notifi){
 							if(notifi.length<1){// Not found
-								return Notifications.create({contract:ele.id,days:diff,user:ele.sales1,reason:reason}).then(function(){
+								return Notifications.create({contract:ele.id,days:ele.diff,user:ele.sales1,reason:reason}).then(function(){
 									return User.findOne({id:ele.sales1}).then(function(u){
 										if(u){
 											return EmailService.sendReminderEmail({email:u.email,nickname:u.nickname,client:ele.chineseName,reason:reason}).error(function(err){
@@ -133,9 +133,9 @@ module.exports={
 						promises.push(p);
 					}
 					if(ele.sales2){
-						var p=Notifications.find({contract:ele.id,user:ele.sales2,reason:reason}).then(function(notifi){
+						var p=Notifications.find({contract:ele.id,days:ele.diff,user:ele.sales2,reason:reason}).then(function(notifi){
 							if(notifi.length<1){// Not found
-								return Notifications.create({contract:ele.id,user:ele.sales2,reason:reason}).then(function(){
+								return Notifications.create({contract:ele.id,days:ele.diff,user:ele.sales2,reason:reason}).then(function(){
 									return User.findOne({id:ele.sales2}).then(function(u){
 										if(u){
 											return EmailService.sendReminderEmail({email:u.email,nickname:u.nickname,client:ele.chineseName,reason:reason}).error(function(err){

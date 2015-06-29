@@ -177,6 +177,26 @@ module.exports = {
         }
       }
     }
+    if(attrs.hasOwnProperty('status')){
+      var criteria=this.update.arguments[0];
+      Promise.all([Contract.findOne(criteria).populate('client'),populate('status')],Status.find()).then(function(c,s){
+        if(c.lead==4){
+          var reason="亲爱的敬爱的校代管理层：<br> 您的学生，"+(c.client||{}).chinesename+" 需要您的注意。 提醒原因:\n <br> 校代leads状态发生变化. \n<br> \
+            原状态: "+c.status.status+". 现状态: "+(_.find(s,{id:attrs['status']})||{}).status+" \n<br>";
+          EmailService.sendEmail({
+            to : "Channel@wholeren.com",
+            //to : 'han.lai321@gmail.com',
+            from : "obama@whitehouse.gov",
+            subject : "Reminder: ",
+            //html:"亲爱的敬爱的销售老师："+options.nickname+"<br> 您的学生，"+options.client+" 又到了该您发邮件的时候啦。 提醒原因 "+options.reason+"!";
+            html:reason;
+          }).error(function(err){
+            sails.log.error("Error occurred during checking reminders: ",err);
+          }); 
+        }
+      })
+    }
+    
     next();
   },
 
