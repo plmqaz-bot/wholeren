@@ -114,51 +114,6 @@ module.exports = {
     service:{collection:'Service',via:'contract'},
     deleted:{type:'boolean',defaultsTo:'false'},
   },
-  beforeUpdate2: function (attrs, next) {
-    // update service separatly
-    var serviceAttrs=attrs['service'];// This should be arry of service to add [transfer,study...]
-    if(!serviceAttrs) return next();
-    var toAdd=[]; // Will store the id of serviceTypes that need to be created. 
-    var toKeep=[]; // This store the service id that already exist. 
-    var toDel=[]; // Will store the id of services that should be deleted from contract;
-    var contractId=attrs['id'];
-    delete attrs['service'];
-
-    var types;
-    var def=ServiceType.find();
-    var exist;
-    var def2=Contract.findOne({id:contractId}).populate('service');
-    console.log("before find");
-    Promise.all([def,def2]).spread(function(types,contract){
-        contract.service.forEach(function(item){
-        var curServiceTypeid=item.serviceType;
-        var curServiceType=_.find(types,function(type){return type.id==curServiceTypeid})||{};
-        console.log(curServiceType.serviceType);
-        if(curServiceType.serviceType){
-          var overlap=false;
-          serviceAttrs=_.reject(serviceAttrs,function(serv){
-              if(serv==curServiceType.serviceType||serv==curServiceTypeid){// If the service type overlaps with the service to add, then don't do anything 
-                overlap=true;
-                return true;
-              }else{
-                return false;
-              }
-          });
-          if(overlap){
-            toKeep.push(item.id);
-          }else{ // Not overlap, so this service type need to be deleted
-            toDel.push(curServiceTypeid);
-          }
-        }else{
-          toDel.push(curServiceTypeid);
-        }
-      });
-    }).then(function(){
-      console.log("to add service type are ", serviceAttrs);
-      console.log("to keep service id are ", toKeep);
-      console.log("to del service are ",toDel);
-    }).error(function(err){console.log(err);});    
-  },
   /* If this is status 5, meaning contract is signed, in case they forgot to enter, automatically create one
   */
   beforeUpdate:function(attrs,next){
@@ -179,9 +134,10 @@ module.exports = {
     }
     if(attrs.hasOwnProperty('status')){
       var criteria=this.update.arguments[0];
-      Promise.all([Contract.findOne(criteria).populate('client'),populate('status')],Status.find()).then(function(c,s){
+      Promise.all([Contract.findOne(criteria).populate('client').populate('status'),Status.find()]).spread(function(c,s){
+        console.log(c);
         if(c.lead==4){
-          var reason="亲爱的敬爱的校代管理层：<br> 您的学生，"+(c.client||{}).chinesename+" 需要您的注意。 提醒原因:\n <br> 校代leads状态发生变化. \n<br> \
+          var reason="亲爱的敬爱的校代管理层：<br> 您的学生，"+(c.client||{}).chineseName+" 需要您的注意。 提醒原因:\n <br> 校代leads状态发生变化. \n<br> \
             原状态: "+c.status.status+". 现状态: "+(_.find(s,{id:attrs['status']})||{}).status+" \n<br>";
           EmailService.sendEmail({
             to : "Channel@wholeren.com",
@@ -189,7 +145,7 @@ module.exports = {
             from : "obama@whitehouse.gov",
             subject : "Reminder: ",
             //html:"亲爱的敬爱的销售老师："+options.nickname+"<br> 您的学生，"+options.client+" 又到了该您发邮件的时候啦。 提醒原因 "+options.reason+"!";
-            html:reason;
+            html:reason
           }).error(function(err){
             sails.log.error("Error occurred during checking reminders: ",err);
           }); 

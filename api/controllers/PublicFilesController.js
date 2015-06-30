@@ -13,63 +13,40 @@ module.exports = {
 		console.log("body is ",req.body);
 		if(!userid) return res.json(401, 'no valid user id');
 		console.log(sails.config.appPath);
-		req.file('file').upload({
-		  dirname: path.resolve(sails.config.appPath, sails.config.filePath)
-		},function (err, uploadedFiles) {
-		  if (err) return Utilfunctions.errorHandler(err,res,"file upload filed");
-		  if(uploadedFiles.length===0){
-		  	return Utilfunctions.errorHandler({},res,"no file is uploaded");
-		  }
-		  //console.log("uploaded file : ",uploadedFiles);
-		  var promises=_.map(uploadedFiles,function(f){
-		  	console.log(f.fd);
-		  	f.fd=path.basename(f.fd);
-		  	console.log(f.fd);
-		  	return PublicFiles.create({uploadedBy:userid,filename:f.filename,path:f.fd,category:req.body.category}).then(function(data){
-		  		return {filename:data.filename,status:'success',detail:f};
-		  	}).error(function(err){
-		  		console.log(err);
-		  		return {filename:f.filename,status:'failed',detail:f};
-		  	})
-		  });
-		  Promise.all(promises).then(function(data){
-		  	return res.json(data);
-		  }).error(function(err){
+		FileManager.uploadFile(req.file('file'),{userid:userid,category:req.body.category}).then(function(data){
+			return res.json(data);
+		}).error(function(err){
 		  	return Utilfunctions.errorHandler(err,res,"create database entry failed for uploaded files");
-		  })
 		});
 	},
 	find:function(req,res){
-		PublicFiles.find({'!':[{fileCategory:3}]}).then(function(data){
+		PublicFiles.find({or:[{fileCategory:{'!':3}},{fileCategory:null}]}).then(function(data){
 			return res.ok(data);
+		}).error(function(err){
+			return Utilfunctions.errorHandler(err,res,"Get list of files failed");
 		});
 	},
 	getFile:function(req,res){
 		req.validate({
 	    	id: 'string'
 	 	});
-	 	PublicFiles.findOne(req.param('id')).then(function(file){
-	 		if(!file) return Utilfunctions.errorHandler({},res,"file not found");
-	 		if(!file.path) return Utilfunctions.errorHandler({},res,"file entry is found but file is damaged");
-	 		var SkipperDisk=require('skipper-disk');
-	 		var fileAdapter=new SkipperDisk();
-	 		fileAdapter.read(require('path').resolve(sails.config.appPath, sails.config.filePath,file.path)).on('error',function(err){
-	 			return Utilfunctions.errorHandler(err,res,"File reading failed");
-	 		}).pipe(res);
-	 	});
+	 	FileManager.download(req.params.id,res).error(function(err){
+	 		return Utilfunctions.errorHandler(err,res,"download file failed");
+	 	})
 	},
 	destroy:function(req,res){
 		req.validate({id:'string'});
-		PublicFiles.destroy(req.param('id')).then(function(file){
-			console.log(file);
-			if(file.length<1) return res.json({message:"success"});
-			if(!file[0].path) return res.json({message:"success"});
-			console.log(sails.config.filePath+file[0].path);
-			fs.unlink(sails.config.filePath+file[0].path, function(error, clients){
-	            if(error) return Utilfunctions.errorHandler(error,res,"deleting file content failed, maybe file is in use");  
-	            return res.json({message:"success"});
-        	});
-		})
+		PublicFiles.findOne(req.param('id')).then(function(file){
+			if(!file) return Promise.resolve();
+			var dirname=sails.config.filePath+file.path;
+			return FileManager.delete(dirname).then(function(){
+				return PublicFiles.destroy(req.param('id'));
+			});
+		}).then(function(){
+			return res.json({message:"success"});
+		}).error(function(err){
+				Utilfunctions.errorHandler(err,res,"deleting file content failed, maybe file is in use");  
+		});
 	},
 	update:function(req,res){
 		req.validate({id:'string'});

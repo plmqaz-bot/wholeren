@@ -504,7 +504,10 @@ Settings.fileupload=main.baseDataView.extend({
         this.$el.addClass('active');
         $('.content').prepend('<div id="uploader" style="margin:auto;border-style:solid;width:100px;text-align:center;height:50px">Drop Files here</div>');
         var myDropzone = new Dropzone("div#uploader", { url: "/PublicFiles/"});
-        myDropzone.on("complete", function(file) {
+        var self=this;
+        myDropzone.on('success',function(file,data){
+           //console.log("success",arguments);
+            self.collection.add(data);
             util.handleRequestSuccess({responseText:"Upload Successful"});
             myDropzone.removeFile(file);
         });
