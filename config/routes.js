@@ -84,6 +84,10 @@ module.exports.routes = {
     controller:'ShortService',
     action:'update'
   },
+  'POST /ShortService/':{
+    controller:'ShortService',
+    action:'create'
+  },
   'DELETE /ShortService/:id':{
     controller:'ShortService',
     action:'destroy'

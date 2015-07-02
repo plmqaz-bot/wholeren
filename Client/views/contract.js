@@ -223,7 +223,7 @@ var ServiceChoices=main.baseModalDataView.extend({
                     var shrunk=_.where(data,{contractCategory:category});
                     //var unique=_.uniq(shrunk,false,function(e){return e.contractCategory;});
                     shrunk=_.map(shrunk,function(e){return [e.serviceType.serviceType,e.serviceType.id]});
-                    var toadd=shrunk.slice(0);//clone it
+                    var toadd=_.unique(shrunk).slice(0);//clone it
                     //toadd.push(["No Category",null]);
                     //cell._optionValues=[{name:'ContractCategory',values:toadd}];
                     //return cell._optionValues;
@@ -232,6 +232,9 @@ var ServiceChoices=main.baseModalDataView.extend({
                 formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
                     toRaw: function (formattedValue, model) {
                       return formattedValue == null ? null: parseInt(formattedValue);
+                    },
+                    fromRaw: function (rawValue, model) {
+                        return _.isArray(rawValue) ? rawValue : rawValue != null ? [rawValue] : [];
                     }
                 }) 
             });
@@ -252,7 +255,7 @@ var ServiceChoices=main.baseModalDataView.extend({
     //     return this;
     // },
     newModel:function(){
-        return new Obiwang.Models.syncModel({contract:this.contract.get('id')},{_url:'/Service/'});
+        return new Obiwang.Models.syncModel({contract:this.contract.get('id')},{_url:'/ShortService/'});
     },
     // addnew:function(e){
     //     e.preventDefault();

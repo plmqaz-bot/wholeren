@@ -137,7 +137,7 @@ var ShortContractView=main.baseDataView.extend({
              self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
             {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
-            {name:'teacher',label:'后期组长',editable: false,cell:'string'},
+            // {name:'teacher',label:'后期组长',editable: false,cell:'string'},
             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
             {name:'status',label:'该合同进度',editable:false,cell:status},
             {name:'boughtservices',label:'该合同购买服务',cell:'text'},

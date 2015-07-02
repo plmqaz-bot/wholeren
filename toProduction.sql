@@ -203,3 +203,14 @@ ALTER TABLE `wholeren`.`contactinfo`
 ADD COLUMN `service` INT(11) NULL AFTER `updatedAt`,
 ADD COLUMN `client` INT(11) NULL AFTER `service`;
 
+CREATE TABLE `wholeren`.`applicationfile` (
+  `description` VARCHAR(45) NULL,
+  `file` INT(11) NULL,
+  `application` INT(11) NULL);
+
+ALTER TABLE `wholeren`.`applicationfile` 
+ADD COLUMN `createdAt` DATETIME NULL AFTER `application`,
+ADD COLUMN `updatedAt` DATETIME NULL AFTER `createdAt`;
+ALTER TABLE `wholeren`.`applicationfile` 
+ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT AFTER `application`,
+ADD PRIMARY KEY (`id`);

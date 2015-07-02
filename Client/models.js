@@ -834,12 +834,19 @@ Collections={
     }),
     ServiceInvoice:Backbone.Collection.extend({
         model:Models.syncModel,
-        _url:'/ServiceInvoice',
+        _url:'/ServiceInvoice/',
         url:function(){
             return this._url+'?invoice='+this.invoice;
         },
         initialize:function(models, options){
             this.invoice=(options||{}).invoice;
+        }
+    }),
+    ApplicationFile:Backbone.Collection.extend({
+        model:Models.syncModel,
+        _url:'/ApplicationFile/',
+        url:function(){
+            return this._url+'?application='+this.aid||0;
         }
     })
 }
