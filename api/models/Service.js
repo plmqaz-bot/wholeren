@@ -28,12 +28,15 @@ module.exports = {
 
     studentDestination:{type:'string'},
 
-	step1:{type:'date'},
+  	step1:{type:'date'},
 
-	step2:{type:'date'},
+  	step2:{type:'date'},
 
-  price:{type:'float',required:true,defaultsTo:0},
+    price:{type:'float',required:true,defaultsTo:0},
     link:{type:'string'}
+  },
+  beforeUpdate:function(attrs,next){
+    
   }
 };
 
