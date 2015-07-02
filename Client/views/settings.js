@@ -159,7 +159,7 @@ Settings.allUsers=main.baseDataView.extend({
     collectionName:'User',
     title:'Users',
     paginator:true,
-    renderOptions:{nofield:true},
+    renderOptions:{nofield:true,deleted:true},
     minScreenSize:0,
     filterFields:['email','nickname'],
     templateName:'default',

@@ -20,7 +20,13 @@ module.exports={
     },
     'admin_url': function (options) {
         return "/admin";
-    }
+    },
+    'ifCond': function(a, b, opts) {
+        if(a == b) 
+            return opts.fn(this);
+        else
+            return opts.inverse(this);
+    }    
 }
 
 

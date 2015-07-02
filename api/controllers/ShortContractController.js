@@ -7,7 +7,7 @@
 
 function createsql(where){
 	sql="select contract.nameKey,contract.status,contractPaid,contract.id,chineseName,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices', country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(IF(servicedetail.id is not null,1,0)) as 'detailcount' \
-from contract left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType left join servicedetail on servicedetail.contract=contract.id left join userinservice u on u.servicedetail=servicedetail.id \
+from contract left join subrole_handle_salesgroup ss on ss.salesGroup=contract.salesGroup left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType left join servicedetail on servicedetail.contract=contract.id left join userinservice u on u.servicedetail=servicedetail.id \
 where contract.deleted!=1 and contract.status=5 "+where+" group by contract.id;";
 	return sql;
 }
@@ -28,15 +28,15 @@ function whoCanView(user){
 			switch (user.rank){
 				case 1: restrictions=" and "+level1;break;
 				case 2: restrictions=" and ("+level1+" or detailcount=0)";break;
-				case 3: restrictions="";
+				case 3: restrictions="";break;
 				default: restrictions="false";
 			}
 		break;
 		case 3:
 			switch (user.rank){
-				case 1: restrictions="false";break;
+				case 1: restrictions="";break;
 				case 2: restrictions="";break;
-				case 3: restrictions="";
+				case 3: restrictions="";break;
 				default: restrictions="false";
 			}
 		break;

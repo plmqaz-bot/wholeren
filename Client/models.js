@@ -523,7 +523,14 @@ Collections={
     }),
     User:Backbone.PageableCollection.extend({
         model: Models.syncModel,
-        url: '/User/',
+        _url: '/User/',
+        url:function(){
+            var toReturn='/User/';
+            if(this.deleted!=undefined){
+                toReturn+='?active='+!this.deleted;
+            }
+            return toReturn;
+        },
         initialize:function(models,options){
             this.mode="client";
             this.state={pageSize:20};

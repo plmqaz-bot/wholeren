@@ -67,6 +67,7 @@ module.exports={
 				data=data||[];
 				data.forEach(function(ele){
 					var reason="Reminder checking on "+today+", and it is missing lead level";
+					
 					if(ele.sales1){
 						var p=Notifications.find({contract:ele.id,user:ele.sales1,reason:reason}).then(function(notifi){
 							if(notifi.length<1){// Not found
