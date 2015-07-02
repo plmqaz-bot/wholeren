@@ -34,7 +34,8 @@ module.exports = {
 
   price:{type:'float',required:true,defaultsTo:0},
     link:{type:'string'}
-  }
+  },
+
 };
 
 

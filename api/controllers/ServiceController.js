@@ -121,6 +121,7 @@ module.exports = {
 	'update':function(req,res){
 		var attribs=req.body;
 		var id=req.params.id;
+		var cid=null;
 		delete attribs["createAt"];
 		delete attribs["updateAt"];
 		var serviceUpdate=Utilfunctions.prepareUpdate(attribs,['serviceProgress','step1','step2','studentDestination','link','cName','contractKey']);
@@ -131,8 +132,10 @@ module.exports = {
 			serviceUpdate['step2']=new Date(serviceUpdate['step2']);
 		}
 		var contractUpdate=Utilfunctions.prepareUpdate(attribs,['gpa','gre','toefl','sat','otherScore','degree','previousSchool','major','targetSchoolDegree']);
+		console.log("here");
 		var promise=Service.findOne({id:id}).then(function(data){
 			if(data.contract){
+				cid=data.contract;
 				return Contract.update({id:data.contract},contractUpdate);
 			}else{
 				//return Promise.reject({error:"Contract not found"});	
@@ -141,7 +144,8 @@ module.exports = {
 		}).then(function(d){
 			return Service.update({id:id},serviceUpdate);
 		}).then(function(data){
-			var sql=constructsql("", " and service.id="+req.params.id);
+
+			sql=constructsql("", " and service.id="+req.params.id);
 			return Utilfunctions.nativeQuery(sql);
 		}).then(function(serv){
 			//if((serv=serv||[]).length<1) return Promise.reject({error:"not found"});

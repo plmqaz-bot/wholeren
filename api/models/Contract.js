@@ -136,7 +136,7 @@ module.exports = {
       var criteria=this.update.arguments[0];
       Promise.all([Contract.findOne(criteria).populate('client').populate('status'),Status.find()]).spread(function(c,s){
         console.log(c);
-        if(c.lead==4){
+        if(c.lead==4||c.lead==10){
           var reason="亲爱的敬爱的校代管理层：<br> 您的学生，"+(c.client||{}).chineseName+" 需要您的注意。 提醒原因:\n <br> 校代leads状态发生变化. \n<br> \
             原状态: "+c.status.status+". 现状态: "+(_.find(s,{id:attrs['status']})||{}).status+" \n<br>";
           EmailService.sendEmail({
