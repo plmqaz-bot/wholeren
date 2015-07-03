@@ -111,7 +111,6 @@ function setSelected(list, name) {
     return list;
 }
 function generateView(req,res,template,selected,body,hideNavbar){
-    console.log(adminNavbar);
     if(!hideNavbar) hideNavbar=false;
     body = typeof body !== 'undefined' ? body : 'contract';
     res.locals.layout='default';

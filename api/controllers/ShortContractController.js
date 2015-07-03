@@ -5,44 +5,56 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
 
-function createsql(where){
-	sql="select contract.nameKey,contract.status,contractPaid,contract.id,chineseName,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices', country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(IF(servicedetail.id is not null,1,0)) as 'detailcount' \
-from contract left join subrole_handle_salesgroup ss on ss.salesGroup=contract.salesGroup left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType left join servicedetail on servicedetail.contract=contract.id left join userinservice u on u.servicedetail=servicedetail.id \
-where contract.deleted!=1 and contract.status=5 "+where+" group by contract.id;";
-	return sql;
-}
-function whoCanView(user){
+// function createsql(where, c1,c2){
+// // 	sql="select contract.nameKey,contract.status,contractPaid,contract.id,chineseName,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices', country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(IF(servicedetail.id is not null,1,0)) as 'detailcount' \
+// // from contract left join subrole_handle_salesgroup ss on ss.salesGroup=contract.salesGroup left join service on service.contract=contract.id left join client on contract.client=client.id left join servicetype s on s.id=service.serviceType left join servicedetail on servicedetail.contract=contract.id left join userinservice u on u.servicedetail=servicedetail.id \
+// // where contract.deleted!=1 and contract.status=5 "+where+" group by contract.id;";
+// var sql="select contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore \
+// 	from contract left join servicedetail s on s.contract=contract.id left join userinservice u on u.servicedetail=s.id \
+// 	where contract.deleted!=1 and contract.status=5  "+where+" "+c1+" "+c2;
+// 	return sql;
+// }
+function createsql(where,user){
 	var id=user.id;
-	var level1=id+" in (contract.sales1,contract.sales2, contract.expert1, contract.expert2, contract.teacher, servicedetail.user, u.user)";
+	var criteria1="",criteria2="";
+	var level1=id+" in (contract.sales1,contract.sales2, contract.expert1, contract.expert2, contract.teacher, s.user, u.user)";
+	
+	var union=" union \
+	select nameKey,status,contractPaid,id, country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore from\
+	(select contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(if(s.id is null,0,1)) as 'total'\
+	from contract left join servicedetail s on s.contract=contract.id where contract.deleted!=1 and contract.status=5 "+where+"group by contract.id) as t where t.total=0";
 	switch (user.role){
 		case 1:
 			switch (user.rank){
-				case 1: restrictions=" and "+level1;break;
-				case 2: restrictions=" and ("+level1+" or ss.subRole="+user.subRole+")";break;
-				case 3: restrictions="";break;
-				case 4: restrictions="";break;
-				default:restrictions="and false";
+				case 1: criteria1=" and "+level1;break;
+				case 2: criteria1=" and ("+level1+" or ss.subRole="+user.subRole+")";break;
+				case 3: criteria1="";break;
+				case 4: criteria1="";break;
+				default:criteria1="and false";
 			}
 		break;
 		case 2:
 			switch (user.rank){
-				case 1: restrictions=" and "+level1;break;
-				case 2: restrictions=" and ("+level1+" or detailcount=0)";break;
-				case 3: restrictions="";break;
-				default: restrictions="false";
+				case 1: criteria1=" and "+level1;break;
+				case 2: criteria1=" and "+level1;criteria2=union;break;
+				case 3: criteria1="";break;
+				default: criteria1=" and false";
 			}
 		break;
 		case 3:
 			switch (user.rank){
-				case 1: restrictions="";break;
-				case 2: restrictions="";break;
-				case 3: restrictions="";break;
-				default: restrictions="false";
+				case 1: criteria1="";break;
+				case 2: criteria1="";break;
+				case 3: criteria1="";break;
+				default: criteria1=" and false";
 			}
 		break;
-		default:restrictions="false";
+		default:restrictions=" and false";
 	}
-	return restrictions;
+	var sql="select t.*,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices' from (select contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore \
+	from contract left join servicedetail s on s.contract=contract.id left join userinservice u on u.servicedetail=s.id \
+	where contract.deleted!=1 and contract.status=5  "+where+" "+criteria1+" "+criteria2+") as t left join service on service.contract=t.id left join servicetype s on s.id=service.serviceType group by t.id";
+	return sql;
 }
 function getOne(req,res){
 	var id=req.params.id;
@@ -88,7 +100,7 @@ module.exports = {
 		// 	sql=createsql(wherequery+whoCanView(req.session.user));
 		// 	promise=Utilfunctions.nativeQuery(sql);
 		// }
-		var sql=createsql(wherequery+whoCanView(req.session.user));
+		var sql=createsql(wherequery,req.session.user);
 		promise=Utilfunctions.nativeQuery(sql);
 		promise.then(function(data){
 			return res.json(data);
