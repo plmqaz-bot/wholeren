@@ -561,8 +561,34 @@ insert into sales2realservicetype values(65,14)
 insert into sales2realservicetype values(66,9)
 insert into sales2realservicetype values(67,10)
 
-
-
+#SubRole has RealServiceType
+insert into subrole_has_realservicetype values(1,5,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(2,5,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(3,5,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(4,5,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(5,5,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(6,8,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(7,8,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(12,6,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(12,7,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(13,6,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(13,7,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(22,6,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(22,7,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(14,6,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(21,6,NULL,NOW(),NOW());
+insert into subrole_has_realservicetype values(15,8,NULL,NOW(),NOW()); #文书
+insert into subrole_has_realservicetype values(17,5,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(17,6,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(17,7,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(17,8,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(18,6,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(18,7,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(8,8,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(9,8,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(10,8,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(11,8,NULL,NOW(),NOW()); 
+insert into subrole_has_realservicetype values(19,8,NULL,NOW(),NOW()); 
 
 
 
@@ -1232,7 +1258,7 @@ DELIMITER ;
 # SALES COMISSION whole table or single 
 -- DROP PROCEDURE IF EXISTS SalesComission;
 -- delimiter ;;
--- create PROCEDURE SalesComission (uid int,sid int, year int, month int,single bool)
+-- create PROCEDURE SalesComission (uid int,hsid int, year int, month int,single bool)
 -- COMMENT ''
 -- BEGIN
 -- select client.chineseName, contract.contractPaid,user.id as "user",service.id as "service",contract.id as "contract",user.nickname,servicetype.serviceType,service.price,r.realPaid,contractcomission.salesRole,salesrole.comissionPercent,salesrole.flatComission,servicetype.comission,contractcomission.extra,IFNULL(r.realPaid,0)*salesrole.comissionPercent*userlevel.userComission*servicetype.comission+contractcomission.extra+salesrole.flatComission as "final" from user 

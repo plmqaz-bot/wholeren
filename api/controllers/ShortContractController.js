@@ -16,18 +16,19 @@
 // }
 function createsql(where,user){
 	var id=user.id;
+	var subRole=user.subRole||0;
 	var criteria1="",criteria2="";
 	var level1=id+" in (contract.sales1,contract.sales2, contract.expert1, contract.expert2, contract.teacher, s.user, u.user)";
 	
 	var union=" union \
 	select nameKey,status,contractPaid,id, country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore from\
 	(select contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(if(s.id is null,0,1)) as 'total'\
-	from contract left join servicedetail s on s.contract=contract.id where contract.deleted!=1 and contract.status=5 "+where+"group by contract.id) as t where t.total=0";
+	from contract left join servicedetail s on s.contract=contract.id  where contract.deleted!=1 and contract.status=5 "+where+"group by contract.id) as t where t.total=0";
 	switch (user.role){
 		case 1:
 			switch (user.rank){
 				case 1: criteria1=" and "+level1;break;
-				case 2: criteria1=" and ("+level1+" or ss.subRole="+user.subRole+")";break;
+				case 2: criteria1=" and ("+level1+" or ss.subRole="+subRole+")";break;
 				case 3: criteria1="";break;
 				case 4: criteria1="";break;
 				default:criteria1="and false";
@@ -36,7 +37,7 @@ function createsql(where,user){
 		case 2:
 			switch (user.rank){
 				case 1: criteria1=" and "+level1;break;
-				case 2: criteria1=" and "+level1;criteria2=union;break;
+				case 2: criteria1=" and ("+level1+" or sr.subRole="+subRole+")";criteria2=union;break;
 				case 3: criteria1="";break;
 				default: criteria1=" and false";
 			}
@@ -52,7 +53,7 @@ function createsql(where,user){
 		default:restrictions=" and false";
 	}
 	var sql="select t.*,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices' from (select contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore \
-	from contract left join servicedetail s on s.contract=contract.id left join userinservice u on u.servicedetail=s.id \
+	from contract left join servicedetail s on s.contract=contract.id left join userinservice u on u.servicedetail=s.id left join subrole_has_realservicetype sr on sr.realServiceType=s.realServiceType \
 	where contract.deleted!=1 and contract.status=5  "+where+" "+criteria1+" "+criteria2+") as t left join service on service.contract=t.id left join servicetype s on s.id=service.serviceType group by t.id";
 	return sql;
 }

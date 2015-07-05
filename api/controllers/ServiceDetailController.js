@@ -63,7 +63,7 @@ module.exports = {
 		// tocreate['service']=attribs.service;
 		// tocreate['servRole']=attribs.servRole;
 		// tocreate['servLevel']=attribs.servLevel;
-		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey']);
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey','semesterType']);
 		 console.log(tocreate,id);
 		 ServiceDetail.update({id:id},tocreate).then(function(data){
 		 	data=data[0]||data;

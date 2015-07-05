@@ -214,3 +214,11 @@ ADD COLUMN `updatedAt` DATETIME NULL AFTER `createdAt`;
 ALTER TABLE `wholeren`.`applicationfile` 
 ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT AFTER `application`,
 ADD PRIMARY KEY (`id`);
+
+CREATE TABLE `wholeren`.`subrole_has_realservicetype` (
+  `realServiceType` INT(11) NULL,
+  `subRole` INT(11) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  PRIMARY KEY (`id`));
