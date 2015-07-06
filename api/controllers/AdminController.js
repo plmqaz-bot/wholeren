@@ -9,7 +9,9 @@ var partials={
     navbar:'partials/navbar',
     notifications:'partials/notifications'
 }
-adminNavbar = {
+
+function getNavbar(){
+    return {
     contract: {
         name: 'Contract',
         navClass: 'contract',
@@ -109,7 +111,9 @@ adminNavbar = {
     //     path: '/Account/',
     //     display:true  
     // }
-};
+    };
+}
+adminNavbar = _.extend(getNavbar(),{});
 loginSecurity=[];
 function setSelected(list, name) {
     _.each(list, function (item, key) {
