@@ -21,8 +21,8 @@ function createsql(where,user){
 	var level1=id+" in (contract.sales1,contract.sales2, contract.expert1, contract.expert2, contract.teacher, s.user, u.user)";
 	
 	var union=" union \
-	select client.chineseName,nameKey,status,contractPaid,id, country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore from\
-	(select contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(if(s.id is null,0,1)) as 'total'\
+	select chineseName,nameKey,status,contractPaid,id, country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore from\
+	(select client.chineseName,contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(if(s.id is null,0,1)) as 'total'\
 	from contract left join client on client.id=contract.client left join servicedetail s on s.contract=contract.id  where contract.deleted!=1 and contract.status=5 "+where+"group by contract.id) as t where t.total=0";
 	switch (user.role){
 		case 1:

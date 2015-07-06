@@ -296,7 +296,7 @@ var ServicePopup=main.baseModalDataView.extend({
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             var semesterselect=Backgrid.SelectCell.extend({
               optionValues:function(){
-                return [['quarter','quarter'],['dual','dual'],['unknown',null]];
+                return [['quarter','quarter'],['semester','dual'],['unknown',null]];
               },
               formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
                 toRaw: function (formattedValue, model) {
@@ -304,7 +304,7 @@ var ServicePopup=main.baseModalDataView.extend({
                 }
               })
             },{
-              _touse:[['quarter','quarter'],['dual','dual'],['unknown',null]]
+              _touse:[['quarter','quarter'],['semester','dual'],['unknown',null]]
             });
            // var typeselect=userselect.extend({
             //     optionValues:function(){

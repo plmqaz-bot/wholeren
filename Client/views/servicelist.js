@@ -42,7 +42,7 @@ var ServiceView=main.baseDataView.extend({
             var degreeselect=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
             var semesterselect=Backgrid.SelectCell.extend({
               optionValues:function(){
-                return [['quarter','quarter'],['dual','dual'],['unknown',null]];
+                return [['quarter','quarter'],['semester','dual'],['unknown',null]];
               },
               formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
                 toRaw: function (formattedValue, model) {
@@ -50,7 +50,7 @@ var ServiceView=main.baseDataView.extend({
                 }
               })
             },{
-              _touse:[['quarter','quarter'],['dual','dual'],['unknown',null]]
+              _touse:[['quarter','quarter'],['semester','dual'],['unknown',null]]
             });
             // var typeselect=userselect.extend({
             //     optionValues:function(){
