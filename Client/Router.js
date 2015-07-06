@@ -13,7 +13,7 @@ module.exports=Backbone.Router.extend({
         * These are admin routes. 
         */ 
         toReturn[this.root+'settings(/:pane)/']='settings';
-        toReturn[this.root+'settings(/:pane)/' ]= 'settings',
+        toReturn[this.root+'advancedSettings(/:pane)/' ]= 'advancedSettings',
         toReturn[this.root+'market(/:pane)/']='market',
         toReturn[this.root+'salesSummary(/:pane)/']='salesSummary',
         toReturn[this.root+'contract/(:option)']='contract',
@@ -61,6 +61,16 @@ module.exports=Backbone.Router.extend({
         //        if (!Ghost.currentView || !(Ghost.currentView instanceof Ghost.Views.Settings)) {
         //            Ghost.currentView = new Ghost.Views.Settings({ el: '#main', pane: pane });
         //        }
+    },
+    advancedSettings: function (pane) {
+        if (!pane) {
+            this.navigate(this.root+'advancedSettings/Reminder/', {
+                trigger: true,
+                replace: true,
+            });
+            return;
+        }
+        Wholeren.currentView = new  Wholeren.Views.AdvancedSettings({ el: '#main', pane: pane });            
     },
     market:function(pane){
         if(!pane){

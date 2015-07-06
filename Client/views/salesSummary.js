@@ -114,6 +114,7 @@ SalesSummary.general=main.baseDataView.extend({
         this.$el.addClass('active');
     },
 });
+
 SalesSummary.view1=DatabaseView.extend({
     collectionParam:{url:'contractOfSaleAndExpert'},
     requrestUrl:'contractOfSaleAndExpert',
@@ -307,11 +308,11 @@ SalesSummary.SalesComissionLookUp=main.baseDataView.extend({
 var SalesSummaryTitle={
     'view1':'总结',
     'view2':'月份收入',
-    'view3':'月份销售目标',
+    //'view3':'月份销售目标',
     //'view4':'销售专家佣金调整',
     //'view5':'服务佣金',
-    'SalesComissionLookUp':'销售佣金设定',
-    'view6':'提醒'
+    //'SalesComissionLookUp':'销售佣金设定',
+    //'view6':'提醒'
 }
 var SalesSummaryView=base.extend({
     initialize: function (options) {

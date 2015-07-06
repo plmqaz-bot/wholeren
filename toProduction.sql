@@ -174,18 +174,18 @@ select id,serviceProgress,NULL,now(),now()from servicedetail;
 
 
 
-ALTER TABLE `wholeren`.`comissionlookup` 
+ALTER TABLE `comissionlookup` 
 ADD COLUMN `alone` TINYINT NOT NULL DEFAULT 0 ;
 
-ALTER TABLE `wholeren`.`application` 
+ALTER TABLE `application` 
 ADD COLUMN `deadline` DATE NULL DEFAULT NULL AFTER `studentCondition`;
 
-ALTER TABLE `wholeren`.`servicedetail` 
+ALTER TABLE `servicedetail` 
 ADD COLUMN `effectiveSemester` DATE NULL DEFAULT NULL AFTER `namekey`,
 ADD COLUMN `semesterType` VARCHAR(45) NULL DEFAULT NULL AFTER `effectiveSemester`;
 
 
-CREATE TABLE `wholeren`.`contactinfo` (
+CREATE TABLE `contactinfo` (
   `primaryCell` VARCHAR(45) NULL,
   `secondaryCell` VARCHAR(45) NULL,
   `skype` VARCHAR(45) NULL,
@@ -199,23 +199,23 @@ CREATE TABLE `wholeren`.`contactinfo` (
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
 
-ALTER TABLE `wholeren`.`contactinfo` 
+ALTER TABLE `contactinfo` 
 ADD COLUMN `service` INT(11) NULL AFTER `updatedAt`,
 ADD COLUMN `client` INT(11) NULL AFTER `service`;
 
-CREATE TABLE `wholeren`.`applicationfile` (
+CREATE TABLE `applicationfile` (
   `description` VARCHAR(45) NULL,
   `file` INT(11) NULL,
   `application` INT(11) NULL);
 
-ALTER TABLE `wholeren`.`applicationfile` 
+ALTER TABLE `applicationfile` 
 ADD COLUMN `createdAt` DATETIME NULL AFTER `application`,
 ADD COLUMN `updatedAt` DATETIME NULL AFTER `createdAt`;
-ALTER TABLE `wholeren`.`applicationfile` 
+ALTER TABLE `applicationfile` 
 ADD COLUMN `id` INT NOT NULL AUTO_INCREMENT AFTER `application`,
 ADD PRIMARY KEY (`id`);
 
-CREATE TABLE `wholeren`.`subrole_has_realservicetype` (
+CREATE TABLE `subrole_has_realservicetype` (
   `realServiceType` INT(11) NULL,
   `subRole` INT(11) NULL,
   `id` INT NOT NULL AUTO_INCREMENT,

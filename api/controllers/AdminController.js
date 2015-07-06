@@ -64,7 +64,7 @@ adminNavbar = {
         navClass: 'contract',
         key: 'admin.navbar.settings',
         path: '/comission/',
-        display:true
+        display:false
 
     },
     market: {
@@ -80,6 +80,13 @@ adminNavbar = {
         key: 'admin.navbar.settings',
         path: '/salesSummary/',
         display:false  
+    },
+    advancedSettings:{
+        name: 'Advanced Settings',
+        navClass: 'contract',
+        key: 'admin.navbar.settings',
+        path: '/advancedSettings/',
+        display:false    
     },
     // user: {
     //     name: 'User',
@@ -125,19 +132,28 @@ function generateView(req,res,template,selected,body,hideNavbar){
 }
 function handleRank(req){
     var user=req.session.user;
+
     switch(user.role){
         case 1:
+
             switch(user.rank){
                 case 2:adminNavbar.salesSummary.display=true;break;
                 case 3:adminNavbar.service.display=false;
-                adminNavbar.servicelist.display=false;break;
+                    adminNavbar.salesSummary.display=true;
+                    adminNavbar.servicelist.display=false;break;
                 case 4:
-                    adminNavbar.market.display=true;        
+                    adminNavbar.advancedSettings.display=true;        
+
                     adminNavbar.salesSummary.display=true;break;
                 default:
                     adminNavbar.market.display=false;        
                     adminNavbar.salesSummary.display=false;break;
             }
+            adminNavbar.comission.display=true;
+            break;
+        case 2:
+            adminNavbar.comission.display=true;
+            break;
         case 3:
             switch(user.rank){
                 case 1:adminNavbar.market.display=true;break;
@@ -149,10 +165,12 @@ function handleRank(req){
                 adminNavbar.market.display=false;        
                 adminNavbar.salesSummary.display=false;break;
             }
+            break;
         default:
         adminNavbar.market.display=false;        
         adminNavbar.salesSummary.display=false;break;
     }
+
 }
 module.exports={
 
@@ -178,6 +196,10 @@ module.exports={
     'salesSummary':function(req,res){
         handleRank(req);
         generateView(req,res,'settings','salesSummary','settings');
+    },
+    'advancedSettings':function(req,res){
+        handleRank(req);
+        generateView(req,res,'settings','advancedSettings','settings');  
     },
     'comission':function(req,res){
         // console.log(req.params);

@@ -724,7 +724,7 @@ var MenuTitle={
     fileupload:'文件下载',
     link:'有用的链接',
     message:'内部消息',
-    tableEditor:'表格修改'
+   // tableEditor:'表格修改'
 }
 
 

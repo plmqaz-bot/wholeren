@@ -52,6 +52,7 @@ module.exports={
         Market:require('./market'),
         SalesSummary:require('./salesSummary'),
         Setting:require('./settings'),
+        AdvancedSettings:require('./advancedSettings'),
        //User:UserView,
         Auth:require('./authenticate.js'),
         Comission:require('./comission.js'),
