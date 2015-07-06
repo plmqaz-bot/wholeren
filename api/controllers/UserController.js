@@ -62,7 +62,7 @@ module.exports = {
 	'find':function(req,res){
 		var active=req.param('active');
 		var where={active:true};
-		if(req.session.user.rank==3){
+		if(req.session.user.rank>=3){
 			if(active!=undefined){
 				where={active:(active==='true')};
 			}

@@ -192,6 +192,7 @@ Settings.allUsers=main.baseDataView.extend({
             {name:'userLevel',label:'佣金等级',editable:editable,cell:levelselect},
             {name:'rank',label:'职位等级',editable:editable,cell:'number'},
             //{name:'boss',label:'主管',editable:editable,cell:userselect},
+            {name:'createdAt',label:'注册时间',editable:false,cell:BackgridCells.MomentCell},
             {name:'active',label:'在职',editable:editable,cell:'boolean'}
             ];
             return Promise.resolve({});
