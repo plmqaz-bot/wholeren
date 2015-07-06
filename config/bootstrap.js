@@ -20,7 +20,7 @@ module.exports.bootstrap = function(cb) {
 for(var key in PeriodicFunctions){
 	if(PeriodicFunctions.hasOwnProperty(key)&&typeof PeriodicFunctions[key]==='function'){
 		sails.log.info('Set up periodic function: ',key);
-		PeriodicFunctions[key]();
+		//PeriodicFunctions[key]();
 		setInterval(PeriodicFunctions[key], 1000*60*60*24);		
 	}
 }
