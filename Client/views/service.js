@@ -11,7 +11,7 @@ var util=require('../util');
 var BackgridCells=require('../backgrid.cell.js');
 var Backform=require('../backform');
 var JST=require('../JST');
-
+var Dropzone=require('dropzone');
 var main=require('./data');
 var CommentModalView=require('./comment');
 var ServiceView=main.baseDataView.extend({
@@ -294,7 +294,18 @@ var ServicePopup=main.baseModalDataView.extend({
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2,active:true}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
-            var semesterselect=BackgridCells.SelectCell({name:'SemesterType',values:[['quarter','quarter'],['dual','dual']]});
+            var semesterselect=Backgrid.SelectCell.extend({
+              optionValues:function(){
+                return [['quarter','quarter'],['dual','dual'],['unknown',null]];
+              },
+              formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                toRaw: function (formattedValue, model) {
+                  return formattedValue;
+                }
+              })
+            },{
+              _touse:[['quarter','quarter'],['dual','dual'],['unknown',null]]
+            });
            // var typeselect=userselect.extend({
             //     optionValues:function(){
             //         var oritype=this.model.get('originalType');
@@ -412,6 +423,7 @@ var MoreUserPopup=main.baseModalDataView.extend({
     }
 })
 
+
 var ApplicationPopup=main.baseModalDataView.extend({
     collectionName:'Application',
     initialize: function (options){
@@ -430,7 +442,6 @@ var ApplicationPopup=main.baseModalDataView.extend({
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',
                 action:function(e){
-                    var item=$(e.currentTarget);
                     var id = this.model.get('id');
                     var m=new CommentModalView({aid:id});
                     $('.app').append(m.renderAll().el);   
@@ -456,6 +467,15 @@ var ApplicationPopup=main.baseModalDataView.extend({
                     }
                 }
             });
+            var FileCell=BackgridCells.Cell.extend({
+                cellText:'Files',
+                action:function(e){
+                    var id = this.model.get('id');
+                    var m=new FilePopup({id:id})
+                    m.render();
+                    $('.app').append(m.el);
+                }
+            })
             self.columns=[
                 //{name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
@@ -470,12 +490,66 @@ var ApplicationPopup=main.baseModalDataView.extend({
                 {name:'deadline',label:'截止时间',cell:BackgridCells.MomentCell},
                // {name:'newDev',label:'新开发？',cell:'boolean'},
                 {name:'appliedSemester',label:'申请入读学期',cell:DateCell},
+                {name:'',label:'有关文件',cell:FileCell},
                 //{name:'studentCondition',label:'Condition',cell:'string'},
                 {name:'',label:'Comments',cell:comment},
                 //{name:'',label:'Update',cell:UpdateCell},
                 {name:'',label:'Delete',cell:DeleteCell}
                 ];
         });         
+    },
+});
+
+var FilePopup=main.baseModalDataView.extend({
+    collectionName:'ApplicationFile',
+    // collectionUrl:'/ApplicationFile/',
+    addNew:false,
+    initialize:function(options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.applicationID=parseInt(options.id);
+        this.collection.aid=this.applicationID;
+    },
+    constructColumns:function(){
+        var uri=BackgridCells.Cell.extend({
+                cellText:'download',
+                action:function(e){
+                    window.open("/PublicFiles/getFile/"+this.model.get('file'));
+                },
+                render: function () {
+                    this.$el.html('<a src="/PublicFiles/getFile/'+this.model.get('file')+'">download</a>');
+                    this.delegateEvents();
+                    return this;
+                }
+            });
+         this.columns=[
+                //{name:'user',label:'文书负责人',cell:userselect},
+                {name:'description',label:'文件介绍',cell:'string'},
+                {name:'',label:'下载',cell:uri},
+                {name:'',label:'Delete',cell:BackgridCells.DeleteCell}
+                ];
+        return Promise.resolve();
+    },
+    afterRender:function(){
+        main.baseModalDataView.prototype.afterRender.apply(this,arguments);
+        this.$('.bbm-modal__section').prepend('<div id="uploader" style="margin:auto;border-style:solid;width:100px;text-align:center;height:50px">Drop Files here</div>');;
+        var obj=this.$('div#uploader');
+        var domobj=obj[0];
+        var myDropzone = new Dropzone(domobj, { url: "/ApplicationFile/"});
+        var self=this;
+        myDropzone.on('success',function(file,data){
+           //console.log("success",arguments);
+            self.collection.add(data);
+            util.handleRequestSuccess({responseText:"Upload Successful"});
+            myDropzone.removeFile(file);
+        });
+        myDropzone.on("sending",function(file,xhr,data){
+            data.append("application",self.applicationID);
+        });
+        myDropzone.on('error',function(file){
+            console.log(err);
+            myDropzone.removeFile(file);
+        })
+        return this;
     },
 });
 module.exports=ShortContractView;

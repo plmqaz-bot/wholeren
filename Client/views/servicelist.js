@@ -40,7 +40,18 @@ var ServiceView=main.baseDataView.extend({
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             var degreeselect=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
-            var semesterselect=BackgridCells.SelectCell({name:'SemesterType',values:[['quarter','quarter'],['dual','dual']]});
+            var semesterselect=Backgrid.SelectCell.extend({
+              optionValues:function(){
+                return [['quarter','quarter'],['dual','dual'],['unknown',null]];
+              },
+              formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                toRaw: function (formattedValue, model) {
+                  return formattedValue;
+                }
+              })
+            },{
+              _touse:[['quarter','quarter'],['dual','dual'],['unknown',null]]
+            });
             // var typeselect=userselect.extend({
             //     optionValues:function(){
             //         var oritype=this.model.get('originalType');
