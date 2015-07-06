@@ -166,7 +166,7 @@ Settings.allUsers=main.baseDataView.extend({
     constructColumns:function(){
         var self=this;
         var editable=false;
-        if(parseInt(this.rank||"1")==3){
+        if(parseInt(this.rank||"1")>=3){
             editable=true;
         }
         return Promise.all([util.ajaxGET('/Role/'),util.ajaxGET('/User/'),util.ajaxGET('/UserLevel/'),util.ajaxGET('/SubRole/')]).spread(function(role,user,level,subrole){

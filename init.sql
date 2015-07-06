@@ -1184,9 +1184,9 @@ delimiter ;
 # This is the monthly Information. 
 create or replace view MonthlySummary as 
 (select 
-IF(DAY(c.createdAt)>23,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) as 'M',
-IF(DAY(c.createdAt)>23,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) as 'Y',
-FORMAT(sum(ifnull(contractPrice,sumPrice(c.id))),2) as '总收入',
+IF(DAY(c.createdAt)>22,MONTH(c.createdAt)%12+1,MONTH(c.createdAt)) as 'M',
+IF(DAY(c.createdAt)>22,YEAR(c.createdAt)+FLOOR(MONTH(c.createdAt)/12),YEAR(c.createdAt)) as 'Y',
+sum(ifnull(contractPrice,sumPrice(c.id))) as '总收入',
 count(*) as '总咨询量',
 sum(IF(c.status =5,1,0)) as '总签约量',
 sum(IF(c.salesGroup=1,1,0)) as '紧急咨询量',
@@ -1194,7 +1194,7 @@ sum(IF(c.salesGroup=1 and c.status =5,1,0))  as '紧急签约量',
 sum(IF(c.salesGroup=1 and c.status =5,ifnull(contractPrice,sumPrice(c.id)),0))  as '紧急签约额',
 sum(IF(c.salesGroup=2,1,0)) as '转学咨询量',
 sum(IF(c.salesGroup=2 and c.status =5,1,0))  as '转学签约量',
-sum(IF(c.salesGroup=2 and c.status =5,ifnull(contractPrice,sumPrice(c.id)),0))  as '转学签约额'
+sum(IF(c.salesGroup=2 and c.status =5,ifnull(contractPrice,sumPrice(c.id)),0)) as '转学签约额'
 from contract c
 #left join contractcategory on c.contractCategory=contractcategory.id
 #left join status on c.status=status.id
@@ -1202,22 +1202,22 @@ group by M,Y) ;
 
 create or replace view FullSummary as
 select STR_TO_DATE(CONCAT(m1.Y,'-',m1.M,'-22'),'%Y-%m-%d') as 'Time',
-m1.总收入,
+m1.总收入 ,
 FORMAT((m1.总收入-m2.总收入)/m2.总收入,2) as '收入月增长率',
 m1.总咨询量,
-(m1.总咨询量-m2.总咨询量)/m2.总咨询量 as '咨询量月增长率',
+FORMAT((m1.总咨询量-m2.总咨询量)/m2.总咨询量,2) as '咨询量月增长率',
 m1.总签约量,
-FORMAT(m1.总收入/m1.总签约量,2) as '平均签约价',
+m1.总收入/m1.总签约量 as '平均签约价',
 m1.紧急咨询量,
-(m1.紧急咨询量-m2.紧急咨询量)/m2.紧急咨询量 as '紧急咨询量月增长率',
+FORMAT((m1.紧急咨询量-m2.紧急咨询量)/m2.紧急咨询量,2) as '紧急咨询量月增长率',
 m1.紧急签约量,
-m1.紧急签约额,
-m1.紧急签约量/m1.紧急咨询量 as '紧急签约率',
+m1.紧急签约额 ,
+FORMAT(m1.紧急签约量/m1.紧急咨询量,2) as '紧急签约率',
 m1.转学咨询量,
-(m1.转学咨询量-m2.转学咨询量)/m2.转学咨询量 as '转学咨询量月增长率',
+FORMAT((m1.转学咨询量-m2.转学咨询量)/m2.转学咨询量,2) as '转学咨询量月增长率',
 m1.转学签约量,
 m1.转学签约额,
-m1.转学签约量/m1.转学咨询量 as '转学签约率'
+FORMAT(m1.转学签约量/m1.转学咨询量,2) as '转学签约率'
  from MonthlySummary m1 left join MonthlySummary m2 on m1.M=(m2.M%12+1) and m1.Y=m2.Y+FLOOR(m2.M/12) order by Time;
 
 DROP function IF EXISTS DateInRange;
