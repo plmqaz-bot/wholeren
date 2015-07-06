@@ -10,8 +10,18 @@ var partials={
     notifications:'partials/notifications'
 }
 
-function getNavbar(){
-    return {
+function reset(navbar){
+    for (var key in navbar){
+        if(navbar.hasOwnProperty(key)){
+            navbar[key].display=false;
+        }
+    }
+    navbar.contract.display=true;
+    navbar.service.display=true;
+    navbar.servicelist.display=true;
+    navbar.settings.display=true;
+}
+adminNavbar = {
     contract: {
         name: 'Contract',
         navClass: 'contract',
@@ -112,8 +122,6 @@ function getNavbar(){
     //     display:true  
     // }
     };
-}
-adminNavbar = _.extend(getNavbar(),{});
 loginSecurity=[];
 function setSelected(list, name) {
     _.each(list, function (item, key) {
@@ -136,7 +144,7 @@ function generateView(req,res,template,selected,body,hideNavbar){
 }
 function handleRank(req){
     var user=req.session.user;
-
+    reset(adminNavbar);
     switch(user.role){
         case 1:
 
