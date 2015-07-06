@@ -60,7 +60,7 @@ function createsql(where,user){
 function getOne(req,res){
 	var id=req.params.id;
 	if(!id) return Utilfunctions.errorHandler({error:"No id"},res,"Get short contract  failed");
-	var sql=createsql("and contract.id="+id);
+	var sql=createsql("and contract.id="+id,req.session.user);
 	return Utilfunctions.nativeQuery(sql).then(function(data){
 		if((data=data||[]).length<1) return Promise.reject({error:"not found"});
 		return res.json(data[0]);
