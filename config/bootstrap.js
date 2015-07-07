@@ -24,8 +24,6 @@ for(var key in PeriodicFunctions){
 		setInterval(PeriodicFunctions[key], 1000*60*60*24);		
 	}
 }
-
-
   // It's very important to trigger this callback method when you are finished
   // with the bootstrap!  (otherwise your server will never lift, since it's waiting on the bootstrap)
   cb();

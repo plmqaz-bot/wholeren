@@ -531,8 +531,8 @@ var FilePopup=main.baseModalDataView.extend({
     },
     afterRender:function(){
         main.baseModalDataView.prototype.afterRender.apply(this,arguments);
-        this.$('.bbm-modal__section').prepend('<div id="uploader" style="margin:auto;border-style:solid;width:100px;text-align:center;height:50px">Drop Files here</div>');;
-        var obj=this.$('div#uploader');
+        this.$('.bbm-modal__section').prepend('<form action="/" class="dropzone"></form>');;
+        var obj=this.$('.dropzone');
         var domobj=obj[0];
         var myDropzone = new Dropzone(domobj, { url: "/ApplicationFile/"});
         var self=this;

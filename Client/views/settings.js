@@ -503,8 +503,10 @@ Settings.fileupload=main.baseDataView.extend({
     afterRender:function(){
         this.$el.attr('id', this.id);
         this.$el.addClass('active');
-        $('.content').prepend('<div id="uploader" style="margin:auto;border-style:solid;width:100px;text-align:center;height:50px">Drop Files here</div>');
-        var myDropzone = new Dropzone("div#uploader", { url: "/PublicFiles/"});
+        //$('.content').prepend('<div id="uploader" style="margin:auto;border-style:solid;width:100px;text-align:center;height:50px" class="dropzone">Drop Files here</div>');
+        $('.content').prepend('<form action="/" class="dropzone"></form>');
+        
+        var myDropzone = new Dropzone(".dropzone", { url: "/PublicFiles/"});
         var self=this;
         myDropzone.on('success',function(file,data){
            //console.log("success",arguments);
