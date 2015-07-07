@@ -19,7 +19,7 @@ var ServiceView=main.baseDataView.extend({
     collectionName:'ServiceList',
     title:'服务列表',
     paginator:true,
-    minScreenSize:0,
+    minScreenSize:4000,
     filterFields:['cName','realServiceType','serviceProgress','user','link'],
     renderOptions:{date:true},
     constructColumns:function(){
@@ -217,7 +217,7 @@ var ContactInfoPopup=main.baseModalDataView.extend({
         this.columns=[
             //{name:'user',label:'文书负责人',cell:userselect},
             {name:'primaryCell',label:'主要电话',cell:'string'},
-            {name:'secondaryCell',label:'次要电话',cell:'string'},
+            {name:'secondaryEmail',label:'Email',cell:'string'},
             {name:'skype',label:'skype',cell:'string'},
             {name:'qq',label:'QQ',cell:'string'},
             {name:'wechat',label:'微信',cell:'string'},

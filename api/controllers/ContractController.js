@@ -67,13 +67,21 @@ function whoCanView(user,where){
 }
 
 var findOne=function(req,res,id){
-		return Contract.findOne({id:id}).populate('client').then(function(data){
+		return Contract.findOne({id:id}).populate('client').populate('service').then(function(data){
 			console.log("look for "+id)
 			if(data){
 				if(data.client) {
 					data.clientName=data.client['chineseName'];
+					data.pinyin=data.client['pinyin'];
 					//data.client=data.client.id;
-				}	
+				}
+				var totalprice=0;
+				data.service=data.service||[];
+			 	for(var i=0;i<data.service.length;i++){
+			 		totalprice+=data.service[i].price||0;
+			 	}
+			 	data.price=data.price||totalprice;	
+			 	console.log(data);
 				return res.json(data);
 			}else{
 				return Promise.reject("contract does not exist!!");
@@ -145,6 +153,7 @@ module.exports = {
 				 	if(r.client){
 				 		r.client=Hashs[0][r.client]||{};
 				 		r.clientName=r.client['chineseName'];
+				 		r.pinyin=r.client['pinyin'];
 				 	} 
 				 	var services=Hashs[1][r.id]||[];
 				 	var totalprice=0;

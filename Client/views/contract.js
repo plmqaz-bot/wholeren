@@ -115,6 +115,7 @@ var ContractView=main.baseDataView.extend({
             var momentcell=BackgridCells.MomentCell;
             self.columns=[
             {name:'clientName',label:'Name',cell:edit},
+            {name:'pinyin',label:'拼音',editable:false,cell:'string'},
             {name:'namekey',label:'ID',cell:'string'},
             {name:'salesGroup',label:'销售组',cell:salesgroup},
             {name:'contractCategory',label:'咨询服务类别',cell:category},
@@ -122,7 +123,7 @@ var ContractView=main.baseDataView.extend({
             {name:'leadDetail',label:'LeadDetail',cell:leadDetail},
             {name:'leadName',label:'Lead介绍人',cell:'string'},
             {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
-            {name:'createdAt',label:'咨询日期',editable:true,cell:momentcell},
+            {name:'createdAt',label:'咨询日期',editable:false,cell:momentcell},
             //{name:'status',label:'签约状态',cell:sign},
             {name:'status',label:'签约状态',cell:status},
             {name:'contractSigned',label:'签约日期',cell:momentcell},
@@ -808,7 +809,6 @@ var ContractEdit = EditForm.extend({
             var self=this;
                 this.model.save(this.modelChanges,{
                 patch:true,
-                save:false,
                 success:function(d){
                     // refresh parent view
                     try{
@@ -816,11 +816,13 @@ var ContractEdit = EditForm.extend({
                         if(!self.parentView.collection.contains(d)){
                             self.parentView.collection.fullCollection.add(d); 
                             self.parentView.collection.fullCollection.sort();
+                            return self.close();
+                        }else{
+                            self.close();
                         }
                     }catch(e){
                         return self.close();
                     }
-                    return self.close();
                 },
                 error:function(model,response){
                     self.model.attributes=model._previousAttributes;

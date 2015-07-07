@@ -9,7 +9,7 @@ module.exports = {
 
   attributes: {
   	primaryCell:{type:'string'},
-  	secondaryCell:{type:'string'},
+  	secondaryEmail:{type:'email'},
   	skype:'string',
   	qq:'string',
   	wechat:'string',

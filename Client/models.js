@@ -57,8 +57,20 @@ var syncModel=simpleModel.extend({
 });
 var simpleCollection=Backbone.Collection.extend({
         model: simpleModel,
+        param:{},
         url:function(){
-            return this._url;
+            var toReturn=this._url;
+            var param="";
+            for (var key in this.param){
+                if(this.param.hasOwnProperty(key)){
+                    param+=key+"="+this.param[key]+"&";
+                }
+            }
+            if(param){
+                toReturn+="?"+param
+            }
+
+            return toReturn;
         },
         initialize:function(models,options){
             options=options||{};
@@ -67,6 +79,9 @@ var simpleCollection=Backbone.Collection.extend({
             delete options.name;
             delete options.url;
         },
+        setGetParameter:function(options){
+            this.param=options;
+        }
     });
 var syncCollection=simpleCollection.extend({
     model:syncModel

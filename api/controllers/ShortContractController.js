@@ -21,8 +21,8 @@ function createsql(where,user){
 	var level1=id+" in (contract.sales1,contract.sales2, contract.expert1, contract.expert2, contract.teacher, s.user, u.user)";
 	
 	var union=" union \
-	select chineseName,nameKey,status,contractPaid,id, country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore from\
-	(select client.chineseName,contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(if(s.id is null,0,1)) as 'total'\
+	select chineseName,pinyin,primaryPhone,primaryEmail,client,nameKey,status,contractPaid,id, country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore from\
+	(select client.chineseName,client.pinyin,client.primaryPhone,client.primaryEmail,contract.client,contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(if(s.id is null,0,1)) as 'total'\
 	from contract left join client on client.id=contract.client left join servicedetail s on s.contract=contract.id  where contract.deleted!=1 and contract.status=5 "+where+"group by contract.id) as t where t.total=0";
 	switch (user.role){
 		case 1:
@@ -52,7 +52,7 @@ function createsql(where,user){
 		break;
 		default:restrictions=" and false";
 	}
-	var sql="select t.*,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices' from (select client.chineseName, contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore \
+	var sql="select t.*,GROUP_CONCAT(distinct s.serviceType SEPARATOR ',') as 'boughtservices' from (select client.chineseName, client.pinyin, primaryPhone,primaryEmail,contract.client,contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore \
 	from contract left join client on contract.client=client.id left join servicedetail s on s.contract=contract.id left join userinservice u on u.servicedetail=s.id left join subrole_has_realservicetype sr on sr.realServiceType=s.realServiceType \
 	where contract.deleted!=1 and contract.status=5  "+where+" "+criteria1+" "+criteria2+") as t left join service on service.contract=t.id left join servicetype s on s.id=service.serviceType group by t.id";
 	return sql;

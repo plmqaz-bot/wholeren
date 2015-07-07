@@ -118,7 +118,21 @@ var ShortContractView=main.baseDataView.extend({
                 $('.app').html(teacherview.el);
             },
         });
-
+        var contPopup=BackgridCells.Cell.extend({
+                cellText:'ContactInfo',
+                render: function () {
+                    this.$el.html('<a>'+this.cellText+'</a>');
+                    this.delegateEvents();
+                    return this;
+                  },
+                action:function(e){
+                    e.preventDefault();
+                    var id=this.model.get('client')||0;
+                    var contactview= new ContactInfoPopup({id:id});
+                    contactview.render();
+                    $('.app').append(contactview.el);  
+                }
+            });
         var comment=BackgridCells.Cell.extend({
             cellText:'Comments',
             action:function(e){
@@ -136,13 +150,16 @@ var ShortContractView=main.baseDataView.extend({
             var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
              self.columns=[
             {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
+            {name:'pinyin',label:'用户拼音',editable:false,cell:'string'},
+            {name:'primaryPhone',label:'电话',editable:false,cell:'string'},
+            {name:'primaryEmail',label:'Email',editable:false,cell:'string'},
             {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
             // {name:'teacher',label:'后期组长',editable: false,cell:'string'},
             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
             {name:'status',label:'该合同进度',editable:false,cell:status},
             {name:'boughtservices',label:'该合同购买服务',cell:'text'},
             {name:'',label:'各进程细节',cell:popup},                    
-            {name:'',label:'学生联系方式',cell:'string'},                    
+            {name:'',label:'学生联系方式',cell:contPopup},                    
             //{name:'',label:'第三方费用',cell:'string'},                    
             {name:'country',label:'学生所在地',cell:country},
             {name:'degree',label:'原学校类型',cell:degree},
@@ -166,7 +183,35 @@ var ShortContractView=main.baseDataView.extend({
     }
 });
 
-
+var ContactInfoPopup=main.baseModalDataView.extend({
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/ContactInfo/',
+    initialize: function (options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.clientID=parseInt(options.id);
+        this.collection.setGetParameter({client:this.clientID});
+    },
+    newModel:function(){
+        return new Obiwang.Models.syncModel({client:this.clientID},{_url:'/ContactInfo/'});
+    },
+    constructColumns:function(){
+        var DeleteCell = BackgridCells.DeleteCell;
+        this.columns=[
+            //{name:'user',label:'文书负责人',cell:userselect},
+            {name:'primaryCell',label:'主要电话',cell:'string'},
+            {name:'secondaryEmail',label:'Email',cell:'string'},
+            {name:'skype',label:'skype',cell:'string'},
+            {name:'qq',label:'QQ',cell:'string'},
+            {name:'wechat',label:'微信',cell:'string'},
+            {name:'parentPhone',label:'家长电话',cell:'string'},
+            {name:'parentEmail',label:'家长邮箱',cell:'string'},
+            {name:'emergencyContact',label:'紧急联系方式',cell:'string'},
+            {name:'',label:'Delete',cell:DeleteCell}
+            ];
+        return Promise.resolve({});
+                
+    },
+});
 // var ServicePopup=Backbone.Modal.extend({
 //     prefix:"bbm",
 //     template: JST['editbox'],

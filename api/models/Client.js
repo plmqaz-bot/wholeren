@@ -6,6 +6,7 @@
 */
 
 var uuid = require('node-uuid');
+var pinyin=require('pinyin');
 module.exports = {
 
   attributes: {
@@ -17,6 +18,7 @@ module.exports = {
   	firstName:{type:'string'},
 
   	lastName:{type:'string'},
+    pinyin:{type:'string'},
 
     chineseName:{type:'string',required:true},
 
@@ -36,7 +38,16 @@ module.exports = {
   },
   beforeCreate: function (attrs, next) {
     attrs.publicKey=uuid.v1();
+    if(attrs.chineseName){
+      attrs.pinyin=pinyin(attrs.chineseName,{style:pinyin.STYLE_NORMAL}).join("");
+    }
     next();
   },
+  beforeUpdate:function(attrs,next){
+    if(attrs.chineseName){
+      attrs.pinyin=pinyin(attrs.chineseName,{style:pinyin.STYLE_NORMAL}).join("");
+    }
+    next();
+  }
 };
 

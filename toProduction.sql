@@ -222,3 +222,11 @@ CREATE TABLE `subrole_has_realservicetype` (
   `createdAt` DATETIME NULL,
   `updatedAt` DATETIME NULL,
   PRIMARY KEY (`id`));
+
+
+
+ALTER TABLE `wholeren`.`contactinfo` 
+CHANGE COLUMN `secondaryCell` `secondaryEmail` VARCHAR(45) NULL DEFAULT NULL ;
+
+ALTER TABLE `wholeren`.`client` 
+ADD COLUMN `pinyin` VARCHAR(45) NULL AFTER `lastName`;

@@ -44,7 +44,8 @@
     "jquery-ui": "*",
     "moment": "*",
     "skipper-disk":"*",
-    "fast-csv":"*"
+    "fast-csv":"*",
+    "pinyin":"*"
   },
   "scripts": {
     "start": "node main.js",
