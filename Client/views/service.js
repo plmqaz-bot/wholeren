@@ -585,13 +585,13 @@ var FilePopup=main.baseModalDataView.extend({
            //console.log("success",arguments);
             self.collection.add(data);
             util.handleRequestSuccess({responseText:"Upload Successful"});
-            myDropzone.removeFile(file);
+            //myDropzone.removeFile(file);
         });
         myDropzone.on("sending",function(file,xhr,data){
             data.append("application",self.applicationID);
         });
         myDropzone.on('error',function(file){
-            console.log(err);
+            util.handleRequestError(err);
             myDropzone.removeFile(file);
         })
         return this;

@@ -512,7 +512,7 @@ Settings.fileupload=main.baseDataView.extend({
            //console.log("success",arguments);
             self.collection.add(data);
             util.handleRequestSuccess({responseText:"Upload Successful"});
-            myDropzone.removeFile(file);
+            //myDropzone.removeFile(file);
         });
     },
 

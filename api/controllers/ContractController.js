@@ -68,7 +68,6 @@ function whoCanView(user,where){
 
 var findOne=function(req,res,id){
 		return Contract.findOne({id:id}).populate('client').populate('service').then(function(data){
-			console.log("look for "+id)
 			if(data){
 				if(data.client) {
 					data.clientName=data.client['chineseName'];
@@ -77,11 +76,14 @@ var findOne=function(req,res,id){
 				}
 				var totalprice=0;
 				data.service=data.service||[];
+				selectedService=[];
 			 	for(var i=0;i<data.service.length;i++){
-			 		totalprice+=data.service[i].price||0;
+			 		var s=data.service[i]||{};
+			 		totalprice+=s.price||0;
+			 		selectedService.push(s.serviceType);
 			 	}
 			 	data.price=data.price||totalprice;	
-			 	console.log(data);
+			 	data.selectedService=selectedService;
 				return res.json(data);
 			}else{
 				return Promise.reject("contract does not exist!!");
@@ -101,7 +103,7 @@ module.exports = {
 		var where=req.param('where')||"{}";
 		console.log(where);
 		where=JSON.parse(where);
-		if(!(where.createdAt||{})['>']&&!(where.createdAt||{})['<']) where={};
+		if(!(where.createdAt||{})['>']&&!(where.createdAt||{})['<']&&!(where.contractSigned||{})['>']&&!(where.contractSigned||{})['<']) where={};
 		if(!where.deleted){
 			where.deleted=false;
 		}else{
@@ -157,10 +159,14 @@ module.exports = {
 				 	} 
 				 	var services=Hashs[1][r.id]||[];
 				 	var totalprice=0;
+				 	var selectedService=[];
 				 	for(var i=0;i<services.length;i++){
-				 		totalprice+=services[i].price||0;
+				 		var s=services[i]||{};
+			 			totalprice+=s.price||0;
+			 			selectedService.push(s.serviceType);
 				 	}
 				 	r.price=r.price||totalprice;
+				 	r.selectedService=selectedService;
 				// 	r.service=Hashs[9][r.id]||[];
 				 	return r;
 				 });

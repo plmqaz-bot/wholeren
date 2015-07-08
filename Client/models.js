@@ -405,6 +405,7 @@ Collections={
             this.endDate=options.endDate||"";
             this.mode="client";
             this.state={pageSize:20};
+            this.field='createdAt';
         },
         setdate:function(options){
             this.startDate=options.startDate;
@@ -414,17 +415,17 @@ Collections={
             var where={};
             try{
                 if(this.startDate){
-                    where.createdAt=where.createdAt||{};
-                    where.createdAt['>']=new Date(this.startDate);
+                    where[this.field]=where[this.field]||{};
+                    where[this.field]['>']=new Date(this.startDate);
                 }
                 if(this.endDate){
-                    where.createdAt=where.createdAt||{};
-                    where.createdAt['<']=new Date(this.endDate);
+                    where[this.field]=where[this.field]||{};
+                    where[this.field]['<']=new Date(this.endDate);
                 }
                 if(this.deleted==true){
                     where.deleted=true;
                 }
-                if(where.createdAt||where.deleted!=undefined){
+                if(where[this.field]||where.deleted!=undefined){
                     return JSON.stringify(where);
                 }
             }catch(e){

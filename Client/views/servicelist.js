@@ -73,7 +73,8 @@ var ServiceView=main.baseDataView.extend({
                 action:function(e){
                     e.preventDefault();
                     var id=this.model.get('id');
-                    var contactview= new ContactInfoPopup({id:id});
+                    var c=this.model.get('client');
+                    var contactview= new ContactInfoPopup({id:id,client:c});
                     contactview.render();
                     $('.app').append(contactview.el);  
                 }
@@ -153,6 +154,8 @@ var ServiceView=main.baseDataView.extend({
             });
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+                {name:'primaryPhone',label:'用户电话',editable:false,cell:'string'},
+                {name:'primaryEmail',label:'Email',editable:false,cell:'string'},
                 {name:'',label:'合同链接',editable:false,cell:RedirectCell},
                 {name:'contractKey',label:'ID',cell:'string'},
                 {name:'realServiceType',label:'各进程类型',editable:false,cell:typeselect},
@@ -207,10 +210,11 @@ var ContactInfoPopup=main.baseModalDataView.extend({
     initialize: function (options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.serviceID=parseInt(options.id);
+        this.clientID=parseInt(options.client||0);
         this.collection.setSID(this.serviceID);
     },
     newModel:function(){
-        return new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/ContactInfo/'});
+        return new Obiwang.Models.syncModel({service:this.serviceID,client:this.clientID},{_url:'/ContactInfo/'});
     },
     constructColumns:function(){
         var DeleteCell = BackgridCells.DeleteCell;
@@ -339,8 +343,8 @@ var FilePopup=main.baseModalDataView.extend({
     },
     afterRender:function(){
         main.baseModalDataView.prototype.afterRender.apply(this,arguments);
-        this.$('.bbm-modal__section').prepend('<div id="uploader" style="margin:auto;border-style:solid;width:100px;text-align:center;height:50px">Drop Files here</div>');;
-        var obj=this.$('div#uploader');
+        this.$('.bbm-modal__section').prepend('<form action="/" class="dropzone"></form>');;
+        var obj=this.$('.dropzone');
         var domobj=obj[0];
         var myDropzone = new Dropzone(domobj, { url: "/ApplicationFile/"});
         var self=this;
@@ -348,13 +352,13 @@ var FilePopup=main.baseModalDataView.extend({
            //console.log("success",arguments);
             self.collection.add(data);
             util.handleRequestSuccess({responseText:"Upload Successful"});
-            myDropzone.removeFile(file);
+            //myDropzone.removeFile(file);
         });
         myDropzone.on("sending",function(file,xhr,data){
             data.append("application",self.applicationID);
         });
         myDropzone.on('error',function(file){
-            console.log(err);
+            util.handleRequestError(err);
             myDropzone.removeFile(file);
         })
         return this;

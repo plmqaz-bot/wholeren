@@ -42,7 +42,7 @@ var ContractView=main.baseDataView.extend({
                 $('.app').html(m.el);   
             } 
         });
-        return Promise.all([util.ajaxGET('/contract/getAllOptions/'),util.ajaxGET('/User/')]).spread(function(AllOptions,Users){
+        return Promise.all([util.ajaxGET('/contract/getAllOptions/'),util.ajaxGET('/User/'),util.ajaxGET('/ServiceType/')]).spread(function(AllOptions,Users,stype){
         	var salesgroup=BackgridCells.SelectCell({nullable:true,name:"SalesGroup",values:_.map(AllOptions['SalesGroup'],function(e){return [e.salesGroup,e.id]})});
             //var category=BackgridCells.SelectCell({name:"ContractCategory",values:_.map(AllOptions['ContractCategory'],function(e){return [e.contractCategory,e.id]})});
             var category=salesgroup.extend({
@@ -78,6 +78,7 @@ var ContractView=main.baseDataView.extend({
             var status=BackgridCells.SelectCell({name:"Status",values:_.map(AllOptions['Status'],function(e){return [e.status,e.id]})});
             var country=BackgridCells.SelectCell({name:"Country",values:_.map(AllOptions['Country'],function(e){return [e.country,e.id]})});
             var degree=BackgridCells.SelectCell({name:"Degree",values:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})});
+            var stypeselect=BackgridCells.SelectCell({name:"SType",values:_.map(stype,function(e){return [e.alias,e.id]})});
             var sign=BackgridCells.Cell.extend({
                 cellText:'Status',
                 action:function(e){
@@ -124,7 +125,7 @@ var ContractView=main.baseDataView.extend({
             {name:'leadName',label:'Lead介绍人',cell:'string'},
             {name:'leadLevel',label:'LeadLevel',cell:leadLevel},
             {name:'createdAt',label:'咨询日期',editable:false,cell:momentcell},
-            //{name:'status',label:'签约状态',cell:sign},
+            //{name:'status',label:'签约状态',cell:sign}, 
             {name:'status',label:'签约状态',cell:status},
             {name:'contractSigned',label:'签约日期',cell:momentcell},
             {name:'contractPaid',label:'付款日期',cell:momentcell},
@@ -141,6 +142,7 @@ var ContractView=main.baseDataView.extend({
             {name:'targetSchool',label:'目标学校',cell:'string'},
             {name:'targetSchoolDegree',label:'申请学校类型',cell:degree},
             {name:'',label:'服务',cell:serv},
+            {name:'selectedService',label:'服务2',editable:false,cell:stypeselect},
             {name:'gpa',label:'GPA',cell:'number'},
             {name:'toefl',label:'托福',cell:'number'},
             {name:'gre',label:'GRE',cell:'number'},
@@ -164,6 +166,7 @@ var ContractView=main.baseDataView.extend({
             {name:"leadDetail",label:'LeadDetail',options:_.map(AllOptions['LeadDetail'],function(e){return [e.leadDetail,e.id]})},
             {name:"leadLevel",label:'LeadLevel',options:_.map(AllOptions['LeadLevel'],function(e){return [e.leadLevel,e.id]})},
             {name:"degree",label:'原学校类型',options:_.map(AllOptions['Degree'],function(e){return [e.degree,e.id]})},
+            {name:"selectedService",label:'服务2',options:_.map(stype,function(e){return [e.alias,e.id]})},
             {name:"assistant1",label:'助理1',options:user_options},
             {name:"assistant2",label:'助理2',options:user_options},
             {name:"assistant3",label:'助理3',options:user_options},
@@ -180,8 +183,8 @@ var ContractView=main.baseDataView.extend({
 	},
     constructTable:function(){
         main.baseDataView.prototype.constructTable.apply(this,arguments);
-
-        $('.page-actions').prepend('<button class="button-add">Add New</button>');
+        $('.page-actions').prepend('<input type="checkbox"  id="onlySigned"><label style="padding-right:20px"><-签约时间</label></input>');
+        $('.page-actions').prepend('<button class="button-add" style="margin-right:20px">Add New</button>');
         if(this.id){
             var one =new Obiwang.Models.syncModel({},{_url:'/Contract/'});
             one.set('id',this.id,{save:false});
@@ -190,6 +193,10 @@ var ContractView=main.baseDataView.extend({
                 self.collection.push(data);
             });
         }
+    },
+    refetch:function(){
+        this.collection.field=this.$('#onlySigned').prop("checked")?'contractSigned':'createdAt';
+        main.baseDataView.prototype.refetch.apply(this,arguments);
     },
     events: {
     'click  button.button-alt': 'refetch',

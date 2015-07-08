@@ -16,11 +16,25 @@ function createsql(where,user){
 			where ="and false";
 		}
 	}
-	var sql="select servicedetail.* from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract where servicedetail.deleted!=1;"
+	var sql="select servicedetail.*,contract.client,client.primaryPhone,client.primaryEmail from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract left join contract on servicedetail.contract=contract.id left join client on contract.client=client.id where servicedetail.deleted!=1;"
 	//var sql="select distinct servicedetail.* from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+";"
 	return sql;
 }
+function getOne(req,res){
+	var id=req.params.id;
+	if(!id) return Utilfunctions.errorHandler({error:"No id"},res,"Get Service Detail failed");
+	var sql=createsql("and servicedetail.id="+id,req.session.user);
+	return Utilfunctions.nativeQuery(sql).then(function(data){
+		if((data=data||[]).length<1) return Promise.reject({error:"not found"});
+		return res.json(data[0]);
+	}).catch(function(err){
+        Utilfunctions.errorHandler(err,res,"Find service failed id:"+req.params.id);
+	});
+}
 module.exports = {
+	findOne:function(req,res){
+		return getOne(req,res);
+	},
 	find:function(req,res){
 		var cont=req.param('contract');
 		if(!cont) {
@@ -83,7 +97,7 @@ module.exports = {
 			return ServiceDetail.findOne({id:id});
 		}).then(function(data){
 			console.log(data);
-			return res.json(data);
+			return getOne(req,res);
 		}).catch(function(err){
             Utilfunctions.errorHandler(err,res,"Update Service failed id:"+id);
 		});

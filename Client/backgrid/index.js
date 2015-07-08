@@ -22,8 +22,17 @@ Backgrid.Extension.AlmightyFilter=Backgrid.Extension.ClientSideFilter.extend({
             var key=pair[0],value=pair[1];
             var isSelect=_.find(this.selectFields,{label:key});
             if(isSelect){
-              var item=(_.find(isSelect['options'],function(e){if(e[1]==model.get(isSelect['name'])) return true;})||[""])[0];
-              if(!m(item,value)) return false;
+              var mValue=model.get(isSelect['name']);
+              if(Object.prototype.toString.call( mValue )==='[object Array]'){
+                var toReturn=false;
+                var modelFieldString=_.map(mValue,function(mv){
+                  return (_.find(isSelect['options'],function(e){if(e[1]==mv) return true;})||[""])[0];
+                }).join();
+                if(!m(modelFieldString,value)) return false;
+              }else{
+                var item=(_.find(isSelect['options'],function(e){if(e[1]==mValue) return true;})||[""])[0];
+                if(!m(item,value)) return false;
+              }              
             }else{
               var columnfield=_.find(this.columns,{label:key});
               if(columnfield){
