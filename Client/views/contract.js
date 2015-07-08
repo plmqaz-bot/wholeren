@@ -108,7 +108,7 @@ var ContractView=main.baseDataView.extend({
                     "click":"action"
                 },
                 action:function(e){
-                    var popUpView = new ContractEdit({view:self,model:this.model});
+                    var popUpView = new ContractEdit({view:self,model:this.model,cell:this});
                     $('.app').html(popUpView.render().el);
                 }
             })
@@ -258,6 +258,12 @@ var ServiceChoices=main.baseModalDataView.extend({
     newModel:function(){
         return new Obiwang.Models.syncModel({contract:this.contract.get('id')},{_url:'/ShortService/'});
     },
+    submit: function () {
+            // get text and submit, and also refresh the collection. 
+            this.contract.fetch({save:false});
+            this.grid.remove();
+            this.close();
+        },
     // addnew:function(e){
     //     e.preventDefault();
     //     var toAdd=new Obiwang.Models.syncModel({contract:this.contract.get('id')},{_url:'/Service/'});
@@ -670,6 +676,7 @@ var ContractEdit = EditForm.extend({
     },
     initialize: function (options){
         this.parentView = options.view;
+        this.cellView=options.cell;
         this.model={};
         if(options.model){
             this.model=options.model;
@@ -818,6 +825,7 @@ var ContractEdit = EditForm.extend({
                             self.parentView.collection.fullCollection.sort();
                             return self.close();
                         }else{
+                            self.cellView.render();
                             self.close();
                         }
                     }catch(e){

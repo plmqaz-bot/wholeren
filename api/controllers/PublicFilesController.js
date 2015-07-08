@@ -14,7 +14,7 @@ module.exports = {
 		if(!userid) return res.json(401, 'no valid user id');
 		console.log(sails.config.appPath);
 		FileManager.uploadFile(req.file('file'),{userid:userid,category:req.body.category}).then(function(data){
-			//return res.json(data);
+			return res.json(data);
 		}).error(function(err){
 		  	return Utilfunctions.errorHandler(err,res,"create database entry failed for uploaded files");
 		});
