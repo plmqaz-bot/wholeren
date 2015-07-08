@@ -47,6 +47,7 @@ node_modules/
 .tmp/
 assets/js/bundle.js
 assets/js/all.js
+assets/files/
 config/connections.js
 config/local.js
 # Elastic Beanstalk Files
