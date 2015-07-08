@@ -38,7 +38,7 @@ function whoCanView(user,where){
 			switch (user.rank){
 				case 1: restrictions="user.id ="+id;break;
 				case 2: restrictions="user.id ="+id;break;
-				case 3: restrictions="";
+				case 3: restrictions="";break;
 				default: restrictions="false";
 			}
 		break;
@@ -46,7 +46,7 @@ function whoCanView(user,where){
 			switch (user.rank){
 				case 1: restrictions="false";break;
 				case 2: restrictions="";break;
-				case 3: restrictions="";
+				case 3: restrictions="";break;
 				default: restrictions="false";
 			}
 		break;
