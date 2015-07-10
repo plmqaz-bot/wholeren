@@ -29,7 +29,7 @@ var AdvancedSettings={
 	    title:'Notifications',
 	    renderOptions:{nofield:true},
     	templateName:'default',
-    	collectionName:'General',
+    	collectionName:'SimplePageCollection',
     	minScreenSize:0,
 	    collectionParam:{url:'/Notifications/'},
 	    constructColumns:function(){
@@ -64,7 +64,7 @@ var AdvancedSettings={
 	    },
 	}),
 	SalesComissionLookUp:main.baseDataView.extend({
-	    collectionName:'SyncCollection',
+	    collectionName:'SimplePageCollection',
 	    collectionUrl:'/ComissionLookup/',
 	    title:'销售佣金设定',
 	    filterFields:['rolename'],
@@ -124,23 +124,26 @@ var AdvancedSettings={
 	        this.$el.addClass('active');
 	        $('.page-actions').prepend('<button class="button-add">Add New</button>');
 	    },
-	    addnew:function(e){
-	        e.preventDefault();
-	        // var popUpView = new LookupForm({collection:this.collection});
-	        // popUpView.render()
-	        // $('.app').html(popUpView.el);
-	        var toAdd=new Obiwang.Models.syncModel(null,{_url:this.collectionUrl});
-	        var self=this;
-	        toAdd.save(null,{
-	            success:function(model){
-	                self.collection.add(toAdd);
-	            },
-	            error:function(model,response){
-	                util.handleRequestError(response);
-	            },
-	            save:false
-	        });  
-	    },
+	    newModel:function(){
+        	return new Obiwang.Models.syncModel(null,{_url:'/Application/'});
+    	},
+	    // addnew:function(e){
+	    //     e.preventDefault();
+	    //     // var popUpView = new LookupForm({collection:this.collection});
+	    //     // popUpView.render()
+	    //     // $('.app').html(popUpView.el);
+	    //     var toAdd=new Obiwang.Models.syncModel(null,{_url:this.collectionUrl});
+	    //     var self=this;
+	    //     toAdd.save(null,{
+	    //         success:function(model){
+	    //             self.collection.add(toAdd);
+	    //         },
+	    //         error:function(model,response){
+	    //             util.handleRequestError(response);
+	    //         },
+	    //         save:false
+	    //     });  
+	    // },
 	}),
 	MonthlyGoal:main.baseDataView.extend({
 	    title:'每月销量',

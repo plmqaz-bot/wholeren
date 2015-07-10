@@ -210,12 +210,12 @@ var ContractView=main.baseDataView.extend({
     },
 });
 var ServiceChoices=main.baseModalDataView.extend({
-    collectionName:'ShortService',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/ShortService/',
     initialize: function (options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.contract=options.contract;
-        this.collection.contract=this.contract.get('id');
-        
+        this.collection.setGetParameter({contract:this.contract.get('id')});  
     },
     // events:{
     //     'click .button-add-invoice':'addnew'
@@ -408,12 +408,13 @@ var ContractAgentView=Backbone.Modal.extend({
 });
 
 var ContractInvoiceView=main.baseModalDataView.extend({
-    collectionName:'Invoice',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/Invoice/',
     initialize:function(options){
     	main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.contract=options.model;
     	this.contractID=this.contract.get('id');
-    	this.collection.contract=this.contractID;
+    	this.collection.setGetParameter({contract:this.contractID});
     },
     newModel:function(){
         return new Obiwang.Models.syncModel({contract:this.contractID},{_url:'/Invoice/'});
@@ -455,14 +456,15 @@ var ContractInvoiceView=main.baseModalDataView.extend({
     },
 });
 var ServiceInvoiceView=main.baseModalDataView.extend({
-    collectionName:'ServiceInvoice',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/ServiceInvoice/',
     addNew:false,
     initialize: function (options){
        	main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.contract=options.contract;
         this.invoice=options.invoice;
         this.invoiceID=parseInt(this.invoice.id);
-        this.collection.invoice=this.invoiceID;
+        this.collection.setGetParameter({invoice:this.invoiceID});
     },
     constructColumns:function(){
     	var self=this;

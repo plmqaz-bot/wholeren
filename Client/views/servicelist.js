@@ -185,10 +185,12 @@ var ServiceView=main.baseDataView.extend({
 });
 
 var MoreUserPopup=main.baseModalDataView.extend({
-    collectionName:'UserInService',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/UserInService/',
     initialize:function(options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.serviceDetail=options.serviceDetail;
+        this.collection.setGetParameter({serviceDetail:this.serviceDetail});
     },
     constructColumns:function(){
         var self=this;
@@ -205,13 +207,20 @@ var MoreUserPopup=main.baseModalDataView.extend({
         return new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
     }
 })
+
 var ContactInfoPopup=main.baseModalDataView.extend({
-    collectionName:'ContactInfo',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/ContactInfo/',
     initialize: function (options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.serviceID=parseInt(options.id);
         this.clientID=parseInt(options.client||0);
-        this.collection.setSID(this.serviceID);
+        if(this.clientID!=0){
+            this.collection.setGetParameter({client:this.clientID});    
+        }else{
+            this.collection.setGetParameter({service:this.serviceID});    
+        }
+        
     },
     newModel:function(){
         return new Obiwang.Models.syncModel({service:this.serviceID,client:this.clientID},{_url:'/ContactInfo/'});
@@ -237,12 +246,13 @@ var ContactInfoPopup=main.baseModalDataView.extend({
 
 
 var ApplicationPopup=main.baseModalDataView.extend({
-    collectionName:'Application',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/Application/',
     initialize: function (options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.serviceID=parseInt(options.id);
-        this.collection.setSID(this.serviceID);
-    },  
+        this.collection.setGetParameter({service:this.serviceID});
+    }, 
     newModel:function(){
         return new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/Application/'});
     },
@@ -313,13 +323,13 @@ var ApplicationPopup=main.baseModalDataView.extend({
 });
 
 var FilePopup=main.baseModalDataView.extend({
-    collectionName:'ApplicationFile',
-    // collectionUrl:'/ApplicationFile/',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/ApplicationFile/',
     addNew:false,
     initialize:function(options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.applicationID=parseInt(options.id);
-        this.collection.aid=this.applicationID;
+        this.collection.setGetParameter({application:this.applicationID});
     },
     constructColumns:function(){
         var uri=BackgridCells.Cell.extend({

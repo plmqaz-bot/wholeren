@@ -111,7 +111,25 @@ module.exports={
 			this.collection.reset();
 			if(this.collection.fullCollection)this.collection.fullCollection.reset();
 			this.collection.fetch({reset:true});
-		},   
+		},
+		addnew:function(e){
+			e.preventDefault();
+	        e.stopPropagation();
+			var toAdd=this.newModel();
+			var self=this;
+			toAdd.save(null,{
+				success:function(model){
+					self.collection.add(toAdd);
+				},
+				error:function(response,model){
+					util.handleRequestError(response);
+				},
+				save:false
+			});  
+    	},
+    	newModel:function(){
+    		return new Obiwang.Models.syncModel();
+    	},   
 		save:function(e){
 			util.saveCSV((this.collection||{}).fullCollection?this.collection.fullCollection:this.collection,this.columns);
 		},

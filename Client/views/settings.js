@@ -156,7 +156,8 @@ Settings.user=main.basePaneView.extend({
     },
 });
 Settings.allUsers=main.baseDataView.extend({
-    collectionName:'User',
+    collectionName:'SimplePageCollection',
+    collectionUrl:'/User/',
     title:'Users',
     paginator:true,
     renderOptions:{nofield:true,deleted:true},
@@ -450,7 +451,7 @@ Settings.comissionLookup=Settings.hierarchy.extend({
 
 });
 Settings.fileupload=main.baseDataView.extend({
-    collectionName:'SyncCollection',
+    collectionName:'SimplePageCollection',
     collectionUrl:'/Publicfiles/',
     title:'共享文件',
     filterFields:['filename'],
@@ -518,7 +519,7 @@ Settings.fileupload=main.baseDataView.extend({
 
 });
 Settings.link=main.baseDataView.extend({
-    collectionName:'SyncCollection',
+    collectionName:'SimplePageCollection',
     collectionUrl:'/StaticLink/',
     title:'有用的链接',
     //filterFields:['filename'],
@@ -586,7 +587,7 @@ Settings.link=main.baseDataView.extend({
 
 });
 Settings.message=main.baseDataView.extend({
-    collectionName:'SyncCollection',
+    collectionName:'SimplePageCollection',
     collectionUrl:'/Message/',
     title:'内部消息',
     //filterFields:['filename'],

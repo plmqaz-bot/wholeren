@@ -61,6 +61,7 @@ var simpleCollection=Backbone.Collection.extend({
         url:function(){
             var toReturn=this._url;
             var param="";
+            console.log(this.param);
             for (var key in this.param){
                 if(this.param.hasOwnProperty(key)){
                     param+=key+"="+this.param[key]+"&";
@@ -131,16 +132,16 @@ Models={
     // ServiceType:Backbone.Model.extend({
     //     urlRoot:'/ServiceType/'
     // }),
-    Service : simpleModel.extend({
-    initialize:function(attrs,options){
-        this.set('createdAt',new Date(this.get('createdAt')));
-        if((this.get('contract')||{})['contractSigned']){
-            var thiscontract=this.get('contract');
-            thiscontract['contractSigned']=new Date((this.get('contract')||{})['contractSigned'])||"";
-            this.set('contract',thiscontract);
-        }
-    }
-    }),
+    // Service : simpleModel.extend({
+    // initialize:function(attrs,options){
+    //     this.set('createdAt',new Date(this.get('createdAt')));
+    //     if((this.get('contract')||{})['contractSigned']){
+    //         var thiscontract=this.get('contract');
+    //         thiscontract['contractSigned']=new Date((this.get('contract')||{})['contractSigned'])||"";
+    //         this.set('contract',thiscontract);
+    //     }
+    // }
+    // }),
     // ServiceProgress:Backbone.Model.extend({
     //     urlRoot:'/serviceProgress/'
     // }),
@@ -238,156 +239,186 @@ Models={
     // })  
 
 };
-var sortableCollection=Backbone.Collection.extend({
-    sortAttr:{
-            attribute:'client',
-            nested:'firstName',
-            asec:true
-        },
-        pagesize:100,
+// var sortableCollection=Backbone.Collection.extend({
+//     sortAttr:{
+//             attribute:'client',
+//             nested:'firstName',
+//             asec:true
+//         },
+//         pagesize:100,
 
-        comparator:function(A,B){
-            var aAttr='';
-            var bAttr='';
-            aAttr=A.get(this.sortAttr['attribute'])||{};
-            aAttr=aAttr[this.sortAttr['nested']]||aAttr;
-            bAttr=B.get(this.sortAttr['attribute'])||{};
-            bAttr=bAttr[this.sortAttr['nested']]||bAttr;
-            //if(B.get(this.sortAttr['attribute'])){
-            //    bAttr=B.get(this.sortAttr['attribute'])[this.sortAttr];
-            //}
-            if(aAttr>bAttr){
-                if(this.sortAttr.asec)return -1;
-                else return 1;
-            }else if(aAttr<bAttr){
-                if(this.sortAttr.asec)return 1;
-                else return -1;
-            }else{
-                return 0;
-            }
-        },
-        selectedStrat:function(options){
-            var sortAttr=options.sortAttr;
-            var dir=options.direction;
-            //this.sortAttr=sortAttr;
-            var sub=sortAttr.indexOf('.');
-            if(sub>0){
-                this.sortAttr['attribute']=sortAttr.substring(0,sub);
-                this.sortAttr['nested']=sortAttr.substring(sub+1);
-            }else{
-                this.sortAttr['attribute']=sortAttr;
-                this.sortAttr['nested']='';
-            }
-            this.sortAttr['asec']=dir=="asec";
-        },
-        getPage:function(pageNum){
-            try{
-                var pn=parseInt(pageNum);
-                return this.slice((pn-1)*this.pagesize,(pn)*this.pagesize);
-            }catch(e){
-                var pn=1;
-                return this.slice((pn-1)*this.pagesize,(pn)*this.pagesize);
-            }
-        },
-        getTotalPage:function(){
-            return Math.ceil(this.length/this.pagesize);
-        },
-        complexFilter:function(filterElements){
-            fs=filterElements;
-            function match(v1,v2,ele){
-                if(v1==v2){
-                    return true;
-                }
-                if(!v1||!v2){
-                    return false;
-                }
-                try{
-                    v1=JSON.parse(v1);
-                }catch(e){
-                    v1=v1;
-                }
-                try{
-                    v2=JSON.parse(v2);
-                }catch(e){
-                    v2=v2;
-                }
-                if(typeof v1 =='object'){
-                    v1=v1.id;
-                    v2=parseInt(v2);
-                    if(v1==v2) return true;
-                }
-                if(typeof v1=='string'){
-                    if(v1.indexOf(v2)!=-1){
-                        return true;
-                    }
-                }
-                return false;
-            }
-            var filteredArray= this.filter(function(eachone){
-                var obj=eachone.toJSON();
-                var filteredout=false;
-                _.forEach(fs,function(ele){
-                    var attr=ele.name;
-                    var value=ele.value;
-                    if(!value) return; // return if the filter is null
-                    try{
-                        value=JSON.parse(value);
-                    }catch(e){
-                         // if value cannot be parsed, then it is a string, not json;
-                    }
-                    var sub=attr.indexOf('.');
-                    var tocomp;
-                    if(sub>0){
-                        tocomp=obj[attr.substring(0,sub)]||{};
-                        attr=attr.substring(sub+1);
-                    }
-                    if(tocomp instanceof Array&&tocomp.length>0){
-                        tocomp.forEach(function(e){
-                            var c=e[attr];
-                            if(c!==undefined){
-                                if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
-                                    var ind=_.findIndex(value,function(v){
-                                        return match(c,v,ele);
-                                    });
-                                    if(ind<0) e.display=false;
-                                }else{
-                                    if(!match(c,value,ele)){
-                                        e.display=false;
-                                    }
-                                }
-                            }else{
-                                e.display=false;
-                            }
-                        });
-                    }else{
-                        tocomp=obj[attr];
-                        if(tocomp!==undefined){
-                            if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
-                                var ind=_.findIndex(value,function(v){
-                                    return match(tocomp,v,ele);
-                                });
-                                if(ind<0) filteredout=true;
-                            }else{
-                                if(!match(tocomp,value,ele)){
-                                    filteredout=true;
-                                }
-                            }
-                        }else{
-                            filteredout=true;
-                        }
-                    }                               
+//         comparator:function(A,B){
+//             var aAttr='';
+//             var bAttr='';
+//             aAttr=A.get(this.sortAttr['attribute'])||{};
+//             aAttr=aAttr[this.sortAttr['nested']]||aAttr;
+//             bAttr=B.get(this.sortAttr['attribute'])||{};
+//             bAttr=bAttr[this.sortAttr['nested']]||bAttr;
+//             //if(B.get(this.sortAttr['attribute'])){
+//             //    bAttr=B.get(this.sortAttr['attribute'])[this.sortAttr];
+//             //}
+//             if(aAttr>bAttr){
+//                 if(this.sortAttr.asec)return -1;
+//                 else return 1;
+//             }else if(aAttr<bAttr){
+//                 if(this.sortAttr.asec)return 1;
+//                 else return -1;
+//             }else{
+//                 return 0;
+//             }
+//         },
+//         selectedStrat:function(options){
+//             var sortAttr=options.sortAttr;
+//             var dir=options.direction;
+//             //this.sortAttr=sortAttr;
+//             var sub=sortAttr.indexOf('.');
+//             if(sub>0){
+//                 this.sortAttr['attribute']=sortAttr.substring(0,sub);
+//                 this.sortAttr['nested']=sortAttr.substring(sub+1);
+//             }else{
+//                 this.sortAttr['attribute']=sortAttr;
+//                 this.sortAttr['nested']='';
+//             }
+//             this.sortAttr['asec']=dir=="asec";
+//         },
+//         getPage:function(pageNum){
+//             try{
+//                 var pn=parseInt(pageNum);
+//                 return this.slice((pn-1)*this.pagesize,(pn)*this.pagesize);
+//             }catch(e){
+//                 var pn=1;
+//                 return this.slice((pn-1)*this.pagesize,(pn)*this.pagesize);
+//             }
+//         },
+//         getTotalPage:function(){
+//             return Math.ceil(this.length/this.pagesize);
+//         },
+//         complexFilter:function(filterElements){
+//             fs=filterElements;
+//             function match(v1,v2,ele){
+//                 if(v1==v2){
+//                     return true;
+//                 }
+//                 if(!v1||!v2){
+//                     return false;
+//                 }
+//                 try{
+//                     v1=JSON.parse(v1);
+//                 }catch(e){
+//                     v1=v1;
+//                 }
+//                 try{
+//                     v2=JSON.parse(v2);
+//                 }catch(e){
+//                     v2=v2;
+//                 }
+//                 if(typeof v1 =='object'){
+//                     v1=v1.id;
+//                     v2=parseInt(v2);
+//                     if(v1==v2) return true;
+//                 }
+//                 if(typeof v1=='string'){
+//                     if(v1.indexOf(v2)!=-1){
+//                         return true;
+//                     }
+//                 }
+//                 return false;
+//             }
+//             var filteredArray= this.filter(function(eachone){
+//                 var obj=eachone.toJSON();
+//                 var filteredout=false;
+//                 _.forEach(fs,function(ele){
+//                     var attr=ele.name;
+//                     var value=ele.value;
+//                     if(!value) return; // return if the filter is null
+//                     try{
+//                         value=JSON.parse(value);
+//                     }catch(e){
+//                          // if value cannot be parsed, then it is a string, not json;
+//                     }
+//                     var sub=attr.indexOf('.');
+//                     var tocomp;
+//                     if(sub>0){
+//                         tocomp=obj[attr.substring(0,sub)]||{};
+//                         attr=attr.substring(sub+1);
+//                     }
+//                     if(tocomp instanceof Array&&tocomp.length>0){
+//                         tocomp.forEach(function(e){
+//                             var c=e[attr];
+//                             if(c!==undefined){
+//                                 if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+//                                     var ind=_.findIndex(value,function(v){
+//                                         return match(c,v,ele);
+//                                     });
+//                                     if(ind<0) e.display=false;
+//                                 }else{
+//                                     if(!match(c,value,ele)){
+//                                         e.display=false;
+//                                     }
+//                                 }
+//                             }else{
+//                                 e.display=false;
+//                             }
+//                         });
+//                     }else{
+//                         tocomp=obj[attr];
+//                         if(tocomp!==undefined){
+//                             if(value instanceof Array){ // If it is array, see if tocomp is in the array. 
+//                                 var ind=_.findIndex(value,function(v){
+//                                     return match(tocomp,v,ele);
+//                                 });
+//                                 if(ind<0) filteredout=true;
+//                             }else{
+//                                 if(!match(tocomp,value,ele)){
+//                                     filteredout=true;
+//                                 }
+//                             }
+//                         }else{
+//                             filteredout=true;
+//                         }
+//                     }                               
                     
-                });
-                return !filteredout;
-            });
-            var toReturn= new this.constructor(filteredArray,{sortAttr:this.sortAttr,startDate:this.startDate,endDate:this.endDate});
-            return toReturn;
+//                 });
+//                 return !filteredout;
+//             });
+//             var toReturn= new this.constructor(filteredArray,{sortAttr:this.sortAttr,startDate:this.startDate,endDate:this.endDate});
+//             return toReturn;
             
-        }
-});
+//         }
+// });
 Collections={
     SimpleCollection:simpleCollection,
     SimpleSyncCollection:syncCollection,
+    SimplePageCollection:Backbone.PageableCollection.extend({
+        model: simpleModel,
+        param:{},
+        url:function(){
+            var toReturn=this._url;
+            var param="";
+            for (var key in this.param){
+                if(this.param.hasOwnProperty(key)){
+                    param+=key+"="+this.param[key]+"&";
+                }
+            }
+            if(param){
+                toReturn+="?"+param
+            }
+
+            return toReturn;
+        },
+        initialize:function(models,options){
+            this.mode="client";
+            this.state={pageSize:20};
+            options=options||{};
+            this.name=options.name;
+            this._url=options.url;
+            delete options.name;
+            delete options.url;
+        },
+        setGetParameter:function(options){
+            this.param=options;
+        }
+    }),
     Contract :Backbone.PageableCollection.extend({
         model: Models.syncModel,
         
@@ -481,112 +512,112 @@ Collections={
         },
 
     }),
-    Client : Backbone.Collection.extend({
-        model: Models.simpleModel,
-        name:'client',
-        url: '/Client/'
-    }),
-    ContractCategory:Backbone.Collection.extend({
-        model: Models.simpleModel,
-        name:'contractCategory',
-        url:'/ContractCategory/'
+    // Client : Backbone.Collection.extend({
+    //     model: Models.simpleModel,
+    //     name:'client',
+    //     url: '/Client/'
+    // }),
+    // ContractCategory:Backbone.Collection.extend({
+    //     model: Models.simpleModel,
+    //     name:'contractCategory',
+    //     url:'/ContractCategory/'
 
-    }),
-    Country:Backbone.Collection.extend({
-        name:'country',
-        model:Models.simpleModel,
-        url:'/Country/'
+    // }),
+    // Country:Backbone.Collection.extend({
+    //     name:'country',
+    //     model:Models.simpleModel,
+    //     url:'/Country/'
 
-    }),
-    Degree:Backbone.Collection.extend({
-        name:'degree',
-        model:Models.simpleModel,
-        url:'/Degree/'
+    // }),
+    // Degree:Backbone.Collection.extend({
+    //     name:'degree',
+    //     model:Models.simpleModel,
+    //     url:'/Degree/'
 
-    }),
-    Lead:Backbone.Collection.extend({
-        name:'lead',
-        model:Models.simpleModel,
-        url:'/Lead/'
+    // }),
+    // Lead:Backbone.Collection.extend({
+    //     name:'lead',
+    //     model:Models.simpleModel,
+    //     url:'/Lead/'
 
-    }),
-    LeadLevel:Backbone.Collection.extend({
-        name:'leadLevel',
-        model:Models.simpleModel,
-        url:'/LeadLevel/'
+    // }),
+    // LeadLevel:Backbone.Collection.extend({
+    //     name:'leadLevel',
+    //     model:Models.simpleModel,
+    //     url:'/LeadLevel/'
 
-    }),
-    PaymentOption:Backbone.Collection.extend({
-        name:'paymentOption',
-        model:Models.simpleModel,
-        url:'/PaymentOption/'
+    // }),
+    // PaymentOption:Backbone.Collection.extend({
+    //     name:'paymentOption',
+    //     model:Models.simpleModel,
+    //     url:'/PaymentOption/'
 
-    }),
-    Status:Backbone.Collection.extend({
-        name:'status',
-        model:Models.simpleModel,
-        url:'/Status/'
-    }),
-    ServiceType:Backbone.Collection.extend({
-        name:'serviceType',
-        model:Models.simpleModel,
-        url:'/ServiceType/'
-    }),
-    ServiceProgress:Backbone.Collection.extend({
-        name:'serviceProgress',
-        model:Models.simpleModel,
-        url:'/ServiceProgress/'
-    }),
-    User:Backbone.PageableCollection.extend({
-        model: Models.syncModel,
-        _url: '/User/',
-        url:function(){
-            var toReturn='/User/';
-            if(this.deleted!=undefined){
-                toReturn+='?active='+!this.deleted;
-            }
-            return toReturn;
-        },
-        initialize:function(models,options){
-            this.mode="client";
-            this.state={pageSize:20};
-        },
-    }),
-    Application:Backbone.Collection.extend({
-        model:Models.syncModel,
-        _url:'/Application/',
-        url:function(){
-            var toReturn='/Application/?service='+this.sid;
-            return toReturn;
-        },
-        setSID:function(sid){
-            this.sid=sid;
-        }
-    }),
-    ContactInfo:Backbone.Collection.extend({
-        model:Models.syncModel,
-        _url:'/ContactInfo/',
-        url:function(){
-            return '/ContactInfo/?service='+this.sid;
-        },
-        setSID:function(sid){
-            this.sid=sid;
-        }
-    }),
-    Role:Backbone.Collection.extend({
-        model:Models.simpleModel,
-        url:'/Role/'
-    }),
-    ShortService:Backbone.Collection.extend({
-        model: Models.syncModel,
-        url:function(){
-            return '/ShortService/?contract='+this.contract;
-        },
-        initialize:function(models,options){
-            options=options||{};
-            this.contract=options.contract;
-        }
-    }),
+    // }),
+    // Status:Backbone.Collection.extend({
+    //     name:'status',
+    //     model:Models.simpleModel,
+    //     url:'/Status/'
+    // }),
+    // ServiceType:Backbone.Collection.extend({
+    //     name:'serviceType',
+    //     model:Models.simpleModel,
+    //     url:'/ServiceType/'
+    // }),
+    // ServiceProgress:Backbone.Collection.extend({
+    //     name:'serviceProgress',
+    //     model:Models.simpleModel,
+    //     url:'/ServiceProgress/'
+    // }),
+    // User:Backbone.PageableCollection.extend({
+    //     model: Models.syncModel,
+    //     _url: '/User/',
+    //     url:function(){
+    //         var toReturn='/User/';
+    //         if(this.deleted!=undefined){
+    //             toReturn+='?active='+!this.deleted;
+    //         }
+    //         return toReturn;
+    //     },
+    //     initialize:function(models,options){
+    //         this.mode="client";
+    //         this.state={pageSize:20};
+    //     },
+    // }),
+    // Application:Backbone.Collection.extend({
+    //     model:Models.syncModel,
+    //     _url:'/Application/',
+    //     url:function(){
+    //         var toReturn='/Application/?service='+this.sid;
+    //         return toReturn;
+    //     },
+    //     setSID:function(sid){
+    //         this.sid=sid;
+    //     }
+    // }),
+    // ContactInfo:Backbone.Collection.extend({
+    //     model:Models.syncModel,
+    //     _url:'/ContactInfo/',
+    //     url:function(){
+    //         return '/ContactInfo/?service='+this.sid;
+    //     },
+    //     setSID:function(sid){
+    //         this.sid=sid;
+    //     }
+    // }),
+    // Role:Backbone.Collection.extend({
+    //     model:Models.simpleModel,
+    //     url:'/Role/'
+    // }),
+    // ShortService:Backbone.Collection.extend({
+    //     model: Models.syncModel,
+    //     url:function(){
+    //         return '/ShortService/?contract='+this.contract;
+    //     },
+    //     initialize:function(models,options){
+    //         options=options||{};
+    //         this.contract=options.contract;
+    //     }
+    // }),
     Service:Backbone.PageableCollection.extend({
         model: Models.syncModel,
         _url:'/Service/',
@@ -756,36 +787,36 @@ Collections={
                 return '/Comment/?application='+this.aid;      
         }
     }),
-    UserLevel:Backbone.Collection.extend({
-        model:Models.syncModel,
-        url:'/userLevel/',
+    // UserLevel:Backbone.Collection.extend({
+    //     model:Models.syncModel,
+    //     url:'/userLevel/',
 
-    }),
-    ServiceDetail:Backbone.PageableCollection.extend({
-        model:Models.syncModel,
-        _url:'/ServiceDetail/',
-        url:function(){
-            var toReturn='/ServiceDetail/?contract='+this.cid;
-            return toReturn;
-        },
-        initialize:function(models, options){
-            this.mode="client";
-            this.state={pageSize:25};
-        },
-        setCID:function(cid){
-            this.cid=cid;
-        }
-    }),
-    UserInService:Backbone.Collection.extend({
-        model:Models.syncModel,
-        _url:'/UserInService/',
-        url:function(){
-            return this._url+'?serviceDetail='+this.serviceDetail;
-        },
-        initialize:function(models,options){
-            this.serviceDetail=(options||{}).serviceDetail;
-        }
-    }),
+    // }),
+    // ServiceDetail:Backbone.PageableCollection.extend({
+    //     model:Models.syncModel,
+    //     _url:'/ServiceDetail/',
+    //     url:function(){
+    //         var toReturn='/ServiceDetail/?contract='+this.cid;
+    //         return toReturn;
+    //     },
+    //     initialize:function(models, options){
+    //         this.mode="client";
+    //         this.state={pageSize:25};
+    //     },
+    //     setCID:function(cid){
+    //         this.cid=cid;
+    //     }
+    // }),
+    // UserInService:Backbone.Collection.extend({
+    //     model:Models.syncModel,
+    //     _url:'/UserInService/',
+    //     url:function(){
+    //         return this._url+'?serviceDetail='+this.serviceDetail;
+    //     },
+    //     initialize:function(models,options){
+    //         this.serviceDetail=(options||{}).serviceDetail;
+    //     }
+    // }),
     General:Backbone.PageableCollection.extend({
         model:Models.syncModel,
         url: function(){
@@ -808,16 +839,16 @@ Collections={
             this.month=options.month;
         },
     }),
-    SyncCollection:Backbone.PageableCollection.extend({
-        model:Models.syncModel,
-        initialize:function(models,options){
-            this.url=options.url;
-            delete options.url;
-            this.mode=options.mode||"client";
-            this.state=options.state||{pageSize:25};
-            Backbone.PageableCollection.prototype.initialize.apply(this,arguments);
-        }
-    }),
+    // SyncCollection:Backbone.PageableCollection.extend({
+    //     model:Models.syncModel,
+    //     initialize:function(models,options){
+    //         this.url=options.url;
+    //         delete options.url;
+    //         this.mode=options.mode||"client";
+    //         this.state=options.state||{pageSize:25};
+    //         Backbone.PageableCollection.prototype.initialize.apply(this,arguments);
+    //     }
+    // }),
     TimeRangeGeneral:Backbone.PageableCollection.extend({
        model:Models.syncModel,
        url: function(){
@@ -845,33 +876,33 @@ Collections={
             this._url=url;
         }
     }),
-    Invoice:Backbone.Collection.extend({
-        model:Models.syncModel,
-        _url:'/Invoice/',
-        url:function(){
-            return this._url+'?contract='+this.contract;
-        },
-        initialize:function(models,options){
-            this.contract=(options||{}).contract;
-        }
-    }),
-    ServiceInvoice:Backbone.Collection.extend({
-        model:Models.syncModel,
-        _url:'/ServiceInvoice/',
-        url:function(){
-            return this._url+'?invoice='+this.invoice;
-        },
-        initialize:function(models, options){
-            this.invoice=(options||{}).invoice;
-        }
-    }),
-    ApplicationFile:Backbone.Collection.extend({
-        model:Models.syncModel,
-        _url:'/ApplicationFile/',
-        url:function(){
-            return this._url+'?application='+this.aid||0;
-        }
-    })
+    // Invoice:Backbone.Collection.extend({
+    //     model:Models.syncModel,
+    //     _url:'/Invoice/',
+    //     url:function(){
+    //         return this._url+'?contract='+this.contract;
+    //     },
+    //     initialize:function(models,options){
+    //         this.contract=(options||{}).contract;
+    //     }
+    // }),
+    // ServiceInvoice:Backbone.Collection.extend({
+    //     model:Models.syncModel,
+    //     _url:'/ServiceInvoice/',
+    //     url:function(){
+    //         return this._url+'?invoice='+this.invoice;
+    //     },
+    //     initialize:function(models, options){
+    //         this.invoice=(options||{}).invoice;
+    //     }
+    // }),
+    // ApplicationFile:Backbone.Collection.extend({
+    //     model:Models.syncModel,
+    //     _url:'/ApplicationFile/',
+    //     url:function(){
+    //         return this._url+'?application='+this.aid||0;
+    //     }
+    // })
 }
 
 

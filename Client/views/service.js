@@ -14,94 +14,6 @@ var JST=require('../JST');
 var Dropzone=require('dropzone');
 var main=require('./data');
 var CommentModalView=require('./comment');
-var ServiceView=main.baseDataView.extend({
-    collectionName:'Service',
-    title:'服务列表',
-    paginator:true,
-    filterFields:['chineseName','nickname','serviceProgress','type','degree','previousSchool','studentDestination','servRole'],
-    renderOptions:{date:true},
-    constructColumns:function(){
-        var popup=BackgridCells.Cell.extend({
-            cellText:'Details',
-            action:function(e){
-                e.preventDefault();
-                var id=this.model.get('id');
-                var type=this.model.get('serviceType');
-                var teacherview= new ServicePopup({id:id,type:type});
-                teacherview.render();
-                $('.app').html(teacherview.el);
-            },
-        });
-        var appPopup=BackgridCells.Cell.extend({
-            cellText:'Applications',
-            render: function () {
-                if(this.model.get('addApplication')!=0)
-                    this.$el.html('<a>'+this.cellText+'</a>');
-                else
-                    this.$el.html('');        
-                this.delegateEvents();
-                return this;
-              },
-            action:function(e){
-                e.preventDefault();
-                var id=this.model.get('id');
-                var appview= new ApplicationPopup({id:id});
-                appview.render();
-                $('.app').html(appview.el);  
-            }
-        });
-        var comment=BackgridCells.Cell.extend({
-            cellText:'Comments',
-            action:function(e){
-                var item=$(e.currentTarget);
-                var id = this.model.get('id');
-                var type='serv';
-                var m=new CommentModalView({sid:id});
-                $('.app').html(m.renderAll().el);   
-            }
-        });
-        var self=this;
-        return Promise.all([util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/Degree/')]).spread(function(progress,degree){
-            var progressselect=BackgridCells.SelectCell({name:"Progress",values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
-            var degreeselect=BackgridCells.SelectCell({name:"Degree",values:_.map(degree,function(e){return [e.degree,e.id]})});
-            self.columns=[
-            {name:'chineseName',label:'用户名字',editable:false,cell:'string'},
-            {name:'nickname',label:'总负责老师',editable: false,cell:'string'},
-            {name:'matchedcName',label:'导入表匹配到中文名',editable:false,cell:'string'},
-            {name:'cName',label:'导入表学生中文名',cell:'string'},
-            {name:'contractKey',label:'导入表合同ID',cell:'string'},
-            {name:'serviceProgress',label:'状态',cell:progressselect},                    
-            {name:'contractSigned',label:'进入服务时间',editable:false,cell:BackgridCells.MomentCell},
-            {name:'type',label:'服务类型',editable:false,cell:'string'},
-            //{name:'realnickname',label:'具体负责老师',editable:false,cell:'string'},
-            //{name:'servRole',label:'具体负责任务',editable:false,cell:'string'},
-            {name:'endFee',label:'预付申请费',editable:false,cell:'boolean'},
-            {name:'gpa',label:'GPA',cell:'number'},
-            {name:'toefl',label:'托福',cell:'number'},
-            {name:'gre',label:'GRE',cell:'number'},
-            {name:'sat',label:'SAT',cell:'number'},
-            {name:'otherScore',label:'其他分数',cell:'string'},
-            {name:'degree',label:'原学校类型',cell:degreeselect},
-            {name:'previousSchool',label:'原学校',cell:'string'},
-            {name:'major',label:'原专业',cell:'string'},
-            {name:'targetSchoolDegree',label:'申请学校类型',cell:degreeselect},
-            // {name:'step1',label:'step1',cell:'date'},
-            // {name:'step2',label:'step2',cell:'date'},
-            {name:'studentDestination',label:'学生去向',cell:'string'},
-                {name:'link',label:'链接',cell:'uri'},
-            {name:'',label:'Show Applications',cell:appPopup},
-            {name:'',label:'Comment',cell:comment},
-            {name:'',label:'Show Details',cell:popup},
-            ];
-            
-            self.selectFields=[{name:'serviceProgress',label:'状态',options:_.map(progress,function(e){return [e.serviceProgress,e.id]})},
-            {name:'degree',label:'原学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})},
-            {name:'targetSchoolDegree',label:'申请学校类型',options:_.map(degree,function(e){return [e.degree,e.id]})}
-            ];
-            return Promise.resolve({});
-        });
-    }
-    });
 var ShortContractView=main.baseDataView.extend({
     collectionName:'ShortContract',
     title:'服务列表',
@@ -447,10 +359,12 @@ var ServicePopup=main.baseModalDataView.extend({
 });
 
 var MoreUserPopup=main.baseModalDataView.extend({
-    collectionName:'UserInService',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/UserInService/',
     initialize:function(options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.serviceDetail=options.serviceDetail;
+        this.collection.setGetParameter({serviceDetail:this.serviceDetail});
     },
     constructColumns:function(){
         var self=this;
@@ -470,11 +384,12 @@ var MoreUserPopup=main.baseModalDataView.extend({
 
 
 var ApplicationPopup=main.baseModalDataView.extend({
-    collectionName:'Application',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/Application/',
     initialize: function (options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.serviceID=parseInt(options.id);
-        this.collection.setSID(this.serviceID);
+        this.collection.setGetParameter({service:this.serviceID});
     },  
     newModel:function(){
         return new Obiwang.Models.syncModel({service:this.serviceID},{_url:'/Application/'});
@@ -546,13 +461,13 @@ var ApplicationPopup=main.baseModalDataView.extend({
 });
 
 var FilePopup=main.baseModalDataView.extend({
-    collectionName:'ApplicationFile',
-    // collectionUrl:'/ApplicationFile/',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/ApplicationFile/',
     addNew:false,
     initialize:function(options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.applicationID=parseInt(options.id);
-        this.collection.aid=this.applicationID;
+        this.collection.setGetParameter({application:this.applicationID});
     },
     constructColumns:function(){
         var uri=BackgridCells.Cell.extend({
