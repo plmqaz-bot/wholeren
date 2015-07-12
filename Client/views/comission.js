@@ -16,7 +16,7 @@ var base=require('./base');
 var Sidebar=require('./sidebar');
 
 var sales=main.baseDataView.extend({
-    collectionName:'Comission',
+    collectionName:'MonthlyCollection',
     collectionUrl:'/SalesComission/',
     title:'销售佣金列表',
     paginator:true,
@@ -56,7 +56,7 @@ var sales=main.baseDataView.extend({
 });
 
 var teacher=main.baseDataView.extend({
-    collectionName:'Comission',
+    collectionName:'MonthlyCollection',
     collectionUrl:'/ServiceComission/',
     title:'申请老师佣金列表',
     paginator:true,
@@ -158,7 +158,7 @@ var teacher=main.baseDataView.extend({
     },    
 });
 var assis=main.baseDataView.extend({
-    collectionName:'Comission',
+    collectionName:'MonthlyCollection',
     collectionUrl:'/AssistantComission/',
     title:'申请老师佣金列表',
     paginator:true,

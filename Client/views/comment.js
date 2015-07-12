@@ -65,12 +65,13 @@ module.exports=Backbone.Modal.extend({
         this.cid=option.cid;
         this.sid=option.sid;
         this.aid=option.aid;
+        this.Todos=new Obiwang.Collections.SimpleCollection([],{url:'/Comment/'});
         if(this.cid){
-            this.Todos=new Obiwang.Collections.Comment([],{cid:this.cid});
+            this.Todos.setGetParameter({contract:this.cid});
         }else if(this.sid){
-            this.Todos=new Obiwang.Collections.Comment([],{sid:this.sid});
+            this.Todos.setGetParameter({service:this.sid});
         }else if(this.aid){
-            this.Todos=new Obiwang.Collections.Comment([],{aid:this.aid});
+            this.Todos.setGetParameter({application:this.aid});
         }else{
             return;
         }
