@@ -390,13 +390,13 @@ Collections={
     SimpleCollection:simpleCollection,
     SimpleSyncCollection:syncCollection,
     SimplePageCollection:Backbone.PageableCollection.extend({
-        model: simpleModel,
+        model: syncModel,
         param:{},
         url:function(){
             var toReturn=this._url;
             var param="";
             for (var key in this.param){
-                if(this.param.hasOwnProperty(key)){
+                if(this.param.hasOwnProperty(key)&&this.param[key]!=null){
                     param+=key+"="+this.param[key]+"&";
                 }
             }

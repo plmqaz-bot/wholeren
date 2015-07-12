@@ -103,7 +103,11 @@ module.exports={
         		this.collection.setdate({year:year,month:month});
 			}
 			if(this.renderOptions['deleted']){
-				this.collection.deleted=$('#deleted').is(':checked');
+				var showDeleted=$('#deleted').is(':checked');
+				this.collection.deleted=showDeleted
+				if(_.isFunction(this.collection.setGetParameter)){
+					this.collection.setGetParameter({active:!showDeleted}); // TODO: This is a hack, only for deleted users...
+				}
 			}
 			if(_.isFunction(this.collection.setSorting)){
 				this.collection.setSorting(null,null);
