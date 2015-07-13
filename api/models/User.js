@@ -41,6 +41,8 @@ module.exports = {
 
     rank:{type:'integer',required:true,defaultsTo:1,max:4},
 
+    secondaryRank:{type:'integer'},
+
     boss:{model:'User'},
 
     userLevel:{model:'UserLevel',required:true,defaultsTo:1},

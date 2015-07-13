@@ -23,7 +23,7 @@ function createsql(where,user){
 	var union=" union \
 	select chineseName,pinyin,primaryPhone,primaryEmail,client,nameKey,status,contractPaid,id, country,degree,previousSchool,major,gpa,toefl,sat,gre,otherScore from\
 	(select client.chineseName,client.pinyin,client.primaryPhone,client.primaryEmail,contract.client,contract.nameKey,contract.status,contractPaid,contract.id, country,contract.degree,previousSchool,major,gpa,toefl,sat,gre,otherScore,sum(if(s.id is null,0,1)) as 'total'\
-	from contract left join client on client.id=contract.client left join servicedetail s on s.contract=contract.id  where contract.deleted!=1 and contract.status=5 "+where+"group by contract.id) as t where t.total=0";
+	from contract left join client on client.id=contract.client left join servicedetail s on s.contract=contract.id  where contract.deleted!=1 and contract.status=5 "+where+" group by contract.id) as t where t.total=0";
 	switch (user.role){
 		case 1:
 			switch (user.rank){
