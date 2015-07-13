@@ -33,6 +33,10 @@ module.exports = {
 
     subRole:{model:'SubRole'},
 
+    secondaryRole:{model:'Role'},
+
+    secondarySubRole:{model:'Role'},
+
     active:{type:'boolean',required:true,defaultsTo:false},
 
     rank:{type:'integer',required:true,defaultsTo:1,max:4},
