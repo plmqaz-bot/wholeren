@@ -5,7 +5,8 @@
  * @help        :: See http://links.sailsjs.org/docs/controllers
  */
  var Promise=require('bluebird');
-function createsql(where,user){
+function createsql(where,user,options){
+	options=options||"";
 	var uid=user.id;
 	if(user.role==1||user.role==2){
 		if (user.rank<=2){
@@ -16,14 +17,14 @@ function createsql(where,user){
 			where ="and false";
 		}
 	}
-	var sql="select servicedetail.*,contract.client,client.primaryPhone,client.primaryEmail from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract left join contract on servicedetail.contract=contract.id left join client on contract.client=client.id where servicedetail.deleted!=1;"
+	var sql="select servicedetail.*,contract.client,client.primaryPhone,client.primaryEmail from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract left join contract on servicedetail.contract=contract.id left join client on contract.client=client.id where servicedetail.deleted!=1 "+options+";"
 	//var sql="select distinct servicedetail.* from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+";"
 	return sql;
 }
 function getOne(req,res){
 	var id=req.params.id;
 	if(!id) return Utilfunctions.errorHandler({error:"No id"},res,"Get Service Detail failed");
-	var sql=createsql("and servicedetail.id="+id,req.session.user);
+	var sql=createsql("and servicedetail.id="+id,req.session.user,"and servicedetail.id="+id);
 	return Utilfunctions.nativeQuery(sql).then(function(data){
 		if((data=data||[]).length<1) return Promise.reject({error:"not found"});
 		return res.json(data[0]);
@@ -77,7 +78,7 @@ module.exports = {
 		// tocreate['service']=attribs.service;
 		// tocreate['servRole']=attribs.servRole;
 		// tocreate['servLevel']=attribs.servLevel;
-		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey','semesterType','effectiveSemester','level']);
+		var tocreate=Utilfunctions.prepareUpdate(attribs,['user','realServiceType','serviceProgress','indate','link','contractKey','semesterType','effectiveSemester','level','correspondService']);
 		 console.log(tocreate,id);
 		 ServiceDetail.update({id:id},tocreate).then(function(data){
 		 	data=data[0]||data;

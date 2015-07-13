@@ -238,12 +238,13 @@ var ContactInfoPopup=main.baseModalDataView.extend({
 //     }
 // });
 var ServicePopup=main.baseModalDataView.extend({
-    collectionName:'ServiceDetail',
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/ServiceDetail/',
     initialize:function(options){
         main.baseModalDataView.prototype.initialize.apply(this,arguments);
         this.shortContract=options.model;
         this.contractId=parseInt(this.shortContract.get('id'));
-        this.collection.setCID(this.contractId);
+        this.collection.setGetParameter({contract:this.contractId})
     },
     constructColumns:function(){
         var self=this;
@@ -337,6 +338,7 @@ var ServicePopup=main.baseModalDataView.extend({
             });
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+                {name:'id',label:'ID',editable:false,cell:'integer'},
                 {name:'realServiceType',label:'各进程类型',cell:typeselect},
                 {name:'serviceProgress',label:'该进程状态',cell:progressselect},
                 {name:'indate',label:'启动时间',cell:BackgridCells.MomentCell},
