@@ -20,7 +20,9 @@ var ServiceView=main.baseDataView.extend({
     title:'服务列表',
     paginator:true,
     minScreenSize:4000,
-    filterFields:['cName','realServiceType','serviceProgress','user','link'],
+    simpleFilter:true,
+    filterFields:[],
+    //filterFields:['cName','realServiceType','serviceProgress','user','link'],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({

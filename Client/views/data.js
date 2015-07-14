@@ -22,6 +22,7 @@ module.exports={
 	*/
 	baseDataView:baseView.extend({
 		templateName:'dateTableView',
+		simpleFilter:false,
 		minScreenSize:4000,
 		initialize: function (options) {
 		_.bindAll(this,'constructColumns','constructTable','reRenderCount');
@@ -68,15 +69,27 @@ module.exports={
 				$('.table-wrapper').append(paginator.render().el);  
 			}
 			if(this.filterFields){
+				var fields=this.filterFields.length>0?this.filterFields:null;
 				var clientSideFilter = new Backgrid.Extension.AlmightyFilter({
 					collection: this.collection,
 					placeholder: "Search in the browser",
 					// The model fields to search for matches
-					fields: this.filterFields,
+					fields: fields,
 					// How long to wait after typing has stopped before searching can start
 					wait: 150,
 
 				});
+				if(this.simpleFilter){
+					clientSideFilter = new Backgrid.Extension.SimpleClientFilter({
+					collection: this.collection,
+					placeholder: "Search in the browser",
+					// The model fields to search for matches
+					fields: fields,
+					// How long to wait after typing has stopped before searching can start
+					wait: 150,
+
+					});
+				}				
 				clientSideFilter.selectFields=this.selectFields||[];
 				clientSideFilter.columns=this.columns;
 				$('.table-wrapper').prepend(clientSideFilter.render().el);    

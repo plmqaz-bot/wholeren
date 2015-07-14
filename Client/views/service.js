@@ -17,8 +17,10 @@ var CommentModalView=require('./comment');
 var ShortContractView=main.baseDataView.extend({
     collectionName:'ShortContract',
     title:'服务列表',
+    simpleFilter:true,
     paginator:true,
-    filterFields:['chineseName','nameKey','teacher','contractPaid','boughtservices','previousSchool','major'],
+    //filterFields:['chineseName','pinyin','nameKey','teacher','contractPaid','boughtservices','previousSchool','major'],
+    filterFields:[],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({
