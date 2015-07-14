@@ -18,13 +18,14 @@ module.exports = {
    ***************************************************************************/
 
    models: {
-     connection: 'devMysqlServer'
+     connection: 'awsMysqlServer'
    },
 
   /***************************************************************************
    * Set the port in the production environment to 80                        *
    ***************************************************************************/
   sendFakeEmail:false,
+    port:80,
   //  port: 443,
   //   ssl:{
   //   key: require('fs').readFileSync(__dirname+'/../ssl/key.pem'),
