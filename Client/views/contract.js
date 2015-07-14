@@ -825,6 +825,7 @@ var ContractEdit = EditForm.extend({
             var self=this;
                 this.model.save(this.modelChanges,{
                 patch:true,
+                save:false,
                 success:function(d){
                     // refresh parent view
                     try{

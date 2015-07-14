@@ -249,7 +249,9 @@ var ServicePopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{active:true}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.filter(users,function(a){
+                if(a.role==2||(a.secondaryRole||0)==2) return true;
+            }),function(e){return [e.nickname,e.id]})}); // Only Backend Group
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             var semesterselect=Backgrid.SelectCell.extend({
