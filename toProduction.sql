@@ -230,3 +230,11 @@ CHANGE COLUMN `secondaryCell` `secondaryEmail` VARCHAR(45) NULL DEFAULT NULL ;
 
 ALTER TABLE `wholeren`.`client` 
 ADD COLUMN `pinyin` VARCHAR(45) NULL AFTER `lastName`;
+
+
+
+
+ALTER TABLE `wholeren`.`user` 
+ADD COLUMN `secondaryRole` INT NULL AFTER `subRole`,
+ADD COLUMN `secondarySubRole` INT NULL AFTER `secondaryRole`,
+ADD COLUMN `secondaryRank` INT NULL AFTER `rank`;

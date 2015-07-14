@@ -55,6 +55,7 @@ Settings.user=main.basePaneView.extend({
                 city= this.$('#user-city').val(),
                 state= this.$('#user-state').val(),
                 zipcode= this.$('#user-zipcode').val(),
+                currentRole= this.$('#user-currentRole').val(),
                 bio=this.$('#user-bio').val(),
                 validationErrors = [];
 
@@ -93,7 +94,8 @@ Settings.user=main.basePaneView.extend({
                     'city':city,
                     'state':state,
                     'zipcode':zipcode,
-                    'bio':              bio
+                    'currentRole':currentRole,
+                    'bio':bio
                 }, {
                     patch:true,
                     success: function(data){util.handleRequestSuccess({responseText:"Save Successful"})},
@@ -192,6 +194,9 @@ Settings.allUsers=main.baseDataView.extend({
             {name:'subRole',label:'细分职位',editable:editable,cell:subroleselect},
             {name:'userLevel',label:'佣金等级',editable:editable,cell:levelselect},
             {name:'rank',label:'职位等级',editable:editable,cell:'number'},
+            {name:'secondaryRole',label:'第二部门',editable:editable,cell:roleselect},
+            {name:'secondarySubRole',label:'第二细分职位',editable:editable,cell:subroleselect},
+            {name:'secondaryRank',label:'第二职位等级',editable:editable,cell:'number'},
             //{name:'boss',label:'主管',editable:editable,cell:userselect},
             {name:'createdAt',label:'注册时间',editable:false,cell:BackgridCells.MomentCell},
             {name:'active',label:'在职',editable:editable,cell:'boolean'}

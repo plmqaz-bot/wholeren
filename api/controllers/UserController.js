@@ -6,16 +6,37 @@
  */
 Promise=require('bluebird');
 module.exports = {
-	'updateUser':function(req,res){
+	'update':function(req,res){
 		var attribs=req.body;
 		var r=attribs['rank'];
 		if(r&&r>=req.session.user.rank){
 			return res.json(404,"cann not set rank higher than yourself");
 		}
+		console.log(attribs['currentRole']!=undefined,req.params.id,req.session.user.id)
+		if(attribs['currentRole']!==undefined&&req.params.id==req.session.user.id){
+			var activeRole=attribs.currentRole;
+			User.findOne({id:req.params.id}).then(function(u){
+				if(activeRole==0){
+					req.session.user.role=u.role;
+					req.session.user.subRole=u.subRole;
+					req.session.user.rank=u.rank;
+					sails.log.info("User role is changed to primary Role" ,req.session.user);
+				}else if(activeRole==1){
+					if(u.secondaryRole&&u.secondarySubRole&&u.secondaryRank){
+						req.session.user.role=u.secondaryRole;
+						req.session.user.subRole=u.secondarySubRole;
+						req.session.user.rank=u.secondaryRank;
+						sails.log.info("User role is changed to secondary Role");
+					}
+				}	
+			})
+			
+		}
+		delete attribs['currentRole'];
 		delete attribs['password'];
 		User.update({id:req.params.id},attribs).then(function(data){
-			console.log("User updated: ",data);
-			return res.json(data);
+			console.log("User updated: ",data[0].toJSON());
+			return res.json(data[0].toJSON());
 		}).fail(function(err){
 			return Utilfunctions.errorHandler(err,res,"Update user failed. id:"+req.params.id);
 		});					

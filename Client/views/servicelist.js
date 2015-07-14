@@ -36,7 +36,9 @@ var ServiceView=main.baseDataView.extend({
         });
         var self=this;
         return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/'),util.ajaxGET('/Degree/')]).spread(function(stype,progress,users,degree){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.filter(users,function(a){
+                if(a.role==2||(a.secondaryRole||0)==2) return true;
+            }),function(e){return [e.nickname,e.id]})});
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             var degreeselect=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
@@ -196,7 +198,9 @@ var MoreUserPopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return util.ajaxGET('/User/').then(function(users){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.filter(users,function(a){
+                if(a.role==2||(a.secondaryRole||0)==2) return true;
+            }),function(e){return [e.nickname,e.id]})});
             self.columns=[
                 {name:'user',label:'负责人名字',cell:userselect},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
@@ -260,7 +264,7 @@ var ApplicationPopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return Promise.all([util.ajaxGET('/User/'),util.ajaxGET('/Degree/')]).spread(function(users,degree){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
+            //var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var degree=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',
