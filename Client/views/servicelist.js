@@ -83,22 +83,44 @@ var ServiceView=main.baseDataView.extend({
                     $('.app').append(contactview.el);  
                 }
             });
-            var appPopup=BackgridCells.Cell.extend({
-                cellText:'Applications',
+             var visaPopup=BackgridCells.Cell.extend({
+                cellText:'Visa Info',
                 render: function () {
-                    if(this.model.get('addApplication')!=0)
+                    if(this.model.get('realServiceType')==6)
                         this.$el.html('<a>'+this.cellText+'</a>');
                     else
-                        this.$el.html('');        
-                    this.delegateEvents();
+                        this.$el.html('');   
                     return this;
                   },
                 action:function(e){
                     e.preventDefault();
                     var id=this.model.get('id');
-                    var appview= new ApplicationPopup({id:id});
-                    appview.render();
-                    $('.app').append(appview.el);  
+                    var visaview= new VisaPopup({id:id});
+                    visaview.render();
+                    $('.app').append(visaview.el);  
+                }
+            });
+            var appPopup=BackgridCells.Cell.extend({
+                cellText:'Applications',
+                render: function () {
+                    if(this.model.get('realServiceType')==6)
+                       this.$el.html('<a>Visa Info</a>');
+                    else if(this.model.get('addApplication')!=0)
+                        this.$el.html('<a>Applications</a>');
+                    this.delegateEvents();
+                    return this;
+                  },
+                action:function(e){
+                    e.preventDefault();
+                    var view;
+                    var id=this.model.get('id');
+                    if(this.model.get('realServiceType')==6){
+                        view= new VisaPopup({id:id});
+                    }else if(this.model.get('addApplication')!=0){
+                        view= new ApplicationPopup({id:id});
+                    }
+                    view.render();
+                    $('.app').append(view.el); 
                 }
             });
             var comment=BackgridCells.Cell.extend({
@@ -177,7 +199,8 @@ var ServiceView=main.baseDataView.extend({
                 {name:'',label:'OtherUsers',cell:userinservice},
                 {name:'',label:'该进程备注',cell:comment},
                 //{name:'',label:'ContactInfo',cell:contPopup},
-                {name:'',label:'Application',cell:appPopup},
+                {name:'',label:'Extra Info',cell:appPopup},
+                //{name:'',label:'VisaInfo',cell:visaPopup},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
                 ];
             var user_options=_.map(users,function(e){return [e.nickname,e.id]});
@@ -215,7 +238,48 @@ var MoreUserPopup=main.baseModalDataView.extend({
         return new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
     }
 })
-
+var VisaPopup=main.baseModalDataView.extend({
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/VisaInfo/',
+    initialize: function (options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.serviceID=parseInt(options.id);
+        this.collection.setGetParameter({serviceDetail:this.serviceID});    
+    },
+    newModel:function(){
+        return new Obiwang.Models.syncModel({serviceDetail:this.serviceID},{_url:'/VisaInfo/'});
+    },
+    constructColumns:function(){
+        var DeleteCell = BackgridCells.DeleteCell;
+         var pselect=Backgrid.SelectCell.extend({
+              optionValues:function(){
+                return [['1. 初步联络学生','1. 初步联络学生'],['2.填写DS160','2.填写DS160'],['3. 预约面签','3. 预约面签'],['4. 面签培训','4. 面签培训'],['5. 签证结果','5. 签证结果']];
+              },
+              formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                toRaw: function (formattedValue, model) {
+                  return formattedValue;
+                }
+              })
+            },{
+              _touse:[['1. 初步联络学生','1. 初步联络学生'],['2.填写DS160','2.填写DS160'],['3. 预约面签','3. 预约面签'],['4. 面签培训','4. 面签培训'],['5. 签证结果','5. 签证结果']]
+            });
+        this.columns=[
+            //{name:'user',label:'文书负责人',cell:userselect},
+            {name:'visaProgress',label:'签证进展程度',cell:pselect},
+            {name:'Result',label:'签证结果',cell:'string'},
+            {name:'endDate',label:'公布结果日期',cell:BackgridCells.MomentCell},
+            {name:'ResultComment',label:'二次方案调整',cell:'string'},
+            {name:'secondDate',label:'二次签证时间',cell:BackgridCells.MomentCell},
+            {name:'secondResult',label:'二次签证结果',cell:'string'},
+            {name:'secondResultComment',label:'三次方案调整',cell:'string'},
+            {name:'thirdDate',label:'三次签证时间',cell:BackgridCells.MomentCell},
+            {name:'thirdResult',label:'三次签证结果',cell:'string'},
+            {name:'',label:'Delete',cell:DeleteCell}
+            ];
+        return Promise.resolve({});
+                
+    },
+});
 var ContactInfoPopup=main.baseModalDataView.extend({
     collectionName:'SimpleSyncCollection',
     collectionUrl:'/ContactInfo/',
