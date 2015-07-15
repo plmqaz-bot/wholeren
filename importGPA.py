@@ -44,6 +44,19 @@ with open('gpa.csv','rb') as csvfile:
 <<<<<<< HEAD
 		#print "execute "+name;
 		cursor.execute("SELECT distinct contract.id from servicedetail inner join contract on contract.id=servicedetail.contract where servicedetail.cName=\'"+name+"\'");
+		
+		cids=cursor.fetchall();
+		for row in cids:
+			if row[0] is not None:
+				print name;
+				cid=row[0];
+				cursor.execute(updateSQL,(originalSchool,originalMajor,gpa,toefl,sat,gre,gmat,cid));
+		# 	else:
+		# 		print line;
+=======
+<<<<<<< HEAD
+		#print "execute "+name;
+		cursor.execute("SELECT distinct contract.id from servicedetail inner join contract on contract.id=servicedetail.contract where servicedetail.cName=\'"+name+"\'");
 		print name;
 		cids=cursor.fetchall();
 		for row in cids:
@@ -61,6 +74,7 @@ with open('gpa.csv','rb') as csvfile:
 				#cursor.execute(updateSQL,(originalSchool,originalMajor,gpa,toefl,sat,gre,gmat,cid));
 			else:
 				print line;
+>>>>>>> dea795f990910b8b6d4ceaab63811a684fd3ef79
 				
 
 cnx.commit();
