@@ -8,7 +8,7 @@ import time;
 from pypinyin import pinyin,lazy_pinyin;
 import pypinyin
 
-cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='han.bio.cmu.edu',database='wholeren',charset='utf8');
+cnx=mysql.connector.connect(user='wholeren',password='3000201S',host='localhost',database='wholeren',charset='utf8');
 cursor=cnx.cursor();
 
 updateClient=("UPDATE client set pinyin=%s where id=%s");

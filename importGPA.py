@@ -7,7 +7,8 @@ import re;
 import time;
 
 
-cnx=mysql.connector.connect(user='wholeren',password='3000201S',host='localhost',database='wholeren',charset='utf8');
+cnx=mysql.connector.connect(user='wholeren',password='piouqtpowjer123141235',host='50.163.243.196',database='wholeren',charset='utf8');
+
 cursor=cnx.cursor();
 
 def toInt(s):
@@ -40,6 +41,7 @@ with open('gpa.csv','rb') as csvfile:
 		sat=toFloat(line[5]);
 		gre=toFloat(line[6]);
 		gmat=toFloat(line[7]);
+<<<<<<< HEAD
 		#print "execute "+name;
 		cursor.execute("SELECT distinct contract.id from servicedetail inner join contract on contract.id=servicedetail.contract where servicedetail.cName=\'"+name+"\'");
 		
@@ -51,6 +53,28 @@ with open('gpa.csv','rb') as csvfile:
 				cursor.execute(updateSQL,(originalSchool,originalMajor,gpa,toefl,sat,gre,gmat,cid));
 		# 	else:
 		# 		print line;
+=======
+<<<<<<< HEAD
+		#print "execute "+name;
+		cursor.execute("SELECT distinct contract.id from servicedetail inner join contract on contract.id=servicedetail.contract where servicedetail.cName=\'"+name+"\'");
+		print name;
+		cids=cursor.fetchall();
+		for row in cids:
+			print "here";
+=======
+		print "execute "+name;
+		cursor.execute("SELECT distinct contract.id from servicedetail inner join contract on contract.id=servicedetail.contract where servicedetail.cName=\'"+name+"\'");
+		
+		cids=cursor.fetchall();
+		for row in cids:
+>>>>>>> d8c53f1f09a543061ec44bd5709866a9fa6aa82a
+			if row[0] is not None:
+				print name;
+				cid=row[0];
+				#cursor.execute(updateSQL,(originalSchool,originalMajor,gpa,toefl,sat,gre,gmat,cid));
+			else:
+				print line;
+>>>>>>> dea795f990910b8b6d4ceaab63811a684fd3ef79
 				
 
 cnx.commit();
