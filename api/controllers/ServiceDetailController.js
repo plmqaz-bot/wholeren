@@ -17,7 +17,7 @@ function createsql(where,user,options){
 			where =" and false";
 		}
 	}
-	var sql="select servicedetail.*,contract.client,client.primaryPhone,client.primaryEmail from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 left join userinservice on userinservice.serviceDetail=servicedetail.id where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract left join contract on servicedetail.contract=contract.id left join client on contract.client=client.id where servicedetail.deleted!=1 "+options+";"
+	var sql="select servicedetail.*,contract.client,client.primaryPhone,client.primaryEmail,client.pinyin from servicedetail inner join (select distinct servicedetail.cName,servicedetail.id,servicedetail.contract  from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 left join userinservice on userinservice.serviceDetail=servicedetail.id where true "+where+") as viewable on viewable.cName=servicedetail.cName or viewable.contract=servicedetail.contract left join contract on servicedetail.contract=contract.id left join client on contract.client=client.id where servicedetail.deleted!=1 "+options+";"
 	//var sql="select distinct servicedetail.* from servicedetail left join user on servicedetail.user=user.id left join user u2 on user.role=u2.role and u2.rank>1 where true "+where+";"
 	return sql;
 }

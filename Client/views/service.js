@@ -67,13 +67,14 @@ var ShortContractView=main.baseDataView.extend({
             {name:'pinyin',label:'用户拼音',editable:false,cell:'string'},
             {name:'primaryPhone',label:'电话',editable:false,cell:'string'},
             {name:'primaryEmail',label:'Email',editable:false,cell:'string'},
-            {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
+            {name:'',label:'其他联系方式',cell:contPopup},   
+            //{name:'nameKey',label:'合同ID',editable:false,cell:'string'},
             // {name:'teacher',label:'后期组长',editable: false,cell:'string'},
             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
             {name:'status',label:'该合同进度',editable:false,cell:status},
             {name:'boughtservices',label:'该合同购买服务',cell:'text'},
             {name:'',label:'各进程细节',cell:popup},                    
-            {name:'',label:'学生联系方式',cell:contPopup},                    
+                             
             //{name:'',label:'第三方费用',cell:'string'},                    
             {name:'country',label:'学生所在地',cell:country},
             {name:'degree',label:'原学校类型',cell:degree},
@@ -94,7 +95,17 @@ var ShortContractView=main.baseDataView.extend({
             ];
             return Promise.resolve({});
         });
-    }
+    },
+    constructTable:function(){
+        main.baseDataView.prototype.constructTable.apply(this,arguments);
+        if(this.id){
+            var one =new Obiwang.Models.syncModel({id:this.id},{_url:'/ShortContract/'});
+            var self=this;
+            one.fetch({save:false}).then(function(data){
+                self.collection.push(data);
+            });
+        }
+    },
 });
 
 var ContactInfoPopup=main.baseModalDataView.extend({
@@ -112,14 +123,15 @@ var ContactInfoPopup=main.baseModalDataView.extend({
         var DeleteCell = BackgridCells.DeleteCell;
         this.columns=[
             //{name:'user',label:'文书负责人',cell:userselect},
-            {name:'primaryCell',label:'主要电话',cell:'string'},
-            {name:'secondaryEmail',label:'Email',cell:'string'},
+            //{name:'primaryCell',label:'主要电话',cell:'string'},
+            //{name:'secondaryEmail',label:'Email',cell:'string'},
             {name:'skype',label:'skype',cell:'string'},
             {name:'qq',label:'QQ',cell:'string'},
             {name:'wechat',label:'微信',cell:'string'},
             {name:'parentPhone',label:'家长电话',cell:'string'},
             {name:'parentEmail',label:'家长邮箱',cell:'string'},
             {name:'emergencyContact',label:'紧急联系方式',cell:'string'},
+            {name:'otherContact',label:'其他',cell:'string'},
             {name:'',label:'Delete',cell:DeleteCell}
             ];
         return Promise.resolve({});

@@ -130,7 +130,7 @@ var ServiceView=main.baseDataView.extend({
                 render: function () {
                   var id=this.model.get('contract');
                   if(id){
-                    this.$el.html('<a href="/admin/contract/'+id+'">Link to contract</a>');
+                    this.$el.html('<a href="/admin/service/'+id+'">Link to Service</a>');
                   }else{
                     this.$el.html('');
                   }
@@ -158,10 +158,11 @@ var ServiceView=main.baseDataView.extend({
             });
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+                {name:'pinyin',label:'拼音',editable:false,cell:'string'},
                 {name:'primaryPhone',label:'用户电话',editable:false,cell:'string'},
                 {name:'primaryEmail',label:'Email',editable:false,cell:'string'},
                 {name:'',label:'合同链接',editable:false,cell:RedirectCell},
-                {name:'contractKey',label:'合同ID',cell:'string'},
+                //{name:'contractKey',label:'合同ID',cell:'string'},
                 // {name:'id',label:'ID',editable:false,cell:'integer'},
                 {name:'realServiceType',label:'各进程类型',editable:false,cell:typeselect},
                 {name:'serviceProgress',label:'该进程状态',cell:progressselect},
@@ -175,7 +176,7 @@ var ServiceView=main.baseDataView.extend({
                 {name:'link',label:'学生档案 Link',cell:'uri'},
                 {name:'',label:'OtherUsers',cell:userinservice},
                 {name:'',label:'该进程备注',cell:comment},
-                {name:'',label:'ContactInfo',cell:contPopup},
+                //{name:'',label:'ContactInfo',cell:contPopup},
                 {name:'',label:'Application',cell:appPopup},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
                 ];

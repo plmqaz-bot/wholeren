@@ -56,7 +56,9 @@ module.exports = {
 
     gre:{type:"float"},
 
-  	age:{type:"string"},
+    age:{type:"string"},
+  	
+    gmat:{type:"float"},
 
     otherScore:{type:"string"},
 
