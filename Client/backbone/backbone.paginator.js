@@ -866,6 +866,9 @@
         [];
       if ((mode == "client" || (mode == "infinite" && !_isEmpty(pageModels))) &&
           !options.fetch) {
+        pageModels.forEach(function(e){
+          delete e.collection;
+        })
         this.reset(pageModels, _omit(options, "fetch"));
         return this;
       }
