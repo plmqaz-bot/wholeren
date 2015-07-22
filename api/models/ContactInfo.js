@@ -15,7 +15,8 @@ module.exports = {
   	wechat:'string',
   	parentPhone:'string',
   	parentEmail:'string',
-  	emergencyContact:'string',
+    emergencyContact:'string',
+  	otherContact:'string',
   	service:{model:'ServiceDetail'},
   	client:{model:'Client'}
   }

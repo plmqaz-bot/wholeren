@@ -238,3 +238,28 @@ ALTER TABLE `wholeren`.`user`
 ADD COLUMN `secondaryRole` INT NULL AFTER `subRole`,
 ADD COLUMN `secondarySubRole` INT NULL AFTER `secondaryRole`,
 ADD COLUMN `secondaryRank` INT NULL AFTER `rank`;
+
+
+ALTER TABLE `wholeren`.`contactinfo` 
+ADD COLUMN `otherContact` VARCHAR(45) NULL AFTER `emergencyContact`;
+
+ALTER TABLE `wholeren`.`contract` 
+ADD COLUMN `gmat` FLOAT NULL AFTER `age`;
+
+
+CREATE TABLE `wholeren`.`visainfo` (
+  `serviceDetail` INT NOT NULL,
+  `visaProgress` VARCHAR(45) NULL,
+  `Result` VARCHAR(45) NULL,
+  `ResultComment` VARCHAR(45) NULL,
+  `endDate` DATE NULL,
+  `secondDate` DATE NULL,
+  `secondResult` VARCHAR(45) NULL,
+  `secondResultComment` VARCHAR(45) NULL,
+  `thirdDate` DATE NULL,
+  `thirdResult` VARCHAR(45) NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `createdAt` DATETIME NULL,
+  `updatedAt` DATETIME NULL,
+  PRIMARY KEY (`id`));
+

@@ -17,8 +17,10 @@ var CommentModalView=require('./comment');
 var ShortContractView=main.baseDataView.extend({
     collectionName:'ShortContract',
     title:'服务列表',
+    simpleFilter:true,
     paginator:true,
-    filterFields:['chineseName','nameKey','teacher','contractPaid','boughtservices','previousSchool','major'],
+    //filterFields:['chineseName','pinyin','nameKey','teacher','contractPaid','boughtservices','previousSchool','major'],
+    filterFields:[],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({
@@ -65,13 +67,14 @@ var ShortContractView=main.baseDataView.extend({
             {name:'pinyin',label:'用户拼音',editable:false,cell:'string'},
             {name:'primaryPhone',label:'电话',editable:false,cell:'string'},
             {name:'primaryEmail',label:'Email',editable:false,cell:'string'},
-            {name:'nameKey',label:'合同ID',editable:false,cell:'string'},
+            {name:'',label:'其他联系方式',cell:contPopup},   
+            //{name:'nameKey',label:'合同ID',editable:false,cell:'string'},
             // {name:'teacher',label:'后期组长',editable: false,cell:'string'},
             {name:'contractPaid',label:'付款日',editable:false,cell:BackgridCells.MomentCell},
             {name:'status',label:'该合同进度',editable:false,cell:status},
             {name:'boughtservices',label:'该合同购买服务',cell:'text'},
             {name:'',label:'各进程细节',cell:popup},                    
-            {name:'',label:'学生联系方式',cell:contPopup},                    
+                             
             //{name:'',label:'第三方费用',cell:'string'},                    
             {name:'country',label:'学生所在地',cell:country},
             {name:'degree',label:'原学校类型',cell:degree},
@@ -92,7 +95,17 @@ var ShortContractView=main.baseDataView.extend({
             ];
             return Promise.resolve({});
         });
-    }
+    },
+    constructTable:function(){
+        main.baseDataView.prototype.constructTable.apply(this,arguments);
+        if(this.id){
+            var one =new Obiwang.Models.syncModel({id:this.id},{_url:'/ShortContract/'});
+            var self=this;
+            one.fetch({save:false}).then(function(data){
+                self.collection.push(data);
+            });
+        }
+    },
 });
 
 var ContactInfoPopup=main.baseModalDataView.extend({
@@ -110,14 +123,15 @@ var ContactInfoPopup=main.baseModalDataView.extend({
         var DeleteCell = BackgridCells.DeleteCell;
         this.columns=[
             //{name:'user',label:'文书负责人',cell:userselect},
-            {name:'primaryCell',label:'主要电话',cell:'string'},
-            {name:'secondaryEmail',label:'Email',cell:'string'},
+            //{name:'primaryCell',label:'主要电话',cell:'string'},
+            //{name:'secondaryEmail',label:'Email',cell:'string'},
             {name:'skype',label:'skype',cell:'string'},
             {name:'qq',label:'QQ',cell:'string'},
             {name:'wechat',label:'微信',cell:'string'},
             {name:'parentPhone',label:'家长电话',cell:'string'},
             {name:'parentEmail',label:'家长邮箱',cell:'string'},
             {name:'emergencyContact',label:'紧急联系方式',cell:'string'},
+            {name:'otherContact',label:'其他',cell:'string'},
             {name:'',label:'Delete',cell:DeleteCell}
             ];
         return Promise.resolve({});
@@ -251,7 +265,7 @@ var ServicePopup=main.baseModalDataView.extend({
         return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/')]).spread(function(stype,progress,users){
             var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.filter(users,function(a){
                 if(a.role==2||(a.secondaryRole||0)==2) return true;
-            }),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            }),function(e){return [e.nickname,e.id]})}); 
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             var semesterselect=Backgrid.SelectCell.extend({
@@ -373,7 +387,9 @@ var MoreUserPopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return util.ajaxGET('/User/').then(function(users){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.filter(users,function(a){
+                if(a.role==2||(a.secondaryRole||0)==2) return true;
+            }),function(e){return [e.nickname,e.id]})});
             self.columns=[
                 {name:'user',label:'负责人名字',cell:userselect},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
@@ -401,7 +417,7 @@ var ApplicationPopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return Promise.all([util.ajaxGET('/User/'),util.ajaxGET('/Degree/')]).spread(function(users,degree){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
+            //var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var degree=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',

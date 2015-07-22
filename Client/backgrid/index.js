@@ -59,4 +59,32 @@ Backgrid.Extension.AlmightyFilter=Backgrid.Extension.ClientSideFilter.extend({
       }
     },
 });
+Backgrid.Extension.SimpleClientFilter=Backgrid.Extension.ClientSideFilter.extend({
+  selectFields:[],
+  makeMatcher: function (query) {
+      var regexp = this.makeRegExp(query);
+      return function (model) {
+        var keys = this.fields || model.keys();
+        for (var i = 0, l = keys.length; i < l; i++) {
+          var key=keys[i];
+          var isSelect=_.find(this.selectFields,{name:key});
+          var fieldTestString="";
+          if(isSelect){
+              var mValue=model.get(key);
+              if(Object.prototype.toString.call( mValue )==='[object Array]'){
+                fieldTestString=_.map(mValue,function(mv){
+                  return (_.find(isSelect['options'],function(e){if(e[1]==mv) return true;})||[""])[0];
+                }).join();
+              }else{
+                fieldTestString=(_.find(isSelect['options'],function(e){if(e[1]==mValue) return true;})||[""])[0];
+              }              
+            }else{
+              fieldTestString=model.get(key);                
+            }
+          if (regexp.test(fieldTestString + "")) return true;
+        }
+        return false;
+      };
+    }
+});
 module.exports=Backgrid;

@@ -20,7 +20,9 @@ var ServiceView=main.baseDataView.extend({
     title:'服务列表',
     paginator:true,
     minScreenSize:4000,
-    filterFields:['cName','realServiceType','serviceProgress','user','link'],
+    simpleFilter:true,
+    filterFields:[],
+    //filterFields:['cName','realServiceType','serviceProgress','user','link'],
     renderOptions:{date:true},
     constructColumns:function(){
         var popup=BackgridCells.Cell.extend({
@@ -36,7 +38,9 @@ var ServiceView=main.baseDataView.extend({
         });
         var self=this;
         return Promise.all([util.ajaxGET('/RealServiceType/'),util.ajaxGET('/ServiceProgress/'),util.ajaxGET('/User/'),util.ajaxGET('/Degree/')]).spread(function(stype,progress,users,degree){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.filter(users,function(a){
+                if(a.role==2||(a.secondaryRole||0)==2) return true;
+            }),function(e){return [e.nickname,e.id]})});
             var typeselect=BackgridCells.SelectCell({name:'ServiceType',values:_.map(stype,function(e){return [e.realServiceType,e.id]})});
             var progressselect=BackgridCells.SelectCell({name:'Progress',values:_.map(progress,function(e){return [e.serviceProgress,e.id]})});
             var degreeselect=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
@@ -79,22 +83,44 @@ var ServiceView=main.baseDataView.extend({
                     $('.app').append(contactview.el);  
                 }
             });
-            var appPopup=BackgridCells.Cell.extend({
-                cellText:'Applications',
+             var visaPopup=BackgridCells.Cell.extend({
+                cellText:'Visa Info',
                 render: function () {
-                    if(this.model.get('addApplication')!=0)
+                    if(this.model.get('realServiceType')==6)
                         this.$el.html('<a>'+this.cellText+'</a>');
                     else
-                        this.$el.html('');        
-                    this.delegateEvents();
+                        this.$el.html('');   
                     return this;
                   },
                 action:function(e){
                     e.preventDefault();
                     var id=this.model.get('id');
-                    var appview= new ApplicationPopup({id:id});
-                    appview.render();
-                    $('.app').append(appview.el);  
+                    var visaview= new VisaPopup({id:id});
+                    visaview.render();
+                    $('.app').append(visaview.el);  
+                }
+            });
+            var appPopup=BackgridCells.Cell.extend({
+                cellText:'Applications',
+                render: function () {
+                    if(this.model.get('realServiceType')==6)
+                       this.$el.html('<a>Visa Info</a>');
+                    else if(this.model.get('addApplication')!=0)
+                        this.$el.html('<a>Applications</a>');
+                    this.delegateEvents();
+                    return this;
+                  },
+                action:function(e){
+                    e.preventDefault();
+                    var view;
+                    var id=this.model.get('id');
+                    if(this.model.get('realServiceType')==6){
+                        view= new VisaPopup({id:id});
+                    }else if(this.model.get('addApplication')!=0){
+                        view= new ApplicationPopup({id:id});
+                    }
+                    view.render();
+                    $('.app').append(view.el); 
                 }
             });
             var comment=BackgridCells.Cell.extend({
@@ -126,7 +152,7 @@ var ServiceView=main.baseDataView.extend({
                 render: function () {
                   var id=this.model.get('contract');
                   if(id){
-                    this.$el.html('<a href="/admin/contract/'+id+'">Link to contract</a>');
+                    this.$el.html('<a href="/admin/service/'+id+'">Link to Service</a>');
                   }else{
                     this.$el.html('');
                   }
@@ -154,10 +180,11 @@ var ServiceView=main.baseDataView.extend({
             });
             self.columns=[
                 {name:'cName',label:'用户名字',editable:false,cell:'string'},
+                {name:'pinyin',label:'拼音',editable:false,cell:'string'},
                 {name:'primaryPhone',label:'用户电话',editable:false,cell:'string'},
                 {name:'primaryEmail',label:'Email',editable:false,cell:'string'},
                 {name:'',label:'合同链接',editable:false,cell:RedirectCell},
-                {name:'contractKey',label:'合同ID',cell:'string'},
+                //{name:'contractKey',label:'合同ID',cell:'string'},
                 // {name:'id',label:'ID',editable:false,cell:'integer'},
                 {name:'realServiceType',label:'各进程类型',editable:false,cell:typeselect},
                 {name:'serviceProgress',label:'该进程状态',cell:progressselect},
@@ -171,8 +198,9 @@ var ServiceView=main.baseDataView.extend({
                 {name:'link',label:'学生档案 Link',cell:'uri'},
                 {name:'',label:'OtherUsers',cell:userinservice},
                 {name:'',label:'该进程备注',cell:comment},
-                {name:'',label:'ContactInfo',cell:contPopup},
-                {name:'',label:'Application',cell:appPopup},
+                //{name:'',label:'ContactInfo',cell:contPopup},
+                {name:'',label:'Extra Info',cell:appPopup},
+                //{name:'',label:'VisaInfo',cell:visaPopup},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
                 ];
             var user_options=_.map(users,function(e){return [e.nickname,e.id]});
@@ -196,7 +224,9 @@ var MoreUserPopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return util.ajaxGET('/User/').then(function(users){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.where(users,{role:2}),function(e){return [e.nickname,e.id]})}); // Only Backend Group
+            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(_.filter(users,function(a){
+                if(a.role==2||(a.secondaryRole||0)==2) return true;
+            }),function(e){return [e.nickname,e.id]})});
             self.columns=[
                 {name:'user',label:'负责人名字',cell:userselect},
                 {name:'',label:'Delete Action',cell:BackgridCells.DeleteCell}
@@ -208,7 +238,48 @@ var MoreUserPopup=main.baseModalDataView.extend({
         return new Obiwang.Models.syncModel({serviceDetail:this.serviceDetail},{_url:'/UserInService/'});
     }
 })
-
+var VisaPopup=main.baseModalDataView.extend({
+    collectionName:'SimpleSyncCollection',
+    collectionUrl:'/VisaInfo/',
+    initialize: function (options){
+        main.baseModalDataView.prototype.initialize.apply(this,arguments);
+        this.serviceID=parseInt(options.id);
+        this.collection.setGetParameter({serviceDetail:this.serviceID});    
+    },
+    newModel:function(){
+        return new Obiwang.Models.syncModel({serviceDetail:this.serviceID},{_url:'/VisaInfo/'});
+    },
+    constructColumns:function(){
+        var DeleteCell = BackgridCells.DeleteCell;
+         var pselect=Backgrid.SelectCell.extend({
+              optionValues:function(){
+                return [['1. 初步联络学生','1. 初步联络学生'],['2.填写DS160','2.填写DS160'],['3. 预约面签','3. 预约面签'],['4. 面签培训','4. 面签培训'],['5. 签证结果','5. 签证结果']];
+              },
+              formatter:_.extend({}, Backgrid.SelectFormatter.prototype, {
+                toRaw: function (formattedValue, model) {
+                  return formattedValue;
+                }
+              })
+            },{
+              _touse:[['1. 初步联络学生','1. 初步联络学生'],['2.填写DS160','2.填写DS160'],['3. 预约面签','3. 预约面签'],['4. 面签培训','4. 面签培训'],['5. 签证结果','5. 签证结果']]
+            });
+        this.columns=[
+            //{name:'user',label:'文书负责人',cell:userselect},
+            {name:'visaProgress',label:'签证进展程度',cell:pselect},
+            {name:'Result',label:'签证结果',cell:'string'},
+            {name:'endDate',label:'公布结果日期',cell:BackgridCells.MomentCell},
+            {name:'ResultComment',label:'二次方案调整',cell:'string'},
+            {name:'secondDate',label:'二次签证时间',cell:BackgridCells.MomentCell},
+            {name:'secondResult',label:'二次签证结果',cell:'string'},
+            {name:'secondResultComment',label:'三次方案调整',cell:'string'},
+            {name:'thirdDate',label:'三次签证时间',cell:BackgridCells.MomentCell},
+            {name:'thirdResult',label:'三次签证结果',cell:'string'},
+            {name:'',label:'Delete',cell:DeleteCell}
+            ];
+        return Promise.resolve({});
+                
+    },
+});
 var ContactInfoPopup=main.baseModalDataView.extend({
     collectionName:'SimpleSyncCollection',
     collectionUrl:'/ContactInfo/',
@@ -260,7 +331,7 @@ var ApplicationPopup=main.baseModalDataView.extend({
     constructColumns:function(){
         var self=this;
         return Promise.all([util.ajaxGET('/User/'),util.ajaxGET('/Degree/')]).spread(function(users,degree){
-            var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
+            //var userselect=BackgridCells.SelectCell({name:'Users',values:_.map(users,function(e){return [e.nickname,e.id]})});
             var degree=BackgridCells.SelectCell({name:'Degree',values:_.map(degree,function(e){return [e.degree,e.id]})});
             var comment=BackgridCells.Cell.extend({
                 cellText:'Comments',

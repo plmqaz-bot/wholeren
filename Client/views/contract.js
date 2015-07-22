@@ -373,9 +373,14 @@ var ContractAgentView=Backbone.Modal.extend({
     afterRender:function(){
         var container=this.$el.find('.bbm-modal__section');
         var self=this;
-        var sales=_.map(_.where(this.Users,{role:1,active:true}),function(e){return {label:e.nickname,value:e.id};});
+
+        var sales=_.map(_.filter(this.Users,function(a){
+                if(a.role==1||(a.secondaryRole||0)==1) return true;
+            }),function(e){return {label:e.nickname,value:e.id}})
         sales.push({label:'NONE',value:null})
-        var shenqing=_.map(_.filter(this.Users,function(e){return e.role==2&&e.rank>1&&e.active==true}),function(e){return {label:e.nickname,value:e.id};});
+        var shenqing=_.map(_.filter(this.Users,function(a){
+                if(a.role==2||(a.secondaryRole||0)==2) return true;
+            }),function(e){return {label:e.nickname,value:e.id}})
         shenqing.push({label:'NONE',value:null});
         var fields=[
         {name:'assistant1',label:'助理1',control:'select',options:sales},

@@ -347,7 +347,11 @@
       var matcher = _.bind(this.makeMatcher(this.query()), this);
       var col = this.collection;
       if (col.pageableCollection) col.pageableCollection.getFirstPage({silent: true});
-      col.reset(this.shadowCollection.filter(matcher), {reindex: false});
+      var models=this.shadowCollection.filter(matcher);
+      models.forEach(function(e){
+        delete e.collection;
+      })
+      col.reset(models, {reindex: false});
     },
 
     /**
