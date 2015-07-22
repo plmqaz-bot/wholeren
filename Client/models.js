@@ -9,7 +9,7 @@ var _=require('lodash');
 var simpleModel=Backbone.Model.extend({
         urlRoot:function(){
             var base=this._url||_.result(this.collection,'_url')||_.result(this.collection,'url');
-            if((this.collection.pageableCollection){
+            if((this.collection||{}).pageableCollection){
                 base=base||_.result(this.collection.pageableCollection,'url');
             }
             if(base.indexOf('?')>0){
