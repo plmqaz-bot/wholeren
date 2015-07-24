@@ -73,7 +73,7 @@ module.exports={
         initialize: function () {
             this.submitted = "no";
             this.render();
-            this.roles=new Obiwang.Collections['Role']();
+            this.roles=new Obiwang.Collections.SimpleCollection([],{url:'/Role/'});
             _.bindAll(this,'renderRole');
             var self=this;
             this.roles.fetch().done(function(){

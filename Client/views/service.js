@@ -468,6 +468,7 @@ var ApplicationPopup=main.baseModalDataView.extend({
                 {name:'succeed',label:'录取',cell:'boolean'},
                 {name:'acceptedDate',label:'录取时间',cell:BackgridCells.MomentCell},
                 {name:'deadline',label:'截止时间',cell:BackgridCells.MomentCell},
+                {name:'studentDecision',label:'去否',cell:'boolean'},
                // {name:'newDev',label:'新开发？',cell:'boolean'},
                 {name:'appliedSemester',label:'申请入读学期',cell:DateCell},
                 {name:'',label:'有关文件',cell:FileCell},

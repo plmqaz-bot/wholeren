@@ -35,7 +35,8 @@ module.exports = {
 	//appliedSemester:{type:'string', regex:'(spring|summer|fall|winter)201[0-9]'},
 	appliedSemester:{type:'date'},
 	studentCondition:{type:'string'},
-  deadline:{type:'date'}
+  deadline:{type:'date'},
+  studentDecision:{type:'boolean'},
 
   },
   beforeUpdate:function(attrs,next){
