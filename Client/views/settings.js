@@ -184,7 +184,14 @@ Settings.allUsers=main.baseDataView.extend({
                     return [{name:'SubRole',values:toadd}];
                 }
             });      
-            
+            var secondarysubroleselect=roleselect.extend({
+                optionValues:function(){
+                    var r=this.model.get('secondaryRole')||0;
+                    var shrunk=_.where(subrole,{role:r});
+                    var toadd=_.map(shrunk,function(e){return [e.roleName,e.id]});
+                    return [{name:'SubRole',values:toadd}];
+                }
+            });
             self.columns=[
             {name:'nickname',label:'称呼',editable: false,cell:'string'},
             {name:'firstname',label:'姓',editable:false,cell:'string'},                    
@@ -195,7 +202,7 @@ Settings.allUsers=main.baseDataView.extend({
             {name:'userLevel',label:'佣金等级',editable:editable,cell:levelselect},
             {name:'rank',label:'职位等级',editable:editable,cell:'number'},
             {name:'secondaryRole',label:'第二部门',editable:editable,cell:roleselect},
-            {name:'secondarySubRole',label:'第二细分职位',editable:editable,cell:subroleselect},
+            {name:'secondarySubRole',label:'第二细分职位',editable:editable,cell:secondarysubroleselect},
             {name:'secondaryRank',label:'第二职位等级',editable:editable,cell:'number'},
             //{name:'boss',label:'主管',editable:editable,cell:userselect},
             {name:'createdAt',label:'注册时间',editable:false,cell:BackgridCells.MomentCell},

@@ -98,6 +98,7 @@ module.exports = {
   },
   generateResetToken: function (email, expires, dbHash) {
     return this.findOne({email:email}).then(function (foundUser) {
+        if(!foundUser) return Promise.reject({"error":"Email not found"});
         var hashText = "",text = "";
         var dbHash=dbHash||"";
         console.log("email is "+email+"expires is ",expires);
