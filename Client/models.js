@@ -820,28 +820,28 @@ Collections={
     //         this.serviceDetail=(options||{}).serviceDetail;
     //     }
     // }),
-    // General:Backbone.PageableCollection.extend({
-    //     model:Models.syncModel,
-    //     url: function(){
-    //         var toreturn=this._url;
-    //         if(this.year&&this.month)
-    //             toreturn+='?year='+this.year+"&month="+this.month;
-    //         return toreturn;
-    //     },
+    General:Backbone.PageableCollection.extend({
+        model:Models.syncModel,
+        url: function(){
+            var toreturn=this._url;
+            if(this.year&&this.month)
+                toreturn+='?year='+this.year+"&month="+this.month;
+            return toreturn;
+        },
         
-    //     initialize:function(models,options){
-    //         options=options||{};
-    //         this.year=options.year||new Date().getFullYear();
-    //         this.month=options.month||new Date().getMonth()+1;
-    //         this.mode=options.mode||"client";
-    //         this.state=options.state||{pageSize:25};
-    //         this._url=options.url;
-    //     },
-    //     setdate:function(options){
-    //         this.year=options.year;
-    //         this.month=options.month;
-    //     },
-    // }),
+        initialize:function(models,options){
+            options=options||{};
+            this.year=options.year||new Date().getFullYear();
+            this.month=options.month||new Date().getMonth()+1;
+            this.mode=options.mode||"client";
+            this.state=options.state||{pageSize:25};
+            this._url=options.url;
+        },
+        setdate:function(options){
+            this.year=options.year;
+            this.month=options.month;
+        },
+    }),
     // SyncCollection:Backbone.PageableCollection.extend({
     //     model:Models.syncModel,
     //     initialize:function(models,options){

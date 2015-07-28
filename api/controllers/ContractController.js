@@ -72,6 +72,8 @@ var findOne=function(req,res,id){
 				if(data.client) {
 					data.clientName=data.client['chineseName'];
 					data.pinyin=data.client['pinyin'];
+					data.primaryPhone=data.client['primaryPhone'];
+					data.primaryEmail=data.client['primaryEmail'];
 					//data.client=data.client.id;
 				}
 				var totalprice=0;
@@ -156,6 +158,8 @@ module.exports = {
 				 		r.client=Hashs[0][r.client]||{};
 				 		r.clientName=r.client['chineseName'];
 				 		r.pinyin=r.client['pinyin'];
+						r.primaryPhone=r.client['primaryPhone'];
+						r.primaryEmail=r.client['primaryEmail'];
 				 	} 
 				 	var services=Hashs[1][r.id]||[];
 				 	var totalprice=0;

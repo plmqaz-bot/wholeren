@@ -37,7 +37,7 @@ function createsql(where,user){
 		case 2:
 			switch (user.rank){
 				case 1: criteria1=" and "+level1;break;
-				case 2: criteria1=" and ("+level1+" or sr.subRole="+subRole+")";criteria2=union;break;
+				case 2: criteria1=" and ("+level1+" or sr.subRole="+subRole+" or sr.id is null)";criteria2=union;break;
 				case 3: criteria1="";break;
 				default: criteria1=" and false";
 			}

@@ -117,6 +117,8 @@ var ContractView=main.baseDataView.extend({
             self.columns=[
             {name:'clientName',label:'Name',cell:edit},
             {name:'pinyin',label:'拼音',editable:false,cell:'string'},
+            {name:'primaryEmail',label:'Email',editable:false,cell:'string'},
+            {name:'primaryPhone',label:'电话',editable:false,cell:'string'},
             {name:'namekey',label:'ID',cell:'string'},
             {name:'salesGroup',label:'销售组',cell:salesgroup},
             {name:'contractCategory',label:'咨询服务类别',cell:category},
