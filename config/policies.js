@@ -28,7 +28,7 @@ module.exports.policies = {
 
    '*': 'sessionAuth',
    ViewController:{
-    '*':true,
+    '*':false,
    // 'visualization':'publicAuth'
    } ,
     //'*':true,
