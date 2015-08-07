@@ -459,6 +459,7 @@ var ApplicationPopup=main.baseModalDataView.extend({
             self.columns=[
                 //{name:'user',label:'文书负责人',cell:userselect},
                 {name:'collageName',label:'所申学校',cell:'string'},
+                {name:'appliedSemester',label:'申请入读学期',cell:DateCell},
                 {name:'appliedMajor',label:'申请专业',cell:'string'},
                 {name:'appliedDegree',label:'申请学校类型',cell:degree},
                 {name:'decided',label:'选校',cell:'boolean'},
@@ -470,7 +471,6 @@ var ApplicationPopup=main.baseModalDataView.extend({
                 {name:'deadline',label:'截止时间',cell:BackgridCells.MomentCell},
                 {name:'studentDecision',label:'去否',cell:'boolean'},
                // {name:'newDev',label:'新开发？',cell:'boolean'},
-                {name:'appliedSemester',label:'申请入读学期',cell:DateCell},
                 {name:'',label:'有关文件',cell:FileCell},
                 //{name:'studentCondition',label:'Condition',cell:'string'},
                 {name:'',label:'Comments',cell:comment},
